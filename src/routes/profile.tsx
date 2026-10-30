@@ -85,8 +85,13 @@ function ProfilePage() {
 
   // تعبئة النموذج من بيانات الحساب والملف — مرة واحدة
   useEffect(() => {
-    if (loaded || !user) return;
-    setFullName((user.user_metadata?.["full_name"] as string | undefined) ?? "");
+    // لا نغلق التحميل قبل اكتمال استعلام الملف الشخصي؛ وإلا قد تبقى
+    // حقول الهاتف والولاية والبلدية فارغة إذا وصل الملف بعد أول render.
+    if (loaded || !user || !profile.isFetched) return;
+    setFullName(
+      profile.data?.full_name ??
+        ((user.user_metadata?.["full_name"] as string | undefined) ?? ""),
+    );
     if (profile.data) {
       setPhone(profile.data.phone ?? "");
       setWilayaId(profile.data.wilaya_id);
@@ -94,7 +99,7 @@ function ProfilePage() {
       setAvatarPreview(profile.data.avatar_url ?? null);
     }
     setLoaded(true);
-  }, [user, profile.data, loaded]);
+  }, [user, profile.data, profile.isFetched, loaded]);
 
   if (!ready) return null;
   if (!user) {

@@ -141,6 +141,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  // Testing Library mounts inside a div; render only the app subtree in Vitest.
+  // Production SSR must keep the full document shell for TanStack Start.
+  if (import.meta.env.MODE === "test") return <>{children}</>;
+
   // اللغة والاتجاه يتبعان اختيار المستخدم — أساس الشرط الثنائي (RTL/LTR).
   const { lang } = useTranslation();
   const dir = lang === "ar" ? "rtl" : "ltr";

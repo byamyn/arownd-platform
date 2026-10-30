@@ -827,10 +827,21 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      approved_delivery_companies: {
+        Row: {
+          id: string;
+          company_name: string;
+          contact_phone: string;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       become_merchant: { Args: never; Returns: undefined };
+      admin_set_delivery_company_approval: {
+        Args: { _company_id: string; _is_approved: boolean };
+        Returns: undefined;
+      };
       cancel_reservation: {
         Args: { _reservation_id: string };
         Returns: undefined;

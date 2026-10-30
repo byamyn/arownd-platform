@@ -84,10 +84,10 @@ function AdminDeliveryCompaniesPage() {
   }
 
   const handleToggleApproval = async (id: string, current: boolean) => {
-    const { error } = await supabase
-      .from("delivery_companies")
-      .update({ is_approved: !current, updated_at: new Date().toISOString() })
-      .eq("id", id);
+    const { error } = await supabase.rpc("admin_set_delivery_company_approval", {
+      _company_id: id,
+      _is_approved: !current,
+    });
     if (error) {
       toast.error("تعذر تحديث حالة الاعتماد");
       return;

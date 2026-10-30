@@ -692,7 +692,7 @@ export async function createOrderWithDelivery(
   if (deliveryCompanyId && deliveryType === "home") {
     try {
       const { data: company } = await supabase
-        .from("delivery_companies")
+        .from("approved_delivery_companies")
         .select("company_name, contact_phone")
         .eq("id", deliveryCompanyId)
         .single();

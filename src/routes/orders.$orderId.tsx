@@ -14,7 +14,7 @@ import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
 import { fetchMyOrders } from "@/lib/sooqy";
-import { fetchOrderWithShipment } from "@/lib/delivery";
+import { fetchOrderWithShipment, SHIPMENT_STATUS_LABELS } from "@/lib/delivery";
 import { translate, useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { goBackOrTo } from "@/lib/nav";

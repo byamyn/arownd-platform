@@ -119,7 +119,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     expect(await screen.findByRole("button", { name: /إلغاء المتابعة/ })).toBeInTheDocument();
 
     await go(router, "/favorites");
-    fireEvent.click(screen.getByRole("button", { name: /المتاجر \(1\)/ }));
+    fireEvent.click(screen.getByRole("tab", { name: /المتاجر/ }));
     await expectText("متجر التجربة");
   });
 
