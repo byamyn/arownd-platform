@@ -1,291 +1,419 @@
 # Arownd — اكتشف ما حولك
 
-> **Discover What's Around You.** · **اكتشف ما حولك.**
+> **Discover What's Around You.**  
+> منصة واحدة لاكتشاف المتاجر والمنتجات المحلية في الجزائر.
 
-Arownd هي منصة تجارة محلية واكتشاف منتجات (ويب + PWA + Android) مبنية لسوق الجزائر:
-تسوّق من متاجر موثّقة، قارن الأسعار بين محلات متعددة، احجز واستلم من المحل،
-واطلب توصيلًا إلى المنزل — le tout en arabe et en français-compatible i18n (ar/en).
+Arownd منصة للتجارة المحلية واكتشاف المنتجات، تربط المتسوقين بالتجار وشركات التوصيل. تتيح استكشاف المتاجر والمنتجات، مقارنة عروض المتاجر، إنشاء الطلبات أو حجز المنتجات، وتوفر للتجار أدوات لإدارة متاجرهم ومنتجاتهم وطلباتهم.
 
-- **المستودع:** `sooqy-app` (الاسم (legacy) داخل الكود والـ SEO)
-- **العلامة (Brand):** Arownd — انظر [`BRAND.md`](./BRAND.md)
-- **الحالة:** MVP إنتاجي (Web + PWA + Android عبر Capacitor)، Supabase backend
+**المنصات المستهدفة:** Web · PWA · Android  
+**السوق المستهدف:** الجزائر  
+**لغة الواجهة الحالية:** العربية وRTL. موارد الإنجليزية موجودة، لكن تفعيلها معطّل حاليًا.
 
----
-
-## 📋 نظرة عامة
-
-Arownd تربط **المتسوق** و **التاجر** و **شركة التوصيل** في منصة واحدة:
-
-- **المتسوق:** بحث/استكشاف، صفحات منتجات مع مقارنة عروض المتاجر، سلة، دفع (COD / BaridiMob)،
-  تتبع طلبات، مفضلة، مراجعات موثّقة، إشعارات.
-- **تاجر (Studio):** لوحة تحكم على الهاتف، تبديل توفر السلعة بنقرة، إضافة منتج في 30 ثانية،
-  إدارة صور متعددة، سجل حجوزات (كود `SQ-XXXX`)، شحنات.
-- **إدارة:** لوحة admin، شركات توصيل، تغطية communes، محفظة.
-- **توصيل:** 58 ولاية + بلديات، home/desk، COD + رفع وصل BaridiMob، شركة توصيل + شحنات.
-
-### الميزات الأساسية
-
-- 🔎 **بحث واستكشاف** — فلاتر (تصنيف، ولاية، commune، متوفر، ترتيب، radius)، تبديل منتجات/متاجر/خريطة.
-- 📍 **خريطة المتاجر** — MapLibre + GPS، بطاقة سفلية (drawer).
-- 🛒 **سلة + دفع** — `evaluateBag()` تقييم واحد (missing/unavailable/out_of_stock/price_changed/over_stock)،
-  58 ولاية، communes، توصيل home/desk، COD/BaridiMob (رفع وصل).
-- 🏪 **صفحة متجر (بوتيك)** — غلاف، شعار، شارة موثّق، ساعات عمل، عروض مصنّفة.
-- 📦 **منتج + مقارنة عروض** — `pickBestOffer()` مصدر واحد للسعر، شارة توفر حية، تاريخ آخر تأكيد.
-- 🔖 **احجز واستلم** — كود `SQ-XXXX` (3 ساعات)، خصم مخزون فوري.
-- ⭐ **مراجعات موثّقة** — `submit_review` RPC (فقط بعد طلب مُسلَّم أو حجز مُستلَم).
-- 👁️ **مشاهدات منتجات** — `increment_product_view` + `get_most_viewed_products`.
-- 🖼️ **بحث بالصورة** — `src/lib/image-search.ts` + `ImageSearch`.
-- 💳 **محفظة** — route + migrations (wallet).
-- 🔔 **إشعارات realtime** — `src/hooks/use-realtime.ts`.
-- 🌐 **i18n ar/en** — 10 مجموعات قاموس، صيغ جمع عربية، فحص parity آلي.
-- 📱 **PWA** — manifest (maskable, id/scope), SW (network-first data, cache-first assets, update prompt).
-- 🤖 **Android** — Capacitor 8.
-- 🔍 **SEO** — `SeoHead` (meta/OG/Twitter/JSON-LD/canonical/hreflang)، sitemap.xml، robots.txt.
-- 🛡️ **Sentry** — ErrorBoundary + رسائل مترجمة.
-- ♿ **WCAG** — تباين 4.5:1 (قراءة) / 3:1 (تركيز) في الوضعين.
+> **حالة المشروع:** MVP قيد التطوير والتحضير للإطلاق التجريبي، وليس إصدارًا أُثبتت جاهزيته للإطلاق العام. يجب إعادة تشغيل الفحوص التقنية واختبار تدفقات الاستخدام الفعلية قبل اعتماد أي إصدار للإنتاج.
 
 ---
 
-## 🧱 المكدس التقني
+## المحتويات
+
+- [نظرة عامة](#نظرة-عامة)
+- [الميزات الحالية](#الميزات-الحالية)
+- [الأدوار ومساحات العمل](#الأدوار-ومساحات-العمل)
+- [التقنيات المستخدمة](#التقنيات-المستخدمة)
+- [بنية المشروع](#بنية-المشروع)
+- [الإعداد والتشغيل](#الإعداد-والتشغيل)
+- [متغيرات البيئة والأمان](#متغيرات-البيئة-والأمان)
+- [قاعدة البيانات](#قاعدة-البيانات)
+- [التطوير والفحوص](#التطوير-والفحوص)
+- [النشر على Vercel](#النشر-على-vercel)
+- [Android وPWA](#android-وPWA)
+- [الهوية ونظام التصميم](#الهوية-ونظام-التصميم)
+- [القيود والمخاطر المعروفة](#القيود-والمخاطر-المعروفة)
+- [التحقق قبل الإطلاق](#التحقق-قبل-الإطلاق)
+- [المساهمة والوثائق](#المساهمة-والوثائق)
+
+---
+
+## نظرة عامة
+
+تجمع Arownd ثلاثة أطراف رئيسية في منصة واحدة:
+
+1. **المتسوق:** استكشاف المنتجات والمتاجر، مقارنة العروض، إدارة المفضلة والسلة، وإنشاء الطلبات والحجوزات.
+2. **التاجر:** إدارة المتجر والمنتجات والعروض والمخزون والطلبات من مساحة Studio.
+3. **شركة التوصيل:** إدارة بيانات الشركة ومناطق التغطية والخدمات والشحنات وتتبع حالتها.
+
+توجد أيضًا مساحة إدارية لإدارة بعض جوانب المنصة، مثل المتاجر وشركات التوصيل وبعض العمليات المالية.
+
+## الميزات الحالية
+
+الميزات التالية موجودة في بنية المشروع وملفاته. وجودها في الكود لا يعني أن كل تدفق قد اجتاز اختبارًا تشغيليًا شاملًا.
+
+### تجربة المتسوق
+
+- الصفحة الرئيسية والبحث والاستكشاف والتصنيفات.
+- استكشاف المتاجر والمنتجات وعرضها على الخريطة.
+- صفحات تفاصيل المنتج والمتجر.
+- مقارنة عروض المتاجر للمنتج نفسه واختيار العرض الأنسب عبر منطق موحّد.
+- المفضلة وسلة التسوق والتحقق من الأسعار والتوفر والكميات قبل إتمام الطلب.
+- إنشاء الطلبات ومتابعة حالتها.
+- حجز المنتج واستلامه من المتجر.
+- مراجعات تخضع لشروط الأهلية المحددة في قاعدة البيانات.
+- الملف الشخصي والإعدادات والإشعارات.
+- التواصل مع المتجر عبر الهاتف أو WhatsApp عند توفر بيانات الاتصال.
+
+### أدوات التاجر
+
+- مساحة التاجر Studio.
+- إدارة المنتجات والعروض والصور.
+- تحديث الكميات وحالة ظهور المنتجات للعملاء.
+- البحث والتصفية حسب حالة المخزون.
+- إدارة الطلبات والحجوزات.
+- إدارة إعدادات المتجر ومعلومات التواصل.
+
+### خدمات التوصيل والإدارة
+
+- تسجيل شركات التوصيل.
+- إدارة بيانات الشركة ومناطق التغطية والخدمات.
+- إدارة الشحنات وتحديث حالاتها وحفظ سجلات التتبع.
+- صفحات إدارية للمتاجر وشركات التوصيل.
+- وظائف محفظة وسجل معاملات تخضع بعض عملياته للمراجعة.
+
+### وظائف المنصة
+
+- المصادقة وإدارة الجلسات عبر Supabase Auth.
+- تحديثات لحظية لبعض البيانات عبر Supabase Realtime.
+- تخزين صور وملفات عبر Supabase Storage.
+- دعم PWA وService Worker وتحديث التطبيق.
+- إعدادات SEO وOpen Graph وsitemap وrobots.
+- تكامل مراقبة الأخطاء عبر Sentry.
+- اختبارات باستخدام Vitest وTesting Library.
+
+---
+
+## الأدوار ومساحات العمل
+
+| الدور | المساحة | الوظائف |
+|---|---|---|
+| المتسوق | واجهة التطبيق | الاستكشاف، المقارنة، السلة، الطلبات، الحجوزات والمفضلة |
+| التاجر | Studio | المنتجات، المخزون، الطلبات، الحجوزات وإعدادات المتجر |
+| شركة التوصيل | Delivery Dashboard | بيانات الشركة، التغطية، الخدمات والشحنات |
+| الإدارة | Admin | إدارة المتاجر وشركات التوصيل وبعض العمليات الإدارية |
+
+## التقنيات المستخدمة
 
 | الطبقة | التقنية |
 |---|---|
-| Build / SSR | Vite 8 + TanStack Start/Router (file-based routing) |
-| UI | React 19 + Tailwind CSS 4 + Radix UI + lucide-react |
-| Language | TypeScript 5.8 (strict) |
-| Backend | Supabase (Postgres + RLS + Storage + Auth) |
-| Mobile | Capacitor 8 (Android) |
-| Maps | MapLibre GL + react-leaflet + OSRM (in-app nav) |
-| State/Data | TanStack Query, react-hook-form + zod |
-| Charts | recharts |
-| Monitoring | Sentry |
-| Tests | Vitest + Testing Library + jsdom |
+| اللغة | TypeScript 5.8 |
+| الواجهة | React 19 |
+| البناء والتطوير | Vite 8 |
+| إطار التطبيق والتنقل | TanStack Start وTanStack Router |
+| التنسيق | Tailwind CSS 4 |
+| المكونات | Radix UI وLucide React |
+| إدارة البيانات | TanStack Query |
+| النماذج والتحقق | React Hook Form وZod |
+| الخلفية وقاعدة البيانات | Supabase وPostgreSQL |
+| المصادقة والصلاحيات | Supabase Auth وRLS |
+| الملفات والصور | Supabase Storage |
+| الخرائط | MapLibre GL وReact Leaflet |
+| الرسوم البيانية | Recharts |
+| مراقبة الأخطاء | Sentry |
+| Android | Capacitor 8 |
+| الاختبارات | Vitest وTesting Library وjsdom |
+| الاستضافة | Vercel |
 
 ---
 
-## 📁 هيكل المشروع (أبرز المجلدات)
+## بنية المشروع
 
-```
-sooqy-app/
-├── src/
-│   ├── routes/            # TanStack file-based routes (30+)
-│   ├── components/sooqy/  # مكتبة مكونات مشتركة (phone-first)
-│   ├── components/seo/    # SeoHead
-│   ├── lib/               # sooqy.ts, bag-check.ts, market.ts, i18n, dictionaries/
-│   ├── integrations/supabase/
-│   ├── hooks/
-│   ├── styles/
-│   └── test/
-├── supabase/migrations/   # 19 migration (schema + RLS + RPC)
-├── public/                # manifest, sw.js, sitemap, robots, icons, logos
-├── api/                   # Vercel serverless entry
-├── scripts/               # apply-migrations, build-mobile, bundle-server-for-vercel, ...
-├── android/               # Capacitor Android project
-├── docs/innovation/       # حزمة تأهيل «مشروع مبتكر»
-├── BRAND.md               # دليل الهوية
-└── DEPLOY-VERCEL.md       # دليل النشر
-```
+    arownd-v-0/
+    ├── api/                         # نقطة تشغيل SSR على Vercel
+    ├── android/                     # مشروع Android عبر Capacitor
+    ├── docs/
+    │   ├── innovation/              # وثائق المشروع
+    │   ├── UI_SYSTEM.md             # نظام التصميم
+    │   └── LAUNCH_1000_USERS.md     # مراجعة الجاهزية وخطة الإطلاق
+    ├── public/                      # أصول عامة وملفات PWA وSEO
+    ├── scripts/                     # سكربتات البناء والهجرات والصيانة
+    ├── src/
+    │   ├── components/              # مكونات الواجهة
+    │   ├── hooks/                   # React hooks
+    │   ├── integrations/supabase/   # عميل Supabase والأنواع
+    │   ├── lib/                     # منطق البيانات والخدمات
+    │   ├── routes/                  # صفحات ومسارات التطبيق
+    │   ├── styles/                  # الأنماط
+    │   └── test/                    # الاختبارات
+    ├── supabase/
+    │   └── migrations/              # هجرات قاعدة البيانات
+    ├── BRAND.md
+    ├── capacitor.config.ts
+    ├── package.json
+    ├── vite.config.ts
+    ├── vite.mobile.config.ts
+    ├── vercel.json
+    └── README.md
+
+### أهم وحدات المنطق
+
+- src/lib/sooqy.ts: طبقة خدمات البيانات الرئيسية للمتاجر والمنتجات والعروض والطلبات والملف الشخصي والمحفظة ورفع الصور. اسم الملف داخلي قديم.
+- src/lib/delivery.ts: خدمات شركات التوصيل والشحنات والتتبع.
+- src/lib/auth.tsx: سياق المصادقة والجلسة.
+- src/lib/bag.tsx: حالة سلة التسوق.
+- src/lib/bag-check.ts: التحقق من عناصر السلة قبل إتمام الطلب.
+- src/lib/geo.ts: وظائف الموقع والمسافة وحالة المتجر.
+- src/lib/i18n.ts وsrc/lib/dictionaries/: الترجمة والنصوص.
+- src/hooks/use-realtime.ts: اشتراكات التحديثات اللحظية.
+
+> توجد أسماء داخلية قديمة تحمل اسم SooQy في بعض المسارات والمعرّفات. لا تغيّرها آليًا دون مراجعة أثر التغيير على الاستيرادات والتخزين المحلي وروابط Android والتكاملات.
 
 ---
 
-## 🚀 البدء السريع
+## الإعداد والتشغيل
 
 ### المتطلبات
 
-- Node.js **22.x** (انظر `package.json` engines)
+- Node.js 22.x
 - npm
-- حساب Supabase (project + database)
+- Git
+- مشروع Supabase
 
-### التثبيت
+### الحصول على نسخة محلية
 
-```sh
-git clone <repo-url>
-cd sooqy-app
-npm install
-cp .env.example .env
-# عدّل .env بقيم Supabase الخاصة بك
-```
+    git clone https://github.com/yaso33/arownd-v-0.git
+    cd arownd-v-0
+    npm ci
 
-### متغيرات البيئة
+أنشئ ملف البيئة المحلي:
 
-انظر [`.env.example`](./.env.example). الحد الأدنى:
+    cp .env.example .env
 
-| المتغير | ملاحظة |
+أضف القيم الصحيحة من مشروع Supabase، ثم شغّل خادم التطوير:
+
+    npm run dev
+
+يعرض Vite عنوان خادم التطوير في الطرفية.
+
+## متغيرات البيئة والأمان
+
+راجع ملف .env.example باعتباره القائمة المرجعية للمتغيرات المستخدمة في المشروع.
+
+| المتغير | الاستخدام |
 |---|---|
-| `VITE_SUPABASE_URL` / `SUPABASE_URL` | **مطلوب** |
-| `VITE_SUPABASE_PUBLISHABLE_KEY` / `SUPABASE_PUBLISHABLE_KEY` | **مطلوب** |
-| `SUPABASE_SERVICE_ROLE_KEY` | دوال الخادم فقط (تجاوز RLS) |
-| `DATABASE_URL` | لتطبيق الهجرات (محلي) |
-| `VITE_GOOGLE_MAPS_API_KEY` | اختياري (الخريطة) |
+| SUPABASE_URL | عنوان مشروع Supabase |
+| SUPABASE_PUBLISHABLE_KEY | المفتاح العام لعميل Supabase |
+| VITE_SUPABASE_URL | عنوان Supabase المضمّن في حزمة المتصفح عند الحاجة |
+| VITE_SUPABASE_PUBLISHABLE_KEY | المفتاح العام المضمّن في حزمة المتصفح عند الحاجة |
+| SUPABASE_SERVICE_ROLE_KEY | عمليات الخادم الموثوقة فقط؛ سرّي للغاية |
+| SUPABASE_ANON_KEY | متغير توافق اختياري |
+| SUPABASE_PROJECT_ID | معرّف مشروع Supabase |
+| DATABASE_URL | اتصال PostgreSQL لأدوات الهجرات المحلية |
+| VITE_GOOGLE_MAPS_API_KEY | إعداد اختياري لبعض تكاملات الخرائط |
 
-> قيم Supabase تُدمج وقت البناء داخل حزمة المتصفح — أضفها قبل النشر.
+**قواعد أمنية أساسية:**
 
-### قاعدة البيانات
-
-```sh
-# تطبيق جميع الهجرات
-node scripts/apply-migrations.mjs
-
-# (اختياري) بيانات تطوير
-node scripts/apply-migrations.mjs --seed
-
-# تنظيف بيانات seed من قاعدة حيوية
-node scripts/cleanup-demo-data.mjs --dry-run
-```
-
-أو الصق `supabase/migrations/202610140001_beta_ready.sql` في SQL Editor (idempotent).
-
-### التشغيل (تطوير)
-
-```sh
-npm run dev          # http://localhost:5173
-npm run build        # بناء إنتاج
-npm run preview      # معاينة
-npm run lint         # eslint
-npm run format       # prettier
-```
+- لا ترفع ملف .env إلى Git.
+- لا تضع SUPABASE_SERVICE_ROLE_KEY أو كلمة مرور قاعدة البيانات في كود المتصفح أو المستودع أو لقطات الشاشة.
+- المفتاح العام للمتصفح لا يغني عن سياسات RLS.
+- لا تضف DATABASE_URL إلى إعدادات الاستضافة إلا عند وجود حاجة خادمية واضحة ومراجعة أمنيًا.
+- إذا سبق أن كُشفت بيانات اتصال سرية في ملفات أو تاريخ Git، فيجب تدويرها وإزالة الأثر وفق خطة آمنة.
 
 ---
 
-## 🗄️ قاعدة البيانات (Supabase)
+## قاعدة البيانات
 
-- **19 migration** في `supabase/migrations/` (schema + RLS + RPC + indexes + wallet + delivery + realtime + notifications).
-- جداول: `profiles`, `user_roles`, `stores`, `products`, `store_offers`, `product_images`,
-  `reservations`, `orders`, `order_items`, `wilayas`, `reviews`, `notifications`, `shipments`,
-  `delivery_companies`, `delivery_coverage_areas`, `wallet*`.
-- RPC: `create_reservation`, `cancel_reservation`, `merchant_confirm_reservation`,
-  `merchant_confirm_all_stock`, `create_order`, `link_order_shipment`, `submit_review`,
-  `increment_product_view`, `get_most_viewed_products`, `become_merchant`, `merchant_*` (images),
-  `category_stats`.
-- RLS: قراءة عامة للمتاجر المعتمدة/العروض المتوفرة؛ صلاحيات merchant/admin.
-- Storage buckets: `store-media`, `product-media`, `receipts` (signed URLs).
-- عمولة: `stores.commission_rate` (افتراضي 7%) + `orders.commission_amount` (يُحتسب في `create_order`).
+تعتمد Arownd على Supabase وPostgreSQL. توجد ملفات الهجرات في:
 
----
+    supabase/migrations/
 
-## 🧪 الاختبارات
+تشمل مجالات البيانات الرئيسية:
 
-```sh
-npm run test         # vitest run (non-watch)
-npm run test:watch   # وضع المراقبة
-npx tsc --noEmit     # فحص الأنواع
-```
+- المستخدمون والملفات الشخصية والأدوار.
+- المتاجر والمنتجات وعروض المتاجر وصور المنتجات.
+- الطلبات وعناصر الطلبات والحجوزات.
+- الولايات والمناطق والبلديات.
+- التقييمات والإشعارات.
+- شركات التوصيل ومناطق التغطية والخدمات والشحنات وسجلات التتبع.
+- معاملات المحفظة.
 
-الاختبارات تغطي: i18n parity, market, locale, geo, search, taxonomy, image-search, pwa, conn,
-db-sync, reviews, merchant-upgrade, app-routing, sooqy, journey, shop-truth.
+توجد وظائف PostgreSQL RPC لعمليات مثل إنشاء الطلبات والحجوزات، وبعض عمليات التاجر والمراجعات وإحصاءات المنتجات.
 
-> ملاحظة: ملفان غير مكتملان من جلسة سابقة (`src/routes/wallet.tsx`,
-> `src/routes/studio.orders.$orderId.tsx`) يستدعيان دوال غير موجودة في `src/lib/sooqy.ts` —
-> بناء إنتاجي يفشل بسببهما. خادم التطوير والمعاينة يعملان بشكل طبيعي.
+### تطبيق الهجرات
 
----
+راجع ترتيب الهجرات ومحتواها قبل تطبيقها على أي قاعدة بيانات:
 
-## ☁️ النشر (Vercel)
+    node scripts/apply-migrations.mjs
 
-النشر على Vercel موثّق بالكامل في [`DEPLOY-VERCEL.md`](./DEPLOY-VERCEL.md).
+ولبيئة التطوير التي تحتاج بيانات تجريبية، راجع خيارات السكربت أولًا:
 
-TL;DR:
+    node scripts/apply-migrations.mjs --seed
 
-```sh
-npm run build:vercel   # vite build + bundle server for vercel
-```
+لا تشغّل هجرات أو سكربتات تنظيف على قاعدة إنتاج قبل أخذ نسخة احتياطية ومراجعة أثر العملية.
 
-- Build Command: `npm run build:vercel`
-- Output Directory: `dist/client`
-- أضف متغيرات Supabase في Vercel (Production/Preview/Development).
-- `vercel.json` يضبط كل شيء تلقائيًا.
+### التخزين
+
+يستخدم Supabase Storage لملفات وصور مثل صور المتاجر والمنتجات وإيصالات الدفع. يجب اختبار صلاحيات الوصول وأحجام الملفات وسرعة الرفع وصلاحية الروابط في بيئة فعلية.
 
 ---
 
-## 📱 تطبيق الموبايل (Android / Capacitor)
+## التطوير والفحوص
 
-```sh
-npm run build:mobile   # vite build --config vite.mobile.config.ts
-npm run mobile         # node scripts/build-mobile.mjs
-npx cap sync android
-npx cap open android
-```
+الأوامر المتاحة في package.json:
 
-- Config: [`capacitor.config.ts`](./capacitor.config.ts)
-- Android project: `android/`
+| الأمر | الغرض |
+|---|---|
+| npm run dev | تشغيل خادم التطوير |
+| npm run build | بناء تطبيق الويب |
+| npm run build:vercel | بناء الويب وتجهيز خادم Vercel |
+| npm run preview | معاينة بناء Vite |
+| npm run lint | فحص ESLint |
+| npm run format | تنسيق الملفات عبر Prettier |
+| npm test | تشغيل اختبارات Vitest |
+| npm run test:watch | تشغيل الاختبارات بوضع المراقبة |
+| npm run ui:check | فحص قواعد الواجهة |
+| npx tsc --noEmit | فحص TypeScript |
+| npm run build:mobile | بناء نسخة الويب المخصصة للموبايل |
+| npm run mobile | تشغيل سكربت تجهيز بناء الموبايل |
 
----
+### تسلسل الفحص المقترح
 
-## 🌐 PWA
+    npm ci
+    npx tsc --noEmit
+    npm run lint
+    npm run ui:check
+    npm test
+    npm run build
+    npm run build:vercel
 
-- `public/manifest.webmanifest` + `public/manifest.json` (مطابقان) — أيقونات فعلية + `maskable` + `id`/`scope`.
-- `public/sw.js` — Service Worker: network-first للتنقّل/البيانات، cache-first للأصول، إشعار تحديث.
-- `src/lib/pwa.ts` + `src/components/sooqy/PwaPrompt.tsx` — تسجيل SW + زر التثبيت + شريط «يتوفر تحديث».
-- `src/test/pwa.test.ts` — يفحص وجود كل أيقونة في الـ manifest.
-
----
-
-## 🌍 التدويل (i18n)
-
-- `src/lib/locale.ts` — تحليل بادئة المسار (`/ar/...`, `/en/...`)، الكوكي، `Accept-Language`.
-- `src/server.ts` — يزيل بادئة اللغة قبل معالجة الطلب، يعيد توجيه `/` إلى لغة المتصفح/الكوكي (307).
-- `src/lib/i18n.ts` — `useTranslation()` للمكوّنات، `translate()` لوسوم الميتا، `t(key, lang, values)`.
-- `src/lib/dictionaries/` — 10 مجموعات (`shared`, `home`, `explore`, `product`, `commerce`, `ui`, `studio`, `pages`).
-- `src/test/i18n-parity.test.ts` — فحص آلي لتوازن المفاتيح وصيغ الجمع.
-- **قاعدة:** لا نص عربي داخل JSX — استخدم `t("key")` وأضف المفتاح في `src/lib/dictionaries/`.
-
----
-
-## 🔍 SEO
-
-- `src/components/seo/SeoHead.tsx` — meta tags, Open Graph, Twitter Card, JSON-LD (Organization/WebSite/Product/Breadcrumb).
-- `SeoHead` يقرأ المسار من الراوتر (`useLocation`) — يعمل صحيحًا أثناء SSR؛ يولّد `canonical`
-  مع بادئة اللغة و`hreflang` (ar/en/x-default) تلقائيًا.
-- `public/sitemap.xml` — يُServe من dist/client، يحتوي `xhtml:link` للبدائل اللغوية.
-- `public/robots.txt` — يُServe من dist/client.
-- OG image: `public/seo/og.svg` (default).
-- canonical: `https://sooqy.app/{lang}{path}`.
-- `vercel.json`: rewrite لـ `/sitemap.xml` و `/robots.txt` و `/seo/*`.
+نجاح أمر واحد لا يثبت سلامة التطبيق بالكامل. اختبر كذلك تسجيل الدخول والبحث والسلة والطلب والحجز وواجهات التاجر والتوصيل وسياسات RLS على بيئة تجريبية.
 
 ---
 
-## 🎨 الهوية (Brand)
+## النشر على Vercel
 
-- **الاسم:** Arownd (داخل الشعار: "arownd" أحرف صغيرة).
-- **الرسالة:** Discover What's Around You. / اكتشف ما حولك.
-- **الألوان:** lime `#C6F36B` (accent)، أسود داكن `#0B0F0C`، أبيض `#FFFFFF`، رمادي `#B0B6AE`.
-- **الخطوط:** Inter (EN) + Noto Sans Arabic (AR) via Google Fonts.
-- **الشعار:** `public/2994.svg` (فاتح) / `public/2995.svg` (داكن) / `public/favicon.svg`.
-- **المكون:** `src/components/sooqy/logo.tsx` (`ArowndLogo`, `ArowndBrand`).
-- التفاصيل: [`BRAND.md`](./BRAND.md).
+يوجد دليل تفصيلي في [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md).
 
-> ⚠️ **ملاحظة هوية:** المستودع (`sooqy-app`) يستخدم اسم «SOOQY» في الكود والـ SEO والـ env vars
-> والـ Supabase، بينما العلامة now Arownd. وحّد الاسم قبل أي ترشح/نشر (انظر `docs/innovation/13-identity-unification.md`).
+الإعداد الحالي:
 
----
+- **Build Command:** npm run build:vercel
+- **Output Directory:** dist/client
+- **Framework Preset:** Other
+- **ملف الإعداد:** vercel.json
 
-## ⚠️ قيود معروفة
+### خطوات النشر
 
-- `src/routes/wallet.tsx` و `src/routes/studio.orders.$orderId.tsx` غير مكتملان (دوال مفقودة في `src/lib/sooqy.ts`).
-- بناء إنتاجي محلي (`npm run build`) يفشل بسبب الملفين أعلاه؛ خادم التطوير/المعاينة يعملان.
-- بعض الاختبارات (journey/shop-truth) قد تأخذ وقتًا (timeouts) في بيئة sandbox.
-- هوية غير موحدة (Arownd vs SOOQY) — انظر أعلاه.
+1. اربط مستودع GitHub بمشروع Vercel.
+2. أضف متغيرات Supabase المطلوبة في إعدادات البيئة.
+3. فعّل المتغيرات لبيئات Production وPreview وDevelopment حسب الحاجة.
+4. نفّذ النشر وراجع سجلات Build وFunctions.
+5. اضبط Site URL وRedirect URLs في Supabase Authentication لتطابق نطاق النشر.
+6. اختبر تسجيل الدخول والصفحات الديناميكية والملفات الثابتة بعد النشر.
 
----
-
-## 📚 وثائق إضافية
-
-- [`AGENTS.md`](./AGENTS.md) — قواعد المشروع والاتفاقيات (للمساهمين والوكلاء).
-- [`BRAND.md`](./BRAND.md) — دليل الهوية.
-- [`DEPLOY-VERCEL.md`](./DEPLOY-VERCEL.md) — النشر على Vercel.
-- [`docs/innovation/`](./docs/innovation/) — حزمة تأهيل «مشروع مبتكر» (Arownd).
+> يحتاج التطبيق إلى قيم Supabase الصحيحة وقت البناء؛ غيابها قد يؤدي إلى تعطل عميل Supabase في المتصفح.
 
 ---
 
-## 🤝 المساهمة
+## Android وPWA
 
-1. اقرأ `AGENTS.md` (conventions, i18n rules, truth layer).
-2. لا تكتب نصًا عربيًا داخل JSX — استخدم `t("key")`.
-3. استخدم `pickBestOffer()` / `evaluateBag()` كمصادر حقيقة (لا تكرر منطق السعر/السلة).
-4. شغّل `npm run test` و `npx tsc --noEmit` قبل PR.
+### Android
+
+يعتمد مشروع Android على Capacitor 8. الإعداد موجود في capacitor.config.ts ومجلد android/.
+
+    npm run build:mobile
+    npx cap sync android
+
+قد تتطلب عملية إنشاء APK أو AAB بيئة Android SDK وGradle مناسبة. راجع إعدادات المشروع قبل تغيير appId؛ فالمعرّف الحالي ما زال يحمل اسمًا داخليًا قديمًا، وتغييره قد يؤثر في هوية التطبيق المثبّت والتحديثات اللاحقة.
+
+### PWA
+
+ملفات PWA الأساسية:
+
+- public/manifest.webmanifest
+- public/sw.js
+- src/lib/pwa.ts
+- مكونات الواجهة الخاصة بالتثبيت والتحديث.
+
+يجب اختبار التثبيت والتحديث والعمل بعد انقطاع الاتصال على أجهزة ومتصفحات فعلية؛ وجود Service Worker لا يعني أن جميع سيناريوهات العمل دون اتصال مدعومة.
 
 ---
 
-## 📄 الترخيص
+## الهوية ونظام التصميم
 
-لم يُحدَّد بعد (no LICENSE file). جميع الحقوق محفوظة لفريق Arownd.
+العلامة الحالية هي **Arownd**.
+
+- **الشعار اللفظي:** اكتشف ما حولك.
+- **الرسالة الإنجليزية:** Discover What's Around You.
+- **اللون البارز:** Lime #C6F36B.
+- **الخلفية الداكنة:** #0B0F0C.
+- **اتجاه الواجهة:** العربية وRTL أولًا.
+- **النهج البصري:** Hybrid Premium؛ واجهة واضحة وهادئة، بطاقات متناسقة، مساحات مريحة وتفاعلات عملية.
+
+المراجع الأساسية:
+
+- [BRAND.md](./BRAND.md) — دليل العلامة.
+- [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — نظام التصميم وقواعد الواجهة.
+
+### قواعد تطوير الواجهة
+
+- استخدم مفاتيح الترجمة بدل إضافة نصوص ثابتة جديدة داخل JSX.
+- احترم RTL واستخدم الخصائص المنطقية في CSS قدر الإمكان.
+- حافظ على أهداف لمس مناسبة للأجهزة المحمولة.
+- استخدم مكونات التأكيد والـSideSheet المعتمدة بدل نوافذ المتصفح الأصلية.
+- لا تكرر منطق الأسعار أو السلة؛ راجع وحدات الحقيقة الحالية مثل pickBestOffer() وevaluateBag().
+- لا تغيّر التصميم أو تدفقات البيانات دون فهم أثر التغيير على بقية الصفحات والأدوار.
+
+---
+
+## القيود والمخاطر المعروفة
+
+هذه النقاط مستخلصة من مراجعة الكود والوثائق، وبعضها يحتاج إلى اختبار عملي لتأكيد أثره في البيئة الفعلية.
+
+1. **التحقق قبل الإطلاق:** لا توجد في تقرير المراجعة الحالي نتائج تشغيل موثقة وحديثة لجميع أوامر TypeScript وLint والاختبارات والبناء؛ لذلك لا ينبغي وصف الإصدار بأنه اجتاز هذه الفحوص.
+2. **تدفق الطلب والشحنة:** إنشاء الطلب وإنشاء الشحنة ليسا عملية قاعدة بيانات ذرّية واحدة؛ قد ينجح الطلب بينما تفشل خطوة إنشاء الشحنة، ما يستلزم متابعة أو إعادة معالجة.
+3. **منع تكرار الطلبات:** لا توجد حماية خادمية مكتملة بمفتاح idempotency لطلب الإنشاء؛ الحماية الموجودة في الواجهة لا تغني عن ضمان قاعدة البيانات.
+4. **خيارات المنتج في السلة:** تعتمد هوية عناصر السلة على offer ID؛ قد تتعارض خيارات مختلفة مثل المقاس أو اللون للعرض نفسه. يلزم حسم ذلك مع عقد البيانات قبل تعديل السلوك.
+5. **شركة التوصيل:** توجد إشارة قوية إلى عدم تطابق محتمل بين هوية المستخدم المستخدمة في الواجهة ومفتاح الربط في جدول شركات التوصيل وسياسات RLS. يجب التحقق من الهجرات وقاعدة البيانات الفعلية باختبار التسجيل ولوحة التحكم.
+6. **الإنجليزية:** موارد الإنجليزية موجودة، لكن ENGLISH_ENABLED مضبوط حاليًا على false؛ الواجهة الحالية عربية.
+7. **بقايا الاسم القديم:** توجد معرّفات ومسارات داخلية قديمة، كما أن بعض إعدادات النطاق وSEO تحتاج إلى حسم النطاق الرسمي النهائي.
+8. **اختبارات الأجهزة:** يلزم التحقق من RTL والوضعين الفاتح والداكن وأحجام الشاشات ومساحات الأمان وتجربة Android فعلية.
+9. **القدرة الاستيعابية:** لا يوجد إثبات تحميل فعلي يثبت جاهزية المنصة لعدد محدد من المستخدمين المتزامنين. يجب مراجعة حدود Supabase وVercel وتنفيذ اختبار تحميل تدريجي.
+
+---
+
+## التحقق قبل الإطلاق
+
+- [ ] تدوير أي بيانات اتصال أو أسرار سبق أن ظهرت في ملفات أو تاريخ Git، ثم مراجعة صلاحيات المستودع.
+- [ ] تشغيل TypeScript وESLint وفحص الواجهة والاختبارات والبناء وتوثيق النتائج.
+- [ ] مراجعة RLS لكل دور: متسوق، تاجر، إدارة، وشركة توصيل.
+- [ ] اختبار دورة الطلب كاملة، بما فيها فشل إنشاء الشحنة وإعادة المعالجة ومنع الطلبات المكررة.
+- [ ] اختبار إنشاء المتجر وإدارة المنتجات والصور والمخزون.
+- [ ] اختبار تسجيل شركة التوصيل وإدارة الشحنات والتتبع.
+- [ ] اختبار الصور من حيث الحجم والضغط ووقت الرفع وصلاحيات الروابط.
+- [ ] مراجعة النطاق النهائي وإعدادات OAuth وSEO وملفات PWA.
+- [ ] اختبار Android والأجهزة المحمولة والوضعين الفاتح والداكن.
+- [ ] إجراء اختبار تحميل على بيئة تجريبية ومراقبة حدود الخدمات قبل توسيع الإطلاق.
+
+للتفاصيل، راجع [docs/LAUNCH_1000_USERS.md](./docs/LAUNCH_1000_USERS.md). هدف 1000 مستخدم ليس ضمانًا للأداء قبل إتمام الاختبارات وقياس حدود الخدمات.
+
+## المساهمة والوثائق
+
+قبل تعديل المشروع:
+
+1. اقرأ AGENTS.md وقواعد المشروع.
+2. راجع docs/UI_SYSTEM.md قبل تعديل الواجهات.
+3. افهم تدفق البيانات والصلاحيات قبل تغيير خدمات Supabase أو الهجرات.
+4. حافظ على التوافق بين القواميس العربية والإنجليزية حتى مع تعطيل الإنجليزية حاليًا.
+5. أضف اختبارات للتغييرات المنطقية، ولا تكتفِ بالفحص البصري.
+6. سجّل بوضوح ما تم اختباره وما لم يتم اختباره.
+
+### الوثائق
+
+- [AGENTS.md](./AGENTS.md) — قواعد المشروع واتفاقيات التطوير.
+- [BRAND.md](./BRAND.md) — دليل الهوية.
+- [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — نظام التصميم.
+- [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md) — النشر على Vercel.
+- [docs/LAUNCH_1000_USERS.md](./docs/LAUNCH_1000_USERS.md) — مراجعة الجاهزية وخطة الإطلاق.
+- [AUDIT_REPORT.md](./AUDIT_REPORT.md) — سجل المراجعة التقنية والتغييرات التي تحتاج إلى إعادة تحقق.
+
+---
+
+## الترخيص
+
+لا يحتوي المستودع حاليًا على ملف LICENSE يحدد ترخيصًا مفتوح المصدر. لا تفترض وجود إذن لإعادة الاستخدام أو التوزيع دون موافقة أصحاب المشروع.
