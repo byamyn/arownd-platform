@@ -38,7 +38,7 @@ function PrivacyPage() {
         <p>
           الموقع الإلكتروني:{" "}
           <a
-            href="https://sooqy-app.vercel.app/"
+            href="https://arownd.vercel.app/"
             target="_blank"
             rel="noopener noreferrer"
             className="font-semibold text-accent-ink underline"

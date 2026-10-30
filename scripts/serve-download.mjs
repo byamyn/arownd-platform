@@ -7,12 +7,14 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const root = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
-const APK_NAME = "SooQy-v1.0.0.apk";
+const APK_NAME = "Arownd-v1.0.0.apk";
+const LEGACY_APK_NAME = "SooQy-v1.0.0.apk";
 
 // نبحث عن الـ APK في جذر المشروع أولًا، ثم في مخرجات Gradle.
 function findApk() {
   const candidates = [
     path.join(root, APK_NAME),
+    path.join(root, LEGACY_APK_NAME),
     path.join(root, "android/app/build/outputs/apk/release/app-release.apk"),
   ];
   for (const c of candidates) {
@@ -36,7 +38,7 @@ function page(apkPath) {
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>تنزيل تطبيق SooQy</title>
+<title>تنزيل تطبيق Arownd</title>
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; min-height: 100vh; display: grid; place-items: center;
@@ -58,7 +60,7 @@ function page(apkPath) {
 </head>
 <body>
   <div class="card">
-    <h1>تنزيل تطبيق SooQy</h1>
+    <h1>تنزيل تطبيق Arownd</h1>
     <p>النسخة 1.0.0 — تحتوي إصلاح تجمّد لوحة المفاتيح</p>
     ${
       exists
