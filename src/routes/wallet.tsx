@@ -189,9 +189,15 @@ function WalletPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-xs font-bold opacity-80">الرصيد المتاح</p>
-              <p dir="ltr" className="mt-1 text-3xl font-extrabold">
-                {formatDA(summary.balance)}
-              </p>
+              {txs.isLoading ? (
+                <div className="mt-2 h-9 w-36 animate-pulse rounded-lg bg-black/10" aria-label="جارٍ تحميل الرصيد" />
+              ) : txs.isError ? (
+                <p className="mt-1 text-sm font-bold">تعذّر تحميل الرصيد</p>
+              ) : (
+                <p dir="ltr" className="mt-1 text-3xl font-extrabold">
+                  {formatDA(summary.balance)}
+                </p>
+              )}
             </div>
             <span className="flex size-14 items-center justify-center rounded-2xl bg-white/15">
               <Wallet className="size-7" />
@@ -344,25 +350,27 @@ function WalletPage() {
           </div>
         )}
 
-        {/* إحصاءات سريعة */}
-        <div className="grid grid-cols-3 gap-2">
-          <div className="rounded-2xl border border-border bg-card p-3 text-center">
-            <p className="text-lg font-extrabold text-foreground">{pendingCount}</p>
-            <p className="text-[10px] font-bold text-muted-foreground">قيد المراجعة</p>
+        {/* إحصاءات حقيقية بعد اكتمال تحميل بيانات المحفظة */}
+        {!txs.isLoading && !txs.isError && (
+          <div className="grid grid-cols-3 gap-2">
+            <div className="rounded-2xl border border-border bg-card p-3 text-center">
+              <p className="text-lg font-extrabold text-foreground">{pendingCount}</p>
+              <p className="text-[10px] font-bold text-muted-foreground">قيد المراجعة</p>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-3 text-center">
+              <p className="text-lg font-extrabold text-success" dir="ltr">
+                {formatDA(summary.totalTopup)}
+              </p>
+              <p className="text-[10px] font-bold text-muted-foreground">إجمالي الإيداعات</p>
+            </div>
+            <div className="rounded-2xl border border-border bg-card p-3 text-center">
+              <p className="text-lg font-extrabold text-danger" dir="ltr">
+                {formatDA(summary.totalWithdraw)}
+              </p>
+              <p className="text-[10px] font-bold text-muted-foreground">إجمالي السحوبات</p>
+            </div>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3 text-center">
-            <p className="text-lg font-extrabold text-success" dir="ltr">
-              {formatDA(summary.totalTopup)}
-            </p>
-            <p className="text-[10px] font-bold text-muted-foreground">إجمالي الإيداعات</p>
-          </div>
-          <div className="rounded-2xl border border-border bg-card p-3 text-center">
-            <p className="text-lg font-extrabold text-danger" dir="ltr">
-              {formatDA(summary.totalWithdraw)}
-            </p>
-            <p className="text-[10px] font-bold text-muted-foreground">إجمالي السحوبات</p>
-          </div>
-        </div>
+        )}
 
         {/* التبويبات */}
         <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
@@ -390,7 +398,17 @@ function WalletPage() {
           </div>
         )}
 
-        {!txs.isLoading && filtered.length === 0 && (
+        {txs.isError && (
+          <div className="rounded-2xl border border-danger/30 bg-danger-soft p-4 text-center">
+            <p className="text-sm font-bold text-foreground">تعذّر تحميل بيانات المحفظة</p>
+            <p className="mt-1 text-xs text-muted-foreground">تحقق من اتصالك بالإنترنت ثم أعد المحاولة.</p>
+            <button onClick={() => void txs.refetch()} className="btn-secondary mt-3">
+              إعادة المحاولة
+            </button>
+          </div>
+        )}
+
+        {!txs.isLoading && !txs.isError && filtered.length === 0 && (
           <EmptyState
             Icon={Wallet}
             title={tab === "all" ? "لا توجد عمليات بعد" : "لا توجد عمليات في هذا القسم"}
