@@ -33,10 +33,12 @@ export const Route = createFileRoute("/wallet")({
   component: WalletPage,
 });
 
-type Tab = "all" | "pending" | "approved" | "rejected";
+type Tab = "all" | "topup" | "withdraw" | "pending" | "approved" | "rejected";
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "all", label: "الكل" },
+  { id: "topup", label: "الإيداعات" },
+  { id: "withdraw", label: "السحوبات" },
   { id: "pending", label: "قيد المراجعة" },
   { id: "approved", label: "معتمدة" },
   { id: "rejected", label: "مرفوضة" },
@@ -115,8 +117,20 @@ function WalletPage() {
 
   const list = txs.data ?? [];
   const summary = summarizeWallet(list);
-  const filtered = tab === "all" ? list : list.filter((t) => t.status === tab);
-  const pendingCount = list.filter((t) => t.status === "pending").length;
+  const pendingTransactions = list.filter((t) => t.status === "pending");
+  const pendingCount = pendingTransactions.length;
+  const pendingTopup = pendingTransactions
+    .filter((t) => t.type === "topup")
+    .reduce((sum, t) => sum + Math.max(0, t.amount), 0);
+  const pendingWithdraw = pendingTransactions
+    .filter((t) => t.type === "withdraw")
+    .reduce((sum, t) => sum + Math.abs(t.amount), 0);
+  const filtered = list.filter((t) => {
+    if (tab === "all") return true;
+    if (tab === "topup") return t.type === "topup" || t.type === "refund";
+    if (tab === "withdraw") return t.type === "withdraw" || t.type === "purchase";
+    return t.status === tab;
+  });
 
   const submitTopup = async () => {
     const amount = Math.round(Number(topupAmount));
@@ -184,29 +198,42 @@ function WalletPage() {
       <div className="mx-auto max-w-xl space-y-4 px-4 pb-24 pt-5">
         <PageHeader title="المحفظة" subtitle="رصيدك وعملياتك المالية في مكان واحد" back="/profile" />
 
-        {/* بطاقة الرصيد */}
-        <div className="rounded-3xl bg-primary p-6 text-primary-foreground shadow-lift">
-          <div className="flex items-center justify-between">
-            <div>
+        {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
+        <section className="relative overflow-hidden rounded-[1.75rem] bg-primary p-5 text-primary-foreground shadow-lift sm:p-6">
+          <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-[22px] border-white/10" />
+          <div className="relative flex items-start justify-between gap-4">
+            <div className="min-w-0">
               <p className="text-xs font-bold opacity-80">الرصيد المتاح</p>
               {txs.isLoading ? (
-                <div className="mt-2 h-9 w-36 animate-pulse rounded-lg bg-black/10" aria-label="جارٍ تحميل الرصيد" />
+                <div className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-black/10" aria-label="جارٍ تحميل الرصيد" />
               ) : txs.isError ? (
-                <p className="mt-1 text-sm font-bold">تعذّر تحميل الرصيد</p>
+                <p className="mt-2 text-sm font-bold">تعذّر تحميل الرصيد</p>
               ) : (
-                <p dir="ltr" className="mt-1 text-3xl font-extrabold">
+                <p dir="ltr" className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
                   {formatDA(summary.balance)}
                 </p>
               )}
             </div>
-            <span className="flex size-14 items-center justify-center rounded-2xl bg-white/15">
-              <Wallet className="size-7" />
+            <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/15">
+              <Wallet className="size-7" strokeWidth={1.8} />
             </span>
           </div>
-          <p className="mt-2 text-[11px] font-semibold opacity-70">
-            يُحتسب من العمليات المعتمدة · المعلّقة في انتظار مراجعة الإدارة
+          <p className="relative mt-4 text-[11px] font-semibold opacity-75">
+            الرصيد محسوب من العمليات المعتمدة فقط
           </p>
-        </div>
+          {!txs.isLoading && !txs.isError && (
+            <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-black/10 pt-3">
+              <div className="rounded-xl bg-black/5 px-3 py-2">
+                <p className="text-[10px] font-bold opacity-70">إيداعات قيد المراجعة</p>
+                <p dir="ltr" className="mt-1 text-sm font-extrabold">{formatDA(pendingTopup)}</p>
+              </div>
+              <div className="rounded-xl bg-black/5 px-3 py-2">
+                <p className="text-[10px] font-bold opacity-70">سحوبات قيد المراجعة</p>
+                <p dir="ltr" className="mt-1 text-sm font-extrabold">{formatDA(pendingWithdraw)}</p>
+              </div>
+            </div>
+          )}
+        </section>
 
         {/* الإجراءات */}
         <div className="grid grid-cols-2 gap-3">
@@ -350,30 +377,43 @@ function WalletPage() {
           </div>
         )}
 
-        {/* إحصاءات حقيقية بعد اكتمال تحميل بيانات المحفظة */}
+        {/* ملخص الحركة المالية من المعاملات المعتمدة فقط */}
         {!txs.isLoading && !txs.isError && (
-          <div className="grid grid-cols-3 gap-2">
-            <div className="rounded-2xl border border-border bg-card p-3 text-center">
-              <p className="text-lg font-extrabold text-foreground">{pendingCount}</p>
-              <p className="text-[10px] font-bold text-muted-foreground">قيد المراجعة</p>
+          <div className="grid grid-cols-2 gap-3">
+            <div className="rounded-2xl border border-border bg-card p-3.5">
+              <div className="flex items-center gap-2 text-success">
+                <ArrowDownLeft className="size-4" />
+                <span className="text-[11px] font-bold text-muted-foreground">إجمالي الإيداعات</span>
+              </div>
+              <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">{formatDA(summary.totalTopup)}</p>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-3 text-center">
-              <p className="text-lg font-extrabold text-success" dir="ltr">
-                {formatDA(summary.totalTopup)}
-              </p>
-              <p className="text-[10px] font-bold text-muted-foreground">إجمالي الإيداعات</p>
+            <div className="rounded-2xl border border-border bg-card p-3.5">
+              <div className="flex items-center gap-2 text-danger">
+                <ArrowUpRight className="size-4" />
+                <span className="text-[11px] font-bold text-muted-foreground">إجمالي السحوبات</span>
+              </div>
+              <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">{formatDA(summary.totalWithdraw)}</p>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-3 text-center">
-              <p className="text-lg font-extrabold text-danger" dir="ltr">
-                {formatDA(summary.totalWithdraw)}
-              </p>
-              <p className="text-[10px] font-bold text-muted-foreground">إجمالي السحوبات</p>
+            <div className="col-span-2 flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3">
+              <span className="text-xs font-bold text-muted-foreground">عمليات قيد المراجعة</span>
+              <span className="text-sm font-extrabold text-foreground">{pendingCount}</span>
             </div>
           </div>
         )}
 
-        {/* التبويبات */}
-        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
+        {/* سجل المعاملات والفلاتر */}
+        <div className="flex items-center justify-between gap-3">
+          <div>
+            <h2 className="text-base font-extrabold text-foreground">سجل المعاملات</h2>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">كل الحركات المسجلة في محفظتك</p>
+          </div>
+          {!txs.isLoading && !txs.isError && (
+            <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-bold text-muted-foreground">
+              {filtered.length} عملية
+            </span>
+          )}
+        </div>
+        <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
           {TABS.map((t) => (
             <button
               key={t.id}
@@ -472,6 +512,10 @@ function WalletPage() {
                       {st.label}
                     </span>
                   </div>
+                </div>
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-[10px] text-muted-foreground">
+                  <span>رقم المعاملة: <b dir="ltr" className="font-mono">{t.id.slice(0, 8).toUpperCase()}</b></span>
+                  {methodLabel && <span>{methodLabel}</span>}
                 </div>
                 {t.note && (
                   <p className="mt-2 rounded-xl bg-background px-3 py-2 text-[11px] font-semibold text-muted-foreground">
