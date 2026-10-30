@@ -6,7 +6,6 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "@tanstack/react-router";
 import { App } from "@capacitor/app";
 import { Capacitor } from "@capacitor/core";
-import { Keyboard } from "@capacitor/keyboard";
 import { getRouter } from "./router";
 
 // صائد أخطاء الشاشة أولًا (يتجاهل SSR)
@@ -60,16 +59,11 @@ function setupDebugAccess() {
 initDiagnostics();
 setupDebugAccess();
 
-// تعويض تمرير الحقل النشط عند ظهور لوحة المفاتيح:
-// مع adjustMarginsForEdgeToEdge تُضاف مسافة سفلية للـ WebView،
-// فنمرّر الحقل المركّز إلى منتصف المنطقة المرئية ليبقى ظاهرًا فوق الكيبورد.
+// Android adjustResize يدير مساحة لوحة المفاتيح أصلًا.
+// تعطيل التمرير الناعم العام في WebView يمنع تنافس حركة scrollIntoView
+// مع إعادة قياس نافذة Android عند فتح لوحة المفاتيح.
 if (Capacitor.isNativePlatform()) {
-  Keyboard.addListener("keyboardWillShow", () => {
-    const active = document.activeElement as HTMLElement | null;
-    if (active && typeof active.scrollIntoView === "function") {
-      active.scrollIntoView({ block: "center", behavior: "auto" });
-    }
-  });
+  document.documentElement.style.scrollBehavior = "auto";
 }
 
 const router = getRouter();
