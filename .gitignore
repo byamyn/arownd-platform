@@ -50,3 +50,6 @@ android/keystore/
 # Android APKs (نسخ إصدارات جاهزة للتثبيت)
 *.apk
 *.aab
+
+# Firebase Android app configuration (download from Firebase Console)
+android/app/google-services.json
