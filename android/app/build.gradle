@@ -68,11 +68,18 @@ dependencies {
 
 apply from: 'capacitor.build.gradle'
 
-try {
-    def servicesJSON = file('google-services.json')
-    if (servicesJSON.text) {
-        apply plugin: 'com.google.gms.google-services'
+// Crashlytics is enabled only after the app's Firebase config is added.
+def firebaseConfigFile = file('google-services.json')
+if (firebaseConfigFile.exists() && firebaseConfigFile.text.trim()) {
+    dependencies {
+        implementation platform('com.google.firebase:firebase-bom:35.1.0')
+        implementation 'com.google.firebase:firebase-crashlytics'
     }
-} catch(Exception e) {
-    logger.info("google-services.json not found, google-services plugin not applied. Push Notifications won't work")
+}
+
+if (firebaseConfigFile.exists() && firebaseConfigFile.text.trim()) {
+    apply plugin: 'com.google.gms.google-services'
+    apply plugin: 'com.google.firebase.crashlytics'
+} else {
+    logger.lifecycle("Firebase config missing: Crashlytics is prepared but inactive. Add android/app/google-services.json to enable Android crash and ANR reporting.")
 }
