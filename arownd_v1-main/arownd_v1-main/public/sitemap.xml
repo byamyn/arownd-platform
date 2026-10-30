@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+  <url>
+    <loc>https://sooqy.app/ar/</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sooqy.app/ar/"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sooqy.app/ar/"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://sooqy.app/ar/explore</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sooqy.app/ar/explore"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sooqy.app/ar/explore"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://sooqy.app/ar/stores</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sooqy.app/ar/stores"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sooqy.app/ar/stores"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://sooqy.app/ar/category/fashion</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sooqy.app/ar/category/fashion"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sooqy.app/ar/category/fashion"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://sooqy.app/ar/help</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sooqy.app/ar/help"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sooqy.app/ar/help"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.5</priority>
+  </url>
+  <url>
+    <loc>https://sooqy.app/ar/about</loc>
+    <xhtml:link rel="alternate" hreflang="ar" href="https://sooqy.app/ar/about"/>
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://sooqy.app/ar/about"/>
+    <lastmod>2026-01-01</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.4</priority>
+  </url>
+</urlset>

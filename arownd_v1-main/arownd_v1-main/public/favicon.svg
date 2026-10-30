@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- خلفية داكنة للوضع الداكن (تُ overridعبر CSS في المتصفح) -->
+  <rect width="512" height="512" fill="#0B0F0C"/>
+  <!-- دائرة "حولك" — رمز Arownd الهندسي -->
+  <circle cx="256" cy="256" r="200" fill="none" stroke="#C6F36B" stroke-width="16"/>
+  <circle cx="256" cy="256" r="28" fill="#C6F36B"/>
+  <!-- نقطة مركزية صغيرة للتأكيد -->
+  <circle cx="256" cy="256" r="10" fill="#0B0F0C"/>
+</svg>

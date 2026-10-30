@@ -1,0 +1,38 @@
+# حزمة تأهيل «مشروع مبتكر» — Arownd
+
+**المشروع:** Arownd (السوق/التجارة المحلية — تطبيق ويب + PWA + Android через Capacitor)
+**العلامة المستهدفة:** «Label Projet Innovant» (مشروع مبتكر) — Comité National de Labélisation
+**المنصة الرسمية:** https://startup.dz/label-projet/
+**تاريخ إعداد الحزمة:** 2026-10-22
+**تاريخ آخر تحقق من المصادر الرسمية:** 2026-10-22
+
+> ⚠️ **ملاحظة هوية:** المستودع (sooqy-app) يستخدم اسم «SOOQY» في الكود والـ SEO والـ manifest، بينما دليل الهوية `BRAND.md` واسم المشروع (Arownd) مختلف. **لا تغيّر الكود** (حسب قواعد المهمة)، لكن وحّد الاسم قبل الترشح (انظر `11-readiness-report.md`).
+
+## خريطة الملفات
+
+| # | الملف | الغرض |
+|---|------|-------|
+| 01 | `01-project-audit.md` | فحص المستودع والميزات المنجزة فعليًا (مع مراجع ملفات) |
+| 02 | `02-official-requirements.md` | شروط علامة «مشروع مبتكر» + حقول الطلب + قالب Pitch Deck (12 شريحة) |
+| 03 | `03-innovation-assessment.md` | تقييم الابتكار vs المنافسين (نقاط قوة/نواقص) |
+| 04 | `04-market-study.md` | دراسة سوق أولية (TAM/SAM/SOM بفرضيات معلنة) |
+| 05 | `05-business-model.md` | نموذج أعمال |
+| 06 | `06-marketing-plan.md` | خطة تسويق |
+| 07 | `07-application-dossier.md` | ملف الترشح (نصوص جاهزة، ≤400 حرف…) |
+| 08 | `08-pitch-deck.md` | عرض تقديمي 12 شريحة |
+| 09 | `09-documents-checklist.md` | قائمة الوثائق المطلوبة + حالة كل بند |
+| 10 | `10-incubators-funding-partners.md` | حاضنات، إرشاد، تمويل، شركاء |
+| 11 | `11-readiness-report.md` | تقرير جاهزية + نواقص + خطوات |
+| 12 | `12-founder-profile.md` | معلومات المؤسس (قالب) |
+| 13 | `13-identity-unification.md` | توحيد الهوية (Arownd vs SOOQY) |
+| — | `sources.md` | سجل المصادر (URL + تاريخ تحقق) |
+| — | `Canevas-label-Projet-Innovant-2025-final.pptx` | قالب Pitch Deck الرسمي (startup.dz) |
+
+## حالة الجاهزية (مختصر)
+- **التقنية (MVP):** جاهز (ويب + PWA + Android، Supabase، i18n، SEO، tests).
+- **الترشح (label projet innovant):** **غير جاهز بعد** — نواقص: وحدة قانونية/فريق/prototype evidence/بيانات سوق/IP/اسم موحد. انظر `11-readiness-report.md`.
+
+## قواعد هذه الحزمة
+- لا تعديل كود التطبيق.
+- لا اختلاق بيانات سوقية: كل رقم/فرضية موسوم `[فرضية]` + `TODO`.
+- كل ادعاء عن official requirements مرتبط بـ URL + تاريخ تحقق في `sources.md`.

@@ -1,0 +1,13 @@
+{
+  "name": "aroundplt",
+  "templateId": "empty",
+  "agent": {
+    "profile": "light",
+    "planApproval": true,
+    "askUser": true
+  },
+  "git": {
+    "repo": "yaso33/arownd-v-0",
+    "branch": "main"
+  }
+}

@@ -1,0 +1,59 @@
+{
+  "id": "/",
+  "name": "Arownd — اكتشف ما حولك",
+  "short_name": "Arownd",
+  "description": "اكتشف ما حولك. تسوّق عصري، اكتشاف أسهل للمنتجات، بصري واضح وسلس.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui", "browser"],
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B0F0C",
+  "categories": ["shopping", "lifestyle", "business"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "استكشف المنتجات",
+      "short_name": "استكشف",
+      "url": "/explore"
+    },
+    {
+      "name": "السلة",
+      "short_name": "السلة",
+      "url": "/bag"
+    },
+    {
+      "name": "طلباتي",
+      "short_name": "طلباتي",
+      "url": "/orders"
+    }
+  ]
+}

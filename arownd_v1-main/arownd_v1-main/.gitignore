@@ -1,0 +1,52 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-mobile
+tmp
+dist-ssr
+api/_generated/*
+!api/_generated/server.cjs.d.ts
+.output
+.vinxi
+.tanstack/**
+.nitro
+*.local
+
+# Wrangler / Cloudflare
+.wrangler/
+.dev.vars
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+.env.*
+!.env.example
+
+# Local tooling / SDK copies
+.polydev/
+opt/
+android/local.properties
+android/.gradle/
+android/app/build/
+android/build/
+android/keystore/
+
+# Android APKs (نسخ إصدارات جاهزة للتثبيت)
+*.apk
+*.aab
