@@ -11,6 +11,7 @@ import { childrenOf } from "@/lib/taxonomy";
 import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
 import { geoErrorMessage, useGeo } from "@/lib/geo";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
+import { StoreLocationPicker } from "@/components/sooqy/StoreLocationPicker";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
@@ -410,6 +411,16 @@ function StoreSettingsPage() {
             className={inputCls}
           />
         </div>
+        <StoreLocationPicker
+          value={
+            form.latitude != null && form.longitude != null
+              ? { lat: form.latitude, lng: form.longitude }
+              : null
+          }
+          onChange={({ lat, lng }) =>
+            setForm((current) => ({ ...current, latitude: lat, longitude: lng }))
+          }
+        />
         <button
           type="button"
           onClick={locate}
@@ -421,7 +432,7 @@ function StoreSettingsPage() {
         </button>
         {form.latitude != null && form.longitude != null && (
           <p className="text-center text-xs font-bold text-success">
-            {t("studio_location_selected")}
+            {t("studio_location_selected")} · {form.latitude.toFixed(5)}, {form.longitude.toFixed(5)}
           </p>
         )}
       </section>
