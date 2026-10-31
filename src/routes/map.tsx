@@ -26,7 +26,7 @@ export const Route = createFileRoute("/map")({
 
 type Sort = "near" | "rating";
 
-function MapPage() {
+export function MapPage() {
   const { pos, denied, locating, ask } = useGeo();
   const [active, setActive] = useState<string | null>(null);
   const [q, setQ] = useState("");
@@ -64,7 +64,6 @@ function MapPage() {
         </Suspense>
       </ClientOnly>
 
-      {/* شريط البحث */}
       <div className="absolute inset-x-4 top-4 z-[1000]">
         <div className="flex items-center gap-2 rounded-xl border border-border bg-card/95 px-4 shadow-soft backdrop-blur">
           <Search className="size-5 shrink-0 text-muted-foreground" />
@@ -76,31 +75,17 @@ function MapPage() {
             className="h-12 flex-1 bg-transparent text-foreground outline-none placeholder:text-muted-foreground"
           />
           {q && (
-            <button
-              onClick={() => setQ("")}
-              aria-label="مسح البحث"
-              className="text-muted-foreground hover:text-foreground"
-            >
+            <button onClick={() => setQ("")} aria-label="مسح البحث" className="text-muted-foreground hover:text-foreground">
               <X className="size-4" />
             </button>
           )}
         </div>
-        <p
-          className="mt-1.5 px-1 text-[11px] font-medium text-muted-foreground"
-          role="status"
-          aria-live="polite"
-        >
-          {stores.isLoading
-            ? "جارٍ تحميل المتاجر..."
-            : denied
-              ? "فعّل الموقع لحساب المسافة"
-              : `${list.length} محل`}
+        <p className="mt-1.5 px-1 text-[11px] font-medium text-muted-foreground" role="status" aria-live="polite">
+          {stores.isLoading ? "جارٍ تحميل المتاجر..." : denied ? "فعّل الموقع لحساب المسافة" : `${list.length} محل`}
         </p>
         {!stores.isLoading && !stores.isError && list.length === 0 && (
           <div className="mt-2 rounded-xl border border-border bg-card/95 p-3 text-center text-xs text-muted-foreground shadow-soft">
-            {q.trim() || onlyOpen
-              ? "لا توجد متاجر تطابق خيارات البحث الحالية"
-              : "لا توجد متاجر قريبة لعرضها حاليًا"}
+            {q.trim() || onlyOpen ? "لا توجد متاجر تطابق خيارات البحث الحالية" : "لا توجد متاجر قريبة لعرضها حاليًا"}
           </div>
         )}
       </div>
@@ -111,16 +96,11 @@ function MapPage() {
         </div>
       )}
 
-      {/* أزرار عائمة */}
       <div className="absolute top-24 end-4 z-[1000] flex flex-col gap-2">
         <button
           aria-label="الفلاتر"
           onClick={() => setShowFilters(true)}
-          className={cn(
-            "icon-btn shadow-soft",
-            (onlyOpen || sort !== "near") &&
-              "bg-primary text-accent-ink-foreground border-accent-ink",
-          )}
+          className={cn("icon-btn shadow-soft", (onlyOpen || sort !== "near") && "bg-primary text-accent-ink-foreground border-accent-ink")}
         >
           <Filter className="size-5" />
         </button>
@@ -143,21 +123,14 @@ function MapPage() {
         </button>
       </div>
 
-      {/* لوحة المتجر المختار */}
       {sel && (
         <div className="absolute inset-x-3 bottom-3 z-[1000] animate-fade-up rounded-2xl border border-border bg-card p-4 shadow-lift">
-          <button
-            aria-label="غلق"
-            onClick={() => setActive(null)}
-            className="absolute top-3 end-3 flex size-8 items-center justify-center rounded-full bg-neutral-100 text-muted-foreground"
-          >
+          <button aria-label="غلق" onClick={() => setActive(null)} className="absolute top-3 end-3 flex size-8 items-center justify-center rounded-full bg-neutral-100 text-muted-foreground">
             <X className="size-4" />
           </button>
           <div className="flex gap-3">
             <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-neutral-100">
-              {sel.cover_url && (
-                <img src={sel.cover_url} alt="" className="size-full object-cover" />
-              )}
+              {sel.cover_url && <img src={sel.cover_url} alt="" className="size-full object-cover" />}
             </div>
             <div className="min-w-0 space-y-1">
               <p className="line-clamp-1 font-bold">{sel.name}</p>
@@ -166,31 +139,15 @@ function MapPage() {
                 {sel.is_verified && <VerifiedBadge />}
               </div>
               <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                {Number(sel.rating) > 0 && (
-                  <RatingStars rating={Number(sel.rating)} size="size-3" showValue />
-                )}
+                {Number(sel.rating) > 0 && <RatingStars rating={Number(sel.rating)} size="size-3" showValue />}
                 {sel.commune}
-                {sel.distance != null && (
-                  <span className="font-bold text-ink">{formatKm(sel.distance)}</span>
-                )}
+                {sel.distance != null && <span className="font-bold text-ink">{formatKm(sel.distance)}</span>}
               </p>
             </div>
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
-            <Link
-              to="/stores/$storeId"
-              params={{ storeId: sel.id }}
-              className="btn-secondary !h-11 text-sm"
-            >
-              عرض المتجر
-            </Link>
-            <DirectionsButton
-              lat={sel.latitude}
-              lng={sel.longitude}
-              label={sel.name}
-              className="btn-primary !h-11 text-sm"
-              mapRef={mapRef}
-            >
+            <Link to="/stores/$storeId" params={{ storeId: sel.id }} className="btn-secondary !h-11 text-sm">عرض المتجر</Link>
+            <DirectionsButton lat={sel.latitude} lng={sel.longitude} label={sel.name} className="btn-primary !h-11 text-sm" mapRef={mapRef}>
               <Navigation className="size-4" />
               الاتجاهات
             </DirectionsButton>
@@ -198,65 +155,24 @@ function MapPage() {
         </div>
       )}
 
-      {/* لوحة الفلاتر */}
       {showFilters && (
-        <div
-          className="absolute inset-0 z-[1100] flex items-end bg-black/30"
-          onClick={() => setShowFilters(false)}
-        >
-          <div
-            className="w-full animate-fade-up rounded-t-3xl border-t border-border bg-card p-5 pb-8"
-            onClick={(e) => e.stopPropagation()}
-          >
+        <div className="absolute inset-0 z-[1100] flex items-end bg-black/30" onClick={() => setShowFilters(false)}>
+          <div className="w-full animate-fade-up rounded-t-3xl border-t border-border bg-card p-5 pb-8" onClick={(e) => e.stopPropagation()}>
             <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-neutral-300" />
             <h2 className="text-h3 text-foreground">الفلاتر</h2>
             <div className="mt-4 space-y-2">
-              {(
-                [
-                  { id: "near", label: "الأقرب إليك" },
-                  { id: "rating", label: "الأعلى تقييمًا" },
-                ] as const
-              ).map((o) => (
-                <button
-                  key={o.id}
-                  onClick={() => setSort(o.id)}
-                  className={cn(
-                    "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition",
-                    sort === o.id
-                      ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
-                      : "border-border bg-card text-foreground",
-                  )}
-                >
+              {([{ id: "near", label: "الأقرب إليك" }, { id: "rating", label: "الأعلى تقييمًا" }] as const).map((o) => (
+                <button key={o.id} onClick={() => setSort(o.id)} className={cn("flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition", sort === o.id ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground" : "border-border bg-card text-foreground")}>
                   {o.label}
-                  <span
-                    className={cn(
-                      "size-4 rounded-full border-2 transition",
-                      sort === o.id ? "border-accent-ink bg-primary" : "border-neutral-300",
-                    )}
-                  />
+                  <span className={cn("size-4 rounded-full border-2 transition", sort === o.id ? "border-accent-ink bg-primary" : "border-neutral-300")} />
                 </button>
               ))}
-              <button
-                onClick={() => setOnlyOpen(!onlyOpen)}
-                className={cn(
-                  "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition",
-                  onlyOpen
-                    ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
-                    : "border-border bg-card text-foreground",
-                )}
-              >
+              <button onClick={() => setOnlyOpen(!onlyOpen)} className={cn("flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition", onlyOpen ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground" : "border-border bg-card text-foreground")}>
                 مفتوح الآن فقط
-                <span
-                  className={cn(
-                    "size-4 rounded-full border-2 transition",
-                    onlyOpen ? "border-accent-ink bg-primary" : "border-neutral-300",
-                  )}
-                />
+                <span className={cn("size-4 rounded-full border-2 transition", onlyOpen ? "border-accent-ink bg-primary" : "border-neutral-300")} />
               </button>
             </div>
-            <button onClick={() => setShowFilters(false)} className="btn-primary mt-5 w-full">
-              تطبيق الفلاتر
-            </button>
+            <button onClick={() => setShowFilters(false)} className="btn-primary mt-5 w-full">تطبيق الفلاتر</button>
           </div>
         </div>
       )}
