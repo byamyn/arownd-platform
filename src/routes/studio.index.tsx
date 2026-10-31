@@ -58,6 +58,7 @@ import { SideSheet } from "@/components/sooqy/side-sheet";
 import { StudioProductRow } from "@/components/sooqy/studio-product-row";
 import { MerchantOnboarding, type StoreForm, defaultStoreForm } from "@/components/sooqy/merchant-onboarding";
 import { ErrorState } from "@/components/sooqy/error-state";
+import { PageHeader } from "@/components/sooqy/page-header";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/studio/")({

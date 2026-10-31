@@ -9,7 +9,6 @@ const sentryDsn =
 Sentry.init({
   dsn: sentryDsn,
   environment: import.meta.env.MODE,
-  sendDefaultPii: false,
 
   // Keep performance volume modest on the free tier.
   integrations: [Sentry.browserTracingIntegration()],
