@@ -329,7 +329,7 @@ function WalletPage() {
               </span>
               <input
                 type="file"
-                accept="image/*"
+                accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/heic,image/heif"
                 className="hidden"
                 onChange={(e) => setTopupReceipt(e.target.files?.[0] ?? null)}
               />
