@@ -33,7 +33,8 @@ This document records the security controls currently enforced by the applicatio
 ## Remaining pre-launch checks
 
 - Rotate the Supabase database password if it has ever been committed to repository history, then update any server-side environment variables that use it.
-- Enable leaked-password protection in Supabase Auth settings.
-- Review the remaining Supabase Security Advisor findings, especially the approved-delivery-companies public projection view and SECURITY DEFINER RPCs.
+- Enable leaked-password protection in Supabase Auth settings (Authentication → Settings → Password Security).
+- The approved delivery-company directory now uses a SECURITY INVOKER view backed by a restricted public projection table; the SECURITY DEFINER view warning has been removed.
+- Review the remaining SECURITY DEFINER RPC warnings periodically. The current authenticated RPCs include identity, ownership, or admin checks; the anonymous product-view counter only increments a counter and returns no data, but can still be abused to inflate analytics.
 - Test profile editing, store creation/editing, product management, order status and notes, shipment status, and image uploads with real customer and merchant accounts.
 - Test the Android APK on a physical device before release.
