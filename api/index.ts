@@ -107,9 +107,11 @@ function setSecurityHeaders(res: ServerResponse): void {
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   res.setHeader("X-XSS-Protection", "1; mode=block");
+  // Allow this origin to use location and camera only when the user invokes
+  // the related feature. Keep microphone and unrelated device APIs disabled.
   res.setHeader(
     "Permissions-Policy",
-    "geolocation=(), microphone=(), camera=(), payment=(), usb=()",
+    "geolocation=(self), camera=(self), microphone=(), payment=(), usb=()",
   );
   const proto = (res.getHeader("x-forwarded-proto") as string) || "";
   if (proto === "https") {
