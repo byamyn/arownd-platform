@@ -57,6 +57,7 @@ import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { StudioProductRow } from "@/components/sooqy/studio-product-row";
 import { MerchantOnboarding, type StoreForm, defaultStoreForm } from "@/components/sooqy/merchant-onboarding";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/studio/")({
@@ -155,6 +156,7 @@ function StudioPage() {
     enabled: !!store.data,
   });
   const canManage = roles.data?.includes("merchant") || !!store.data;
+  const dashboardError = offers.error ?? reservations.error ?? orders.error;
 
   if (!ready) return null;
   if (!user) {
@@ -162,8 +164,23 @@ function StudioPage() {
   }
   if (store.isLoading || roles.isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-label="جارٍ تحميل استوديو التاجر">
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+  if (store.isError || roles.isError) {
+    const error = store.error ?? roles.error;
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="استوديو التاجر" back="/" />
+        <ErrorState
+          scope="studio:account"
+          error={error}
+          onRetry={async () => {
+            await Promise.all([store.refetch(), roles.refetch()]);
+          }}
+        />
       </div>
     );
   }
@@ -179,6 +196,21 @@ function StudioPage() {
         form={storeForm}
         setForm={setStoreForm}
       />
+    );
+  }
+
+  if (dashboardError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="استوديو التاجر" back="/" />
+        <ErrorState
+          scope="studio:dashboard-data"
+          error={dashboardError}
+          onRetry={async () => {
+            await Promise.all([offers.refetch(), reservations.refetch(), orders.refetch()]);
+          }}
+        />
+      </div>
     );
   }
 
