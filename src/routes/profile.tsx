@@ -5,6 +5,7 @@ import {
   BadgeCheck,
   Bell,
   Camera,
+  CalendarDays,
   FileText,
   Heart,
   HelpCircle,
@@ -23,6 +24,7 @@ import { useAuth } from "@/lib/auth";
 import { useFavorites } from "@/lib/favorites";
 import {
   fetchMyOrders,
+  fetchMyReservations,
   fetchMyProfile,
   fetchMyRoles,
   fetchMyStore,
@@ -51,6 +53,7 @@ function ProfilePage() {
   const qc = useQueryClient();
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
   const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user });
+  const reservations = useQuery({ queryKey: ["my-reservations"], queryFn: fetchMyReservations, enabled: !!user });
   const myStore = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   // user_roles يقبل عدة صفوف لكل مستخدم (customer/merchant/admin) —
   // نقرأها كمصفوفة؛ الاستعلام بـ.single() كان يفشل بخطأ 406 عند أكثر من صف
@@ -298,9 +301,10 @@ function ProfilePage() {
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
         <section className="space-y-2" aria-label="نشاط الحساب">
           <SectionTitle>نشاطك</SectionTitle>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
             { to: "/orders", Icon: Package, label: "طلباتي", value: orders.data?.length ?? 0 },
+            { to: "/reservations", Icon: CalendarDays, label: "حجوزاتي", value: reservations.data?.length ?? 0 },
             { to: "/favorites", Icon: Heart, label: "المفضلة", value: favCount },
             { to: "/wallet", Icon: Wallet, label: "المحفظة", value: null },
           ].map(({ to, Icon, label, value }) => (

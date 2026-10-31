@@ -516,28 +516,74 @@ export async function cancelReservation(id: string) {
   if (error) throw new Error(friendlyError(error));
 }
 
+type UserArchiveClient = {
+  from: (table: string) => {
+    select: (columns: string) => {
+      eq: (column: string, value: string) => Promise<{
+        data: { activity_type: string; activity_id: string }[] | null;
+        error: Error | null;
+      }>;
+    };
+  };
+  rpc: (fn: string, args: Record<string, unknown>) => Promise<{ error: Error | null }>;
+};
+
+const archiveClient = supabase as unknown as UserArchiveClient;
+
+export async function archiveMyActivity(
+  activityType: "order" | "reservation",
+  activityId: string,
+): Promise<void> {
+  const { error } = await archiveClient.rpc("archive_my_activity", {
+    _activity_type: activityType,
+    _activity_id: activityId,
+  });
+  if (error) throw new Error(friendlyError(error));
+}
+
+async function fetchArchivedActivityIds(
+  userId: string,
+  activityType: "order" | "reservation",
+): Promise<Set<string>> {
+  const { data, error } = await archiveClient
+    .from("user_activity_archive")
+    .select("activity_type, activity_id")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return new Set(
+    (data ?? [])
+      .filter((row) => row.activity_type === activityType)
+      .map((row) => row.activity_id),
+  );
+}
+
 export async function fetchMyReservations() {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) return [];
+  const archivedIds = await fetchArchivedActivityIds(u.user.id, "reservation");
   const { data, error } = await supabase
     .from("reservations")
     .select(
       "*, store:stores(name, phone, latitude, longitude, address_line), offer:store_offers(price, product:products(name))",
     )
+    .eq("user_id", u.user.id)
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
-  return data;
+  return data.filter((reservation) => !archivedIds.has(reservation.id));
 }
 
 export async function fetchMyOrders() {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) return [];
+  const archivedIds = await fetchArchivedActivityIds(u.user.id, "order");
   const { data, error } = await supabase
     .from("orders")
     .select("*, items:order_items(*), wilaya:wilayas(name_ar)")
     .eq("user_id", u.user.id)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data;
+  return data.filter((order) => !archivedIds.has(order.id));
 }
 
 export async function fetchMyNotifications() {

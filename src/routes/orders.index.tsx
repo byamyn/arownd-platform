@@ -1,17 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { PackageCheck, Package, Trash2, Truck } from "lucide-react";
+import { Archive, PackageCheck, Package, Trash2, Truck } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
-import { fetchMyOrders } from "@/lib/sooqy";
+import { archiveMyActivity, fetchMyOrders } from "@/lib/sooqy";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { cn } from "@/lib/utils";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
+import { toast } from "sonner";
 import { SeoHead } from "@/components/seo/SeoHead";
 
 export const Route = createFileRoute("/orders/")({
@@ -35,6 +36,7 @@ function trackCode(id: string) {
 function OrdersPage() {
   const { t } = useTranslation();
   const { user, ready } = useAuth();
+  const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("all");
   const orders = useQuery({
     queryKey: ["my-orders"],
@@ -197,6 +199,24 @@ function OrdersPage() {
                 >
                   {t("orders_track")}
                 </Link>
+                {(o.status === "delivered" || o.status === "cancelled") && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!window.confirm("هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.")) return;
+                      try {
+                        await archiveMyActivity("order", o.id);
+                        await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                        toast.success("تم إخفاء الطلب من سجلك.");
+                      } catch (error) {
+                        toast.error(error instanceof Error ? error.message : "تعذر إخفاء الطلب.");
+                      }
+                    }}
+                    className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                  >
+                    <Archive className="size-4" /> إخفاء من السجل
+                  </button>
+                )}
               </div>
             );
           })}

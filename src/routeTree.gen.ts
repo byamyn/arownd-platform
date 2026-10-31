@@ -24,6 +24,7 @@ import { Route as MapRouteImport } from './routes/map'
 import { Route as NotificationsRouteImport } from './routes/notifications'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ReservationsIndexRouteImport } from './routes/reservations.index'
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WalletRouteImport } from './routes/wallet'
@@ -114,6 +115,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const ProfileRoute = ProfileRouteImport.update({
   id: '/profile',
   path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReservationsIndexRoute = ReservationsIndexRouteImport.update({
+  id: '/reservations/',
+  path: '/reservations',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SettingsRoute = SettingsRouteImport.update({
@@ -213,6 +219,7 @@ export interface FileRoutesByFullPath {
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/reservations/': typeof ReservationsIndexRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/reservations': typeof ReservationsIndexRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
+  '/reservations/': typeof ReservationsIndexRoute
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
@@ -315,6 +324,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/privacy'
     | '/profile'
+    | '/reservations/'
     | '/settings'
     | '/terms'
     | '/wallet'
@@ -348,6 +358,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/privacy'
     | '/profile'
+    | '/reservations'
     | '/settings'
     | '/terms'
     | '/wallet'
@@ -381,6 +392,7 @@ export interface FileRouteTypes {
     | '/notifications'
     | '/privacy'
     | '/profile'
+    | '/reservations/'
     | '/settings'
     | '/terms'
     | '/wallet'
@@ -415,6 +427,7 @@ export interface RootRouteChildren {
   NotificationsRoute: typeof NotificationsRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
+  ReservationsIndexRoute: typeof ReservationsIndexRoute
   SettingsRoute: typeof SettingsRoute
   TermsRoute: typeof TermsRoute
   WalletRoute: typeof WalletRoute
@@ -538,6 +551,13 @@ declare module '@tanstack/react-router' {
       path: '/profile'
       fullPath: '/profile'
       preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reservations/': {
+      id: '/reservations/'
+      path: '/reservations'
+      fullPath: '/reservations/'
+      preLoaderRoute: typeof ReservationsIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/settings': {
@@ -671,6 +691,7 @@ const rootRouteChildren: RootRouteChildren = {
   NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
+  ReservationsIndexRoute: ReservationsIndexRoute,
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
