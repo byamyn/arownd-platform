@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - "stabilize/**"
+      - "fix/**"
   workflow_dispatch:
 
 permissions:
