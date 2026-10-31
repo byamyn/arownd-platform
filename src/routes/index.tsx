@@ -1,9 +1,11 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
+import { useAuth } from "@/lib/auth";
+import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { Bell, Star } from "lucide-react";
 import { useGeo } from "@/lib/geo";
-import { searchProducts, searchStores } from "@/lib/sooqy";
+import { fetchUnreadNotificationCount, searchProducts, searchStores } from "@/lib/sooqy";
 import { MAIN_CATEGORIES } from "@/lib/taxonomy";
 import { ProductCard, StoreRailCard } from "@/components/sooqy/cards";
 import { SearchField } from "@/components/sooqy/search-field";
@@ -31,7 +33,21 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t, lang } = useTranslation();
+  const { user } = useAuth();
   const { pos } = useGeo();
+  const unreadNotifications = useQuery({
+    queryKey: ["unread-notification-count"],
+    queryFn: fetchUnreadNotificationCount,
+    enabled: !!user,
+    staleTime: 30_000,
+  });
+
+  useRealtimeSubscription({
+    table: "notifications",
+    filter: user?.id ? `user_id=eq.${user.id}` : undefined,
+    queryKeys: [["unread-notification-count"]],
+    enabled: !!user,
+  });
   const changeWilaya = (v: number | null) => {
     setWilaya(v);
     try {
@@ -108,8 +124,24 @@ function Home() {
           <ArowndBrand />
           <div className="flex items-center gap-2">
             <WilayaButton value={wilaya} onChange={changeWilaya} allLabel={t("home_all_wilayas")} />
-            <Link to="/notifications" aria-label={t("home_notifications")} className="icon-btn">
+            <Link
+              to="/notifications"
+              aria-label={
+                unreadNotifications.data
+                  ? `${t("home_notifications")} (${unreadNotifications.data} غير مقروء)`
+                  : t("home_notifications")
+              }
+              className="icon-btn relative"
+            >
               <Bell className="size-5" />
+              {!!unreadNotifications.data && unreadNotifications.data > 0 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full border-2 border-background bg-primary text-[9px] font-extrabold leading-none text-primary-foreground shadow-sm"
+                >
+                  {unreadNotifications.data > 9 ? "9+" : unreadNotifications.data}
+                </span>
+              )}
             </Link>
           </div>
         </header>

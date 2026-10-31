@@ -114,7 +114,10 @@ function NotificationsPage() {
     setMarkingAll(true);
     try {
       await markNotificationsRead();
-      await qc.invalidateQueries({ queryKey: ["notifications"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["notifications"] }),
+        qc.invalidateQueries({ queryKey: ["unread-notification-count"] }),
+      ]);
     } catch (error) {
       showError(error);
     } finally {
@@ -127,7 +130,10 @@ function NotificationsPage() {
     setMarkingId(id);
     try {
       await markNotificationRead(id);
-      await qc.invalidateQueries({ queryKey: ["notifications"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["notifications"] }),
+        qc.invalidateQueries({ queryKey: ["unread-notification-count"] }),
+      ]);
     } catch (error) {
       showError(error);
     } finally {
@@ -140,7 +146,10 @@ function NotificationsPage() {
     setDeletingId(id);
     try {
       await deleteNotification(id);
-      await qc.invalidateQueries({ queryKey: ["notifications"] });
+      await Promise.all([
+        qc.invalidateQueries({ queryKey: ["notifications"] }),
+        qc.invalidateQueries({ queryKey: ["unread-notification-count"] }),
+      ]);
       showSuccess("تم حذف الإشعار");
     } catch (error) {
       showError(error);

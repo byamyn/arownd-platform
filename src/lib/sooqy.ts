@@ -661,6 +661,18 @@ export async function fetchMyNotifications() {
   return data;
 }
 
+export async function fetchUnreadNotificationCount(): Promise<number> {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) return 0;
+  const { count, error } = await supabase
+    .from("notifications")
+    .select("id", { count: "exact", head: true })
+    .eq("user_id", u.user.id)
+    .eq("read", false);
+  if (error) throw error;
+  return count ?? 0;
+}
+
 export async function markNotificationsRead() {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) return;
