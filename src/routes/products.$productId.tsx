@@ -423,7 +423,7 @@ function ProductPage() {
 
             <h1 className="text-2xl font-bold leading-tight text-foreground">{p.name}</h1>
 
-            {sorted.length > 0 && (
+            {sorted.some((o) => Number(o.store.rating) > 0) && (
               <div className="flex items-center gap-1.5">
                 <Star className="size-3.5 fill-warning text-warning" />
                 <span className="text-sm font-bold text-foreground">

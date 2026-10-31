@@ -56,9 +56,8 @@ export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: 
 export function ProductCard({ g }: { g: ProductGroup }) {
   const { t } = useTranslation();
   const level = g.available ? (g.totalStock <= 3 ? "low" : "in") : "out";
-  const rating = g.offers.length
-    ? Math.max(...g.offers.map((o) => Number(o.store.rating) || 0))
-    : 0;
+  // تقييم المنتج مصدره مراجعات المنتج المعتمدة، وليس تقييم المتجر.
+  const rating = Number(g.product.rating) || 0;
   // نفس مصدر الحقيقة الذي تستخدمه صفحة المنتج — لا حساب مستقل.
   const best = g.bestOffer;
   const discountPct = Math.max(
@@ -111,9 +110,11 @@ export function ProductCard({ g }: { g: ProductGroup }) {
 
       <div className="p-4 flex flex-col flex-1 gap-2">
         <p className="text-sm line-clamp-2 text-text truncate">{g.product.name}</p>
-        <div className="flex items-center gap-1">
-          <RatingStars rating={rating} size="size-3" showValue />
-        </div>
+        {rating > 0 && (
+          <div className="flex items-center gap-1">
+            <RatingStars rating={rating} size="size-3" showValue />
+          </div>
+        )}
         <p className="text-h4 text-accent-ink">
           {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
         </p>

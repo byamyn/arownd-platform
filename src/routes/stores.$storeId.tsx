@@ -231,9 +231,11 @@ function StorePage() {
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <OpenBadge open={open} />
               {s.is_verified && <VerifiedBadge />}
-              <span className="flex items-center gap-0.5 text-muted-foreground">
-                <Star className="size-3 text-warning" /> {Number(s.rating).toFixed(1)}
-              </span>
+              {Number(s.rating) > 0 && (
+                <span className="flex items-center gap-0.5 text-muted-foreground">
+                  <Star className="size-3 text-warning" /> {Number(s.rating).toFixed(1)}
+                </span>
+              )}
               {distance != null && (
                 <span className="flex items-center gap-0.5 font-bold text-foreground">
                   <MapPin className="size-3 text-muted-foreground" /> {formatKm(distance)}

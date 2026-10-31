@@ -166,7 +166,9 @@ function MapPage() {
                 {sel.is_verified && <VerifiedBadge />}
               </div>
               <p className="flex items-center gap-2 text-xs text-muted-foreground">
-                <RatingStars rating={Number(sel.rating)} size="size-3" showValue />
+                {Number(sel.rating) > 0 && (
+                  <RatingStars rating={Number(sel.rating)} size="size-3" showValue />
+                )}
                 {sel.commune}
                 {sel.distance != null && (
                   <span className="font-bold text-ink">{formatKm(sel.distance)}</span>
