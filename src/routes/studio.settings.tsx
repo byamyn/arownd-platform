@@ -273,14 +273,14 @@ function StoreSettingsPage() {
         <input
           ref={logoInputRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/heic,image/heif"
           onChange={(e) => pickFile("logo")(e.target.files?.[0] ?? null)}
           className="hidden"
         />
         <input
           ref={coverInputRef}
           type="file"
-          accept="image/*"
+          accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/heic,image/heif"
           onChange={(e) => pickFile("cover")(e.target.files?.[0] ?? null)}
           className="hidden"
         />
