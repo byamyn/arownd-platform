@@ -76,7 +76,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     { to: "/orders", expect: /سجّل الدخول|طلباتي/ },
     { to: "/orders/$orderId", params: { orderId: "order-1" }, expect: /سجّل الدخول|طلب/ },
     { to: "/studio", expect: /استوديو Arownd|لوحة التاجر|أنشئ متجر/ },
-    { to: "/studio/settings", expect: "تخصيص المتجر" },
+    { to: "/studio/settings", expect: "معلومات المتجر" },
     { to: "/help", expect: "مساعدة والأسئلة الشائعة" },
     { to: "/terms", expect: "شروط الاستخدام" },
     { to: "/privacy", expect: "سياسة الخصوصية" },
@@ -169,7 +169,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     await waitFor(() => expect(state.calls.some((c) => c.startsWith("stores.insert"))).toBe(true));
 
     // بعد التحديث تظهر لوحة التاجر مع اسم المتجر الجديد
-    await expectText("استوديو التاجر");
+    await expectText("مساحة عمل متجرك");
     await expectText("متجري الجديد");
   });
 
@@ -178,8 +178,8 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     const router = renderApp();
     await go(router, "/studio");
 
-    await expectText("استوديو التاجر");
-    fireEvent.click(await screen.findByRole("link", { name: /تخصيص المتجر/ }));
+    await expectText("مساحة عمل متجرك");
+    fireEvent.click(await screen.findByRole("link", { name: /معلومات المتجر/ }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/studio/settings"));
     await expectText("هوية متجرك تظهر للعملاء في صفحته");

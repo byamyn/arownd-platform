@@ -116,7 +116,8 @@ export const studio: DictGroup = {
     studio_images_uploaded: "تم رفع الصور بنجاح",
     studio_add_product_images_label: "إضافة صور المنتج (حتى 10)",
     studio_manage_product_images_label: "إدارة صور المنتج",
-    studio_delete_product_confirm: "سيُحذف «{name}» نهائيًا من متجرك ولن يظهر للعملاء بعد الآن. طلباتك السابقة تبقى محفوظة.",
+    studio_delete_product_confirm:
+      "سيُحذف «{name}» نهائيًا من متجرك ولن يظهر للعملاء بعد الآن. طلباتك السابقة تبقى محفوظة.",
     studio_delete_permanently: "حذف نهائي",
     studio_product_deleted: "تم حذف المنتج بنجاح",
     studio_store_required_fields: "املأ اسم المتجر والولاية والبلدية والعنوان.",
@@ -130,7 +131,8 @@ export const studio: DictGroup = {
     studio_order_number: "طلب رقم",
     studio_save_note: "حفظ",
     studio_note_saved: "تم حفظ الملاحظة بنجاح",
-    studio_delete_order_confirm: "سيتم حذف هذا الطلب نهائيًا من متجرك ولا يمكن استعادته. هل أنت متأكد؟",
+    studio_delete_order_confirm:
+      "سيتم حذف هذا الطلب نهائيًا من متجرك ولا يمكن استعادته. هل أنت متأكد؟",
     studio_delete_confirm: "حذف نهائي",
     studio_order_deleted: "تم حذف الطلب بنجاح",
     studio_product_category_note: "تصنيف المنتج مستقل عن تصنيف متجرك.",
@@ -291,7 +293,8 @@ export const studio: DictGroup = {
     studio_day_saturday: "Saturday",
     studio_settings_heading: "Customize store",
     studio_settings_subtitle: "Your store identity as customers see it",
-    studio_settings_intro: "Update your store information, location, and opening hours in one place",
+    studio_settings_intro:
+      "Update your store information, location, and opening hours in one place",
     studio_store_name_ph: "Store name",
     studio_shipments_heading: "Shipment tracking",
     studio_shipments_intro: "Track your store shipments in one place",
@@ -335,7 +338,8 @@ export const studio: DictGroup = {
     studio_images_uploaded: "Images uploaded successfully",
     studio_add_product_images_label: "Add product photos (up to 10)",
     studio_manage_product_images_label: "Manage product photos",
-    studio_delete_product_confirm: "“{name}” will be permanently removed from your store and hidden from customers. Previous orders will remain saved.",
+    studio_delete_product_confirm:
+      "“{name}” will be permanently removed from your store and hidden from customers. Previous orders will remain saved.",
     studio_delete_permanently: "Delete permanently",
     studio_product_deleted: "Product deleted successfully",
     studio_store_required_fields: "Enter the store name, wilaya, commune, and address.",
@@ -349,7 +353,8 @@ export const studio: DictGroup = {
     studio_order_number: "Order",
     studio_save_note: "Save",
     studio_note_saved: "Note saved successfully",
-    studio_delete_order_confirm: "This order will be permanently deleted from your store and cannot be restored. Are you sure?",
+    studio_delete_order_confirm:
+      "This order will be permanently deleted from your store and cannot be restored. Are you sure?",
     studio_delete_confirm: "Delete permanently",
     studio_order_deleted: "Order deleted successfully",
     studio_product_category_note: "A product category is independent of your store category.",

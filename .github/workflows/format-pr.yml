@@ -1,0 +1,56 @@
+name: Format existing lint violations
+
+on:
+  push:
+    branches:
+      - fix/vercel-generated-server-types
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  format:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Apply repository Prettier formatting
+        run: |
+          npx prettier --write \
+            src/components/sooqy/CommuneSelect.tsx \
+            src/components/sooqy/DynamicIsland.tsx \
+            src/components/sooqy/PwaPrompt.tsx \
+            src/components/sooqy/StoreMap.tsx \
+            src/components/sooqy/WilayaSelect.tsx \
+            src/components/sooqy/badges.tsx \
+            src/components/sooqy/merchant-onboarding.tsx \
+            src/diagnostics.tsx \
+            src/lib/auth.tsx \
+            src/lib/bag.tsx \
+            src/lib/dictionaries/studio.ts \
+            src/lib/theme.tsx \
+            'src/routes/category.$catId.tsx' \
+            src/routes/studio.index.tsx \
+            'src/routes/studio.orders.$orderId.tsx' \
+            src/routes/studio.settings.tsx \
+            src/routes/studio.shipments.tsx
+      - name: Commit formatting and dispatch full checks
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if ! git diff --quiet; then
+            git add src
+            git commit -m "style: apply Prettier to existing lint violations"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
+          gh workflow run main-checks.yml --ref "${GITHUB_REF_NAME}"

@@ -44,4 +44,8 @@ jobs:
         run: npm test
 
       - name: Vercel production build
+        # CI-only placeholders validate bundling; never used for a deployment.
+        env:
+          VITE_SUPABASE_URL: https://ci-placeholder.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-public-key
         run: npm run build:vercel

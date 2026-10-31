@@ -27,7 +27,9 @@ export const Route = createFileRoute("/studio/settings")({
 
 function StoreSettingsPage() {
   const { t } = useTranslation();
-  const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].map((day) => t(`studio_day_${day}`));
+  const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].map(
+    (day) => t(`studio_day_${day}`),
+  );
   const { user, ready } = useAuth();
   const qc = useQueryClient();
   const { ask, locating } = useGeo();
@@ -211,9 +213,15 @@ function StoreSettingsPage() {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
-      <PageHeader title={t("studio_settings_heading")} subtitle={t("studio_settings_subtitle")} back="/studio" />
+      <PageHeader
+        title={t("studio_settings_heading")}
+        subtitle={t("studio_settings_subtitle")}
+        back="/studio"
+      />
       <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-5 text-white shadow-lg sm:p-6">
-        <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · STORE PROFILE</p>
+        <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+          AROWND · STORE PROFILE
+        </p>
         <p className="mt-2 text-sm text-white/75">{t("studio_settings_intro")}</p>
       </section>
 
@@ -412,7 +420,9 @@ function StoreSettingsPage() {
           {locating ? t("studio_locating") : t("studio_locate_on_map")}
         </button>
         {form.latitude != null && form.longitude != null && (
-          <p className="text-center text-xs font-bold text-success">{t("studio_location_selected")}</p>
+          <p className="text-center text-xs font-bold text-success">
+            {t("studio_location_selected")}
+          </p>
         )}
       </section>
 

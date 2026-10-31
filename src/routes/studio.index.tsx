@@ -502,9 +502,15 @@ function StudioPage() {
     <div className="mx-auto w-full max-w-6xl space-y-6 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-accent-ink">AROWND · MERCHANT</p>
-          <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">{t("studio_dashboard_heading")}</h1>
-          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("studio_dashboard_intro")}</p>
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-accent-ink">
+            AROWND · MERCHANT
+          </p>
+          <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
+            {t("studio_dashboard_heading")}
+          </h1>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">
+            {t("studio_dashboard_intro")}
+          </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <Link
@@ -527,13 +533,19 @@ function StudioPage() {
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
             <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:size-[4.5rem]">
               {store.data?.logo_url ? (
-                <img src={store.data.logo_url} alt={`شعار ${store.data.name}`} className="size-full object-cover" />
+                <img
+                  src={store.data.logo_url}
+                  alt={`شعار ${store.data.name}`}
+                  className="size-full object-cover"
+                />
               ) : (
                 <Store className="size-7 text-[#D4F56A]" />
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold tracking-wide text-[#D4F56A]">{t("studio_store_on_arownd")}</p>
+              <p className="text-[10px] font-bold tracking-wide text-[#D4F56A]">
+                {t("studio_store_on_arownd")}
+              </p>
               <h2 className="mt-1 truncate text-xl font-black sm:text-2xl">{store.data?.name}</h2>
               <p className="mt-1 flex items-center gap-1 truncate text-xs text-white/60">
                 <MapPin className="size-3 shrink-0" />
@@ -544,7 +556,12 @@ function StudioPage() {
                   const st = getStoreStatus(store.data?.opening_hours);
                   return (
                     <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold">
-                      <span className={cn("size-1.5 rounded-full", st.isOpen ? "bg-[#D4F56A]" : "bg-white/40")} />
+                      <span
+                        className={cn(
+                          "size-1.5 rounded-full",
+                          st.isOpen ? "bg-[#D4F56A]" : "bg-white/40",
+                        )}
+                      />
                       {st.isOpen ? "مفتوح الآن" : "مغلق حاليًا"}
                     </span>
                   );
@@ -558,14 +575,26 @@ function StudioPage() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-2 sm:min-w-[250px]">
-            <Link to="/studio/settings" className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4F56A] px-3 text-xs font-extrabold text-[#111813] transition hover:brightness-95 active:scale-[.98]">
+            <Link
+              to="/studio/settings"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4F56A] px-3 text-xs font-extrabold text-[#111813] transition hover:brightness-95 active:scale-[.98]"
+            >
               <Settings className="size-4" /> تخصيص المتجر
             </Link>
-            <Link to="/stores/$storeId" params={{ storeId: store.data?.id ?? "" }} className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/10 active:scale-[.98]">
+            <Link
+              to="/stores/$storeId"
+              params={{ storeId: store.data?.id ?? "" }}
+              className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/10 active:scale-[.98]"
+            >
               <Eye className="size-4" /> معاينة المتجر
             </Link>
             {store.data?.latitude != null && store.data?.longitude != null && (
-              <DirectionsButton lat={store.data.latitude} lng={store.data.longitude} label={store.data?.name ?? ""} className="col-span-2 flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-white/80">
+              <DirectionsButton
+                lat={store.data.latitude}
+                lng={store.data.longitude}
+                label={store.data?.name ?? ""}
+                className="col-span-2 flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-white/80"
+              >
                 <MapPin className="size-4" /> عرض الموقع والاتجاهات
               </DirectionsButton>
             )}
@@ -597,40 +626,72 @@ function StudioPage() {
             <h2 className="text-base font-extrabold text-foreground">{t("studio_overview")}</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">{t("studio_live_summary")}</p>
           </div>
-          <span className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">{t("studio_store_data")}</span>
+          <span className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">
+            {t("studio_store_data")}
+          </span>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
           <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink"><Package className="size-4.5" /></span>
-              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_catalog")}</span>
+              <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+                <Package className="size-4.5" />
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground">
+                {t("studio_catalog")}
+              </span>
             </div>
             <p className="mt-3 text-2xl font-black tabular-nums">{offers.data?.length ?? 0}</p>
-            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_total_products")}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+              {t("studio_total_products")}
+            </p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-warning-soft text-warning"><ShoppingBag className="size-4.5" /></span>
-              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_follow_up")}</span>
+              <span className="flex size-9 items-center justify-center rounded-xl bg-warning-soft text-warning">
+                <ShoppingBag className="size-4.5" />
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground">
+                {t("studio_follow_up")}
+              </span>
             </div>
             <p className="mt-3 text-2xl font-black tabular-nums">{pendingCount}</p>
-            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_pending_orders_reservations")}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+              {t("studio_pending_orders_reservations")}
+            </p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-blue-soft text-blue"><Eye className="size-4.5" /></span>
-              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_reach")}</span>
+              <span className="flex size-9 items-center justify-center rounded-xl bg-blue-soft text-blue">
+                <Eye className="size-4.5" />
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground">
+                {t("studio_reach")}
+              </span>
             </div>
-            <p className="mt-3 text-2xl font-black tabular-nums">{offers.data ? offers.data.reduce((sum, o) => sum + (o.product.view_count ?? 0), 0) : "—"}</p>
-            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_product_views")}</p>
+            <p className="mt-3 text-2xl font-black tabular-nums">
+              {offers.data
+                ? offers.data.reduce((sum, o) => sum + (o.product.view_count ?? 0), 0)
+                : "—"}
+            </p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+              {t("studio_product_views")}
+            </p>
           </div>
           <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-success-soft text-success"><Star className="size-4.5" /></span>
-              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_store_reputation")}</span>
+              <span className="flex size-9 items-center justify-center rounded-xl bg-success-soft text-success">
+                <Star className="size-4.5" />
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground">
+                {t("studio_store_reputation")}
+              </span>
             </div>
-            <p className="mt-3 text-2xl font-black tabular-nums">{store.data?.rating ? Number(store.data.rating).toFixed(1) : "—"}</p>
-            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_average_rating")}</p>
+            <p className="mt-3 text-2xl font-black tabular-nums">
+              {store.data?.rating ? Number(store.data.rating).toFixed(1) : "—"}
+            </p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">
+              {t("studio_average_rating")}
+            </p>
           </div>
         </div>
       </section>
@@ -650,7 +711,9 @@ function StudioPage() {
         return (
           <section className="rounded-2xl border border-accent-ink/25 bg-primary-soft/40 p-4">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-sm font-extrabold text-foreground">{t("studio_setup_heading")}</h2>
+              <h2 className="text-sm font-extrabold text-foreground">
+                {t("studio_setup_heading")}
+              </h2>
               <span className="text-xs font-bold text-accent-ink">{pct}%</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary/15">
@@ -702,7 +765,9 @@ function StudioPage() {
       {/* طلبات تحتاج إجراءً — أول ما يراه التاجر */}
       {(actionOrders.length > 0 || actionReservations.length > 0) && (
         <section className="space-y-2">
-          <h2 className="px-1 text-section text-muted-foreground">{t("studio_action_needed_now")}</h2>
+          <h2 className="px-1 text-section text-muted-foreground">
+            {t("studio_action_needed_now")}
+          </h2>
           <div className="divide-y divide-border overflow-hidden rounded-2xl border border-danger/25 bg-card">
             {actionOrders.map((o) => (
               <Link
@@ -771,7 +836,9 @@ function StudioPage() {
               <Package className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">{t("studio_my_products")}</span>
+              <span className="block text-sm font-bold text-foreground">
+                {t("studio_my_products")}
+              </span>
               <span className="block text-xs text-muted-foreground">
                 إضافة المنتجات وتعديلها وحذفها
               </span>
@@ -807,7 +874,9 @@ function StudioPage() {
               <Store className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">{t("studio_store_info")}</span>
+              <span className="block text-sm font-bold text-foreground">
+                {t("studio_store_info")}
+              </span>
               <span className="block text-xs text-muted-foreground">
                 تعديل الاسم والوصف والصور والتصنيف
               </span>
@@ -822,8 +891,12 @@ function StudioPage() {
               <Clock className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">{t("studio_location_hours")}</span>
-              <span className="block text-xs text-muted-foreground">{t("studio_manage_location_hours")}</span>
+              <span className="block text-sm font-bold text-foreground">
+                {t("studio_location_hours")}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                {t("studio_manage_location_hours")}
+              </span>
             </span>
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
           </Link>
@@ -836,7 +909,9 @@ function StudioPage() {
               <Eye className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">{t("studio_preview_store")}</span>
+              <span className="block text-sm font-bold text-foreground">
+                {t("studio_preview_store")}
+              </span>
               <span className="block text-xs text-muted-foreground">
                 عرض الصفحة كما يراها العميل
               </span>
@@ -849,7 +924,27 @@ function StudioPage() {
       {/* تبويب المنتجات */}
       {mode === "offers" && (
         <section className="space-y-5">
-          <div className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white shadow-sm sm:p-5"><p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · CATALOG</p><h2 className="mt-1 text-xl font-black">{t("studio_catalog_heading")}</h2><p className="mt-1 text-xs text-white/60">{t("studio_catalog_intro")}</p><div className="mt-4 grid grid-cols-3 gap-2"><div className="rounded-xl bg-white/5 p-2.5"><p className="text-lg font-black">{allOffers.length}</p><p className="text-[10px] text-white/60">{t("studio_products_total")}</p></div><div className="rounded-xl bg-white/5 p-2.5"><p className="text-lg font-black text-[#D4F56A]">{lowCount}</p><p className="text-[10px] text-white/60">{t("studio_stock_low")}</p></div><div className="rounded-xl bg-white/5 p-2.5"><p className="text-lg font-black">{outCount}</p><p className="text-[10px] text-white/60">{t("studio_stock_out")}</p></div></div></div>
+          <div className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white shadow-sm sm:p-5">
+            <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+              AROWND · CATALOG
+            </p>
+            <h2 className="mt-1 text-xl font-black">{t("studio_catalog_heading")}</h2>
+            <p className="mt-1 text-xs text-white/60">{t("studio_catalog_intro")}</p>
+            <div className="mt-4 grid grid-cols-3 gap-2">
+              <div className="rounded-xl bg-white/5 p-2.5">
+                <p className="text-lg font-black">{allOffers.length}</p>
+                <p className="text-[10px] text-white/60">{t("studio_products_total")}</p>
+              </div>
+              <div className="rounded-xl bg-white/5 p-2.5">
+                <p className="text-lg font-black text-[#D4F56A]">{lowCount}</p>
+                <p className="text-[10px] text-white/60">{t("studio_stock_low")}</p>
+              </div>
+              <div className="rounded-xl bg-white/5 p-2.5">
+                <p className="text-lg font-black">{outCount}</p>
+                <p className="text-[10px] text-white/60">{t("studio_stock_out")}</p>
+              </div>
+            </div>
+          </div>
           <div className="flex gap-2">
             <button
               onClick={refreshStock}
@@ -934,7 +1029,17 @@ function StudioPage() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-4">
-            <div className="mb-4 flex items-center justify-between gap-3"><div><h2 className="font-extrabold">{t("studio_current_products")}</h2><p className="mt-0.5 text-xs text-muted-foreground">{t("studio_results_shown", { count: visibleOffers.length })}</p></div><span className="rounded-full bg-primary-soft px-3 py-1 text-[10px] font-bold text-accent-ink">{t("studio_inventory")}</span></div>
+            <div className="mb-4 flex items-center justify-between gap-3">
+              <div>
+                <h2 className="font-extrabold">{t("studio_current_products")}</h2>
+                <p className="mt-0.5 text-xs text-muted-foreground">
+                  {t("studio_results_shown", { count: visibleOffers.length })}
+                </p>
+              </div>
+              <span className="rounded-full bg-primary-soft px-3 py-1 text-[10px] font-bold text-accent-ink">
+                {t("studio_inventory")}
+              </span>
+            </div>
 
             <SideSheet
               open={!!editing}

@@ -112,7 +112,14 @@ function StudioShipmentsPage() {
 
       <div className="mx-auto max-w-6xl space-y-5 px-4 py-5 sm:px-6">
         {/* ملخص الحالات */}
-        <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white sm:p-5"><p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · DELIVERY</p><h2 className="mt-1 text-xl font-black">{t("studio_shipments_heading")}</h2><p className="mt-1 text-xs text-white/60">{t("studio_shipments_intro")}</p></section><div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+        <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white sm:p-5">
+          <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+            AROWND · DELIVERY
+          </p>
+          <h2 className="mt-1 text-xl font-black">{t("studio_shipments_heading")}</h2>
+          <p className="mt-1 text-xs text-white/60">{t("studio_shipments_intro")}</p>
+        </section>
+        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
           {[
             {
               key: null,
@@ -232,7 +239,9 @@ function ShipmentRow({
     <div className="rounded-[1.35rem] border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <div className="font-semibold text-foreground">{order?.full_name ?? t("shipment_customer")}</div>
+          <div className="font-semibold text-foreground">
+            {order?.full_name ?? t("shipment_customer")}
+          </div>
           <div className="text-sm text-muted-foreground">
             طلب #{order?.id?.slice(-6) ?? shipment.id.slice(-6)}
           </div>

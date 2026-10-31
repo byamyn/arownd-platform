@@ -5,12 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
-import {
-  fetchOrder,
-  merchantUpdateOrderStatus,
-  deleteOrder,
-  fetchMyStore,
-} from "@/lib/sooqy";
+import { fetchOrder, merchantUpdateOrderStatus, deleteOrder, fetchMyStore } from "@/lib/sooqy";
 import { Link, useRouter } from "@tanstack/react-router";
 import { showError, showSuccess } from "@/lib/feedback";
 import { PageHeader } from "@/components/sooqy/page-header";
@@ -128,8 +123,12 @@ function StudioOrderDetailPage() {
         <PageHeader title={t("studio_order_details")} back="/studio" />
         <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-sm">
           <div className="rounded-t-[1.75rem] bg-[#111813] p-5 text-white sm:p-6">
-            <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · ORDER</p>
-            <p className="mt-2 text-xl font-black">{t("studio_order_number")} #{order.id.slice(-6)}</p>
+            <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+              AROWND · ORDER
+            </p>
+            <p className="mt-2 text-xl font-black">
+              {t("studio_order_number")} #{order.id.slice(-6)}
+            </p>
             <p className="mt-1 text-xs text-white/65">
               {formatDate(order.created_at, undefined, {
                 day: "numeric",
@@ -140,16 +139,23 @@ function StudioOrderDetailPage() {
           </div>
           <div className="space-y-4 p-4 sm:p-6">
             <div className="flex items-center gap-2">
-              <span className="flex items-center gap-1 font-semibold text-foreground">{t("studio_total")}</span>
+              <span className="flex items-center gap-1 font-semibold text-foreground">
+                {t("studio_total")}
+              </span>
               <b className="text-price text-accent-ink">{formatDA(order.total)}</b>
             </div>
             <div className="mt-3 flex items-center gap-2">
-              <span className="flex items-center gap-1 font-semibold text-foreground">{t("studio_status")}</span>
+              <span className="flex items-center gap-1 font-semibold text-foreground">
+                {t("studio_status")}
+              </span>
               <OrderStatusBadge status={order.status} className="mt-1" />
             </div>
             <div className="mt-3 space-y-2">
               {order.items?.map((it) => (
-                <div key={it.id} className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-background/60 p-3">
+                <div
+                  key={it.id}
+                  className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-background/60 p-3"
+                >
                   <div>
                     <p className="font-semibold">{it.product_name}</p>
                     <p className="text-xs text-muted-foreground">× {it.quantity}</p>
