@@ -71,6 +71,8 @@ function NotificationsPage() {
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [markingId, setMarkingId] = useState<string | null>(null);
+  const [markingAll, setMarkingAll] = useState(false);
 
   const q = useQuery({
     queryKey: ["notifications"],
@@ -87,20 +89,28 @@ function NotificationsPage() {
   });
 
   const markAll = async () => {
+    if (markingAll) return;
+    setMarkingAll(true);
     try {
       await markNotificationsRead();
       await qc.invalidateQueries({ queryKey: ["notifications"] });
     } catch {
       toast.error("تعذّر تحديث الإشعارات");
+    } finally {
+      setMarkingAll(false);
     }
   };
 
   const handleMarkRead = async (id: string) => {
+    if (markingId === id) return;
+    setMarkingId(id);
     try {
       await markNotificationRead(id);
       await qc.invalidateQueries({ queryKey: ["notifications"] });
     } catch {
       toast.error("تعذّر تحديث الإشعار");
+    } finally {
+      setMarkingId(null);
     }
   };
 
@@ -109,7 +119,7 @@ function NotificationsPage() {
     setDeletingId(id);
     try {
       await deleteNotification(id);
-      qc.invalidateQueries({ queryKey: ["notifications"] });
+      await qc.invalidateQueries({ queryKey: ["notifications"] });
       toast.success("تم حذف الإشعار");
     } catch {
       toast.error("فشل الحذف");
@@ -143,9 +153,10 @@ function NotificationsPage() {
             <button
               type="button"
               onClick={() => void markAll()}
-              className="min-h-11 px-2 text-sm font-bold text-accent-ink"
+              disabled={markingAll}
+              className="min-h-11 px-2 text-sm font-bold text-accent-ink disabled:opacity-50"
             >
-              قراءة الكل
+              {markingAll ? "جارٍ التحديث..." : "قراءة الكل"}
             </button>
           )}
         </header>
@@ -251,9 +262,15 @@ function NotificationsPage() {
                         <button
                           type="button"
                           onClick={() => void handleMarkRead(n.id)}
-                          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-primary-soft text-xs font-bold text-accent-ink"
+                          disabled={markingId === n.id}
+                          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl bg-primary-soft text-xs font-bold text-accent-ink disabled:opacity-50"
                         >
-                          <CheckCircle2 className="size-4" aria-hidden="true" /> تعيين كمقروء
+                          {markingId === n.id ? (
+                            <span className="size-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
+                          ) : (
+                            <CheckCircle2 className="size-4" aria-hidden="true" />
+                          )}
+                          تعيين كمقروء
                         </button>
                       ) : (
                         <span />
