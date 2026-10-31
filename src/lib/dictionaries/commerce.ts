@@ -112,7 +112,8 @@ export const commerce: DictGroup = {
     checkout_company_required: "اختر شركة توصيل تغطي ولايتك وبلديتك للمتابعة.",
     checkout_company_placeholder: "— اختر شركة توصيل —",
     checkout_companies_loading: "جارٍ تحميل الشركات...",
-    checkout_companies_none: "لا توجد شركة توصيل معتمدة تغطي الولاية والبلدية المحددتين حاليًا. يمكنك اختيار الاستلام من المكتب.",
+    checkout_companies_none:
+      "لا توجد شركة توصيل معتمدة تغطي الولاية والبلدية المحددتين حاليًا. يمكنك اختيار الاستلام من المكتب.",
     checkout_address_detail_placeholder: "عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)",
     checkout_fee_note: "رسوم التوصيل تُحسب حسب الولاية وتظهر في الملخص أسفل الشاشة.",
     checkout_payment_cod_label: "الدفع عند الاستلام",
@@ -285,10 +286,12 @@ export const commerce: DictGroup = {
     checkout_fee_by_wilaya: "Set by wilaya",
     checkout_fee_free: "Free",
     checkout_company_label: "Delivery company (required for home delivery)",
-    checkout_company_required: "Choose a delivery company that covers your wilaya and commune to continue.",
+    checkout_company_required:
+      "Choose a delivery company that covers your wilaya and commune to continue.",
     checkout_company_placeholder: "— Choose a delivery company —",
     checkout_companies_loading: "Loading companies...",
-    checkout_companies_none: "No approved delivery company currently covers the selected wilaya and commune. You can choose desk pickup instead.",
+    checkout_companies_none:
+      "No approved delivery company currently covers the selected wilaya and commune. You can choose desk pickup instead.",
     checkout_address_detail_placeholder: "Detailed delivery address (required for home delivery)",
     checkout_fee_note:
       "Delivery fees depend on your wilaya and appear in the summary at the bottom of the screen.",

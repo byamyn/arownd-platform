@@ -161,11 +161,16 @@ function CheckoutPage() {
     2:
       !!wilayaPricing.data &&
       (deliveryType === "desk" ||
-        (!!deliveryCompanyId && !!selectedDeliveryCoverage && availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId))),
+        (!!deliveryCompanyId &&
+          !!selectedDeliveryCoverage &&
+          availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId))),
     3:
       !!wilayaPricing.data &&
       (deliveryType === "desk" ||
-        !!address.trim() && !!deliveryCompanyId && !!selectedDeliveryCoverage && availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId)), // عنوان التوصيل والشركة مطلوبان للتوصيل للمنزل
+        (!!address.trim() &&
+          !!deliveryCompanyId &&
+          !!selectedDeliveryCoverage &&
+          availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId))), // عنوان التوصيل والشركة مطلوبان للتوصيل للمنزل
   };
 
   if (!ready) return null;
@@ -293,36 +298,38 @@ function CheckoutPage() {
       {/* شريط التقدم */}
       <div className="space-y-2 rounded-3xl border border-border bg-card p-3 shadow-soft">
         <div className="flex items-center justify-between px-1">
-          <span className="text-[10px] font-bold tracking-wider text-muted-foreground">STEP {String(step+1).padStart(2,"0")} / 04</span>
+          <span className="text-[10px] font-bold tracking-wider text-muted-foreground">
+            STEP {String(step + 1).padStart(2, "0")} / 04
+          </span>
           <span className="text-xs font-bold text-accent-ink">{t(STEP_KEYS[step])}</span>
         </div>
         <div className="flex items-center gap-1.5">
-        {STEP_KEYS.map((key, i) => (
-          <div key={key} className="flex-1">
-            <button
-              onClick={() => i < step && setStep(i)}
-              disabled={i > step}
-              className={cn(
-                "flex w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-[11px] font-bold transition",
-                i === step
-                  ? "bg-primary text-accent-ink-foreground"
-                  : i < step
-                    ? "bg-primary/15 text-accent-ink"
-                    : "bg-neutral-100 text-neutral-400",
-              )}
-            >
-              <span
+          {STEP_KEYS.map((key, i) => (
+            <div key={key} className="flex-1">
+              <button
+                onClick={() => i < step && setStep(i)}
+                disabled={i > step}
                 className={cn(
-                  "flex size-4 shrink-0 items-center justify-center rounded-full text-[9px]",
-                  i < step ? "bg-primary text-accent-ink-foreground" : "bg-background/60",
+                  "flex w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-[11px] font-bold transition",
+                  i === step
+                    ? "bg-primary text-accent-ink-foreground"
+                    : i < step
+                      ? "bg-primary/15 text-accent-ink"
+                      : "bg-neutral-100 text-neutral-400",
                 )}
               >
-                {i < step ? <Check className="size-3" /> : i + 1}
-              </span>
-              <span className="hidden min-w-0 truncate sm:inline">{t(key)}</span>
-            </button>
-          </div>
-        ))}
+                <span
+                  className={cn(
+                    "flex size-4 shrink-0 items-center justify-center rounded-full text-[9px]",
+                    i < step ? "bg-primary text-accent-ink-foreground" : "bg-background/60",
+                  )}
+                >
+                  {i < step ? <Check className="size-3" /> : i + 1}
+                </span>
+                <span className="hidden min-w-0 truncate sm:inline">{t(key)}</span>
+              </button>
+            </div>
+          ))}
         </div>
       </div>
 
@@ -336,7 +343,10 @@ function CheckoutPage() {
           </div>
           <div className="space-y-3">
             {rows.map((row) => (
-              <div key={row.offerId} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-3">
+              <div
+                key={row.offerId}
+                className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-3"
+              >
                 <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-muted">
                   {row.offer && primaryImage(row.offer.images) && (
                     <img
@@ -508,7 +518,11 @@ function CheckoutPage() {
                 <select
                   value={deliveryCompanyId ?? ""}
                   onChange={(e) => setDeliveryCompanyId(e.target.value || null)}
-                  disabled={deliveryCompanies.isLoading || deliveryCoverage.isLoading || availableDeliveryCompanies.length === 0}
+                  disabled={
+                    deliveryCompanies.isLoading ||
+                    deliveryCoverage.isLoading ||
+                    availableDeliveryCompanies.length === 0
+                  }
                   className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <option value="">{t("checkout_company_placeholder")}</option>

@@ -53,7 +53,11 @@ function ProfilePage() {
   const qc = useQueryClient();
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
   const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user });
-  const reservations = useQuery({ queryKey: ["my-reservations"], queryFn: fetchMyReservations, enabled: !!user });
+  const reservations = useQuery({
+    queryKey: ["my-reservations"],
+    queryFn: fetchMyReservations,
+    enabled: !!user,
+  });
   const myStore = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   // user_roles يقبل عدة صفوف لكل مستخدم (customer/merchant/admin) —
   // نقرأها كمصفوفة؛ الاستعلام بـ.single() كان يفشل بخطأ 406 عند أكثر من صف
@@ -303,32 +307,37 @@ function ProfilePage() {
           <SectionTitle>نشاطك</SectionTitle>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-            { to: "/orders", Icon: Package, label: "طلباتي", value: orders.data?.length ?? 0 },
-            { to: "/reservations", Icon: CalendarDays, label: "حجوزاتي", value: reservations.data?.length ?? 0 },
-            { to: "/favorites", Icon: Heart, label: "المفضلة", value: favCount },
-            { to: "/wallet", Icon: Wallet, label: "المحفظة", value: null },
-          ].map(({ to, Icon, label, value }) => (
-            <Link
-              key={to}
-              to={to}
-              className="card-premium flex min-h-24 flex-col items-center justify-center gap-1 p-3 text-center"
-            >
-              <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
-                <Icon className="size-4.5" aria-hidden="true" />
-              </span>
-              <span className="text-xs font-bold text-foreground">{label}</span>
-              {value !== null && (
-                <span className="text-lg font-extrabold leading-none text-foreground">
-                  {to === "/orders"
-                    ? orders.isLoading
-                      ? "…"
-                      : orders.isError
-                        ? "—"
-                        : value
-                    : value}
+              { to: "/orders", Icon: Package, label: "طلباتي", value: orders.data?.length ?? 0 },
+              {
+                to: "/reservations",
+                Icon: CalendarDays,
+                label: "حجوزاتي",
+                value: reservations.data?.length ?? 0,
+              },
+              { to: "/favorites", Icon: Heart, label: "المفضلة", value: favCount },
+              { to: "/wallet", Icon: Wallet, label: "المحفظة", value: null },
+            ].map(({ to, Icon, label, value }) => (
+              <Link
+                key={to}
+                to={to}
+                className="card-premium flex min-h-24 flex-col items-center justify-center gap-1 p-3 text-center"
+              >
+                <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+                  <Icon className="size-4.5" aria-hidden="true" />
                 </span>
-              )}
-            </Link>
+                <span className="text-xs font-bold text-foreground">{label}</span>
+                {value !== null && (
+                  <span className="text-lg font-extrabold leading-none text-foreground">
+                    {to === "/orders"
+                      ? orders.isLoading
+                        ? "…"
+                        : orders.isError
+                          ? "—"
+                          : value
+                      : value}
+                  </span>
+                )}
+              </Link>
             ))}
           </div>
         </section>

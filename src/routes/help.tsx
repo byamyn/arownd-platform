@@ -60,7 +60,11 @@ function HelpPage() {
       />
       <PageHeader title="مساعدة والأسئلة الشائعة" subtitle="كل ما يمكنك فعله في Arownd" />
 
-      <div className="grid grid-cols-2 gap-2 sm:grid-cols-4" role="tablist" aria-label="أقسام المساعدة">
+      <div
+        className="grid grid-cols-2 gap-2 sm:grid-cols-4"
+        role="tablist"
+        aria-label="أقسام المساعدة"
+      >
         {TABS.map((t) => (
           <button
             key={t.id}
@@ -179,7 +183,6 @@ function MerchantSection() {
   );
 }
 
-
 function DeliveryPartnerSection() {
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -220,37 +223,75 @@ function DeliveryPartnerSection() {
       <div className="rounded-xl border border-border/70 p-3">
         <p className="text-sm font-semibold">كيف تبدأ الشراكة؟</p>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          أرسل بيانات شركتك ومناطق التغطية والخدمات التي تقدمها. سيصل طلبك إلى فريق Arownd
-          لمراجعته والتواصل معك لمناقشة تفاصيل التعاون والعقد.
+          أرسل بيانات شركتك ومناطق التغطية والخدمات التي تقدمها. سيصل طلبك إلى فريق Arownd لمراجعته
+          والتواصل معك لمناقشة تفاصيل التعاون والعقد.
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <label className="block space-y-1.5">
           <span className="text-xs font-semibold">اسم شركة التوصيل *</span>
-          <input name="company" required maxLength={120} className={inputClass} placeholder="الاسم التجاري للشركة" />
+          <input
+            name="company"
+            required
+            maxLength={120}
+            className={inputClass}
+            placeholder="الاسم التجاري للشركة"
+          />
         </label>
         <label className="block space-y-1.5">
           <span className="text-xs font-semibold">اسم الشخص المسؤول *</span>
-          <input name="contact" required maxLength={100} className={inputClass} placeholder="الاسم واللقب" />
+          <input
+            name="contact"
+            required
+            maxLength={100}
+            className={inputClass}
+            placeholder="الاسم واللقب"
+          />
         </label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className="block space-y-1.5">
             <span className="text-xs font-semibold">رقم الهاتف *</span>
-            <input name="phone" type="tel" required maxLength={30} className={inputClass} placeholder="05 / 06 / 07 ..." />
+            <input
+              name="phone"
+              type="tel"
+              required
+              maxLength={30}
+              className={inputClass}
+              placeholder="05 / 06 / 07 ..."
+            />
           </label>
           <label className="block space-y-1.5">
             <span className="text-xs font-semibold">البريد الإلكتروني *</span>
-            <input name="email" type="email" required maxLength={160} className={inputClass} placeholder="company@example.com" />
+            <input
+              name="email"
+              type="email"
+              required
+              maxLength={160}
+              className={inputClass}
+              placeholder="company@example.com"
+            />
           </label>
         </div>
         <label className="block space-y-1.5">
           <span className="text-xs font-semibold">ولايات ومناطق التغطية *</span>
-          <input name="coverage" required maxLength={300} className={inputClass} placeholder="مثال: الجزائر، البليدة، بومرداس..." />
+          <input
+            name="coverage"
+            required
+            maxLength={300}
+            className={inputClass}
+            placeholder="مثال: الجزائر، البليدة، بومرداس..."
+          />
         </label>
         <label className="block space-y-1.5">
           <span className="text-xs font-semibold">نبذة عن الخدمات وإمكانات التوصيل</span>
-          <textarea name="details" rows={4} maxLength={1500} className={inputClass} placeholder="نوع خدمات التوصيل، حجم العمليات، وأي معلومات تساعدنا على تقييم طلبكم..." />
+          <textarea
+            name="details"
+            rows={4}
+            maxLength={1500}
+            className={inputClass}
+            placeholder="نوع خدمات التوصيل، حجم العمليات، وأي معلومات تساعدنا على تقييم طلبكم..."
+          />
         </label>
         <button
           type="submit"
@@ -267,8 +308,8 @@ function DeliveryPartnerSection() {
         </a>
       </p>
       <p className="text-[11px] leading-relaxed text-muted-foreground">
-        عند الضغط على الإرسال، سيفتح تطبيق البريد في جهازك برسالة مجهزة بالبيانات المدخلة.
-        لن يُرسل الطلب تلقائيًا؛ يجب مراجعة الرسالة ثم الضغط على إرسال من تطبيق البريد.
+        عند الضغط على الإرسال، سيفتح تطبيق البريد في جهازك برسالة مجهزة بالبيانات المدخلة. لن يُرسل
+        الطلب تلقائيًا؛ يجب مراجعة الرسالة ثم الضغط على إرسال من تطبيق البريد.
       </p>
     </section>
   );

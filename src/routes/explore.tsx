@@ -138,7 +138,11 @@ function Explore() {
 
   const min = minText !== "" && Number.isFinite(Number(minText)) ? Number(minText) : undefined;
   const max = maxText !== "" && Number.isFinite(Number(maxText)) ? Number(maxText) : undefined;
-  const activeFilterCount = Number(Boolean(s.cat)) + Number(min != null || max != null) + Number(inStockOnly) + Number(sort !== "newest");
+  const activeFilterCount =
+    Number(Boolean(s.cat)) +
+    Number(min != null || max != null) +
+    Number(inStockOnly) +
+    Number(sort !== "newest");
   const feedSig = JSON.stringify([q, s.cat, sort, inStockOnly, min, max, s.w, s.commune]);
 
   // أي تغيير في البحث/الفلاتر يعيد البطاقة إلى الأولى (سابقًا كان الفرز يترك فهرسًا قديمًا)
@@ -333,9 +337,15 @@ function Explore() {
       <header className="sticky top-0 z-30 mx-auto w-full max-w-xl border-b border-border/70 bg-background/95 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] shadow-sm shadow-black/[0.02] backdrop-blur-xl">
         <div className="mb-3 flex items-end justify-between gap-3">
           <div className="min-w-0">
-            <p className="mb-1 text-[11px] font-bold tracking-[0.16em] text-primary uppercase">AROWND</p>
-            <h1 className="text-2xl font-black tracking-tight text-foreground">{t("explore_heading")}</h1>
-            <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{t("explore_description")}</p>
+            <p className="mb-1 text-[11px] font-bold tracking-[0.16em] text-primary uppercase">
+              AROWND
+            </p>
+            <h1 className="text-2xl font-black tracking-tight text-foreground">
+              {t("explore_heading")}
+            </h1>
+            <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">
+              {t("explore_description")}
+            </p>
           </div>
           <div className="mb-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary">
             <Search className="size-5" aria-hidden="true" />
@@ -555,8 +565,12 @@ function Explore() {
         {current && mode === "grid" && (
           <div className="mx-auto mt-4 max-w-xl space-y-4">
             <div className="flex items-center justify-between px-0.5">
-              <h2 className="text-sm font-extrabold tracking-tight text-foreground">{t("explore_discovery")}</h2>
-              <span className="text-[11px] font-medium text-muted-foreground">{displayProducts.length}</span>
+              <h2 className="text-sm font-extrabold tracking-tight text-foreground">
+                {t("explore_discovery")}
+              </h2>
+              <span className="text-[11px] font-medium text-muted-foreground">
+                {displayProducts.length}
+              </span>
             </div>
             <div className="grid grid-cols-2 gap-3">
               {displayProducts.map((g) => (

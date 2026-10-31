@@ -149,7 +149,10 @@ function OrdersPage() {
               year: "numeric",
             });
             return (
-              <article key={o.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+              <article
+                key={o.id}
+                className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+              >
                 <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
                   <div className="min-w-0">
                     <p className="text-sm font-extrabold text-foreground">
@@ -203,7 +206,12 @@ function OrdersPage() {
                   <button
                     type="button"
                     onClick={async () => {
-                      if (!window.confirm("هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.")) return;
+                      if (
+                        !window.confirm(
+                          "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                        )
+                      )
+                        return;
                       try {
                         await archiveMyActivity("order", o.id);
                         await queryClient.invalidateQueries({ queryKey: ["my-orders"] });

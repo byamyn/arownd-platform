@@ -519,7 +519,10 @@ export async function cancelReservation(id: string) {
 type UserArchiveClient = {
   from: (table: string) => {
     select: (columns: string) => {
-      eq: (column: string, value: string) => Promise<{
+      eq: (
+        column: string,
+        value: string,
+      ) => Promise<{
         data: { activity_type: string; activity_id: string }[] | null;
         error: Error | null;
       }>;
@@ -551,9 +554,7 @@ async function fetchArchivedActivityIds(
     .eq("user_id", userId);
   if (error) throw error;
   return new Set(
-    (data ?? [])
-      .filter((row) => row.activity_type === activityType)
-      .map((row) => row.activity_id),
+    (data ?? []).filter((row) => row.activity_type === activityType).map((row) => row.activity_id),
   );
 }
 
@@ -827,7 +828,10 @@ export async function createOrderWithDelivery(
       if (linkError) throw linkError;
     } catch (shipmentError) {
       // لا نطلب من المستخدم إعادة إنشاء الطلب بعد أن أصبح موجودًا؛ نسجل المشكلة للمراجعة.
-      console.error("[createOrderWithDelivery] shipment link failed after order creation", shipmentError);
+      console.error(
+        "[createOrderWithDelivery] shipment link failed after order creation",
+        shipmentError,
+      );
     }
   }
 

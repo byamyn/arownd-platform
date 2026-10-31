@@ -414,27 +414,75 @@ function ProductPage() {
           <section className="overflow-hidden rounded-3xl border border-border bg-card p-4 shadow-soft">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
-                {p.brand && <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">{p.brand}</span>}
-                {p.category && <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{categoryLabel(p.category)}</span>}
+                {p.brand && (
+                  <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
+                    {p.brand}
+                  </span>
+                )}
+                {p.category && (
+                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+                    {categoryLabel(p.category)}
+                  </span>
+                )}
               </div>
               <StockBadge level={level} />
             </div>
-            <h1 className="mt-4 text-[1.65rem] font-extrabold leading-tight tracking-tight text-foreground">{p.name}</h1>
+            <h1 className="mt-4 text-[1.65rem] font-extrabold leading-tight tracking-tight text-foreground">
+              {p.name}
+            </h1>
             {selected && (
               <div className="mt-4 flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
                 <div>
-                  <p className="text-xs font-medium text-muted-foreground">{t("product_price_label")}</p>
+                  <p className="text-xs font-medium text-muted-foreground">
+                    {t("product_price_label")}
+                  </p>
                   <div className="mt-1 flex flex-wrap items-center gap-2">
-                    <span className="text-3xl font-black tracking-tight text-foreground">{formatDA(selected.price)}</span>
-                    {selected.old_price && selected.old_price > selected.price && <span className="text-sm text-muted-foreground line-through">{formatDA(selected.old_price)}</span>}
-                    {discount > 0 && <span className="rounded-full bg-danger-soft px-2.5 py-1 text-xs font-bold text-danger">-{discount}%</span>}
+                    <span className="text-3xl font-black tracking-tight text-foreground">
+                      {formatDA(selected.price)}
+                    </span>
+                    {selected.old_price && selected.old_price > selected.price && (
+                      <span className="text-sm text-muted-foreground line-through">
+                        {formatDA(selected.old_price)}
+                      </span>
+                    )}
+                    {discount > 0 && (
+                      <span className="rounded-full bg-danger-soft px-2.5 py-1 text-xs font-bold text-danger">
+                        -{discount}%
+                      </span>
+                    )}
                   </div>
                 </div>
-                {sorted.length > 1 && <span className="rounded-xl bg-muted px-3 py-2 text-[11px] font-semibold text-muted-foreground">{t("product_available_in", {count:sorted.length,min:formatDA(sorted[0]!.price),max:formatDA(sorted[sorted.length-1]!.price)})}</span>}
+                {sorted.length > 1 && (
+                  <span className="rounded-xl bg-muted px-3 py-2 text-[11px] font-semibold text-muted-foreground">
+                    {t("product_available_in", {
+                      count: sorted.length,
+                      min: formatDA(sorted[0]!.price),
+                      max: formatDA(sorted[sorted.length - 1]!.price),
+                    })}
+                  </span>
+                )}
               </div>
             )}
-            {selected && <div className="mt-3 flex items-start gap-2 rounded-2xl bg-muted/60 px-3 py-2.5"><Timer className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" /><p className="text-[11px] leading-relaxed text-muted-foreground">{t("product_stock_confirmed")} {selected.last_confirmed_at ? formatDistanceToNow(new Date(selected.last_confirmed_at), {addSuffix:true,locale:ar}) : t("product_stock_not_confirmed")} · {selected.store.name}</p></div>}
-            {p.description && <p className="mt-4 border-t border-border pt-4 text-sm leading-7 text-muted-foreground">{p.description}</p>}
+            {selected && (
+              <div className="mt-3 flex items-start gap-2 rounded-2xl bg-muted/60 px-3 py-2.5">
+                <Timer className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
+                <p className="text-[11px] leading-relaxed text-muted-foreground">
+                  {t("product_stock_confirmed")}{" "}
+                  {selected.last_confirmed_at
+                    ? formatDistanceToNow(new Date(selected.last_confirmed_at), {
+                        addSuffix: true,
+                        locale: ar,
+                      })
+                    : t("product_stock_not_confirmed")}{" "}
+                  · {selected.store.name}
+                </p>
+              </div>
+            )}
+            {p.description && (
+              <p className="mt-4 border-t border-border pt-4 text-sm leading-7 text-muted-foreground">
+                {p.description}
+              </p>
+            )}
           </section>
           {/* Options */}
           <div className="space-y-4">

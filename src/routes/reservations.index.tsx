@@ -18,12 +18,16 @@ export const Route = createFileRoute("/reservations/")({
 type ReservationTab = "all" | "active" | "ended" | "cancelled";
 
 function isExpired(reservation: { status: string; expires_at: string }) {
-  return reservation.status === "expired" ||
-    (reservation.status === "pending" && new Date(reservation.expires_at).getTime() <= Date.now());
+  return (
+    reservation.status === "expired" ||
+    (reservation.status === "pending" && new Date(reservation.expires_at).getTime() <= Date.now())
+  );
 }
 
 function canArchive(reservation: { status: string; expires_at: string }) {
-  return ["collected", "cancelled", "expired"].includes(reservation.status) || isExpired(reservation);
+  return (
+    ["collected", "cancelled", "expired"].includes(reservation.status) || isExpired(reservation)
+  );
 }
 
 function reservationStatus(reservation: { status: string; expires_at: string }) {
@@ -51,8 +55,12 @@ function ReservationsPage() {
       <div className="flex min-h-[65vh] flex-col items-center justify-center gap-4 px-6 text-center">
         <CalendarDays className="size-10 text-accent-ink" />
         <h1 className="text-h1 text-foreground">حجوزاتي</h1>
-        <p className="max-w-xs text-sm text-muted-foreground">سجّل الدخول لمتابعة حجوزاتك وإدارتها.</p>
-        <Link to="/auth" search={{ redirect: "/reservations" }} className="btn-primary">تسجيل الدخول</Link>
+        <p className="max-w-xs text-sm text-muted-foreground">
+          سجّل الدخول لمتابعة حجوزاتك وإدارتها.
+        </p>
+        <Link to="/auth" search={{ redirect: "/reservations" }} className="btn-primary">
+          تسجيل الدخول
+        </Link>
       </div>
     );
   }
@@ -75,7 +83,9 @@ function ReservationsPage() {
   return (
     <main className="space-y-4 px-4 pb-24 pt-5">
       <header className="flex items-center gap-3">
-        <Link to="/profile" aria-label="العودة إلى الملف الشخصي" className="icon-btn">‹</Link>
+        <Link to="/profile" aria-label="العودة إلى الملف الشخصي" className="icon-btn">
+          ‹
+        </Link>
         <div>
           <h1 className="text-h1 text-foreground">حجوزاتي</h1>
           <p className="text-xs text-muted-foreground">تابع حجوزاتك وحالة الاستلام</p>
@@ -97,18 +107,28 @@ function ReservationsPage() {
 
       {reservations.isLoading && (
         <div className="space-y-3">
-          {[0, 1, 2].map((i) => <div key={i} className="h-36 animate-pulse rounded-2xl border border-border bg-card" />)}
+          {[0, 1, 2].map((i) => (
+            <div key={i} className="h-36 animate-pulse rounded-2xl border border-border bg-card" />
+          ))}
         </div>
       )}
       {reservations.isError && (
-        <ErrorState scope="reservations" error={reservations.error} onRetry={() => reservations.refetch()} />
+        <ErrorState
+          scope="reservations"
+          error={reservations.error}
+          onRetry={() => reservations.refetch()}
+        />
       )}
       {!reservations.isLoading && !reservations.isError && filtered.length === 0 && (
         <EmptyState
           Icon={CalendarDays}
           title={tab === "all" ? "لا توجد حجوزات بعد" : "لا توجد حجوزات في هذا القسم"}
           hint="عندما تحجز منتجًا من أحد المتاجر، سيظهر هنا."
-          action={<Link to="/explore" className="btn-primary">اكتشف المنتجات</Link>}
+          action={
+            <Link to="/explore" className="btn-primary">
+              اكتشف المنتجات
+            </Link>
+          }
         />
       )}
 
@@ -117,28 +137,46 @@ function ReservationsPage() {
           const archivable = canArchive(reservation);
           const expired = isExpired(reservation);
           const status = reservationStatus(reservation);
-          const statusStyle = reservation.status === "cancelled"
-            ? "bg-danger-soft text-danger"
-            : reservation.status === "collected"
-              ? "bg-success-soft text-success"
-              : expired
-                ? "bg-muted text-muted-foreground"
-                : "bg-primary-soft text-accent-ink";
+          const statusStyle =
+            reservation.status === "cancelled"
+              ? "bg-danger-soft text-danger"
+              : reservation.status === "collected"
+                ? "bg-success-soft text-success"
+                : expired
+                  ? "bg-muted text-muted-foreground"
+                  : "bg-primary-soft text-accent-ink";
           return (
-            <article key={reservation.id} className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+            <article
+              key={reservation.id}
+              className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+            >
               <div className="absolute inset-y-0 start-0 w-1 bg-primary" />
               <div className="space-y-4 p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
-                    <p className="truncate text-base font-extrabold text-foreground">{reservation.offer?.product?.name ?? "منتج محجوز"}</p>
-                    <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground"><Store className="size-3.5" />{reservation.store?.name ?? "المتجر"}</p>
+                    <p className="truncate text-base font-extrabold text-foreground">
+                      {reservation.offer?.product?.name ?? "منتج محجوز"}
+                    </p>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                      <Store className="size-3.5" />
+                      {reservation.store?.name ?? "المتجر"}
+                    </p>
                   </div>
-                  <span className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${statusStyle}`}>{status}</span>
+                  <span
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${statusStyle}`}
+                  >
+                    {status}
+                  </span>
                 </div>
 
                 <div className="rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 text-center">
                   <p className="text-[11px] font-semibold text-muted-foreground">رمز الحجز</p>
-                  <p className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground" dir="ltr">{reservation.code}</p>
+                  <p
+                    className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground"
+                    dir="ltr"
+                  >
+                    {reservation.code}
+                  </p>
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
@@ -148,15 +186,27 @@ function ReservationsPage() {
                   </div>
                   <div className="rounded-2xl bg-background p-3">
                     <p className="text-[11px] text-muted-foreground">سعر الوحدة</p>
-                    <p className="mt-1 text-sm font-extrabold text-accent-ink">{reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}</p>
+                    <p className="mt-1 text-sm font-extrabold text-accent-ink">
+                      {reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}
+                    </p>
                   </div>
                   <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
                     <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                    <div className="min-w-0"><p className="text-[11px] text-muted-foreground">تاريخ الحجز</p><p className="mt-1 text-xs font-semibold text-foreground">{formatDate(reservation.created_at)}</p></div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] text-muted-foreground">تاريخ الحجز</p>
+                      <p className="mt-1 text-xs font-semibold text-foreground">
+                        {formatDate(reservation.created_at)}
+                      </p>
+                    </div>
                   </div>
                   <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
                     <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
-                    <div className="min-w-0"><p className="text-[11px] text-muted-foreground">انتهاء الصلاحية</p><p className="mt-1 text-xs font-semibold text-foreground">{expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}</p></div>
+                    <div className="min-w-0">
+                      <p className="text-[11px] text-muted-foreground">انتهاء الصلاحية</p>
+                      <p className="mt-1 text-xs font-semibold text-foreground">
+                        {expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}
+                      </p>
+                    </div>
                   </div>
                 </div>
 
@@ -165,7 +215,10 @@ function ReservationsPage() {
                     type="button"
                     disabled={cancellingId === reservation.id}
                     onClick={async () => {
-                      if (!window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")) return;
+                      if (
+                        !window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")
+                      )
+                        return;
                       setCancellingId(reservation.id);
                       try {
                         await cancelMyReservation(reservation.id);
@@ -187,7 +240,12 @@ function ReservationsPage() {
                   <button
                     type="button"
                     onClick={async () => {
-                      if (!window.confirm("هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.")) return;
+                      if (
+                        !window.confirm(
+                          "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                        )
+                      )
+                        return;
                       try {
                         await archiveMyActivity("reservation", reservation.id);
                         await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
