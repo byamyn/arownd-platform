@@ -18,7 +18,7 @@ const StoreMap = lazy(() => import("@/components/sooqy/StoreMap"));
 type Sort = "near" | "rating";
 
 export function MapPage() {
-  const { pos, denied, locating, ask } = useGeo();
+  const { pos, locating, ask } = useGeo();
   const { t } = useTranslation();
   const [active, setActive] = useState<string | null>(null);
   const [q, setQ] = useState("");
@@ -77,27 +77,6 @@ export function MapPage() {
               <X className="size-4" />
             </button>
           )}
-        </div>
-        <div className="mt-3 flex items-center justify-between gap-3 px-1">
-          <div className="min-w-0">
-            <p className="text-sm font-extrabold tracking-tight text-foreground">
-              {t("map_title")}
-            </p>
-            <p
-              className="mt-0.5 text-[11px] font-medium text-muted-foreground"
-              role="status"
-              aria-live="polite"
-            >
-              {stores.isLoading
-                ? t("map_loading")
-                : denied
-                  ? t("map_location_hint")
-                  : t("map_store_count", { count: list.length })}
-            </p>
-          </div>
-          <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border/80 bg-card/90 text-[11px] font-bold text-foreground shadow-sm">
-            {list.length}
-          </span>
         </div>
         <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
           <button
@@ -245,6 +224,7 @@ export function MapPage() {
               label={sel.name}
               className="btn-primary !h-11 text-sm"
               mapRef={mapRef}
+              external
             >
               <Navigation className="size-4" />
               {t("map_directions")}
