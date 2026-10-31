@@ -28,6 +28,7 @@ import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
+import { ErrorState } from "@/components/sooqy/error-state";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "الإعدادات — Arownd" }] }),
@@ -54,11 +55,12 @@ function SettingsPage() {
     if (signingOut) return;
     try {
       setSigningOut(true);
-      await supabase.auth.signOut();
+      const { error } = await supabase.auth.signOut();
+      if (error) throw error;
       await qc.invalidateQueries();
       navigate({ to: "/" });
     } catch (error) {
-      console.error("Sign out error:", error);
+      toast.error(error instanceof Error ? error.message : "تعذّر تسجيل الخروج.");
     } finally {
       setSigningOut(false);
     }
@@ -163,7 +165,17 @@ function SettingsPage() {
       <section className="space-y-2">
         <SectionTitle>المتجر</SectionTitle>
         <MenuCard>
-          {myStore.data ? (
+          {myStore.isLoading ? (
+            <div className="m-3 h-14 animate-pulse rounded-xl bg-muted" aria-label="جارٍ تحميل بيانات المتجر" />
+          ) : myStore.isError ? (
+            <div className="p-3">
+              <ErrorState
+                scope="settings-store"
+                error={myStore.error}
+                onRetry={() => myStore.refetch()}
+              />
+            </div>
+          ) : myStore.data ? (
             <MenuRow
               icon={Store}
               label="استوديو التاجر"

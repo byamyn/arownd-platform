@@ -39,6 +39,7 @@ import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
 import { AppShell } from "@/components/sooqy/app-shell";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { ErrorState } from "@/components/sooqy/error-state";
 
 export const Route = createFileRoute("/profile")({
   head: () => ({}),
@@ -215,6 +216,14 @@ function ProfilePage() {
           }
         />
 
+        {profile.isError && (
+          <ErrorState
+            scope="profile"
+            error={profile.error}
+            onRetry={() => profile.refetch()}
+          />
+        )}
+
         {/* بطاقة الهوية: غلاف + صورة متداخلة + بيانات + إحصاءات سريعة */}
         <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
           <div className="h-20 bg-gradient-to-br from-primary via-primary/70 to-primary-soft" />
@@ -327,7 +336,15 @@ function ProfilePage() {
               </span>
               <span className="text-xs font-bold text-foreground">{label}</span>
               {value !== null && (
-                <span className="text-lg font-extrabold leading-none text-foreground">{value}</span>
+                <span className="text-lg font-extrabold leading-none text-foreground">
+                  {to === "/orders"
+                    ? orders.isLoading
+                      ? "…"
+                      : orders.isError
+                        ? "—"
+                        : value
+                    : value}
+                </span>
               )}
             </Link>
           ))}
