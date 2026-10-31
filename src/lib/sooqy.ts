@@ -558,7 +558,7 @@ async function fetchArchivedActivityIds(
   );
 }
 
-/** إلغاء حجز المستخدم عبر RPC آمن يعيد الكمية إلى مخزون المتجر. */
+/** إلغاء حجز المستخدم عبر RPC ذري يتحقق من الملكية ويعيد المخزون. */
 export async function cancelMyReservation(reservationId: string): Promise<void> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("يجب تسجيل الدخول لإلغاء الحجز.");
@@ -566,16 +566,57 @@ export async function cancelMyReservation(reservationId: string): Promise<void> 
   const call = supabase.rpc as unknown as (
     fn: string,
     vars?: Record<string, unknown>,
-  ) => Promise<{ data: unknown; error: Error | null }>;
+  ) => Promise<{ data: unknown; error: { message?: string; code?: string } | null }>;
   const { error } = await call("cancel_reservation", {
     _reservation_id: reservationId,
   });
-  if (error) {
-    if (error.message.includes("not_cancellable")) {
-      throw new Error("لا يمكن إلغاء هذا الحجز؛ قد يكون تم استلامه أو إلغاؤه مسبقًا.");
-    }
-    throw new Error(friendlyError(error));
+  if (!error) return;
+
+  const message = error.message ?? "";
+  if (message.includes("reservation_not_found")) {
+    throw new Error("لم نعثر على هذا الحجز في حسابك.");
   }
+  if (message.includes("reservation_not_cancellable") || message.includes("not_cancellable")) {
+    throw new Error("لا يمكن إلغاء هذا الحجز؛ ربما تم استلامه أو إلغاؤه مسبقًا.");
+  }
+  if (message.includes("reservation_stock_restore_failed")) {
+    throw new Error("تعذر تحديث مخزون المتجر. لم يتم إلغاء الحجز.");
+  }
+  if (message.includes("PGRST202") || message.includes("Could not find the function")) {
+    throw new Error("تعذر الوصول إلى خدمة الإلغاء. حدّث الصفحة ثم حاول مجددًا.");
+  }
+  throw new Error(friendlyError(error));
+}
+
+/** إلغاء طلب قيد الانتظار وإعادة كمياته إلى مخزون المتاجر في معاملة واحدة. */
+export async function cancelMyOrder(orderId: string): Promise<void> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("يجب تسجيل الدخول لإلغاء الطلب.");
+
+  const call = supabase.rpc as unknown as (
+    fn: string,
+    vars?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: { message?: string; code?: string } | null }>;
+  const { error } = await call("cancel_my_order", { _order_id: orderId });
+  if (!error) return;
+
+  const message = error.message ?? "";
+  if (message.includes("order_not_found")) {
+    throw new Error("لم نعثر على هذا الطلب في حسابك.");
+  }
+  if (message.includes("order_not_cancellable")) {
+    throw new Error("لا يمكن إلغاء الطلب بعد بدء معالجته.");
+  }
+  if (message.includes("order_already_processing")) {
+    throw new Error("بدأت شركة التوصيل معالجة هذا الطلب، لذلك لا يمكن إلغاؤه من هنا.");
+  }
+  if (message.includes("order_shipment_not_found")) {
+    throw new Error("تعذر التحقق من شحنة الطلب. لم يتم إلغاء الطلب.");
+  }
+  if (message.includes("PGRST202") || message.includes("Could not find the function")) {
+    throw new Error("تعذر الوصول إلى خدمة الإلغاء. حدّث الصفحة ثم حاول مجددًا.");
+  }
+  throw new Error(friendlyError(error));
 }
 
 export async function fetchMyReservations() {

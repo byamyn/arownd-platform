@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
 import { Bell, Star } from "lucide-react";
@@ -31,8 +31,6 @@ export const Route = createFileRoute("/")({
 
 function Home() {
   const { t, lang } = useTranslation();
-  const navigate = useNavigate();
-  const [q, setQ] = useState("");
   const { pos } = useGeo();
   const changeWilaya = (v: number | null) => {
     setWilaya(v);
@@ -78,10 +76,6 @@ function Home() {
       }),
   });
   const stores = nearbyStores.data ?? [];
-  const goSearch = () => {
-    const term = q.trim();
-    void navigate({ to: "/explore", search: term ? { q: term } : {} });
-  };
   const products = (trending.data?.pages ?? []).flat();
   const topRated = topRatedProducts.data ?? [];
 
@@ -119,19 +113,6 @@ function Home() {
             </Link>
           </div>
         </header>
-
-        {/* الهيرو: عنوان + بحث بارز */}
-        <section className="rounded-3xl border border-border bg-gradient-to-br from-primary-soft via-card to-card p-4 shadow-soft">
-          <h1 className="text-display text-foreground">{t("home_hero_title")}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{t("home_hero_sub")}</p>
-          <SearchField
-            className="mt-4"
-            value={q}
-            onChange={setQ}
-            onSearch={goSearch}
-            placeholder={t("home_search_placeholder")}
-          />
-        </section>
 
         {/* التصنيفات */}
         <section className="space-y-2" aria-label={t("home_browse_categories")}>

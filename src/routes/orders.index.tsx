@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Archive, PackageCheck, Package, Trash2, Truck } from "lucide-react";
+import { Archive, PackageCheck, Package, Trash2, Truck, XCircle } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
-import { archiveMyActivity, fetchMyOrders } from "@/lib/sooqy";
+import { archiveMyActivity, cancelMyOrder, fetchMyOrders } from "@/lib/sooqy";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { cn } from "@/lib/utils";
@@ -38,13 +38,14 @@ function OrdersPage() {
   const { user, ready } = useAuth();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("all");
+  const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
   const orders = useQuery({
     queryKey: ["my-orders"],
     queryFn: fetchMyOrders,
     enabled: !!user,
   });
 
-  // تحديثات حية: تغييرات حالة الطلب (Supabase Realtime)
+  // تحديثات حالة الطلب لحظيًا عبر Supabase Realtime.
   useRealtimeSubscription({
     table: "orders",
     filter: user?.id ? `user_id=eq.${user.id}` : undefined,
@@ -202,6 +203,35 @@ function OrdersPage() {
                 >
                   {t("orders_track")}
                 </Link>
+                {o.status === "pending" && (
+                  <button
+                    type="button"
+                    disabled={cancellingOrderId === o.id}
+                    onClick={async () => {
+                      if (
+                        !window.confirm(
+                          "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
+                        )
+                      ) {
+                        return;
+                      }
+                      setCancellingOrderId(o.id);
+                      try {
+                        await cancelMyOrder(o.id);
+                        await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                        toast.success("تم إلغاء الطلب بنجاح.");
+                      } catch (error) {
+                        toast.error(error instanceof Error ? error.message : "تعذر إلغاء الطلب.");
+                      } finally {
+                        setCancellingOrderId(null);
+                      }
+                    }}
+                    className="mx-4 mb-4 inline-flex min-h-11 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                  >
+                    <XCircle className="size-4" />
+                    {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
+                  </button>
+                )}
                 {(o.status === "delivered" || o.status === "cancelled") && (
                   <button
                     type="button"
