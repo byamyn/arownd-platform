@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
-import { geoErrorMessage, useGeo } from "@/lib/geo";
+import { directionsUrl, geoErrorMessage, useGeo } from "@/lib/geo";
 import { cn } from "@/lib/utils";
 import { InAppNavigation } from "./InAppNavigation";
 import * as maplibregl from "maplibre-gl";
@@ -17,6 +17,7 @@ export function DirectionsButton({
   children,
   ariaLabel,
   mapRef,
+  external = false,
 }: {
   lat?: number | null;
   lng?: number | null;
@@ -25,12 +26,17 @@ export function DirectionsButton({
   children?: ReactNode;
   ariaLabel?: string;
   mapRef?: React.RefObject<maplibregl.Map | null>;
+  external?: boolean;
 }) {
   const { pos, ask, locating } = useGeo();
   const [busy, setBusy] = useState(false);
   const [showNav, setShowNav] = useState(false);
 
   const handleOpen = async () => {
+    if (external && lat != null && lng != null) {
+      window.open(directionsUrl(lat, lng, label), "_blank", "noopener,noreferrer");
+      return;
+    }
     if (busy) return;
     setBusy(true);
     try {
