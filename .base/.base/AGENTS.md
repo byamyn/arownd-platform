@@ -4,9 +4,8 @@
 - Frontend hook: src/hooks/use-realtime.ts (useRealtimeSubscription) invalidates React Query caches on postgres_changes. Used in notifications, orders, orders.$orderId, delivery-dashboard, studio.shipments, admin.delivery-companies.
 - Admin RLS: admin role reads/updates all profiles, user_roles, orders, stores, offers, products, reservations, reviews, notifications, delivery_companies, shipments, coverage areas, services, product images.
 - Shipment status change triggers customer notification (notify_shipment_status).
-- Direct Postgres (IPv6) unreachable from this env; use pooler IPv4:
-  postgresql://postgres.nagzoafkitfsqlcwsdau:Amine.2004mohamed@aws-0-eu-west-1.pooler.supabase.com:6543/postgres
-- Apply migrations: `POOLER=...; supabase db push --db-url "$POOLER" --yes` then `DATABASE_URL="$POOLER" node scripts/apply-migrations.mjs`.
+- Database connection credentials must be stored only in local environment variables or CI secrets, never in repository files.
+- Apply migrations only through an authenticated local environment or approved CI secrets.
 - Storage buckets: store-media, product-media, receipts.
 - RLS: customers read approved delivery companies/coverage/services; insert shipments for own orders; merchants read shipments of own orders; delivery companies insert status logs/tracking; admins approve companies.
 
