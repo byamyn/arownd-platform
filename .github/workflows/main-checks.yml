@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
   workflow_dispatch:
 
 permissions:
@@ -15,11 +18,11 @@ concurrency:
 
 jobs:
   checks:
-    name: TypeScript, ESLint and Vitest
+    name: TypeScript, ESLint, Vitest and production build
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     steps:
-      - name: Checkout main
+      - name: Checkout source
         uses: actions/checkout@v4
 
       - name: Set up Node.js 22
@@ -39,3 +42,6 @@ jobs:
 
       - name: Vitest
         run: npm test
+
+      - name: Vercel production build
+        run: npm run build:vercel
