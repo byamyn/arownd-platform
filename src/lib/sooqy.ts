@@ -557,6 +557,26 @@ async function fetchArchivedActivityIds(
   );
 }
 
+/** إلغاء حجز المستخدم عبر RPC آمن يعيد الكمية إلى مخزون المتجر. */
+export async function cancelMyReservation(reservationId: string): Promise<void> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("يجب تسجيل الدخول لإلغاء الحجز.");
+
+  const call = supabase.rpc as unknown as (
+    fn: string,
+    vars?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: Error | null }>;
+  const { error } = await call("cancel_reservation", {
+    _reservation_id: reservationId,
+  });
+  if (error) {
+    if (error.message.includes("not_cancellable")) {
+      throw new Error("لا يمكن إلغاء هذا الحجز؛ قد يكون تم استلامه أو إلغاؤه مسبقًا.");
+    }
+    throw new Error(friendlyError(error));
+  }
+}
+
 export async function fetchMyReservations() {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) return [];
