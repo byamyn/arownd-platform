@@ -12,7 +12,6 @@ import {
   Package,
   Pencil,
   Phone,
-  Settings,
   Shield,
   Store,
   User,
@@ -300,7 +299,7 @@ function ProfilePage() {
         <section className="space-y-2" aria-label="نشاط الحساب">
           <SectionTitle>نشاطك</SectionTitle>
           <div className="grid grid-cols-3 gap-2">
-          {[
+            {[
             { to: "/orders", Icon: Package, label: "طلباتي", value: orders.data?.length ?? 0 },
             { to: "/favorites", Icon: Heart, label: "المفضلة", value: favCount },
             { to: "/wallet", Icon: Wallet, label: "المحفظة", value: null },
@@ -326,7 +325,7 @@ function ProfilePage() {
                 </span>
               )}
             </Link>
-          ))}
+            ))}
           </div>
         </section>
 
