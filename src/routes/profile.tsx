@@ -238,7 +238,7 @@ function ProfilePage() {
                 <input
                   ref={avatarInputRef}
                   type="file"
-                  accept="image/*"
+                  accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/heic,image/heif"
                   onChange={(e) => {
                     const f = e.target.files?.[0] ?? null;
                     setAvatar(f);
