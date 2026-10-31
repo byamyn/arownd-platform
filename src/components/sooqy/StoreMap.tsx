@@ -128,6 +128,7 @@ const StoreMapComponent = React.memo(
     }
   >(function StoreMapComponent({ center, user, stores = [], activeId, onSelect }, ref) {
     const mapRef = useRef<maplibregl.Map | null>(null);
+    const initialCenterRef = useRef(center);
     // Expose map instance to parent via ref
     useEffect(() => {
       if (ref && typeof ref === "object" && "current" in ref) {
@@ -195,7 +196,7 @@ const StoreMapComponent = React.memo(
       const map = new maplibregl.Map({
         container: el,
         style: SOOQY_VECTOR_STYLE as maplibregl.StyleSpecification,
-        center: [center.lng, center.lat] as [number, number],
+        center: [initialCenterRef.current.lng, initialCenterRef.current.lat] as [number, number],
         zoom: 6,
         attributionControl: { compact: true },
         dragRotate: false,
@@ -311,7 +312,7 @@ const StoreMapComponent = React.memo(
         roMap.disconnect();
         clearInterval(checkInterval);
       };
-    }, [center.lat, center.lng, attempt]);
+    }, [attempt]);
 
     useEffect(() => {
       const map = mapRef.current;
