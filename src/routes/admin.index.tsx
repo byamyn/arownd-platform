@@ -18,6 +18,7 @@ import { useAuth } from "@/lib/auth";
 import { fetchMyRoles } from "@/lib/sooqy";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/admin/")({
@@ -130,6 +131,8 @@ function AdminDashboardPage() {
         supabase.from("orders").select("id", { count: "exact", head: true }),
         supabase.from("delivery_companies").select("id", { count: "exact", head: true }),
       ]);
+      const failed = [users, stores, orders, companies].find((result) => result.error);
+      if (failed?.error) throw failed.error;
       return {
         users: users.count ?? 0,
         stores: stores.count ?? 0,
@@ -151,10 +154,11 @@ function AdminDashboardPage() {
       if (error) throw error;
 
       const ids = (profiles ?? []).map((p) => p.user_id);
-      const { data: roles } = await supabase
+      const { data: roles, error: rolesError } = await supabase
         .from("user_roles")
         .select("user_id, role")
         .in("user_id", ids);
+      if (rolesError) throw rolesError;
 
       // المستخدم قد يملك عدة أدوار — نعرض الأهم بدل اعتبار آخر صف هو الحقيقة
       const rank = (role: string) =>
@@ -238,6 +242,15 @@ function AdminDashboardPage() {
 
   if (roleQuery.isLoading) return <div className="p-6 text-center text-ink-2">جاري التحقق...</div>;
 
+  if (roleQuery.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 p-6">
+        <PageHeader title="لوحة الإدارة" back="/" />
+        <ErrorState scope="admin:role" error={roleQuery.error} onRetry={() => roleQuery.refetch()} />
+      </div>
+    );
+  }
+
   if (!roleQuery.data?.includes("admin")) {
     return (
       <div className="p-6 text-center">
@@ -280,6 +293,9 @@ function AdminDashboardPage() {
       {/* نظرة عامة */}
       {activeTab === "overview" && (
         <div className="mt-4 space-y-3">
+          {stats.isError && (
+            <ErrorState scope="admin:stats" error={stats.error} onRetry={() => stats.refetch()} />
+          )}
           <StatCard
             icon={Users}
             title="المستخدمون"
@@ -328,6 +344,12 @@ function AdminDashboardPage() {
               ))}
             </div>
           )}
+          {usersList.isError && (
+            <ErrorState scope="admin:users" error={usersList.error} onRetry={() => usersList.refetch()} />
+          )}
+          {!usersList.isLoading && !usersList.isError && usersList.data?.length === 0 && (
+            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">لا يوجد مستخدمون لعرضهم</div>
+          )}
           {usersList.data?.map((u) => (
             <div
               key={u.user_id}
@@ -357,6 +379,12 @@ function AdminDashboardPage() {
                 <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
               ))}
             </div>
+          )}
+          {storesList.isError && (
+            <ErrorState scope="admin:stores" error={storesList.error} onRetry={() => storesList.refetch()} />
+          )}
+          {!storesList.isLoading && !storesList.isError && storesList.data?.length === 0 && (
+            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">لا توجد متاجر مسجلة بعد</div>
           )}
           {storesList.data?.map((s) => (
             <div
@@ -395,7 +423,10 @@ function AdminDashboardPage() {
               ))}
             </div>
           )}
-          {companiesList.data?.length === 0 && (
+          {companiesList.isError && (
+            <ErrorState scope="admin:companies" error={companiesList.error} onRetry={() => companiesList.refetch()} />
+          )}
+          {!companiesList.isLoading && !companiesList.isError && companiesList.data?.length === 0 && (
             <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
               لا توجد شركات توصيل مسجلة بعد
             </div>

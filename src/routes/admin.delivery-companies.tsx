@@ -8,6 +8,7 @@ import { fetchMyRoles } from "@/lib/sooqy";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { supabase } from "@/integrations/supabase/client";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 import { goBackOrTo } from "@/lib/nav";
 
@@ -30,7 +31,7 @@ function AdminDeliveryCompaniesPage() {
     enabled: !!user && ready,
   });
 
-  const { data: companies, isLoading } = useQuery({
+  const companiesQuery = useQuery({
     queryKey: ["admin-delivery-companies"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -65,6 +66,15 @@ function AdminDeliveryCompaniesPage() {
   if (roleQuery.isLoading)
     return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
 
+  if (roleQuery.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="إدارة شركات التوصيل" back="/admin" />
+        <ErrorState scope="admin:delivery:role" error={roleQuery.error} onRetry={() => roleQuery.refetch()} />
+      </div>
+    );
+  }
+
   // التحقق من دور المشرف
   if (!roleQuery.data?.includes("admin")) {
     return (
@@ -79,9 +89,24 @@ function AdminDeliveryCompaniesPage() {
     );
   }
 
-  if (isLoading) {
+  if (companiesQuery.isLoading) {
     return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
   }
+
+  if (companiesQuery.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="إدارة شركات التوصيل" back="/admin" />
+        <ErrorState
+          scope="admin:delivery:companies"
+          error={companiesQuery.error}
+          onRetry={() => companiesQuery.refetch()}
+        />
+      </div>
+    );
+  }
+
+  const companies = companiesQuery.data;
 
   const handleToggleApproval = async (id: string, current: boolean) => {
     const { error } = await supabase.rpc("admin_set_delivery_company_approval", {
