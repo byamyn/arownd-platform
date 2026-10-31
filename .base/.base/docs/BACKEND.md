@@ -34,12 +34,10 @@ profiles, user_roles, stores, products, store_offers, product_images, reviews, r
 - **Anon:** قراءة stores/products/offers/images/wilayas/categories (public).
 
 ## الاتصال (من هذه البيئة)
-- Direct Postgres (IPv6) غير reachable → استخدم **pooler IPv4**:
-  `postgresql://postgres.nagzoafkitfsqlcwsdau:Amine.2004mohamed@aws-0-eu-west-1.pooler.supabase.com:6543/postgres`
+- Direct Postgres access: use the Supabase pooler, but keep the full connection URI only in a local environment variable or CI secret.
 
 ## تطبيق هجرات جديدة
 ```bash
-POOLER="postgresql://postgres.nagzoafkitfsqlcwsdau:Amine.2004mohamed@aws-0-eu-west-1.pooler.supabase.com:6543/postgres"
 supabase db push --db-url "$POOLER" --yes
 DATABASE_URL="$POOLER" node scripts/apply-migrations.mjs
 ```
