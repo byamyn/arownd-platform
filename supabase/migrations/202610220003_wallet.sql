@@ -26,15 +26,18 @@ grant update on public.wallet_transactions to authenticated;
 grant all on public.wallet_transactions to service_role;
 alter table public.wallet_transactions enable row level security;
 
+drop policy if exists "Users read own wallet transactions" on public.wallet_transactions;
 create policy "Users read own wallet transactions" on public.wallet_transactions
   for select to authenticated
   using (user_id = auth.uid());
 
 -- العميل ينشئ عمليته هو بحالة pending فقط (with check يمنع رفع الحالة أو التلاعب)
+drop policy if exists "Users insert own pending wallet transactions" on public.wallet_transactions;
 create policy "Users insert own pending wallet transactions" on public.wallet_transactions
   for insert to authenticated
   with check (user_id = auth.uid() and status = 'pending');
 
+drop policy if exists "Admin updates wallet transactions" on public.wallet_transactions;
 create policy "Admin updates wallet transactions" on public.wallet_transactions
   for update to authenticated
   using (public.has_role(auth.uid(), 'admin'))
