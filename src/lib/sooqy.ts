@@ -1241,6 +1241,18 @@ export async function merchantUpdateOrderStatus(
   if (error) throw error;
 }
 
+export async function merchantUpdateOrderNote(orderId: string, note: string) {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _order_id: string; _note: string },
+  ) => Promise<{ error: unknown }>;
+  const { error } = await rpc("merchant_update_order_note", {
+    _order_id: orderId,
+    _note: note,
+  });
+  if (error) throw error;
+}
+
 // ---------- Detail pages ----------
 
 export const DZ_PHONE = /^0[567]\d{8}$/;
