@@ -3,6 +3,7 @@ name: Core stability checks
 on:
   push:
     branches:
+      - "main"
       - "stabilize/**"
   workflow_dispatch:
 
@@ -33,8 +34,8 @@ jobs:
       - name: TypeScript
         run: npx tsc --noEmit
 
-      - name: Lint changed application files
-        run: npx eslint 'src/routes/profile.tsx' 'src/routes/orders.$orderId.tsx' --rule '{"prettier/prettier":"off"}'
+      - name: Full-project ESLint
+        run: npm run lint
 
       - name: Unit and integration tests
         run: npm test
