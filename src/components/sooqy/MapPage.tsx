@@ -152,9 +152,7 @@ export function MapPage() {
         </div>
         {!stores.isLoading && !stores.isError && list.length === 0 && (
           <div className="mt-2 rounded-xl border border-border bg-card/95 p-3 text-center text-xs text-muted-foreground shadow-soft">
-            {q.trim() || onlyOpen || onlyVerified
-              ? t("map_no_match")
-              : t("map_no_stores")}
+            {q.trim() || onlyOpen || onlyVerified ? t("map_no_match") : t("map_no_stores")}
           </div>
         )}
       </div>
@@ -171,7 +169,8 @@ export function MapPage() {
           onClick={() => setShowFilters(true)}
           className={cn(
             "flex size-11 items-center justify-center rounded-full border border-white/70 bg-card/95 text-foreground shadow-[0_8px_24px_rgba(15,23,42,.16)] backdrop-blur-xl",
-            (onlyOpen || onlyVerified || sort !== "near") && "border-primary bg-primary text-[#17191C]",
+            (onlyOpen || onlyVerified || sort !== "near") &&
+              "border-primary bg-primary text-[#17191C]",
           )}
         >
           <Filter className="size-5" />
