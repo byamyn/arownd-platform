@@ -224,6 +224,7 @@ export function MapPage() {
               label={sel.name}
               className="btn-primary !h-11 text-sm"
               mapRef={mapRef}
+              external
             >
               <Navigation className="size-4" />
               {t("map_directions")}
