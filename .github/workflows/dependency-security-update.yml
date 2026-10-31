@@ -1,0 +1,71 @@
+name: Update vulnerable dependencies safely
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".github/workflows/dependency-security-update.yml"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: dependency-security-update
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Update Vite and nested Zod without force
+        run: |
+          npm install --save-dev vite@8.3.5 --no-audit --no-fund
+          node -e 'const fs=require("fs"); const p=JSON.parse(fs.readFileSync("package.json","utf8")); p.overrides={...p.overrides,"zod@^4":"4.6.7"}; fs.writeFileSync("package.json",JSON.stringify(p,null,2)+"\n");'
+          npm install --package-lock-only --no-audit --no-fund
+
+      - name: Apply non-breaking transitive fixes
+        run: npm audit fix --no-fund
+
+      - name: Verify high-severity vulnerabilities are cleared
+        run: npm audit --audit-level=high
+
+      - name: TypeScript
+        run: npx tsc --noEmit
+
+      - name: ESLint
+        run: npm run lint
+
+      - name: Tests
+        run: npm test
+
+      - name: Production build
+        env:
+          VITE_SUPABASE_URL: https://ci-placeholder.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-public-key
+        run: npm run build:vercel
+
+      - name: Commit safe dependency updates directly to main
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then
+            echo "No dependency changes to commit."
+            exit 0
+          fi
+          git commit -m "security: update vulnerable npm dependencies"
+          git push origin HEAD:main
