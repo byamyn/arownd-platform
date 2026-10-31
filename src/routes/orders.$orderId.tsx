@@ -17,6 +17,7 @@ import { fetchMyOrders } from "@/lib/sooqy";
 import { fetchOrderWithShipment, SHIPMENT_STATUS_LABELS } from "@/lib/delivery";
 import { translate, useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
 
 export const Route = createFileRoute("/orders/$orderId")({
@@ -72,6 +73,13 @@ function TrackPage() {
     );
   }
 
+  if (orders.isError) {
+    return (
+      <div className="p-8">
+        <ErrorState scope="order:details" error={orders.error} onRetry={() => orders.refetch()} />
+      </div>
+    );
+  }
   if (orders.isLoading && !order) {
     return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
   }
@@ -219,6 +227,13 @@ function TrackPage() {
         </div>
       </div>
 
+      {shipment.isError && (
+        <ErrorState
+          scope="order:shipment"
+          error={shipment.error}
+          onRetry={() => shipment.refetch()}
+        />
+      )}
       {orderShipment && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
           <h2 className="text-section text-foreground flex items-center gap-2">
