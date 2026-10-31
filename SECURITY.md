@@ -14,15 +14,21 @@ This document records the security controls currently enforced by the applicatio
 - Keep Row Level Security enabled on application tables.
 - Use ownership checks in RLS and server-side RPCs; do not rely on client-side role checks.
 - Sensitive columns such as verification flags, commissions, ratings, order totals, and shipment ownership must not be writable by ordinary authenticated users.
-- Create orders through the validated `create_order` RPC.
+- Create orders through the validated `create_order` RPC. It verifies the caller, item payload bounds, stock, contact fields, and ownership of any payment receipt.
+- Customers can only cancel pending orders; merchants must follow the allowed order-state transitions. Direct order deletion is disabled.
+- Shipment creation is limited to the order owner, one shipment per order, an approved delivery company, a matching active coverage area, and the configured coverage fee.
+- Delivery companies can update only their own shipment status and must follow the allowed shipment-state transitions.
 - Merchant order notes are saved through an ownership-checked RPC.
+- Wallet inserts are limited to pending top-ups and withdrawals; top-up receipts must be owned by the submitting user.
+- The `has_role` helper no longer reveals roles for arbitrary user IDs to ordinary accounts.
 - Do not grant broad table-level INSERT or UPDATE permissions when a smaller column-level grant is sufficient.
 
 ## Storage
 
-- `store-media`, `product-media`, and `receipts` have a 10 MiB upload limit and an image MIME allowlist.
-- Receipt objects remain in a private bucket and are readable only by their owner or through an authorized signed URL.
-- Never add a public-read policy to the `receipts` bucket.
+- `store-media` and `product-media` are public catalog-media buckets; their objects have a 10 MiB upload limit and an image MIME allowlist. Upload, update, and delete remain restricted to the owner's folder.
+- `receipts` remains private, with a 10 MiB upload limit and an image MIME allowlist.
+- Receipt paths, not long-lived signed URLs, are stored for new order and wallet submissions. The app creates 15-minute signed links only when an authorized user opens a receipt.
+- Receipt reads are restricted to the owner, the relevant order merchant, or an admin. Never add public-read access to `receipts`.
 
 ## Dependency security
 
@@ -36,5 +42,5 @@ This document records the security controls currently enforced by the applicatio
 - Enable leaked-password protection in Supabase Auth settings (Authentication → Settings → Password Security).
 - The approved delivery-company directory now uses a SECURITY INVOKER view backed by a restricted public projection table; the SECURITY DEFINER view warning has been removed.
 - Review the remaining SECURITY DEFINER RPC warnings periodically. The current authenticated RPCs include identity, ownership, or admin checks; the anonymous product-view counter only increments a counter and returns no data, but can still be abused to inflate analytics.
-- Test profile editing, store creation/editing, product management, order status and notes, shipment status, and image uploads with real customer and merchant accounts.
+- Test profile editing, store creation/editing, product management, order cancellation and status transitions, shipment creation/status transitions, wallet top-ups/withdrawals, receipt access, and image uploads with real customer, merchant, delivery-company, and admin accounts.
 - Test the Android APK on a physical device before release.
