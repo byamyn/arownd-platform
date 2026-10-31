@@ -4,15 +4,21 @@ import type { Database } from "@/integrations/supabase/types";
 export type DeliveryCompany = Database["public"]["Tables"]["delivery_companies"]["Row"];
 export type PublicDeliveryCompany =
   Database["public"]["Views"]["approved_delivery_companies"]["Row"];
-export type DeliveryCompanyInsert = Database["public"]["Tables"]["delivery_companies"]["Insert"];
-export type DeliveryCompanyUpdate = Database["public"]["Tables"]["delivery_companies"]["Update"];
+export type DeliveryCompanyInsert = Pick<
+  Database["public"]["Tables"]["delivery_companies"]["Insert"],
+  "user_id" | "company_name" | "contact_name" | "contact_phone" | "email" | "license_number"
+>;
+export type DeliveryCompanyUpdate = Pick<
+  Database["public"]["Tables"]["delivery_companies"]["Update"],
+  "company_name" | "contact_name" | "contact_phone" | "email" | "license_number"
+>;
 
 export type DeliveryCoverageArea = Database["public"]["Tables"]["delivery_coverage_areas"]["Row"];
 export type DeliveryService = Database["public"]["Tables"]["delivery_services"]["Row"];
 
 export type Shipment = Database["public"]["Tables"]["shipments"]["Row"];
 export type ShipmentInsert = Database["public"]["Tables"]["shipments"]["Insert"];
-export type ShipmentUpdate = Database["public"]["Tables"]["shipments"]["Update"];
+export type ShipmentUpdate = Pick<Database["public"]["Tables"]["shipments"]["Update"], "status">;
 
 export type ShipmentStatusLog = Database["public"]["Tables"]["shipment_status_logs"]["Row"];
 export type ShipmentTracking = Database["public"]["Tables"]["shipment_tracking"]["Row"];
@@ -186,7 +192,7 @@ export async function updateShipmentStatus(
 ): Promise<Shipment> {
   const { data, error } = await supabase
     .from("shipments")
-    .update({ status, updated_at: new Date().toISOString() })
+    .update({ status })
     .eq("id", id)
     .select()
     .single();
