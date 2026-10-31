@@ -53,3 +53,6 @@ android/keystore/
 
 # Firebase Android app configuration (download from Firebase Console)
 android/app/google-services.json
+
+# Supabase CLI local metadata (may contain connection details)
+.temp/
