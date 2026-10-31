@@ -35,7 +35,6 @@ jobs:
         run: |
           npm install --save-dev vite@8.3.5 vitest@4.1.12 seroval@1.6.11 --no-audit --no-fund
           npm install zod@4.6.7 --save --no-audit --no-fund
-          npm install --package-lock-only --no-audit --no-fund
 
       - name: Verify high-severity vulnerabilities are cleared
         run: npm audit --audit-level=high
