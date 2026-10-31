@@ -15,6 +15,7 @@ import {
 import { useFavorites } from "@/lib/favorites";
 import { ProductCard, StoreCard } from "@/components/sooqy/cards";
 import { EmptyState } from "@/components/sooqy/empty-state";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { ProductGridSkeleton, ListSkeleton } from "@/components/sooqy/skeleton";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
@@ -36,7 +37,7 @@ function FavoritesPage() {
   const products = useQuery({
     queryKey: ["fav-products", favs.products],
     queryFn: async (): Promise<ProductGroup[]> => {
-      const settled = await Promise.allSettled(
+      return Promise.all(
         favs.products.map(async (id): Promise<ProductGroup> => {
           const offers = await getProductComparisonOffers(id);
           const product = offers[0]?.product;
@@ -55,9 +56,6 @@ function FavoritesPage() {
           };
         }),
       );
-      return settled
-        .filter((r): r is PromiseFulfilledResult<ProductGroup> => r.status === "fulfilled")
-        .map((r) => r.value);
     },
     enabled: favs.products.length > 0,
   });
@@ -65,11 +63,8 @@ function FavoritesPage() {
   const stores = useQuery({
     queryKey: ["fav-stores", favs.stores],
     queryFn: async (): Promise<Store[]> => {
-      const settled = await Promise.allSettled(favs.stores.map((id) => getStore(id)));
-      return settled
-        .filter((r): r is PromiseFulfilledResult<Store | null> => r.status === "fulfilled")
-        .map((r) => r.value)
-        .filter((s): s is Store => !!s);
+      const results = await Promise.all(favs.stores.map((id) => getStore(id)));
+      return results.filter((s): s is Store => !!s);
     },
     enabled: favs.stores.length > 0,
   });
@@ -129,11 +124,32 @@ function FavoritesPage() {
           ) : (
             <>
               {products.isLoading && <ProductGridSkeleton count={4} />}
+              {products.isError && (
+                <ErrorState
+                  scope="favorite-products"
+                  error={products.error}
+                  onRetry={() => products.refetch()}
+                />
+              )}
+              {!products.isLoading && !products.isError && products.data?.length === 0 && (
+                <EmptyState
+                  Icon={Heart}
+                  title={t("fav_empty_products")}
+                  hint={t("fav_empty_products_hint")}
+                  action={
+                    <Link to="/explore" className="btn-primary">
+                      {t("fav_discover_products")}
+                    </Link>
+                  }
+                />
+              )}
+              {!products.isError && products.data && products.data.length > 0 && (
               <div className="grid grid-cols-2 gap-3">
                 {(products.data ?? []).map((g) => (
                   <ProductCard key={g.product.id} g={g} />
                 ))}
               </div>
+              )}
             </>
           ))}
 
@@ -152,11 +168,32 @@ function FavoritesPage() {
           ) : (
             <>
               {stores.isLoading && <ListSkeleton count={3} />}
+              {stores.isError && (
+                <ErrorState
+                  scope="favorite-stores"
+                  error={stores.error}
+                  onRetry={() => stores.refetch()}
+                />
+              )}
+              {!stores.isLoading && !stores.isError && stores.data?.length === 0 && (
+                <EmptyState
+                  Icon={Heart}
+                  title={t("fav_empty_stores")}
+                  hint={t("fav_empty_stores_hint")}
+                  action={
+                    <Link to="/map" className="btn-primary">
+                      {t("fav_explore_map")}
+                    </Link>
+                  }
+                />
+              )}
+              {!stores.isError && stores.data && stores.data.length > 0 && (
               <div className="space-y-3">
                 {(stores.data ?? []).map((s) => (
                   <StoreCard key={s.id} s={s} distance={storeDistance(s, pos)} />
                 ))}
               </div>
+              )}
             </>
           ))}
       </div>
