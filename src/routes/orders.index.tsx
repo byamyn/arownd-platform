@@ -149,10 +149,10 @@ function OrdersPage() {
               year: "numeric",
             });
             return (
-              <div key={o.id} className="rounded-2xl border border-border bg-card p-4">
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <p className="text-sm font-bold text-foreground">
+              <article key={o.id} className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+                <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
+                  <div className="min-w-0">
+                    <p className="text-sm font-extrabold text-foreground">
                       {t("orders_code", { code: trackCode(o.id) })}
                     </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
@@ -163,9 +163,9 @@ function OrdersPage() {
                   <OrderStatusBadge status={o.status} />
                 </div>
 
-                <div className="mt-3 space-y-1.5 rounded-xl bg-background p-3">
+                <div className="mx-4 mt-3 space-y-2 rounded-2xl border border-border/70 bg-background p-3">
                   {(o.items ?? []).slice(0, 3).map((it) => (
-                    <div key={it.id} className="flex items-center justify-between gap-2 text-xs">
+                    <div key={it.id} className="flex items-center justify-between gap-3 text-xs">
                       <span className="line-clamp-1 font-semibold text-foreground">
                         {it.product_name}{" "}
                         <span className="text-muted-foreground">× {it.quantity}</span>
@@ -182,7 +182,7 @@ function OrdersPage() {
                   )}
                 </div>
 
-                <div className="mt-3 flex items-center justify-between">
+                <div className="mx-4 mt-3 flex items-center justify-between gap-3 rounded-2xl bg-primary-soft/50 px-3 py-3">
                   <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                     <Truck className="size-3.5" />
                     {o.delivery_type === "home"
@@ -195,7 +195,7 @@ function OrdersPage() {
                 <Link
                   to="/orders/$orderId"
                   params={{ orderId: o.id }}
-                  className="btn-secondary !h-10 mt-3 w-full text-sm"
+                  className="btn-secondary !h-11 mx-4 mb-4 mt-3 w-[calc(100%-2rem)] rounded-2xl text-sm font-bold"
                 >
                   {t("orders_track")}
                 </Link>
@@ -212,12 +212,12 @@ function OrdersPage() {
                         toast.error(error instanceof Error ? error.message : "تعذر إخفاء الطلب.");
                       }
                     }}
-                    className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                    className="mx-4 mb-4 mt-2 inline-flex min-h-10 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                   >
                     <Archive className="size-4" /> إخفاء من السجل
                   </button>
                 )}
-              </div>
+              </article>
             );
           })}
         </div>

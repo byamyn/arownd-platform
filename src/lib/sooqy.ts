@@ -746,6 +746,36 @@ export async function createOrderWithDelivery(
   contact: { fullName: string; phone: string; address: string },
   deliveryCompanyId?: string,
 ) {
+  // تحقق من الشركة وتغطيتها قبل إنشاء الطلب حتى لا نقبل اختيارًا غير صالح.
+  let deliveryCompany: { company_name: string; contact_phone: string } | null = null;
+  let deliveryCoverageFee: number | null = null;
+  if (deliveryType === "home") {
+    if (!deliveryCompanyId) throw new Error("اختر شركة توصيل قبل تأكيد الطلب.");
+    const { data: company, error: companyError } = await supabase
+      .from("approved_delivery_companies")
+      .select("company_name, contact_phone")
+      .eq("id", deliveryCompanyId)
+      .maybeSingle();
+    if (companyError) throw new Error(friendlyError(companyError));
+    if (!company) throw new Error("شركة التوصيل المختارة غير متاحة أو لم تعد معتمدة.");
+
+    const { data: coverageRows, error: coverageError } = await supabase
+      .from("delivery_coverage_areas")
+      .select("base_fee, communes")
+      .eq("company_id", deliveryCompanyId)
+      .eq("wilaya_id", wilayaId)
+      .eq("is_active", true);
+    if (coverageError) throw new Error(friendlyError(coverageError));
+    const coverage = (coverageRows ?? []).find(
+      (area) => !area.communes?.length || area.communes.includes(commune.trim()),
+    );
+    if (!coverage) {
+      throw new Error("شركة التوصيل المختارة لا تغطي البلدية المحددة.");
+    }
+    deliveryCompany = company;
+    deliveryCoverageFee = coverage.base_fee;
+  }
+
   let receiptUrl: string | null = null;
   if (paymentMethod === "baridimob") {
     if (!receiptFile) throw new Error(ERRORS["receipt_required"]);
@@ -769,22 +799,9 @@ export async function createOrderWithDelivery(
   if (error) throw new Error(friendlyError(error));
   const orderId = data as string;
 
-  // الطلب أُنشئ فعلًا؛ فشل الشحنة لا يجب أن يُظهر خطأ للمستخدم وإلا أعاد المحاولة وتكرّر الطلب.
-  if (deliveryCompanyId && deliveryType === "home") {
+  // ربط الشحنة بالشركة التي اختارها المستخدم بعد التحقق من اعتمادها وتغطيتها.
+  if (deliveryType === "home" && deliveryCompanyId && deliveryCompany) {
     try {
-      const { data: company } = await supabase
-        .from("approved_delivery_companies")
-        .select("company_name, contact_phone")
-        .eq("id", deliveryCompanyId)
-        .single();
-
-      const coverage = await supabase
-        .from("delivery_coverage_areas")
-        .select("base_fee")
-        .eq("company_id", deliveryCompanyId)
-        .eq("wilaya_id", wilayaId)
-        .maybeSingle();
-
       const shipmentPayload: Record<string, unknown> = {
         order_id: orderId,
         company_id: deliveryCompanyId,
@@ -792,20 +809,16 @@ export async function createOrderWithDelivery(
         delivery_address: contact.address,
         recipient_name: contact.fullName,
         recipient_phone: contact.phone,
+        fee: deliveryCoverageFee,
+        notes: `الشركة: ${deliveryCompany.company_name} — الهاتف: ${deliveryCompany.contact_phone}`,
       };
-      if (coverage.data?.base_fee !== undefined) shipmentPayload["fee"] = coverage.data.base_fee;
-      if (company)
-        shipmentPayload["notes"] =
-          `الشركة: ${company.company_name} — الهاتف: ${company.contact_phone}`;
       const { data: shipment, error: shipError } = await supabase
         .from("shipments")
         .insert(shipmentPayload as Database["public"]["Tables"]["shipments"]["Insert"])
         .select()
         .single();
-
       if (shipError) throw shipError;
 
-      // ربط الطلب بالشحنة (عبر RPC security definer)
       const { error: linkError } = await supabase.rpc("link_order_shipment", {
         _order_id: orderId,
         _shipment_id: shipment.id,
@@ -813,13 +826,13 @@ export async function createOrderWithDelivery(
       });
       if (linkError) throw linkError;
     } catch (shipmentError) {
-      console.warn("[createOrderWithDelivery] shipment link failed", shipmentError);
+      // لا نطلب من المستخدم إعادة إنشاء الطلب بعد أن أصبح موجودًا؛ نسجل المشكلة للمراجعة.
+      console.error("[createOrderWithDelivery] shipment link failed after order creation", shipmentError);
     }
   }
 
   return orderId;
 }
-
 // ---------- Merchant ----------
 
 export async function fetchMyStore() {

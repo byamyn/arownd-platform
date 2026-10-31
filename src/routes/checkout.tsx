@@ -29,7 +29,7 @@ import {
   normalizePhone,
   primaryImage,
 } from "@/lib/sooqy";
-import { getShippingFee, type DeliveryType } from "@/lib/shipping";
+import { type DeliveryType } from "@/lib/shipping";
 import { fetchApprovedDeliveryCompanies } from "@/lib/delivery";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
@@ -37,6 +37,7 @@ import { AppShell } from "@/components/sooqy/app-shell";
 import { StickyActionBar } from "@/components/sooqy/sticky-action-bar";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -75,6 +76,50 @@ function CheckoutPage() {
     queryFn: fetchApprovedDeliveryCompanies,
     enabled: deliveryType === "home",
   });
+
+  // الأسعار المعروضة يجب أن تطابق أسعار الولاية المخزنة التي تستخدمها دالة create_order.
+  const wilayaPricing = useQuery({
+    queryKey: ["checkout-wilaya-pricing", wilayaId],
+    queryFn: async () => {
+      if (!wilayaId) return null;
+      const { data, error } = await supabase
+        .from("wilayas")
+        .select("home_price, desk_price")
+        .eq("id", wilayaId)
+        .maybeSingle();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!wilayaId,
+  });
+
+  // لا نعرض إلا الشركات المعتمدة التي لديها تغطية نشطة للولاية والبلدية المختارتين.
+  const deliveryCoverage = useQuery({
+    queryKey: ["checkout-delivery-coverage", wilayaId],
+    queryFn: async () => {
+      if (!wilayaId) return [];
+      const { data, error } = await supabase
+        .from("delivery_coverage_areas")
+        .select("company_id, base_fee, communes")
+        .eq("wilaya_id", wilayaId)
+        .eq("is_active", true);
+      if (error) throw error;
+      return data;
+    },
+    enabled: deliveryType === "home" && !!wilayaId,
+  });
+  const availableDeliveryCompanies = (deliveryCompanies.data ?? []).filter((company) =>
+    (deliveryCoverage.data ?? []).some(
+      (area) =>
+        area.company_id === company.id &&
+        (!area.communes?.length || area.communes.includes(commune.trim())),
+    ),
+  );
+  const selectedDeliveryCoverage = (deliveryCoverage.data ?? []).find(
+    (area) =>
+      area.company_id === deliveryCompanyId &&
+      (!area.communes?.length || area.communes.includes(commune.trim())),
+  );
   const [fullName, setFullName] = useState(user?.user_metadata?.["full_name"] ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState("");
@@ -96,8 +141,12 @@ function CheckoutPage() {
   // نفس التقييم المستخدَم في السلة — مصدر واحد للحقيقة.
   const evaluation = evaluateBag(bag.items, offers.data, lang);
   const subtotal = evaluation.subtotal;
-  const shippingFee = wilayaId ? getShippingFee(wilayaId, deliveryType) : 0;
-  const total = subtotal + shippingFee;
+  const shippingFee = wilayaPricing.data
+    ? deliveryType === "home"
+      ? wilayaPricing.data.home_price
+      : wilayaPricing.data.desk_price
+    : null;
+  const total = subtotal + (shippingFee ?? 0);
 
   // منتجات لم تعد متوفرة: محذوفة من المتجر، أو غير متاحة، أو كميتها غير كافية
   const problems = evaluation.rows.filter((r) => r.issue);
@@ -109,8 +158,14 @@ function CheckoutPage() {
   const stepValid: Record<number, boolean> = {
     0: bag.items.length > 0 && !!offers.data && problems.length === 0,
     1: !!wilayaId && !!commune.trim() && !!fullName.trim() && isValidDzPhone(phone.trim()),
-    2: true,
-    3: deliveryType === "desk" || !!address.trim(), // عنوان التوصيل مطلوب عند التوصيل للمنزل
+    2:
+      !!wilayaPricing.data &&
+      (deliveryType === "desk" ||
+        (!!deliveryCompanyId && !!selectedDeliveryCoverage && availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId))),
+    3:
+      !!wilayaPricing.data &&
+      (deliveryType === "desk" ||
+        !!address.trim() && !!deliveryCompanyId && !!selectedDeliveryCoverage && availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId)), // عنوان التوصيل والشركة مطلوبان للتوصيل للمنزل
   };
 
   if (!ready) return null;
@@ -210,9 +265,15 @@ function CheckoutPage() {
             ? isValidDzPhone(phone.trim())
               ? t("checkout_address_required")
               : t("checkout_phone_invalid")
-            : deliveryType === "home"
-              ? t("checkout_address_detail_required")
-              : t("checkout_fill_required_short"),
+            : step === 2
+              ? deliveryCompanies.isLoading || deliveryCoverage.isLoading || wilayaPricing.isLoading
+                ? t("checkout_companies_loading")
+                : availableDeliveryCompanies.length === 0
+                  ? t("checkout_companies_none")
+                  : t("checkout_company_required")
+              : deliveryType === "home"
+                ? t("checkout_address_detail_required")
+                : t("checkout_fill_required_short"),
       );
       return;
     }
@@ -230,7 +291,12 @@ function CheckoutPage() {
       <PageHeader title={t("checkout_heading")} subtitle={t("checkout_subtitle")} />
 
       {/* شريط التقدم */}
-      <div className="flex items-center gap-1.5">
+      <div className="space-y-2 rounded-3xl border border-border bg-card p-3 shadow-soft">
+        <div className="flex items-center justify-between px-1">
+          <span className="text-[10px] font-bold tracking-wider text-muted-foreground">STEP {String(step+1).padStart(2,"0")} / 04</span>
+          <span className="text-xs font-bold text-accent-ink">{t(STEP_KEYS[step])}</span>
+        </div>
+        <div className="flex items-center gap-1.5">
         {STEP_KEYS.map((key, i) => (
           <div key={key} className="flex-1">
             <button
@@ -257,10 +323,11 @@ function CheckoutPage() {
             </button>
           </div>
         ))}
+        </div>
       </div>
 
       {step === 0 && (
-        <section className="rounded-2xl border border-border bg-card p-4">
+        <section className="rounded-3xl border border-border bg-card p-4 shadow-soft">
           <div className="mb-3 flex items-center gap-2">
             <ShoppingBag className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">
@@ -269,7 +336,7 @@ function CheckoutPage() {
           </div>
           <div className="space-y-3">
             {rows.map((row) => (
-              <div key={row.offerId} className="flex gap-3 rounded-2xl bg-background p-3">
+              <div key={row.offerId} className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-3">
                 <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-muted">
                   {row.offer && primaryImage(row.offer.images) && (
                     <img
@@ -341,15 +408,26 @@ function CheckoutPage() {
       )}
 
       {step === 1 && (
-        <section className="space-y-4 rounded-3xl bg-card p-4 shadow-soft">
+        <section className="space-y-4 rounded-3xl border border-border bg-card p-4 shadow-soft">
           <div className="flex items-center gap-2">
             <MapPin className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_address_heading")}</h2>
           </div>
-          <WilayaSelect value={wilayaId} onChange={setWilayaId} required className="h-12 w-full" />
+          <WilayaSelect
+            value={wilayaId}
+            onChange={(value) => {
+              setWilayaId(value);
+              setDeliveryCompanyId(null);
+            }}
+            required
+            className="h-12 w-full"
+          />
           <input
             value={commune}
-            onChange={(e) => setCommune(e.target.value)}
+            onChange={(e) => {
+              setCommune(e.target.value);
+              setDeliveryCompanyId(null);
+            }}
             placeholder={t("checkout_commune_placeholder")}
             required
             className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
@@ -376,7 +454,7 @@ function CheckoutPage() {
       )}
 
       {step === 2 && (
-        <section className="space-y-4 rounded-3xl bg-card p-4 shadow-soft">
+        <section className="space-y-4 rounded-3xl border border-border bg-card p-4 shadow-soft">
           <div className="flex items-center gap-2">
             <Truck className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_delivery_heading")}</h2>
@@ -388,13 +466,13 @@ function CheckoutPage() {
                   id: "home",
                   label: t("checkout_delivery_home"),
                   icon: <Home className="size-5" />,
-                  fee: wilayaId ? getShippingFee(wilayaId, "home") : null,
+                  fee: wilayaPricing.data?.home_price ?? null,
                 },
                 {
                   id: "desk",
                   label: t("checkout_delivery_desk"),
                   icon: <MapPin className="size-5" />,
-                  fee: 0,
+                  fee: wilayaPricing.data?.desk_price ?? null,
                 },
               ] as const
             ).map((option) => (
@@ -430,10 +508,11 @@ function CheckoutPage() {
                 <select
                   value={deliveryCompanyId ?? ""}
                   onChange={(e) => setDeliveryCompanyId(e.target.value || null)}
-                  className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  disabled={deliveryCompanies.isLoading || deliveryCoverage.isLoading || availableDeliveryCompanies.length === 0}
+                  className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <option value="">{t("checkout_company_placeholder")}</option>
-                  {deliveryCompanies.data?.map((c) => (
+                  {availableDeliveryCompanies.map((c) => (
                     <option key={c.id} value={c.id}>
                       {c.company_name}
                     </option>
@@ -450,9 +529,23 @@ function CheckoutPage() {
                     className="py-5"
                   />
                 )}
-                {deliveryCompanies.data?.length === 0 && !deliveryCompanies.isError && (
-                  <p className="text-xs text-muted-foreground">{t("checkout_companies_none")}</p>
+                {deliveryCoverage.isError && (
+                  <ErrorState
+                    scope="checkout:delivery-coverage"
+                    error={deliveryCoverage.error}
+                    onRetry={() => deliveryCoverage.refetch()}
+                    className="py-5"
+                  />
                 )}
+                {!deliveryCompanies.isLoading &&
+                  !deliveryCoverage.isLoading &&
+                  !deliveryCompanies.isError &&
+                  !deliveryCoverage.isError &&
+                  availableDeliveryCompanies.length === 0 && (
+                    <p className="rounded-xl bg-warning-soft p-3 text-xs leading-relaxed text-warning">
+                      {t("checkout_companies_none")}
+                    </p>
+                  )}
               </div>
               <textarea
                 value={address}
@@ -471,7 +564,7 @@ function CheckoutPage() {
       )}
 
       {step === 3 && (
-        <section className="space-y-3 rounded-3xl bg-card p-4 shadow-soft">
+        <section className="space-y-3 rounded-3xl border border-border bg-card p-4 shadow-soft">
           <div className="flex items-center gap-2">
             <CreditCard className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_payment_heading")}</h2>
@@ -539,8 +632,8 @@ function CheckoutPage() {
               {step < 3 ? t("checkout_total_label") : t("checkout_final_total_label")}
             </p>
             <p className="text-price text-accent-ink">
-              {formatDA(total)}
-              {step >= 1 && wilayaId && (
+              {shippingFee === null ? t("checkout_fee_by_wilaya") : formatDA(total)}
+              {step >= 1 && wilayaId && shippingFee !== null && (
                 <span className="ms-1 text-[11px] font-medium text-muted-foreground">
                   ({t("checkout_delivery_cost", { cost: formatDA(shippingFee) })})
                 </span>
@@ -617,7 +710,7 @@ function SuccessScreen({
       </div>
 
       {/* رمز التتبع */}
-      <div className="w-full max-w-xs rounded-2xl bg-card py-4">
+      <div className="w-full max-w-xs rounded-3xl border border-border bg-card px-4 py-5 shadow-soft">
         <p className="text-[11px] opacity-70 text-muted-foreground">
           {t("checkout_tracking_code")}
         </p>
@@ -626,7 +719,7 @@ function SuccessScreen({
 
       {/* ملخّص الطلب — المتجر والقطع والإجمالي */}
       {snapshot && (
-        <div className="w-full max-w-xs space-y-2 rounded-2xl border border-border bg-card p-4 text-start">
+        <div className="w-full max-w-xs space-y-3 rounded-3xl border border-border bg-card p-4 text-start shadow-soft">
           {snapshot.storeName && (
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-muted-foreground">{t("close_store")}</span>
