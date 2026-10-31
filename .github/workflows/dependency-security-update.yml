@@ -31,10 +31,10 @@ jobs:
       - name: Install locked dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: Update Vite and nested Zod without force
+      - name: Update Vite and Zod to patched releases without force
         run: |
           npm install --save-dev vite@8.3.5 --no-audit --no-fund
-          node -e 'const fs=require("fs"); const p=JSON.parse(fs.readFileSync("package.json","utf8")); p.overrides={...p.overrides,"@tanstack/router-generator":{zod:"4.6.7"},"@tanstack/router-plugin":{zod:"4.6.7"},"@tanstack/start-plugin-core":{zod:"4.6.7"}}; fs.writeFileSync("package.json",JSON.stringify(p,null,2)+"\n");'
+          npm install zod@4.6.7 --save --no-audit --no-fund
           npm install --package-lock-only --no-audit --no-fund
 
       - name: Verify high-severity vulnerabilities are cleared
