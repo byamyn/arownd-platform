@@ -706,7 +706,7 @@ export async function deleteNotification(notificationId: string) {
   if (error) throw error;
 }
 
-/** Upload to a private bucket under the user's folder, returning a long-lived signed URL. */
+/** Upload user-owned media. Catalog media uses public URLs; payment receipts remain private paths. */
 export async function uploadImageToBucket(
   file: File,
   bucketName: "store-media" | "product-media" | "receipts",
@@ -731,12 +731,19 @@ export async function uploadImageToBucket(
     .from(bucketName)
     .upload(path, file, { contentType: mimeType, upsert: false });
   if (error) throw error;
-  const ttl = bucketName === "receipts" ? 60 * 60 * 24 * 365 : 60 * 60 * 24 * 365 * 10;
-  const { data: signed, error: sErr } = await supabase.storage
-    .from(bucketName)
-    .createSignedUrl(path, ttl);
-  if (sErr) throw sErr;
-  return signed.signedUrl;
+
+  if (bucketName === "receipts") return path;
+  return supabase.storage.from(bucketName).getPublicUrl(path).data.publicUrl;
+}
+
+/** Create a short-lived URL only when an authorized user opens a private receipt. */
+export async function createReceiptSignedUrl(receiptRef: string): Promise<string> {
+  if (/^https?:\\/\\//i.test(receiptRef)) return receiptRef; // Existing legacy receipt links.
+  const { data, error } = await supabase.storage
+    .from("receipts")
+    .createSignedUrl(receiptRef, 15 * 60);
+  if (error) throw error;
+  return data.signedUrl;
 }
 
 // ---------- Schema support (تخصيص إضافي) ----------
@@ -1461,8 +1468,13 @@ export async function walletTopup(params: {
   receiptUrl: string;
   method: string;
 }): Promise<void> {
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError) throw authError;
+  if (!authData.user) throw new Error(ERRORS["not_authenticated"]);
+
   const sb = supabase as unknown as DynamicTableClient;
   const { error } = await sb.from("wallet_transactions").insert({
+    user_id: authData.user.id,
     type: "topup",
     amount: params.amount,
     status: "pending",
@@ -1490,11 +1502,3 @@ export async function walletWithdraw(params: {
 
 // ---------- Orders ----------
 
-export async function deleteOrder(
-  orderId: string,
-  note?: string | null,
-  storeId?: string | null,
-): Promise<void> {
-  const { error } = await supabase.from("orders").delete().eq("id", orderId);
-  if (error) throw error;
-}
