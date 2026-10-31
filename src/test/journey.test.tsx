@@ -215,10 +215,8 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
     // الخطوة 2: التوصيل
     await expectText("طريقة التوصيل");
-    fireEvent.click(screen.getByRole("button", { name: /توصيل للمنزل/ }));
-    fireEvent.change(screen.getByPlaceholderText("عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)"), {
-      target: { value: "حي 5 جويلية، عمارة 12، باب الزوار" },
-    });
+    // لا توجد شركة توصيل معتمدة في بيانات الاختبار؛ نختار الاستلام من المكتب.
+    fireEvent.click(screen.getByRole("button", { name: /استلام من المكتب/ }));
     fireEvent.click(screen.getByRole("button", { name: "متابعة" }));
 
     // الخطوة 3: الدفع عند الاستلام (افتراضي)
