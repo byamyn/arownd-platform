@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowRight, Truck } from "lucide-react";
+import { useState } from "react";
+import { Truck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
@@ -57,7 +57,7 @@ function DeliveryRegisterPage() {
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!user) return;
+    if (!user || busy) return;
     if (!companyName.trim() || !contactPhone.trim()) {
       toast.error("يرجى ملء اسم الشركة ورقم الهاتف على الأقل.");
       return;

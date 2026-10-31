@@ -61,7 +61,11 @@ function CallbackPage() {
       // الويب: supabase-js يكتشف الكود في الرابط ويتبادله تلقائيًا.
       supabase.auth.getSession().then(({ data }) => data.session && go());
     };
-    void run();
+    void run().catch((error) => {
+      if (done) return;
+      console.debug("[auth/callback] session recovery failed", error);
+      navigate({ to: "/auth", replace: true });
+    });
     const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => session && go());
     const t = setTimeout(() => {
       if (!done) navigate({ to: "/auth", replace: true });
