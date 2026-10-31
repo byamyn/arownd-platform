@@ -123,7 +123,8 @@ function StorePage() {
       }
     } catch (e) {
       // إلغاء المشاركة من المستخدم ليس خطأ؛ غيره نُبلغ عنه
-      if (!(e instanceof DOMException && e.name === "AbortError")) toast.error("تعذّر مشاركة الرابط");
+      if (!(e instanceof DOMException && e.name === "AbortError"))
+        toast.error("تعذّر مشاركة الرابط");
     }
   };
 
@@ -246,9 +247,7 @@ function StorePage() {
             <button
               onClick={() => {
                 const nowFollowing = toggleFavorite("stores", s.id);
-                toast.success(
-                  nowFollowing ? "أُضيف المتجر إلى مفضلتك" : "أُزيل المتجر من المفضلة",
-                );
+                toast.success(nowFollowing ? "أُضيف المتجر إلى مفضلتك" : "أُزيل المتجر من المفضلة");
               }}
               className={cn(
                 "flex h-11 items-center justify-center gap-1.5 rounded-xl border text-sm font-bold transition active:scale-95",

@@ -100,7 +100,9 @@ export function BottomSheet({
         </div>
 
         {/* محتوى قابل للتمرير */}
-        <div className={cn("min-h-0 flex-1 overflow-y-auto", modal ? "px-5 py-4" : "px-5 py-4")}>{children}</div>
+        <div className={cn("min-h-0 flex-1 overflow-y-auto", modal ? "px-5 py-4" : "px-5 py-4")}>
+          {children}
+        </div>
 
         {/* ركن إجراءات ثابت */}
         {footer && (

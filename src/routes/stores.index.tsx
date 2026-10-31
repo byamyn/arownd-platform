@@ -94,7 +94,17 @@ function StoresPage() {
     io.observe(el);
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [browsing, results.hasNextPage, results.isFetchingNextPage, q, wilaya, commune, openOnly, verifiedOnly, minRating]);
+  }, [
+    browsing,
+    results.hasNextPage,
+    results.isFetchingNextPage,
+    q,
+    wilaya,
+    commune,
+    openOnly,
+    verifiedOnly,
+    minRating,
+  ]);
 
   const list = browsing ? (nearStores.data ?? []) : (results.data?.pages ?? []).flat();
   const loading = browsing ? nearStores.isLoading : results.isLoading;
@@ -184,13 +194,9 @@ function StoresPage() {
 
       {loading && <ListSkeleton count={4} />}
       {!loading && error && <ErrorState scope="stores:list" error={error} onRetry={retry} />}
-        {!loading && !error && list.length === 0 && (
-          <EmptyState
-            Icon={StoreIcon}
-            title={t("stores_empty")}
-            hint={t("stores_empty_hint")}
-          />
-        )}
+      {!loading && !error && list.length === 0 && (
+        <EmptyState Icon={StoreIcon} title={t("stores_empty")} hint={t("stores_empty_hint")} />
+      )}
 
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {list.map((s: Store, i) => (

@@ -45,9 +45,7 @@ describe("طبقة اللغة — الكشف", () => {
   });
 
   it("الأولوية: الكوكي ثم الترويسة ثم Accept-Language ثم الافتراضي", () => {
-    expect(
-      detectLang({ cookie: `${LANG_COOKIE}=ar`, acceptLanguage: "en-US" }),
-    ).toBe("ar");
+    expect(detectLang({ cookie: `${LANG_COOKIE}=ar`, acceptLanguage: "en-US" })).toBe("ar");
     expect(detectLang({ header: "en", acceptLanguage: "ar-DZ" })).toBe("en");
     expect(detectLang({ acceptLanguage: "en-US" })).toBe("en");
     expect(detectLang({})).toBe(DEFAULT_LANG);

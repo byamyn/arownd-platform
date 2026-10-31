@@ -26,7 +26,8 @@ export const home: DictGroup = {
     home_og_description: "اكتشف ما حولك — منتجات ومتاجر قريبة منك.",
 
     home_seo_title: "Arownd — اكتشف ما حولك",
-    home_seo_description: "Arownd منصة تسوق واكتشاف: شاهد السلعة، اكتشف المنتجات والمتاجر القريبة منك، قارن الأسعار، واطلب التوصيل إلى 58 ولاية.",
+    home_seo_description:
+      "Arownd منصة تسوق واكتشاف: شاهد السلعة، اكتشف المنتجات والمتاجر القريبة منك، قارن الأسعار، واطلب التوصيل إلى 58 ولاية.",
     home_seo_keywords: "سوق جزائري, منتجات الجزائر, متاجر الجزائر, توصيل الجزائر, Arownd",
     home_seo_short: "اكتشف ما حولك — منتجات ومتاجر قريبة منك.",
     home_notifications: "الإشعارات",
@@ -58,12 +59,15 @@ export const home: DictGroup = {
     home_local_discovery: "Local discovery",
     home_search_map: "Search the map",
     home_search_map_hint: "Stores and products near you",
-    home_keywords: "Algeria marketplace, Algeria products, Algeria stores, Algeria delivery, Arownd",
+    home_keywords:
+      "Algeria marketplace, Algeria products, Algeria stores, Algeria delivery, Arownd",
     home_og_description: "See the product before you leave the store.",
 
     home_seo_title: "Arownd — Discover what’s around you",
-    home_seo_description: "Arownd is a shopping and discovery platform: see the product, find nearby products and stores, compare prices and order delivery to all 58 wilayas.",
-    home_seo_keywords: "Algerian market, products Algeria, stores Algeria, delivery Algeria, Arownd",
+    home_seo_description:
+      "Arownd is a shopping and discovery platform: see the product, find nearby products and stores, compare prices and order delivery to all 58 wilayas.",
+    home_seo_keywords:
+      "Algerian market, products Algeria, stores Algeria, delivery Algeria, Arownd",
     home_seo_short: "Discover what’s around you — products and stores near you.",
     home_notifications: "Notifications",
     home_all_wilayas: "All wilayas",

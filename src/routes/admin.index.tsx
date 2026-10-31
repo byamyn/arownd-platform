@@ -246,7 +246,11 @@ function AdminDashboardPage() {
     return (
       <div className="mx-auto max-w-xl space-y-4 p-6">
         <PageHeader title="لوحة الإدارة" back="/" />
-        <ErrorState scope="admin:role" error={roleQuery.error} onRetry={() => roleQuery.refetch()} />
+        <ErrorState
+          scope="admin:role"
+          error={roleQuery.error}
+          onRetry={() => roleQuery.refetch()}
+        />
       </div>
     );
   }
@@ -345,10 +349,16 @@ function AdminDashboardPage() {
             </div>
           )}
           {usersList.isError && (
-            <ErrorState scope="admin:users" error={usersList.error} onRetry={() => usersList.refetch()} />
+            <ErrorState
+              scope="admin:users"
+              error={usersList.error}
+              onRetry={() => usersList.refetch()}
+            />
           )}
           {!usersList.isLoading && !usersList.isError && usersList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">لا يوجد مستخدمون لعرضهم</div>
+            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+              لا يوجد مستخدمون لعرضهم
+            </div>
           )}
           {usersList.data?.map((u) => (
             <div
@@ -381,10 +391,16 @@ function AdminDashboardPage() {
             </div>
           )}
           {storesList.isError && (
-            <ErrorState scope="admin:stores" error={storesList.error} onRetry={() => storesList.refetch()} />
+            <ErrorState
+              scope="admin:stores"
+              error={storesList.error}
+              onRetry={() => storesList.refetch()}
+            />
           )}
           {!storesList.isLoading && !storesList.isError && storesList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">لا توجد متاجر مسجلة بعد</div>
+            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+              لا توجد متاجر مسجلة بعد
+            </div>
           )}
           {storesList.data?.map((s) => (
             <div
@@ -424,13 +440,19 @@ function AdminDashboardPage() {
             </div>
           )}
           {companiesList.isError && (
-            <ErrorState scope="admin:companies" error={companiesList.error} onRetry={() => companiesList.refetch()} />
+            <ErrorState
+              scope="admin:companies"
+              error={companiesList.error}
+              onRetry={() => companiesList.refetch()}
+            />
           )}
-          {!companiesList.isLoading && !companiesList.isError && companiesList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
-              لا توجد شركات توصيل مسجلة بعد
-            </div>
-          )}
+          {!companiesList.isLoading &&
+            !companiesList.isError &&
+            companiesList.data?.length === 0 && (
+              <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+                لا توجد شركات توصيل مسجلة بعد
+              </div>
+            )}
           {companiesList.data?.map((c) => (
             <div
               key={c.id}

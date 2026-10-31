@@ -30,13 +30,22 @@ export function InAppNavigation({ map, origin, destination, onClose }: InAppNavi
     try {
       const url = `${OSRM_BASE}/${origin.lng},${origin.lat};${destination.lng},${destination.lat}?overview=full&geometries=geojson&steps=true`;
       const res = await fetch(url);
-      const data: any = await res.json();
+      const data = (await res.json()) as {
+        code?: string;
+        routes?: Array<{
+          distance: number;
+          duration: number;
+          geometry: { coordinates: [number, number][] };
+        }>;
+      };
       if (data.code !== "Ok" || !data.routes?.[0]) throw new Error("لم يتم العثور على مسار");
       const r = data.routes[0];
       setDistance(r.distance / 1000);
       setDuration(r.duration / 60);
       const coords: maplibregl.LngLat[] = [];
-      r.geometry.coordinates.forEach((c: [number, number]) => coords.push(new maplibregl.LngLat(c[0], c[1])));
+      r.geometry.coordinates.forEach((c: [number, number]) =>
+        coords.push(new maplibregl.LngLat(c[0], c[1])),
+      );
       setRouteCoords(coords);
     } catch (e) {
       setError(e instanceof Error ? e.message : "فشل تحميل المسار");

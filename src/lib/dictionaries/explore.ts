@@ -62,7 +62,8 @@ export const explore: DictGroup = {
     explore_empty_hint: "جرّب البحث عن منتج أو متجر آخر، أو أزل الفلاتر.",
     explore_bag_count: "{count} منتج في سلتك",
     explore_view_bag: "عرض السلة",
-    explore_option_required: "يحتاج هذا المنتج إلى اختيار المقاس أو اللون قبل الشراء — افتح تفاصيل المنتج",
+    explore_option_required:
+      "يحتاج هذا المنتج إلى اختيار المقاس أو اللون قبل الشراء — افتح تفاصيل المنتج",
     explore_rating: "تقييم {rating}",
     explore_camera: "البحث بالصورة",
     explore_visual_search_active: "البحث بالصورة مفعل",
@@ -154,7 +155,8 @@ export const explore: DictGroup = {
     explore_empty_hint: "Try searching for another product or store, or remove filters.",
     explore_bag_count: "{count} products in your bag",
     explore_view_bag: "View bag",
-    explore_option_required: "This product requires selecting size or color before purchase — open product details",
+    explore_option_required:
+      "This product requires selecting size or color before purchase — open product details",
     explore_rating: "{rating} out of 5",
     explore_camera: "Search by image",
     explore_visual_search_active: "Visual search active",

@@ -10,11 +10,7 @@ import { stockLevel, type BagItem, type OfferFull } from "./sooqy";
  */
 
 export type BagIssueKind =
-  | "missing"
-  | "unavailable"
-  | "out_of_stock"
-  | "over_stock"
-  | "price_changed";
+  "missing" | "unavailable" | "out_of_stock" | "over_stock" | "price_changed";
 
 export type BagIssue = {
   kind: BagIssueKind;
@@ -125,10 +121,7 @@ export function evaluateBag(
     };
   });
 
-  const subtotal = rows.reduce(
-    (sum, r) => sum + (r.offer?.price ?? 0) * r.item.quantity,
-    0,
-  );
+  const subtotal = rows.reduce((sum, r) => sum + (r.offer?.price ?? 0) * r.item.quantity, 0);
   const blockingCount = rows.filter((r) => r.issue).length;
 
   return { rows, blockingCount, hasBlocking: blockingCount > 0, subtotal, loaded };

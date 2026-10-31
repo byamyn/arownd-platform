@@ -105,7 +105,11 @@ function TrackPage() {
   return (
     <div className="space-y-4 px-4 pt-4">
       <header className="flex items-center gap-2 py-1">
-        <button onClick={() => goBackOrTo(router, "/orders")} aria-label={t("common_back")} className="icon-btn">
+        <button
+          onClick={() => goBackOrTo(router, "/orders")}
+          aria-label={t("common_back")}
+          className="icon-btn"
+        >
           <ArrowRight className="size-5 ltr:rotate-180" />
         </button>
         <h1 className="text-h1 text-foreground">{t("orders_track")}</h1>
@@ -113,7 +117,9 @@ function TrackPage() {
 
       {/* رمز التتبع */}
       <div className="rounded-2xl border border-border bg-card p-4">
-        <p className="text-xs text-muted-foreground">{t("orders_code", { code: trackCode(order.id) })}</p>
+        <p className="text-xs text-muted-foreground">
+          {t("orders_code", { code: trackCode(order.id) })}
+        </p>
         <p className="mt-0.5 text-xs text-muted-foreground">{date}</p>
         <div className="mt-3 flex items-center justify-between rounded-xl bg-background p-3">
           <span className="text-sm font-semibold text-muted-foreground">{t("track_total")}</span>
@@ -126,7 +132,9 @@ function TrackPage() {
         <div className="flex items-center gap-3 rounded-2xl border border-danger/30 bg-danger-soft p-4">
           <XCircle className="size-6 shrink-0 text-danger" />
           <div>
-            <p className="text-sm font-bold text-danger">{order.status === "rejected" ? t("track_rejected") : t("track_cancelled")}</p>
+            <p className="text-sm font-bold text-danger">
+              {order.status === "rejected" ? t("track_rejected") : t("track_cancelled")}
+            </p>
             <p className="text-xs text-muted-foreground">{t("track_cancelled_hint")}</p>
           </div>
         </div>
@@ -209,7 +217,9 @@ function TrackPage() {
           </div>
           <div className="flex justify-between text-muted-foreground">
             <span>{t("track_payment")}</span>
-            <span>{order.payment_method === "cod" ? t("checkout_payment_cod_label") : "BaridiMob"}</span>
+            <span>
+              {order.payment_method === "cod" ? t("checkout_payment_cod_label") : "BaridiMob"}
+            </span>
           </div>
         </div>
       </div>
@@ -220,7 +230,8 @@ function TrackPage() {
         <div className="text-sm">
           <p className="font-bold text-foreground">{order.full_name}</p>
           <p className="mt-0.5 text-muted-foreground">
-            {order.wilaya?.name_ar ?? t("track_wilaya_fallback", { id: order.wilaya_id })} · {order.commune}
+            {order.wilaya?.name_ar ?? t("track_wilaya_fallback", { id: order.wilaya_id })} ·{" "}
+            {order.commune}
             {order.address_line ? ` · ${order.address_line}` : ""}
           </p>
           <p className="mt-0.5 text-muted-foreground">{order.phone}</p>
@@ -275,7 +286,12 @@ function BadgeStatus({ status }: { status: string }) {
   };
 
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold", variants[status])}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+        variants[status],
+      )}
+    >
       {SHIPMENT_STATUS_LABELS[status as keyof typeof SHIPMENT_STATUS_LABELS] ?? status}
     </span>
   );

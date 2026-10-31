@@ -19,13 +19,7 @@ const STORE_PLACEHOLDER =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlMmU4ZjAiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNDNkYzNkIiIHN0cm9rZS1vcGFjaXR5PSIwLjMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHJlY3QgeD0iNzAiIHk9Ijc1IiB3aWR0aD0iNjAiIGhlaWdodD0iNTAiIHJ4PSI0Ii8+PHBhdGggZD0iTTgwIDc1di0xMGgyMHYxMCIvPHJlY3QgeD0iODAiIHk9IjEyNSIgd2lkdGg9IjE2IiBoZWlnaHQ9IjMwIiBieD0iMiIvPjxyZWN0IHg9IjEwNCIgeT0iMTI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMzAiIHJ4PSIyIi8+PC9nPjwvc3ZnPg==";
 
 /* ═══════════════ زر المفضلة ═══════════════ */
-export function FavoriteButton({
-  kind,
-  id,
-}: {
-  kind: "products" | "stores";
-  id: string;
-}) {
+export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: string }) {
   const { t } = useTranslation();
   const active = isFavorite(kind, id);
 
@@ -72,8 +66,12 @@ export function ProductCard({ g }: { g: ProductGroup }) {
   // نفس مصدر الحقيقة الذي تستخدمه صفحة المنتج — لا حساب مستقل.
   const best = g.bestOffer;
   const discountPct = Math.max(
-    0, ...g.offers.map((o) => o.old_price && o.old_price > o.price
-      ? Math.round(((o.old_price - o.price) / o.old_price) * 100) : 0),
+    0,
+    ...g.offers.map((o) =>
+      o.old_price && o.old_price > o.price
+        ? Math.round(((o.old_price - o.price) / o.old_price) * 100)
+        : 0,
+    ),
   );
   const discount = discountPct > 0;
 
@@ -81,11 +79,13 @@ export function ProductCard({ g }: { g: ProductGroup }) {
 
   return (
     <Link
-      to="/products/$productId" params={{ productId: g.product.id }}
+      to="/products/$productId"
+      params={{ productId: g.product.id }}
       preload="intent"
       className={cn(
         "group flex flex-col overflow-hidden rounded-2xl bg-card transition-all duration-200",
-        "border border-transparent", level === "out"
+        "border border-transparent",
+        level === "out"
           ? "opacity-70 cursor-not-allowed pointer-events-none"
           : "border-border hover:border-primary/20 hover:shadow-lift",
       )}
@@ -93,13 +93,20 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       <div className="relative aspect-square overflow-hidden bg-neutral-100">
         {g.image ? (
           <img
-            src={g.image} alt={g.product.name} loading="lazy" decoding="async"
-            onError={(e) => { (e.currentTarget as any).src = PRODUCT_PLACEHOLDER; }}
+            src={g.image}
+            alt={g.product.name}
+            loading="lazy"
+            decoding="async"
+            onError={(e) => {
+              e.currentTarget.src = PRODUCT_PLACEHOLDER;
+            }}
             className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
           />
         ) : (
           <img
-            src={PRODUCT_PLACEHOLDER} alt={t("product_placeholder")} loading="lazy"
+            src={PRODUCT_PLACEHOLDER}
+            alt={t("product_placeholder")}
+            loading="lazy"
             className="size-full object-cover"
           />
         )}
@@ -240,12 +247,7 @@ export function StoreMiniCard({ s, distance }: { s: Store; distance?: number | n
 
   return (
     <div className="card-premium flex items-center p-2">
-      <img
-        src={logoUrl}
-        alt={s.name}
-        loading="lazy"
-        className="w-5 h-5 rounded-md object-cover"
-      />
+      <img src={logoUrl} alt={s.name} loading="lazy" className="w-5 h-5 rounded-md object-cover" />
       <span className="me-2 text-xs text-text truncate">{s.name}</span>
       {distance != null && (
         <span className="me-auto text-[9px] text-muted-foreground">

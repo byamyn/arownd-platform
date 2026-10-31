@@ -70,7 +70,11 @@ function AdminDeliveryCompaniesPage() {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title="إدارة شركات التوصيل" back="/admin" />
-        <ErrorState scope="admin:delivery:role" error={roleQuery.error} onRetry={() => roleQuery.refetch()} />
+        <ErrorState
+          scope="admin:delivery:role"
+          error={roleQuery.error}
+          onRetry={() => roleQuery.refetch()}
+        />
       </div>
     );
   }

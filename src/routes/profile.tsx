@@ -90,8 +90,7 @@ function ProfilePage() {
     // حقول الهاتف والولاية والبلدية فارغة إذا وصل الملف بعد أول render.
     if (loaded || !user || !profile.isFetched) return;
     setFullName(
-      profile.data?.full_name ??
-        ((user.user_metadata?.["full_name"] as string | undefined) ?? ""),
+      profile.data?.full_name ?? (user.user_metadata?.["full_name"] as string | undefined) ?? "",
     );
     if (profile.data) {
       setPhone(profile.data.phone ?? "");
@@ -217,11 +216,7 @@ function ProfilePage() {
         />
 
         {profile.isError && (
-          <ErrorState
-            scope="profile"
-            error={profile.error}
-            onRetry={() => profile.refetch()}
-          />
+          <ErrorState scope="profile" error={profile.error} onRetry={() => profile.refetch()} />
         )}
 
         {/* بطاقة الهوية: غلاف + صورة متداخلة + بيانات + إحصاءات سريعة */}
@@ -379,7 +374,9 @@ function ProfilePage() {
         </section>
 
         <div className="pt-1">
-          <p className="pt-3 text-center text-xs text-muted-foreground">Arownd · الإصدار التجريبي</p>
+          <p className="pt-3 text-center text-xs text-muted-foreground">
+            Arownd · الإصدار التجريبي
+          </p>
         </div>
 
         {/* نموذج تعديل الملف — لوحة جانبية بدل نموذج في أسفل الصفحة */}

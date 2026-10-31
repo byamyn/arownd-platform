@@ -1,9 +1,26 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { ArrowLeft, ArrowRight, Bell, Lock, Package, Tag, CalendarCheck, Info, Trash2, CheckCircle2, MoreHorizontal } from "lucide-react";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Bell,
+  Lock,
+  Package,
+  Tag,
+  CalendarCheck,
+  Info,
+  Trash2,
+  CheckCircle2,
+  MoreHorizontal,
+} from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
-import { fetchMyNotifications, markNotificationsRead, markNotificationRead, deleteNotification } from "@/lib/sooqy";
+import {
+  fetchMyNotifications,
+  markNotificationsRead,
+  markNotificationRead,
+  deleteNotification,
+} from "@/lib/sooqy";
 import { formatDateTime } from "@/lib/market";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
@@ -36,7 +53,10 @@ type NotificationData = {
   [key: string]: unknown;
 };
 
-function navigateForNotification(navigate: ReturnType<typeof useNavigate>, n: { type: string; data: NotificationData }) {
+function navigateForNotification(
+  navigate: ReturnType<typeof useNavigate>,
+  n: { type: string; data: NotificationData },
+) {
   const d = n.data as NotificationData;
   switch (n.type) {
     case "order":
@@ -45,7 +65,8 @@ function navigateForNotification(navigate: ReturnType<typeof useNavigate>, n: { 
       break;
     case "reservation":
       // رقم الحجز ليس رقم طلب: نفتح المنتج أو المتجر إن توفّرا، وإلا قائمة الطلبات
-      if (d.product_id) navigate({ to: "/products/$productId", params: { productId: d.product_id } });
+      if (d.product_id)
+        navigate({ to: "/products/$productId", params: { productId: d.product_id } });
       else if (d.store_id) navigate({ to: "/stores/$storeId", params: { storeId: d.store_id } });
       else navigate({ to: "/orders" });
       break;

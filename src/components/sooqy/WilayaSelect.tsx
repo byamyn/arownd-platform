@@ -8,14 +8,19 @@ export const wilayasQuery = { queryKey: ["wilayas"], queryFn: fetchWilayas, stal
 
 /** زر اختيار الولاية — تصميم جديد فاخر */
 export function WilayaButton({
-  value, onChange, className, allLabel = "كل الولايات",
+  value,
+  onChange,
+  className,
+  allLabel = "كل الولايات",
 }: {
-  value: number | null; onChange: (v: number | null) => void;
-  className?: string; allLabel?: string;
+  value: number | null;
+  onChange: (v: number | null) => void;
+  className?: string;
+  allLabel?: string;
 }) {
   const { data = [] } = useQuery(wilayasQuery);
-  const current = data.find(w => w.id === value);
-  const label = value == null ? allLabel : (current?.name_ar ?? String(value).padStart(2,"0"));
+  const current = data.find((w) => w.id === value);
+  const label = value == null ? allLabel : (current?.name_ar ?? String(value).padStart(2, "0"));
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
@@ -27,12 +32,20 @@ export function WilayaButton({
     const timer = setTimeout(() => {
       document.addEventListener("mousedown", handleMouseDown);
     }, 0);
-    return () => { clearTimeout(timer); document.removeEventListener("mousedown", handleMouseDown); };
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener("mousedown", handleMouseDown);
+    };
   }, [isOpen]);
 
   function handleMouseDown(e: MouseEvent) {
     const target = e.target as Node;
-    if (buttonRef.current && !buttonRef.current.contains(target) && dropdownRef.current && !dropdownRef.current.contains(target)) {
+    if (
+      buttonRef.current &&
+      !buttonRef.current.contains(target) &&
+      dropdownRef.current &&
+      !dropdownRef.current.contains(target)
+    ) {
       setIsOpen(false);
     }
   }
@@ -48,7 +61,7 @@ export function WilayaButton({
     if (!isOpen || !buttonRef.current) return;
     const rect = buttonRef.current.getBoundingClientRect();
     const vw = window.innerWidth;
-    let left = Math.max(0, Math.min(rect.left, vw - 288 - 16));
+    const left = Math.max(0, Math.min(rect.left, vw - 288 - 16));
     setDropdownStyle({ position: "absolute", top: "100%", marginTop: 6, left, zIndex: 50 });
   }, [isOpen]);
 
@@ -123,11 +136,15 @@ export function WilayaButton({
           onMouseDown={() => handleSelect(w.id)} // Use onMouseDown to fire before document mousedown
           className={cn(
             "flex items-center gap-2 px-3 py-2.5 transition cursor-pointer",
-            value === w.id ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-neutral-100",
+            value === w.id
+              ? "bg-primary-soft text-accent-ink font-semibold"
+              : "hover:bg-neutral-100",
           )}
         >
           {value === w.id && <Check className="size-4 shrink-0 text-accent-ink" />}
-          <span className="text-muted-foreground w-6 text-center">{String(w.id).padStart(2, "0")}</span>
+          <span className="text-muted-foreground w-6 text-center">
+            {String(w.id).padStart(2, "0")}
+          </span>
           <span>{w.name_ar}</span>
         </li>
       ))}
@@ -141,17 +158,43 @@ export function WilayaButton({
   );
 }
 
-export function WilayaSelect({ value, onChange, allLabel = "كل الولايات", className, required }: {
-  value: number | null; onChange: (v: number | null) => void;
-  allLabel?: string | null; className?: string; required?: boolean;
+export function WilayaSelect({
+  value,
+  onChange,
+  allLabel = "كل الولايات",
+  className,
+  required,
+}: {
+  value: number | null;
+  onChange: (v: number | null) => void;
+  allLabel?: string | null;
+  className?: string;
+  required?: boolean;
 }) {
   const { data = [] } = useQuery(wilayasQuery);
   return (
-    <select value={value ?? ""} required={required} aria-label="اختيار الولاية"
-      onChange={e => onChange(e.target.value ? Number(e.target.value) : null)}
-      className={cn("h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/10", className)}>
-      {allLabel !== null ? <option value="">{allLabel}</option> : <option value="" disabled>اختر الولاية</option>}
-      {data.map(w => <option key={w.id} value={w.id}>{String(w.id).padStart(2,"0")} - {w.name_ar}</option>)}
+    <select
+      value={value ?? ""}
+      required={required}
+      aria-label="اختيار الولاية"
+      onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
+      className={cn(
+        "h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/10",
+        className,
+      )}
+    >
+      {allLabel !== null ? (
+        <option value="">{allLabel}</option>
+      ) : (
+        <option value="" disabled>
+          اختر الولاية
+        </option>
+      )}
+      {data.map((w) => (
+        <option key={w.id} value={w.id}>
+          {String(w.id).padStart(2, "0")} - {w.name_ar}
+        </option>
+      ))}
     </select>
   );
 }

@@ -17,12 +17,7 @@ type Props = {
 
 /** زر البحث بالصور: يختار المستخدم صورة، نحلّلها في المتصفح
  *  ثم ننتقل إلى نتائج مرتّبة حسب التشابه البصري. */
-export function ImageSearchButton({
-  onSearch,
-  className,
-  label,
-  iconOnly = false,
-}: Props) {
+export function ImageSearchButton({ onSearch, className, label, iconOnly = false }: Props) {
   const { t } = useTranslation();
   const btnLabel = label ?? t("image_search_label");
   const inputRef = useRef<HTMLInputElement>(null);

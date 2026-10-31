@@ -198,7 +198,12 @@ export function ImageUploader({
                 />
                 {/* شارة الصورة الأساسية */}
                 {item.isPrimary && (
-                  <div className={cn("absolute top-2 left-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm", isRTL && "left-auto right-2")}>
+                  <div
+                    className={cn(
+                      "absolute top-2 left-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm",
+                      isRTL && "left-auto right-2",
+                    )}
+                  >
                     <Pin className="size-3" /> أساسي
                   </div>
                 )}
@@ -207,7 +212,10 @@ export function ImageUploader({
                   type="button"
                   onClick={() => removeItem(index)}
                   aria-label="حذف الصورة"
-                  className={cn("absolute top-2 right-2 size-7 shrink-0 rounded-full bg-black/60 p-1 text-white transition hover:bg-black/80", isRTL && "right-auto left-2")}
+                  className={cn(
+                    "absolute top-2 right-2 size-7 shrink-0 rounded-full bg-black/60 p-1 text-white transition hover:bg-black/80",
+                    isRTL && "right-auto left-2",
+                  )}
                 >
                   <Trash2 className="size-4" />
                 </button>
@@ -217,7 +225,10 @@ export function ImageUploader({
                     type="button"
                     onClick={() => setPrimary(index)}
                     aria-label="تحديد كأساسية"
-                    className={cn("absolute bottom-2 left-2 size-7 shrink-0 rounded-full bg-white/90 p-1 text-foreground transition hover:bg-white", isRTL && "left-auto right-2")}
+                    className={cn(
+                      "absolute bottom-2 left-2 size-7 shrink-0 rounded-full bg-white/90 p-1 text-foreground transition hover:bg-white",
+                      isRTL && "left-auto right-2",
+                    )}
                   >
                     <Pin className="size-4 text-accent-ink" />
                   </button>

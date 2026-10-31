@@ -79,7 +79,11 @@ function FavoritesPage() {
       />
       <div className="space-y-4 px-4 pt-4">
         <header className="flex items-center gap-2 py-1">
-          <button onClick={() => goBackOrTo(router, "/profile")} aria-label={t("common_back")} className="icon-btn">
+          <button
+            onClick={() => goBackOrTo(router, "/profile")}
+            aria-label={t("common_back")}
+            className="icon-btn"
+          >
             <ArrowLeft className="size-5 rtl:rotate-180" />
           </button>
           <h1 className="text-h1 text-foreground">{t("fav_heading")}</h1>
@@ -144,11 +148,11 @@ function FavoritesPage() {
                 />
               )}
               {!products.isError && products.data && products.data.length > 0 && (
-              <div className="grid grid-cols-2 gap-3">
-                {(products.data ?? []).map((g) => (
-                  <ProductCard key={g.product.id} g={g} />
-                ))}
-              </div>
+                <div className="grid grid-cols-2 gap-3">
+                  {(products.data ?? []).map((g) => (
+                    <ProductCard key={g.product.id} g={g} />
+                  ))}
+                </div>
               )}
             </>
           ))}
@@ -188,11 +192,11 @@ function FavoritesPage() {
                 />
               )}
               {!stores.isError && stores.data && stores.data.length > 0 && (
-              <div className="space-y-3">
-                {(stores.data ?? []).map((s) => (
-                  <StoreCard key={s.id} s={s} distance={storeDistance(s, pos)} />
-                ))}
-              </div>
+                <div className="space-y-3">
+                  {(stores.data ?? []).map((s) => (
+                    <StoreCard key={s.id} s={s} distance={storeDistance(s, pos)} />
+                  ))}
+                </div>
               )}
             </>
           ))}

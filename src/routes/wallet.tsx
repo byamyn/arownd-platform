@@ -174,7 +174,11 @@ function WalletPage() {
     }
     setBusyWithdraw(true);
     try {
-      await walletWithdraw({ amount, method: withdrawMethod, note: withdrawNote.trim() || undefined });
+      await walletWithdraw({
+        amount,
+        method: withdrawMethod,
+        note: withdrawNote.trim() || undefined,
+      });
       toast.success("أُرسل طلب السحب — سيُنفَّذ بعد مراجعة الإدارة.");
       setWithdrawAmount("");
       setWithdrawNote("");
@@ -196,7 +200,11 @@ function WalletPage() {
         ogType="website"
       />
       <div className="mx-auto max-w-xl space-y-4 px-4 pb-24 pt-5">
-        <PageHeader title="المحفظة" subtitle="رصيدك وعملياتك المالية في مكان واحد" back="/profile" />
+        <PageHeader
+          title="المحفظة"
+          subtitle="رصيدك وعملياتك المالية في مكان واحد"
+          back="/profile"
+        />
 
         {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
         <section className="relative overflow-hidden rounded-[1.75rem] bg-primary p-5 text-primary-foreground shadow-lift sm:p-6">
@@ -205,7 +213,10 @@ function WalletPage() {
             <div className="min-w-0">
               <p className="text-xs font-bold opacity-80">الرصيد المتاح</p>
               {txs.isLoading ? (
-                <div className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-black/10" aria-label="جارٍ تحميل الرصيد" />
+                <div
+                  className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-black/10"
+                  aria-label="جارٍ تحميل الرصيد"
+                />
               ) : txs.isError ? (
                 <p className="mt-2 text-sm font-bold">تعذّر تحميل الرصيد</p>
               ) : (
@@ -225,11 +236,15 @@ function WalletPage() {
             <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-black/10 pt-3">
               <div className="rounded-xl bg-black/5 px-3 py-2">
                 <p className="text-[10px] font-bold opacity-70">إيداعات قيد المراجعة</p>
-                <p dir="ltr" className="mt-1 text-sm font-extrabold">{formatDA(pendingTopup)}</p>
+                <p dir="ltr" className="mt-1 text-sm font-extrabold">
+                  {formatDA(pendingTopup)}
+                </p>
               </div>
               <div className="rounded-xl bg-black/5 px-3 py-2">
                 <p className="text-[10px] font-bold opacity-70">سحوبات قيد المراجعة</p>
-                <p dir="ltr" className="mt-1 text-sm font-extrabold">{formatDA(pendingWithdraw)}</p>
+                <p dir="ltr" className="mt-1 text-sm font-extrabold">
+                  {formatDA(pendingWithdraw)}
+                </p>
               </div>
             </div>
           )}
@@ -383,16 +398,22 @@ function WalletPage() {
             <div className="rounded-2xl border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-success">
                 <ArrowDownLeft className="size-4" />
-                <span className="text-[11px] font-bold text-muted-foreground">إجمالي الإيداعات</span>
+                <span className="text-[11px] font-bold text-muted-foreground">
+                  إجمالي الإيداعات
+                </span>
               </div>
-              <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">{formatDA(summary.totalTopup)}</p>
+              <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">
+                {formatDA(summary.totalTopup)}
+              </p>
             </div>
             <div className="rounded-2xl border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-danger">
                 <ArrowUpRight className="size-4" />
                 <span className="text-[11px] font-bold text-muted-foreground">إجمالي السحوبات</span>
               </div>
-              <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">{formatDA(summary.totalWithdraw)}</p>
+              <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">
+                {formatDA(summary.totalWithdraw)}
+              </p>
             </div>
             <div className="col-span-2 flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3">
               <span className="text-xs font-bold text-muted-foreground">عمليات قيد المراجعة</span>
@@ -433,7 +454,10 @@ function WalletPage() {
         {txs.isLoading && (
           <div className="space-y-3">
             {[0, 1, 2].map((i) => (
-              <div key={i} className="h-20 animate-pulse rounded-2xl border border-border bg-card" />
+              <div
+                key={i}
+                className="h-20 animate-pulse rounded-2xl border border-border bg-card"
+              />
             ))}
           </div>
         )}
@@ -441,7 +465,9 @@ function WalletPage() {
         {txs.isError && (
           <div className="rounded-2xl border border-danger/30 bg-danger-soft p-4 text-center">
             <p className="text-sm font-bold text-foreground">تعذّر تحميل بيانات المحفظة</p>
-            <p className="mt-1 text-xs text-muted-foreground">تحقق من اتصالك بالإنترنت ثم أعد المحاولة.</p>
+            <p className="mt-1 text-xs text-muted-foreground">
+              تحقق من اتصالك بالإنترنت ثم أعد المحاولة.
+            </p>
             <button onClick={() => void txs.refetch()} className="btn-secondary mt-3">
               إعادة المحاولة
             </button>
@@ -507,14 +533,22 @@ function WalletPage() {
                       {formatDA(Math.abs(t.amount))}
                     </p>
                     <span
-                      className={cn("mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold", st.cls)}
+                      className={cn(
+                        "mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold",
+                        st.cls,
+                      )}
                     >
                       {st.label}
                     </span>
                   </div>
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-[10px] text-muted-foreground">
-                  <span>رقم المعاملة: <b dir="ltr" className="font-mono">{t.id.slice(0, 8).toUpperCase()}</b></span>
+                  <span>
+                    رقم المعاملة:{" "}
+                    <b dir="ltr" className="font-mono">
+                      {t.id.slice(0, 8).toUpperCase()}
+                    </b>
+                  </span>
                   {methodLabel && <span>{methodLabel}</span>}
                 </div>
                 {t.note && (

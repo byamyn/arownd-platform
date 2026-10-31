@@ -207,7 +207,12 @@ function BadgeStatus({ status }: { status: string }) {
   };
 
   return (
-    <span className={cn("inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold", variants[status])}>
+    <span
+      className={cn(
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+        variants[status],
+      )}
+    >
       {SHIPMENT_STATUS_LABELS[status as keyof typeof SHIPMENT_STATUS_LABELS] ?? status}
     </span>
   );
@@ -240,9 +245,7 @@ function ShipmentRow({
         <div className="text-muted-foreground">الشركة</div>
         <div className="font-semibold text-foreground">{shipment.company_id?.slice(-4) ?? "—"}</div>
         <div className="text-muted-foreground">تاريخ الإنشاء</div>
-        <div className="font-semibold text-foreground">
-          {formatDate(shipment.created_at)}
-        </div>
+        <div className="font-semibold text-foreground">{formatDate(shipment.created_at)}</div>
       </div>
 
       <div className="flex gap-2">

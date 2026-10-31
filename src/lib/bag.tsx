@@ -82,7 +82,11 @@ export function BagProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const onSync = (e: Event) => {
       // حدث storage يصل لكل مفتاح؛ نتجاهل غير مفتاح السلة.
-      if (e.type === "storage" && (e as StorageEvent).key !== null && (e as StorageEvent).key !== KEY)
+      if (
+        e.type === "storage" &&
+        (e as StorageEvent).key !== null &&
+        (e as StorageEvent).key !== KEY
+      )
         return;
       const detail = (e as CustomEvent<BagItem[] | undefined>).detail;
       const next = detail ? sanitizeBagItems(detail) : readStorage();
@@ -158,10 +162,7 @@ export function BagProvider({ children }: { children: ReactNode }) {
     <Ctx.Provider value={value}>
       {children}
       {storageFailed && (
-        <div
-          role="status"
-          className="fixed inset-x-0 bottom-24 z-50 mx-auto w-full max-w-2xl px-4"
-        >
+        <div role="status" className="fixed inset-x-0 bottom-24 z-50 mx-auto w-full max-w-2xl px-4">
           <p className="rounded-xl border border-danger bg-danger-soft px-3 py-2 text-center text-xs font-semibold text-danger">
             {t("error_bag_storage_failed")}
           </p>

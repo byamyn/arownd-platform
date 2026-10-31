@@ -80,7 +80,9 @@ export function localizeStoreStatus(
       const days = Number(p["days"] ?? 1);
       return {
         label: t("status_closed_temp"),
-        description: t("status_closed_today_desc", { day: t(`weekday_${Number(p["dayIndex"] ?? 0)}`) }),
+        description: t("status_closed_today_desc", {
+          day: t(`weekday_${Number(p["dayIndex"] ?? 0)}`),
+        }),
         nextChange: days === 1 ? t("status_tomorrow") : t("status_in_days", { days }),
       };
     }
@@ -159,7 +161,10 @@ export function VerifiedBadge({ className }: { className?: string }) {
   const { t } = useTranslation();
   return (
     <span
-      className={cn("inline-flex items-center gap-1 text-[11px] font-bold text-accent-ink", className)}
+      className={cn(
+        "inline-flex items-center gap-1 text-[11px] font-bold text-accent-ink",
+        className,
+      )}
     >
       <BadgeCheck className="size-3.5" aria-hidden="true" /> {t("badge_verified")}
     </span>

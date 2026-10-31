@@ -2,10 +2,10 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
 export type DeliveryCompany = Database["public"]["Tables"]["delivery_companies"]["Row"];
-export type PublicDeliveryCompany = Database["public"]["Views"]["approved_delivery_companies"]["Row"];
+export type PublicDeliveryCompany =
+  Database["public"]["Views"]["approved_delivery_companies"]["Row"];
 export type DeliveryCompanyInsert = Database["public"]["Tables"]["delivery_companies"]["Insert"];
 export type DeliveryCompanyUpdate = Database["public"]["Tables"]["delivery_companies"]["Update"];
-
 
 export type DeliveryCoverageArea = Database["public"]["Tables"]["delivery_coverage_areas"]["Row"];
 export type DeliveryService = Database["public"]["Tables"]["delivery_services"]["Row"];

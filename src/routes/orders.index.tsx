@@ -58,9 +58,7 @@ function OrdersPage() {
           <PackageCheck className="size-9 text-accent-ink" strokeWidth={1.6} />
         </span>
         <h1 className="text-h1 text-foreground">{t("orders_login_title")}</h1>
-        <p className="max-w-xs text-body text-muted-foreground">
-          {t("orders_login_hint")}
-        </p>
+        <p className="max-w-xs text-body text-muted-foreground">{t("orders_login_hint")}</p>
         <Link to="/auth" search={{ redirect: "/orders" }} className="btn-primary mt-2">
           {t("checkout_login_cta")}
         </Link>
@@ -152,7 +150,9 @@ function OrdersPage() {
               <div key={o.id} className="rounded-2xl border border-border bg-card p-4">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <p className="text-sm font-bold text-foreground">{t("orders_code", { code: trackCode(o.id) })}</p>
+                    <p className="text-sm font-bold text-foreground">
+                      {t("orders_code", { code: trackCode(o.id) })}
+                    </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       {date}
                       {o.wilaya?.name_ar ? ` · ${o.wilaya.name_ar}` : ""}
@@ -183,7 +183,9 @@ function OrdersPage() {
                 <div className="mt-3 flex items-center justify-between">
                   <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                     <Truck className="size-3.5" />
-                    {o.delivery_type === "home" ? t("orders_delivery_home") : t("orders_delivery_desk")}
+                    {o.delivery_type === "home"
+                      ? t("orders_delivery_home")
+                      : t("orders_delivery_desk")}
                   </span>
                   <b className="text-price text-accent-ink">{formatDA(o.total)}</b>
                 </div>

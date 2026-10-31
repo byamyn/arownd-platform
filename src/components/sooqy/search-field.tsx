@@ -66,7 +66,8 @@ export function SearchField({
           "focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-colors",
           disabled && "opacity-50 pointer-events-none",
           // حقل عاري: الحاوية الأم توفّر الإطار والارتفاع
-          bare && "h-full rounded-none border-0 bg-transparent focus:ring-0 focus:border-transparent",
+          bare &&
+            "h-full rounded-none border-0 bg-transparent focus:ring-0 focus:border-transparent",
           // مساحة لأزرار جهة النهاية (الكاميرا / المسح)
           hasTrailing && "pr-20 rtl:pl-20",
           className,

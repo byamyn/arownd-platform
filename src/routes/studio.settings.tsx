@@ -110,7 +110,11 @@ function StoreSettingsPage() {
     );
   if (store.isLoading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل المتجر">
+      <div
+        className="flex min-h-[50vh] items-center justify-center"
+        role="status"
+        aria-label="جارٍ تحميل المتجر"
+      >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
     );
@@ -119,8 +123,16 @@ function StoreSettingsPage() {
   if (store.isError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="تخصيص المتجر" subtitle="هوية متجرك تظهر للعملاء في صفحته" back="/studio" />
-        <ErrorState scope="studio:settings:store" error={store.error} onRetry={() => store.refetch()} />
+        <PageHeader
+          title="تخصيص المتجر"
+          subtitle="هوية متجرك تظهر للعملاء في صفحته"
+          back="/studio"
+        />
+        <ErrorState
+          scope="studio:settings:store"
+          error={store.error}
+          onRetry={() => store.refetch()}
+        />
       </div>
     );
   }

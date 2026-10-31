@@ -20,7 +20,10 @@ import { cn } from "@/lib/utils";
 /** خريطة أعداد المنتجات لكل تصنيف (من `fetchCategoryStats`) — `null` = بلا إحصاءات */
 export type CategoryCounts = Record<string, number> | null;
 
-const countLabel = (n: number, t: (key: string, values?: Record<string, string | number>) => string) =>
+const countLabel = (
+  n: number,
+  t: (key: string, values?: Record<string, string | number>) => string,
+) =>
   n === 1
     ? t("product_count_one")
     : n === 2

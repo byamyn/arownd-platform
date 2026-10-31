@@ -136,7 +136,11 @@ function ProductPage() {
   if (product.isError)
     return (
       <div className="p-8 text-center">
-        <ErrorState scope="product:details" error={product.error} onRetry={() => product.refetch()} />
+        <ErrorState
+          scope="product:details"
+          error={product.error}
+          onRetry={() => product.refetch()}
+        />
       </div>
     );
   if (!product.data)
@@ -288,8 +292,7 @@ function ProductPage() {
       <SeoHead
         title={p.name}
         description={
-          p.description?.slice(0, 150) ||
-          t("product_meta_description", { name: p.name })
+          p.description?.slice(0, 150) || t("product_meta_description", { name: p.name })
         }
         ogImage={primaryImage(selected?.images) ?? images[0] ?? undefined}
         ogType="product"
@@ -388,7 +391,9 @@ function ProductPage() {
                   aria-label={t("product_zoom_image", { n: i + 1 })}
                   className={cn(
                     "shrink-0 size-16 overflow-hidden rounded-xl border-2 transition active:scale-95",
-                    i === safeIdx ? "border-primary" : "border-transparent opacity-70 hover:opacity-100",
+                    i === safeIdx
+                      ? "border-primary"
+                      : "border-transparent opacity-70 hover:opacity-100",
                   )}
                 >
                   <img
@@ -424,9 +429,7 @@ function ProductPage() {
                 <span className="text-sm font-bold text-foreground">
                   {Math.max(...sorted.map((o) => Number(o.store.rating) || 0)).toFixed(1)}
                 </span>
-                <span className="text-xs text-muted-foreground">
-                  {t("product_store_rating")}
-                </span>
+                <span className="text-xs text-muted-foreground">{t("product_store_rating")}</span>
               </div>
             )}
 
@@ -498,9 +501,7 @@ function ProductPage() {
             ) : null}
 
             <div className="flex items-center justify-between gap-3">
-              <span className="text-sm font-semibold text-foreground">
-                {t("product_quantity")}
-              </span>
+              <span className="text-sm font-semibold text-foreground">{t("product_quantity")}</span>
               <QtyStepper
                 value={qty}
                 onChange={setQty}
@@ -511,37 +512,21 @@ function ProductPage() {
 
           {/* Specs / delivery info */}
           <section className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">
-              {t("product_specs_title")}
-            </h2>
+            <h2 className="text-lg font-bold text-foreground">{t("product_specs_title")}</h2>
             <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
-              {p.brand && (
-                <SpecRow label={t("product_brand_label")} value={p.brand} />
-              )}
+              {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
               {p.category && (
-                <SpecRow
-                  label={t("product_category_label")}
-                  value={categoryLabel(p.category)}
-                />
+                <SpecRow label={t("product_category_label")} value={categoryLabel(p.category)} />
               )}
-              <SpecRow
-                label={t("product_delivery_title")}
-                value={t("product_delivery_desc")}
-              />
+              <SpecRow label={t("product_delivery_title")} value={t("product_delivery_desc")} />
             </div>
           </section>
 
-          <ReviewSection
-            targetType="product"
-            targetId={p.id}
-            title={t("product_reviews_title")}
-          />
+          <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} />
 
           {/* Where to find */}
           <section className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">
-              {t("product_where_to_find")}
-            </h2>
+            <h2 className="text-lg font-bold text-foreground">{t("product_where_to_find")}</h2>
             {offers.isError && (
               <ErrorState
                 scope="product:offers"
@@ -592,9 +577,7 @@ function ProductPage() {
                       </div>
                     </div>
                     <div className="text-end">
-                      <p className="text-lg font-bold text-foreground">
-                        {formatDA(o.price)}
-                      </p>
+                      <p className="text-lg font-bold text-foreground">{formatDA(o.price)}</p>
                       {o.id === bestPriceId && highPrice > lowPrice && (
                         <p className="mb-1 text-[11px] font-semibold text-success">
                           {t("product_saves", { amount: formatDA(highPrice - lowPrice) })}

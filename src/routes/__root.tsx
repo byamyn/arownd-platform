@@ -35,9 +35,7 @@ function NotFoundComponent() {
       <div className="max-w-md text-center">
         <h1 className="text-7xl font-bold text-foreground">404</h1>
         <h2 className="mt-4 text-xl font-semibold text-foreground">{t("notfound_title")}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t("notfound_hint")}
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("notfound_hint")}</p>
         <div className="mt-6">
           <Link
             to="/"
@@ -60,9 +58,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
     <div className="flex min-h-screen items-center justify-center bg-background px-4">
       <div className="max-w-md text-center">
         <h1 className="text-xl font-semibold tracking-tight text-foreground">{t("error_title")}</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {t("error_hint")}
-        </p>
+        <p className="mt-2 text-sm text-muted-foreground">{t("error_hint")}</p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
           <button
             onClick={() => {
@@ -141,12 +137,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 });
 
 function RootShell({ children }: { children: ReactNode }) {
+  // اللغة والاتجاه يتبعان اختيار المستخدم — أساس الشرط الثنائي (RTL/LTR).
+  const { lang } = useTranslation();
+
   // Testing Library mounts inside a div; render only the app subtree in Vitest.
   // Production SSR must keep the full document shell for TanStack Start.
   if (import.meta.env.MODE === "test") return <>{children}</>;
-
-  // اللغة والاتجاه يتبعان اختيار المستخدم — أساس الشرط الثنائي (RTL/LTR).
-  const { lang } = useTranslation();
   const dir = lang === "ar" ? "rtl" : "ltr";
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
@@ -164,9 +160,7 @@ function RootShell({ children }: { children: ReactNode }) {
         />
       </head>
       <body>
-        <AppErrorBoundary fallback={<ErrorFallback />}>
-          {children}
-        </AppErrorBoundary>
+        <AppErrorBoundary fallback={<ErrorFallback />}>{children}</AppErrorBoundary>
         <Scripts />
       </body>
     </html>

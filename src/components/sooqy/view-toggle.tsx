@@ -12,12 +12,7 @@ export interface ViewToggleProps {
 }
 
 /** مبدّل موحّد: منتجات / متاجر / خريطة — أيقونة + تسمية قصيرة. */
-export function ViewToggle({
-  value,
-  onChange,
-  labels,
-  className,
-}: ViewToggleProps) {
+export function ViewToggle({ value, onChange, labels, className }: ViewToggleProps) {
   const { t } = useTranslation();
   // التسميات الافتراضية مفاتيح ترجمة — تُترجم وقت العرض.
   const options = [

@@ -26,7 +26,8 @@ export const Route = createFileRoute("/delivery-dashboard")({
       { title: "لوحة شركة التوصيل — Arownd" },
       {
         name: "description",
-        content: "إدارة طلبات الشحن، قبولها أو رفضها، وتحديث حالات التوصيل لشركة التوصيل في Arownd.",
+        content:
+          "إدارة طلبات الشحن، قبولها أو رفضها، وتحديث حالات التوصيل لشركة التوصيل في Arownd.",
       },
     ],
   }),
@@ -136,7 +137,11 @@ function DeliveryDashboardPage() {
 
   if (company.isLoading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل حساب شركة التوصيل">
+      <div
+        className="flex min-h-[50vh] items-center justify-center"
+        role="status"
+        aria-label="جارٍ تحميل حساب شركة التوصيل"
+      >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
     );
@@ -193,7 +198,11 @@ function DeliveryDashboardPage() {
 
   if (activeShipmentsQuery.isLoading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل الشحنات">
+      <div
+        className="flex min-h-[50vh] items-center justify-center"
+        role="status"
+        aria-label="جارٍ تحميل الشحنات"
+      >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
     );
@@ -391,7 +400,9 @@ function PendingShipmentsList({
                 </p>
               )}
               {shipment.fee != null && (
-                <p className="text-sm font-medium text-accent-ink mt-1">الرسوم: {shipment.fee} دج</p>
+                <p className="text-sm font-medium text-accent-ink mt-1">
+                  الرسوم: {shipment.fee} دج
+                </p>
               )}
             </div>
             <BadgeStatus status={shipment.status} />
@@ -477,7 +488,9 @@ function AllShipmentsList({
                   </p>
                 )}
                 {shipment.fee != null && (
-                  <p className="text-sm font-medium text-accent-ink mt-1">الرسوم: {shipment.fee} دج</p>
+                  <p className="text-sm font-medium text-accent-ink mt-1">
+                    الرسوم: {shipment.fee} دج
+                  </p>
                 )}
               </div>
               <BadgeStatus status={currentStatus} />

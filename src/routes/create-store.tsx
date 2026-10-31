@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import {
-  becomeMerchant,
-  fetchMyStore,
-  merchantCreateStore,
-} from "@/lib/sooqy";
+import { becomeMerchant, fetchMyStore, merchantCreateStore } from "@/lib/sooqy";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
-import { MerchantOnboarding, type StoreForm, defaultStoreForm } from "@/components/sooqy/merchant-onboarding";
+import {
+  MerchantOnboarding,
+  type StoreForm,
+  defaultStoreForm,
+} from "@/components/sooqy/merchant-onboarding";
 
 export const Route = createFileRoute("/create-store")({
   head: () => ({ meta: [{ title: "أنشئ متجرك — Arownd" }] }),
@@ -34,7 +34,11 @@ function CreateStorePage() {
         <PageHeader title="أصبح تاجر" back="/settings" />
         <div className="mt-6 rounded-2xl border border-border bg-card p-6 text-center">
           <p className="text-body text-muted-foreground">يرجى تسجيل الدخول لإنشاء متجر</p>
-          <Link to="/auth" search={{ redirect: "/create-store" }} className="btn-primary mt-4 w-full">
+          <Link
+            to="/auth"
+            search={{ redirect: "/create-store" }}
+            className="btn-primary mt-4 w-full"
+          >
             تسجيل الدخول
           </Link>
         </div>
@@ -44,7 +48,11 @@ function CreateStorePage() {
 
   if (myStore.isLoading) {
     return (
-      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ التحقق من المتجر">
+      <div
+        className="flex min-h-[50vh] items-center justify-center"
+        role="status"
+        aria-label="جارٍ التحقق من المتجر"
+      >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
     );

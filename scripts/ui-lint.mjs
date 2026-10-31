@@ -30,7 +30,8 @@ const add = (level, rule, file, line, msg) =>
   findings.push({ level, rule, file: relative(ROOT, file), line, msg });
 
 const isComment = (l) => /^\s*(\/\/|\*|\/\*|\{\/\*)/.test(l);
-const PHYS = /(?<![\w-])(?:[a-z0-9\[\]&:>*_-]+:)*-?(ml|mr|pl|pr|left|right)-(?=[\[0-9a]|px)|(?<![\w-])text-(left|right)\b/;
+const PHYS =
+  /(?<![\w-])(?:[a-z0-9\[\]&:>*_-]+:)*-?(ml|mr|pl|pr|left|right)-(?=[\[0-9a]|px)|(?<![\w-])text-(left|right)\b/;
 const BRAND = /\b(SooQy|SOOQY|AROWND)\b/;
 const AR = /[\u0600-\u06FF]/;
 
@@ -41,11 +42,14 @@ for (const f of files) {
     if (isComment(l)) return;
     const n = i + 1;
     // 1) اتجاه فيزيائي (يُسمح بالأسطر التي تعالج RTL صراحةً أو مركز translate-x)
-    if (
-      PHYS.test(l) &&
-      !/isRTL|rtl:|ltr:|translate-x|left-1\/2|right-1\/2|group-active/.test(l)
-    )
-      add("error", "logical-direction", f, n, "استخدم ms/me/ps/pe/start/end بدل ml/mr/pl/pr/left/right");
+    if (PHYS.test(l) && !/isRTL|rtl:|ltr:|translate-x|left-1\/2|right-1\/2|group-active/.test(l))
+      add(
+        "error",
+        "logical-direction",
+        f,
+        n,
+        "استخدم ms/me/ps/pe/start/end بدل ml/mr/pl/pr/left/right",
+      );
     // 2) اسم العلامة
     if (BRAND.test(l) && !/SOOQY_VECTOR_STYLE|console\.|\[SooQy\]|name: "SooQy/.test(l))
       add("error", "brand-name", f, n, "الكتابة المعتمدة: Arownd");
@@ -53,7 +57,8 @@ for (const f of files) {
     if (/(?<![\w.])(prompt|alert|confirm)\(/.test(l))
       add("error", "native-dialog", f, n, "لا تستخدم حوارات المتصفح؛ استخدم confirm-dialog/toast");
     // 4) ألوان حرفية داخل className
-    if (!/StoreMap\.tsx$/.test(f) && /className=.*#[0-9a-fA-F]{6}\b/.test(l)) // الخريطة بلوحة فاتحة ثابتة عمدًا
+    if (!/StoreMap\.tsx$/.test(f) && /className=.*#[0-9a-fA-F]{6}\b/.test(l))
+      // الخريطة بلوحة فاتحة ثابتة عمدًا
       add("error", "hex-in-class", f, n, "استخدم رموز التصميم بدل #hex");
     // 5) نص عربي ثابت في خصائص وصول/إدخال
     if (/(aria-label|placeholder|title|alt)=("[^"{]*[\u0600-\u06FF][^"]*")/.test(l))
@@ -64,13 +69,20 @@ for (const f of files) {
     const tag = m[0].replace(/=>/g, "=§");
     const line = src.slice(0, m.index).split("\n").length;
     if (!/\balt=/.test(tag)) add("error", "img-alt", f, line, "الصورة بلا alt");
-    if (!/loading=|fetchPriority=/.test(tag)) add("warn", "img-lazy", f, line, "أضف loading=\"lazy\" decoding=\"async\"");
+    if (!/loading=|fetchPriority=/.test(tag))
+      add("warn", "img-lazy", f, line, 'أضف loading="lazy" decoding="async"');
   }
   // 7) أزرار/روابط أيقونية بلا اسم وصولي
   const s2 = src.replace(/=>/g, "=§");
   for (const m of s2.matchAll(/<(button|Link|a)\b([^>]*?)>\s*(<[A-Z]\w*\b[^>]*\/>)\s*<\/\1>/gs)) {
     if (/aria-label|aria-labelledby|title=/.test(m[2])) continue;
-    add("error", "icon-only-name", f, s2.slice(0, m.index).split("\n").length, "زر أيقوني بلا aria-label");
+    add(
+      "error",
+      "icon-only-name",
+      f,
+      s2.slice(0, m.index).split("\n").length,
+      "زر أيقوني بلا aria-label",
+    );
   }
   // 8) حقول tel/email بلا inputMode/autoComplete
   for (const m of src.matchAll(/<input\b[^>]*?>/gs)) {
@@ -84,9 +96,11 @@ for (const f of files) {
 const errors = findings.filter((x) => x.level === "error");
 const warns = findings.filter((x) => x.level === "warn");
 const byRule = {};
-for (const x of findings) byRule[`${x.level}:${x.rule}`] = (byRule[`${x.level}:${x.rule}`] ?? 0) + 1;
+for (const x of findings)
+  byRule[`${x.level}:${x.rule}`] = (byRule[`${x.level}:${x.rule}`] ?? 0) + 1;
 const verbose = process.argv.includes("--verbose");
-for (const x of verbose ? findings : errors) console.log(`${x.level.toUpperCase()} [${x.rule}] ${x.file}:${x.line} — ${x.msg}`);
+for (const x of verbose ? findings : errors)
+  console.log(`${x.level.toUpperCase()} [${x.rule}] ${x.file}:${x.line} — ${x.msg}`);
 console.log("\nملخص:", JSON.stringify(byRule));
 console.log(`أخطاء: ${errors.length} | تحذيرات: ${warns.length} | ملفات: ${files.length}`);
 process.exit(errors.length ? 1 : 0);

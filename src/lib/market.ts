@@ -161,10 +161,7 @@ export function formatDate(
 }
 
 /** وقت بتوقيت السوق — «14:30». */
-export function formatTime(
-  value: Date | string | number,
-  market: Market = getMarket(),
-): string {
+export function formatTime(value: Date | string | number, market: Market = getMarket()): string {
   const d = toDate(value);
   const z = zonedParts(d, market.timeZone);
   return `${pad2(z.hour)}:${pad2(z.minute)}`;

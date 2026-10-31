@@ -4,10 +4,7 @@ import { Check, MapPin } from "lucide-react";
 import { toast } from "sonner";
 import { useGeo, geoErrorMessage } from "@/lib/geo";
 import { childrenOf } from "@/lib/taxonomy";
-import {
-  MainCategoryPicker,
-  SubcategoryMultiSelect,
-} from "@/components/sooqy/category-tiles";
+import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { cn } from "@/lib/utils";
 import { merchantCreateStore } from "@/lib/sooqy";

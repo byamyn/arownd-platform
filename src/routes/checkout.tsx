@@ -49,7 +49,12 @@ export const Route = createFileRoute("/checkout")({
 });
 
 type PaymentMethod = "cod" | "baridimob";
-const STEP_KEYS = ["checkout_step_items", "checkout_step_address", "checkout_step_delivery", "checkout_step_payment"] as const;
+const STEP_KEYS = [
+  "checkout_step_items",
+  "checkout_step_address",
+  "checkout_step_delivery",
+  "checkout_step_payment",
+] as const;
 
 function CheckoutPage() {
   const { user, ready } = useAuth();
@@ -258,7 +263,9 @@ function CheckoutPage() {
         <section className="rounded-2xl border border-border bg-card p-4">
           <div className="mb-3 flex items-center gap-2">
             <ShoppingBag className="size-5 text-accent-ink" />
-            <h2 className="text-section text-foreground">{t("checkout_your_items", { count: bag.count })}</h2>
+            <h2 className="text-section text-foreground">
+              {t("checkout_your_items", { count: bag.count })}
+            </h2>
           </div>
           <div className="space-y-3">
             {rows.map((row) => (
@@ -444,9 +451,7 @@ function CheckoutPage() {
                   />
                 )}
                 {deliveryCompanies.data?.length === 0 && !deliveryCompanies.isError && (
-                  <p className="text-xs text-muted-foreground">
-                    {t("checkout_companies_none")}
-                  </p>
+                  <p className="text-xs text-muted-foreground">{t("checkout_companies_none")}</p>
                 )}
               </div>
               <textarea
@@ -516,7 +521,9 @@ function CheckoutPage() {
               <CreditCard className="size-4" />
               {t("checkout_payment_card")}
             </span>
-            <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold">{t("checkout_soon")}</span>
+            <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold">
+              {t("checkout_soon")}
+            </span>
           </div>
           <p className="rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             {t("checkout_payment_only_cod_note")}
@@ -545,7 +552,11 @@ function CheckoutPage() {
             onClick={goNext}
             className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-6 text-sm font-bold text-primary-foreground transition disabled:opacity-45 active:scale-[0.98]"
           >
-            {submitting ? t("checkout_sending") : step === 3 ? t("checkout_confirm_order") : t("checkout_next")}
+            {submitting
+              ? t("checkout_sending")
+              : step === 3
+                ? t("checkout_confirm_order")
+                : t("checkout_next")}
           </button>
         </div>
       </StickyActionBar>
@@ -607,7 +618,9 @@ function SuccessScreen({
 
       {/* رمز التتبع */}
       <div className="w-full max-w-xs rounded-2xl bg-card py-4">
-        <p className="text-[11px] opacity-70 text-muted-foreground">{t("checkout_tracking_code")}</p>
+        <p className="text-[11px] opacity-70 text-muted-foreground">
+          {t("checkout_tracking_code")}
+        </p>
         <p className="font-mono text-2xl font-bold tracking-[0.3em] text-accent-ink">{trackCode}</p>
       </div>
 
@@ -621,7 +634,9 @@ function SuccessScreen({
             </div>
           )}
           <div className="flex items-center justify-between gap-2 text-sm">
-            <span className="text-muted-foreground">{t("close_items_count", { count: snapshot.itemCount })}</span>
+            <span className="text-muted-foreground">
+              {t("close_items_count", { count: snapshot.itemCount })}
+            </span>
             <span className="font-bold text-foreground">{formatDA(snapshot.total)}</span>
           </div>
           <p className="flex items-start gap-1.5 pt-1 text-[11px] leading-relaxed text-muted-foreground">

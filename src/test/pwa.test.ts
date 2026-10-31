@@ -91,7 +91,7 @@ describe("PWA — Service Worker", () => {
 
   it("يستخدم network-first للتنقّل (يضمن حداثة المحتوى) مع fallback", () => {
     expect(sw).toContain('request.mode === "navigate"');
-    expect(sw).toContain("caches.match(\"/\")");
+    expect(sw).toContain('caches.match("/")');
   });
 
   it("يخزّن البيانات مع حدّ عمر ومقاس", () => {

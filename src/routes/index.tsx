@@ -113,11 +113,7 @@ function Home() {
         <header className="sticky top-0 z-30 -mx-4 flex items-center justify-between gap-3 bg-background/95 px-4 py-2 backdrop-blur-md">
           <ArowndBrand />
           <div className="flex items-center gap-2">
-            <WilayaButton
-              value={wilaya}
-              onChange={changeWilaya}
-              allLabel={t("home_all_wilayas")}
-            />
+            <WilayaButton value={wilaya} onChange={changeWilaya} allLabel={t("home_all_wilayas")} />
             <Link to="/notifications" aria-label={t("home_notifications")} className="icon-btn">
               <Bell className="size-5" />
             </Link>
@@ -161,11 +157,7 @@ function Home() {
             <SectionHeader
               title={t("home_nearby_stores")}
               subtitle={
-                pos
-                  ? t("home_nearby_by_location")
-                  : wilaya
-                    ? t("home_nearby_by_wilaya")
-                    : undefined
+                pos ? t("home_nearby_by_location") : wilaya ? t("home_nearby_by_wilaya") : undefined
               }
               action={<SeeAllLink to="/stores">{t("home_explore_stores")}</SeeAllLink>}
             />

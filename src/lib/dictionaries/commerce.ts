@@ -115,7 +115,8 @@ export const commerce: DictGroup = {
     checkout_address_detail_placeholder: "عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)",
     checkout_fee_note: "رسوم التوصيل تُحسب حسب الولاية وتظهر في الملخص أسفل الشاشة.",
     checkout_payment_cod_label: "الدفع عند الاستلام",
-    checkout_payment_only_cod_note: "متاح حاليًا الدفع عند الاستلام فقط. الدفع عبر بريدي موب والبطاقة قيد التطوير وسيُفعّل بعد اختباره.",
+    checkout_payment_only_cod_note:
+      "متاح حاليًا الدفع عند الاستلام فقط. الدفع عبر بريدي موب والبطاقة قيد التطوير وسيُفعّل بعد اختباره.",
 
     orders_tab_all: "الكل",
     orders_tab_active: "قيد التنفيذ",
@@ -223,9 +224,11 @@ export const commerce: DictGroup = {
     checkout_send_failed: "Could not submit your order.",
     checkout_verifying: "Checking product availability — one moment.",
     checkout_verify_failed: "Could not verify availability — please try again.",
-    checkout_out_of_stock: "Some products are no longer available in the required quantity — adjust your bag.",
+    checkout_out_of_stock:
+      "Some products are no longer available in the required quantity — adjust your bag.",
     checkout_address_required: "Complete your address and details first.",
-    checkout_phone_invalid: "Enter a valid Algerian phone number (starts with 05, 06 or 07, then 8 digits).",
+    checkout_phone_invalid:
+      "Enter a valid Algerian phone number (starts with 05, 06 or 07, then 8 digits).",
     checkout_address_detail_required: "Enter your detailed delivery address first.",
     checkout_fill_required_short: "Complete the required fields.",
     checkout_heading: "Checkout",
@@ -252,7 +255,8 @@ export const commerce: DictGroup = {
     checkout_soon: "Soon",
     checkout_payment_card: "Card payment",
     checkout_payment_cod: "Currently <b>cash on delivery</b> only.",
-    checkout_payment_cod_hint: "BaridiMob and card payments are in development and will be enabled after testing.",
+    checkout_payment_cod_hint:
+      "BaridiMob and card payments are in development and will be enabled after testing.",
     checkout_total_label: "Total",
     checkout_final_total_label: "Final total",
     checkout_delivery_cost: "(delivery {cost})",
@@ -260,7 +264,8 @@ export const commerce: DictGroup = {
     checkout_confirm_order: "Confirm order",
     checkout_next: "Continue",
     checkout_success_title: "Your order is confirmed!",
-    checkout_success_hint: "The store will contact you shortly to confirm delivery. Keep this tracking code:",
+    checkout_success_hint:
+      "The store will contact you shortly to confirm delivery. Keep this tracking code:",
     checkout_tracking_code: "Tracking code",
     checkout_track_order: "Track my order",
     checkout_continue_shopping: "Continue shopping",
@@ -283,9 +288,11 @@ export const commerce: DictGroup = {
     checkout_companies_loading: "Loading companies...",
     checkout_companies_none: "No approved delivery companies at the moment.",
     checkout_address_detail_placeholder: "Detailed delivery address (required for home delivery)",
-    checkout_fee_note: "Delivery fees depend on your wilaya and appear in the summary at the bottom of the screen.",
+    checkout_fee_note:
+      "Delivery fees depend on your wilaya and appear in the summary at the bottom of the screen.",
     checkout_payment_cod_label: "Cash on delivery",
-    checkout_payment_only_cod_note: "Only cash on delivery is available for now. BaridiMob and card payments are in development and will be enabled after testing.",
+    checkout_payment_only_cod_note:
+      "Only cash on delivery is available for now. BaridiMob and card payments are in development and will be enabled after testing.",
 
     orders_tab_all: "All",
     orders_tab_active: "In progress",
@@ -299,7 +306,8 @@ export const commerce: DictGroup = {
     orders_heading: "My orders",
     orders_empty_all: "No orders yet",
     orders_empty_tab: "No orders in this section",
-    orders_empty_hint: "When you order from stores, your orders will show up here with live status.",
+    orders_empty_hint:
+      "When you order from stores, your orders will show up here with live status.",
     orders_browse: "Browse products",
     orders_code: "Order #{code}",
     orders_more_items: "+ {count} more items",

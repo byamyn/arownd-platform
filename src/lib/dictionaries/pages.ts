@@ -6,7 +6,8 @@ export const pages: DictGroup = {
     stores_title: "المتاجر القريبة منك — Arownd",
     stores_description: "اكتشف المتاجر القريبة منك في الجزائر، تصفّح منتجاتها وقارن الأسعار.",
     about_title: "عن Arownd",
-    about_description: "Arownd منصة تسوق واكتشاف: اكتشف المنتجات والمتاجر القريبة منك وقارن الأسعار.",
+    about_description:
+      "Arownd منصة تسوق واكتشاف: اكتشف المنتجات والمتاجر القريبة منك وقارن الأسعار.",
     help_title: "مساعدة والأسئلة الشائعة — Arownd",
     help_description: "كل ما تحتاج معرفته عن Arownd: الحساب، المتاجر، الحجوزات، الطلبات والدفع.",
 
@@ -46,12 +47,14 @@ export const pages: DictGroup = {
   },
   en: {
     stores_title: "Nearby stores — Arownd",
-    stores_description: "Discover stores near you in Algeria, browse their products and compare prices.",
+    stores_description:
+      "Discover stores near you in Algeria, browse their products and compare prices.",
     about_title: "About Arownd",
     about_description:
       "Arownd is a shopping and discovery platform: discover nearby products and shops, and compare prices.",
     help_title: "Help and FAQ — Arownd",
-    help_description: "Everything you need to know about Arownd: account, stores, reservations, orders and payment.",
+    help_description:
+      "Everything you need to know about Arownd: account, stores, reservations, orders and payment.",
 
     fav_title: "Favorites — Arownd",
     fav_description: "Your favorite products and stores on Arownd, all in one place.",
@@ -68,9 +71,11 @@ export const pages: DictGroup = {
     common_back: "Back",
 
     root_title: "Arownd — Discover what’s around you",
-    root_description: "Arownd — Discover what’s around you. Modern shopping and easier product discovery.",
+    root_description:
+      "Arownd — Discover what’s around you. Modern shopping and easier product discovery.",
     root_keywords: "Arownd, products, stores, shopping, discover, nearby, buy",
-    root_twitter_description: "Arownd — Discover what’s around you. Modern shopping and easier product discovery.",
+    root_twitter_description:
+      "Arownd — Discover what’s around you. Modern shopping and easier product discovery.",
     notfound_title: "Page not found",
     notfound_hint: "The page you are looking for does not exist or has moved.",
     notfound_home: "Back to home",
@@ -80,7 +85,8 @@ export const pages: DictGroup = {
     error_home: "Home",
 
     auth_seo_title: "Sign in — Arownd",
-    auth_seo_description: "Sign in to your Arownd account to discover products and stores around you.",
+    auth_seo_description:
+      "Sign in to your Arownd account to discover products and stores around you.",
     auth_seo_og: "Your Arownd account to discover what’s around you.",
     auth_welcome_back: "Welcome back to Arownd — discover what’s around you.",
     auth_welcome_new: "Start your journey with Arownd — discover what’s around you.",

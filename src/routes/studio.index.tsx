@@ -56,7 +56,11 @@ import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { StudioProductRow } from "@/components/sooqy/studio-product-row";
-import { MerchantOnboarding, type StoreForm, defaultStoreForm } from "@/components/sooqy/merchant-onboarding";
+import {
+  MerchantOnboarding,
+  type StoreForm,
+  defaultStoreForm,
+} from "@/components/sooqy/merchant-onboarding";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { cn } from "@/lib/utils";
@@ -165,7 +169,11 @@ function StudioPage() {
   }
   if (store.isLoading || roles.isLoading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center" role="status" aria-label="جارٍ تحميل استوديو التاجر">
+      <div
+        className="flex min-h-[60vh] items-center justify-center"
+        role="status"
+        aria-label="جارٍ تحميل استوديو التاجر"
+      >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
     );
@@ -455,7 +463,8 @@ function StudioPage() {
         (o.product.brand ?? "").toLowerCase().includes(normalizedQuery)),
   );
 
-  const refreshOffers = () => qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
+  const refreshOffers = () =>
+    qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
 
   const changeStock = async (o: OfferFull, next: number) => {
     const clamped = Math.max(0, Math.min(9999, Math.floor(next)));
@@ -1403,5 +1412,3 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
     </div>
   );
 }
-
-

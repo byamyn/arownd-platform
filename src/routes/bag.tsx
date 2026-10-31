@@ -78,11 +78,7 @@ function BagPage() {
         </div>
 
         {offers.isError && bag.items.length > 0 && (
-          <ErrorState
-            scope="bag:offers"
-            error={offers.error}
-            onRetry={() => offers.refetch()}
-          />
+          <ErrorState scope="bag:offers" error={offers.error} onRetry={() => offers.refetch()} />
         )}
 
         {bag.items.length === 0 && (
@@ -106,9 +102,7 @@ function BagPage() {
           >
             <AlertTriangle className="mt-0.5 size-4 shrink-0 text-danger" />
             <div className="min-w-0 text-sm">
-              <p className="font-bold text-danger">
-                {t("bag_issues_title")}
-              </p>
+              <p className="font-bold text-danger">{t("bag_issues_title")}</p>
               <p className="mt-0.5 text-xs leading-relaxed text-danger/90">
                 {evaluation.blockingCount === 1
                   ? t("bag_issue_one")

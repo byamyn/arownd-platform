@@ -18,8 +18,7 @@ export interface SeoHeadProps {
 }
 
 const SITE_NAME = "Arownd";
-const DEFAULT_DESC =
-  "Arownd — اكتشف ما حولك. منتجات، متاجر، تصنيفات، طلب وتتبع.";
+const DEFAULT_DESC = "Arownd — اكتشف ما حولك. منتجات، متاجر، تصنيفات، طلب وتتبع.";
 const DEFAULT_OG = "/seo/og.svg";
 const BASE = "https://sooqy.app";
 

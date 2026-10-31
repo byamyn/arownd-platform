@@ -1,5 +1,20 @@
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+
+type DynamicTableClient = {
+  from: (table: string) => {
+    select: (columns: string) => {
+      order: (
+        column: string,
+        options?: { ascending?: boolean },
+      ) => Promise<{ data: unknown; error: Error | null }>;
+    };
+    insert: (values: Record<string, unknown>) => Promise<{ error: Error | null }>;
+    update: (values: Record<string, unknown>) => {
+      eq: (column: string, value: string) => Promise<{ error: Error | null }>;
+    };
+  };
+};
 import { distanceKm, isOpenNow, type LatLng } from "./geo";
 import { categoryIds, resolveCategoryId } from "./taxonomy";
 
@@ -1089,10 +1104,8 @@ export async function merchantUpdateOrderStatus(
 ) {
   const data: Record<string, unknown> = { status };
   if (note !== undefined) data["notes"] = note;
-  const { error } = await (supabase as any)
-    .from("orders")
-    .update(data)
-    .eq("id", orderId);
+  const sb = supabase as unknown as DynamicTableClient;
+  const { error } = await sb.from("orders").update(data).eq("id", orderId);
   if (error) throw error;
 }
 
@@ -1267,7 +1280,7 @@ export interface WalletSummary {
 }
 
 export async function fetchWalletTransactions(): Promise<WalletTransaction[]> {
-  const sb = supabase as any;
+  const sb = supabase as unknown as DynamicTableClient;
   const { data, error } = await sb
     .from("wallet_transactions")
     .select("*")
@@ -1293,7 +1306,7 @@ export async function walletTopup(params: {
   receiptUrl: string;
   method: string;
 }): Promise<void> {
-  const sb = supabase as any;
+  const sb = supabase as unknown as DynamicTableClient;
   const { error } = await sb.from("wallet_transactions").insert({
     type: "topup",
     amount: params.amount,
@@ -1309,7 +1322,7 @@ export async function walletWithdraw(params: {
   method: string;
   note?: string | null;
 }): Promise<void> {
-  const sb = supabase as any;
+  const sb = supabase as unknown as DynamicTableClient;
   const { error } = await sb.from("wallet_transactions").insert({
     type: "withdraw",
     amount: -Math.abs(params.amount),

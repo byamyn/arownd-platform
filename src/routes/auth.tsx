@@ -152,9 +152,7 @@ function AuthPage() {
         <div className="flex flex-col items-center text-center pt-12">
           <ArowndBrand className="mx-auto h-20 w-auto shrink-0" />
           <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-            {mode === "in"
-              ? t("auth_welcome_back")
-              : t("auth_welcome_new")}
+            {mode === "in" ? t("auth_welcome_back") : t("auth_welcome_new")}
           </p>
         </div>
 
@@ -259,17 +257,17 @@ function AuthPage() {
             <button
               type="button"
               onClick={() => setForgot(true)}
-              className={isRTL ? "text-left ml-1 mt-2 text-accent-ink" : "text-right mr-1 mt-2 text-accent-ink"}
+              className={
+                isRTL
+                  ? "text-left ml-1 mt-2 text-accent-ink"
+                  : "text-right mr-1 mt-2 text-accent-ink"
+              }
               aria-label={t("forgot_password")}
             >
               {t("forgot_password")}
             </button>
           )}
-          <button
-            type="submit"
-            disabled={busy}
-            className="btn-primary w-full py-2"
-          >
+          <button type="submit" disabled={busy} className="btn-primary w-full py-2">
             {busy
               ? t("loading")
               : reset

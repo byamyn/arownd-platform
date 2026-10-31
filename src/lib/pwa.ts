@@ -104,8 +104,13 @@ export function registerServiceWorker(): void {
       });
 
     // فحص دوري للتحديثات (كل ساعة) — يكفي دون إغراق الشبكة.
-    window.setInterval(() => {
-      navigator.serviceWorker.getRegistration().then((reg) => reg?.update().catch(() => undefined));
-    }, 60 * 60 * 1000);
+    window.setInterval(
+      () => {
+        navigator.serviceWorker
+          .getRegistration()
+          .then((reg) => reg?.update().catch(() => undefined));
+      },
+      60 * 60 * 1000,
+    );
   });
 }

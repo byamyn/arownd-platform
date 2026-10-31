@@ -18,7 +18,7 @@ export function useCountdown(to: string | null) {
   const h = Math.floor(ms / 3600000);
   const m = Math.floor((ms % 3600000) / 60000);
   const s = Math.floor((ms % 60000) / 1000);
-  return { ms, label: `${h}:${String(m).padStart(2,"0")}:${String(s).padStart(2,"0")}` };
+  return { ms, label: `${h}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}` };
 }
 
 /** شريط إشعارات علوي أنيق — لحظات الاستلام والتوصيل */
@@ -27,13 +27,23 @@ export function DynamicIsland() {
   const { t } = useTranslation();
   const { count } = useBag();
   const { pathname } = useLocation();
-  const res = useQuery({ queryKey: ["my-reservations"], queryFn: fetchMyReservations, enabled: !!user, refetchInterval: 60000 });
+  const res = useQuery({
+    queryKey: ["my-reservations"],
+    queryFn: fetchMyReservations,
+    enabled: !!user,
+    refetchInterval: 60000,
+  });
   const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user });
-  const active = res.data?.find(r => r.status === "pending" && new Date(r.expires_at).getTime() > Date.now());
-  const shipping = orders.data?.find(o => o.status === "confirmed" || o.status === "shipped");
+  const active = res.data?.find(
+    (r) => r.status === "pending" && new Date(r.expires_at).getTime() > Date.now(),
+  );
+  const shipping = orders.data?.find((o) => o.status === "confirmed" || o.status === "shipped");
   const cd = useCountdown(active?.expires_at ?? null);
 
-  const hideBag = pathname.startsWith("/bag") || pathname.startsWith("/checkout") || pathname.startsWith("/studio");
+  const hideBag =
+    pathname.startsWith("/bag") ||
+    pathname.startsWith("/checkout") ||
+    pathname.startsWith("/studio");
 
   return (
     <>
@@ -52,12 +62,18 @@ export function DynamicIsland() {
                   {active.code}
                 </span>
                 <span className="opacity-70">{t("pickup_within")}</span>
-                <span className="font-mono font-bold tabular-nums text-accent-ink">{cd?.label}</span>
+                <span className="font-mono font-bold tabular-nums text-accent-ink">
+                  {cd?.label}
+                </span>
               </>
             ) : (
               <>
                 <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-success/10">
-                  {shipping!.status === "shipped" ? <Truck className="size-3.5 text-success" /> : <PackageCheck className="size-3.5 text-success" />}
+                  {shipping!.status === "shipped" ? (
+                    <Truck className="size-3.5 text-success" />
+                  ) : (
+                    <PackageCheck className="size-3.5 text-success" />
+                  )}
                 </span>
                 <span className="font-bold">
                   {shipping!.status === "shipped" ? t("order_on_way") : t("order_confirmed")}
@@ -71,7 +87,10 @@ export function DynamicIsland() {
 
       {count > 0 && !hideBag && (
         <div className="fixed inset-x-0 bottom-20 z-30 flex justify-center px-4 pb-safe">
-          <Link to="/bag" className="flex animate-fade-up items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-pop transition-all duration-200 hover:shadow-lift hover:brightness-105 active:scale-[0.98]">
+          <Link
+            to="/bag"
+            className="flex animate-fade-up items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-pop transition-all duration-200 hover:shadow-lift hover:brightness-105 active:scale-[0.98]"
+          >
             <ShoppingBag className="size-4" />
             {t("bag_items_count", { count })}
           </Link>

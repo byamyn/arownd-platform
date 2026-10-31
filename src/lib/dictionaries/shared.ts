@@ -5,7 +5,7 @@
 import type { DictGroup } from "./types";
 
 export const shared: DictGroup = {
-ar: {
+  ar: {
     // التنقل والوصول
     nav_main: "التنقل الرئيسي",
     aria_notifications: "الإشعارات",
@@ -55,7 +55,7 @@ ar: {
     image_search_label: "ابحث بصورة",
     image_search_analyzing: "جارٍ التحليل…",
   },
-en: {
+  en: {
     // General
     nav_main: "Main navigation",
     aria_notifications: "Notifications",

@@ -5,13 +5,26 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
 
 export function Carousel({
-  children, className, slideClassName, showArrows = false, loop = true, onIndexChange,
+  children,
+  className,
+  slideClassName,
+  showArrows = false,
+  loop = true,
+  onIndexChange,
 }: {
-  children: ReactNode[]; className?: string; slideClassName?: string;
-  showArrows?: boolean; loop?: boolean; onIndexChange?: (index: number) => void;
+  children: ReactNode[];
+  className?: string;
+  slideClassName?: string;
+  showArrows?: boolean;
+  loop?: boolean;
+  onIndexChange?: (index: number) => void;
 }) {
   const { isRTL, t } = useTranslation();
-  const [emblaRef, emblaApi] = useEmblaCarousel({ align: "start", containScroll: "trimSnaps", loop });
+  const [emblaRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    containScroll: "trimSnaps",
+    loop,
+  });
   const [canPrev, setCanPrev] = useState(false);
   const [canNext, setCanNext] = useState(false);
 
@@ -27,19 +40,40 @@ export function Carousel({
     update();
     emblaApi.on("select", update);
     emblaApi.on("reInit", update);
-    return () => { emblaApi.off("select", update); emblaApi.off("reInit", update); };
+    return () => {
+      emblaApi.off("select", update);
+      emblaApi.off("reInit", update);
+    };
   }, [emblaApi, update]);
 
   // معكوس الأسهم في RTL
-  const prevBtn = isRTL ? (canNext ? () => emblaApi?.scrollNext() : null) : (canPrev ? () => emblaApi?.scrollPrev() : null);
-  const nextBtn = isRTL ? (canPrev ? () => emblaApi?.scrollPrev() : null) : (canNext ? () => emblaApi?.scrollNext() : null);
+  const prevBtn = isRTL
+    ? canNext
+      ? () => emblaApi?.scrollNext()
+      : null
+    : canPrev
+      ? () => emblaApi?.scrollPrev()
+      : null;
+  const nextBtn = isRTL
+    ? canPrev
+      ? () => emblaApi?.scrollPrev()
+      : null
+    : canNext
+      ? () => emblaApi?.scrollNext()
+      : null;
 
   return (
     <div className={cn("group relative", className)}>
       <div ref={emblaRef} className="overflow-hidden">
         <div className="flex touch-pan-y">
           {children.map((child, i) => (
-            <div key={i} className={cn("min-w-0 shrink-0 grow-0 basis-[85%] pe-3 first:pe-0 sm:basis-[60%]", slideClassName)}>
+            <div
+              key={i}
+              className={cn(
+                "min-w-0 shrink-0 grow-0 basis-[85%] pe-3 first:pe-0 sm:basis-[60%]",
+                slideClassName,
+              )}
+            >
               {child}
             </div>
           ))}

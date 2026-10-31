@@ -82,8 +82,7 @@ export const product: DictGroup = {
     product_reserved_body: "{name} is reserved for you at {store}",
     product_pickup_code: "Pickup code",
     product_pickup_within: "Pickup within",
-    product_pickup_hint:
-      "Show this code to the store at pickup. You can find it in your account.",
+    product_pickup_hint: "Show this code to the store at pickup. You can find it in your account.",
     product_ok: "OK",
     product_zoom_image: "Zoom image {n}",
     product_image_alt: "{name} — image {n}",

@@ -35,9 +35,7 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
   const active = favs.products.includes(product.id);
 
   const level = available ? (totalStock <= 3 ? "low" : "in") : "out";
-  const rating = offers.length
-    ? Math.max(...offers.map((o) => Number(o.store.rating) || 0))
-    : 0;
+  const rating = offers.length ? Math.max(...offers.map((o) => Number(o.store.rating) || 0)) : 0;
 
   const src = image ?? PLACEHOLDER;
 
@@ -157,7 +155,12 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
           >
             <svg
               viewBox="0 0 24 24"
-              className={cn("transition-colors duration-200", active ? "fill-accent-ink text-accent-ink" : "fill-transparent text-muted-foreground")}
+              className={cn(
+                "transition-colors duration-200",
+                active
+                  ? "fill-accent-ink text-accent-ink"
+                  : "fill-transparent text-muted-foreground",
+              )}
               stroke="currentColor"
               strokeWidth="2"
               strokeLinecap="round"
@@ -189,7 +192,7 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
             </span>
           )}
         </div>
-<div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="mt-2 grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={(e) => {
@@ -197,7 +200,10 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
               addToBag();
             }}
             disabled={disabled}
-            className={cn("btn-primary w-full justify-center gap-2", disabled && "opacity-60 pointer-events-none")}
+            className={cn(
+              "btn-primary w-full justify-center gap-2",
+              disabled && "opacity-60 pointer-events-none",
+            )}
           >
             <ShoppingBag className="size-5" />
             {disabled ? t("explore_product_unavailable") : t("product_add_to_bag")}
@@ -209,7 +215,10 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
               buyNow();
             }}
             disabled={disabled}
-            className={cn("btn-secondary w-full justify-center gap-2", disabled && "opacity-60 pointer-events-none")}
+            className={cn(
+              "btn-secondary w-full justify-center gap-2",
+              disabled && "opacity-60 pointer-events-none",
+            )}
           >
             {t("product_buy_now")}
           </button>

@@ -85,7 +85,11 @@ function MapPage() {
             </button>
           )}
         </div>
-        <p className="mt-1.5 px-1 text-[11px] font-medium text-muted-foreground" role="status" aria-live="polite">
+        <p
+          className="mt-1.5 px-1 text-[11px] font-medium text-muted-foreground"
+          role="status"
+          aria-live="polite"
+        >
           {stores.isLoading
             ? "جارٍ تحميل المتاجر..."
             : denied
@@ -94,7 +98,9 @@ function MapPage() {
         </p>
         {!stores.isLoading && !stores.isError && list.length === 0 && (
           <div className="mt-2 rounded-xl border border-border bg-card/95 p-3 text-center text-xs text-muted-foreground shadow-soft">
-            {q.trim() || onlyOpen ? "لا توجد متاجر تطابق خيارات البحث الحالية" : "لا توجد متاجر قريبة لعرضها حاليًا"}
+            {q.trim() || onlyOpen
+              ? "لا توجد متاجر تطابق خيارات البحث الحالية"
+              : "لا توجد متاجر قريبة لعرضها حاليًا"}
           </div>
         )}
       </div>
@@ -112,7 +118,8 @@ function MapPage() {
           onClick={() => setShowFilters(true)}
           className={cn(
             "icon-btn shadow-soft",
-            (onlyOpen || sort !== "near") && "bg-primary text-accent-ink-foreground border-accent-ink",
+            (onlyOpen || sort !== "near") &&
+              "bg-primary text-accent-ink-foreground border-accent-ink",
           )}
         >
           <Filter className="size-5" />

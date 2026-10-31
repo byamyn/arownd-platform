@@ -166,7 +166,10 @@ function SettingsPage() {
         <SectionTitle>المتجر</SectionTitle>
         <MenuCard>
           {myStore.isLoading ? (
-            <div className="m-3 h-14 animate-pulse rounded-xl bg-muted" aria-label="جارٍ تحميل بيانات المتجر" />
+            <div
+              className="m-3 h-14 animate-pulse rounded-xl bg-muted"
+              aria-label="جارٍ تحميل بيانات المتجر"
+            />
           ) : myStore.isError ? (
             <div className="p-3">
               <ErrorState
@@ -176,12 +179,7 @@ function SettingsPage() {
               />
             </div>
           ) : myStore.data ? (
-            <MenuRow
-              icon={Store}
-              label="استوديو التاجر"
-              hint="أدر منتجاتك وطلباتك"
-              to="/studio"
-            />
+            <MenuRow icon={Store} label="استوديو التاجر" hint="أدر منتجاتك وطلباتك" to="/studio" />
           ) : (
             <MenuRow
               icon={Store}
@@ -274,7 +272,10 @@ function SettingsPage() {
       >
         <div className="space-y-4">
           <div>
-            <label htmlFor="new-password" className="mb-1 block text-xs font-bold text-muted-foreground">
+            <label
+              htmlFor="new-password"
+              className="mb-1 block text-xs font-bold text-muted-foreground"
+            >
               كلمة المرور الجديدة
             </label>
             <input
@@ -288,7 +289,10 @@ function SettingsPage() {
             />
           </div>
           <div>
-            <label htmlFor="confirm-password" className="mb-1 block text-xs font-bold text-muted-foreground">
+            <label
+              htmlFor="confirm-password"
+              className="mb-1 block text-xs font-bold text-muted-foreground"
+            >
               تأكيد كلمة المرور
             </label>
             <input
@@ -327,7 +331,11 @@ function SettingsPage() {
               { value: "light", label: "فاتح", icon: Sun },
               { value: "dark", label: "داكن", icon: Moon },
               { value: "system", label: "نظام", icon: Monitor },
-            ] as { value: Theme; label: string; icon: React.ComponentType<{ className?: string }> }[]
+            ] as {
+              value: Theme;
+              label: string;
+              icon: React.ComponentType<{ className?: string }>;
+            }[]
           ).map((opt) => (
             <button
               key={opt.value}
@@ -345,7 +353,11 @@ function SettingsPage() {
             >
               <opt.icon className="size-4.5 shrink-0" />
               <span>{opt.label}</span>
-              {theme === opt.value && <span aria-hidden className="ms-auto">✓</span>}
+              {theme === opt.value && (
+                <span aria-hidden className="ms-auto">
+                  ✓
+                </span>
+              )}
             </button>
           ))}
         </div>

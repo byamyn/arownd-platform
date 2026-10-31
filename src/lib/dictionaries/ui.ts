@@ -56,7 +56,8 @@ export const ui: DictGroup = {
     // الأخطاء
     error_unexpected_title: "حدث خطأ غير متوقع",
     error_unexpected_hint: "أعد فتح التطبيق. إذا تكررت المشكلة، أرسل لنا التفاصيل من سجل التشخيص.",
-    error_bag_storage_failed: "تعذّر حفظ السلة على هذا الجهاز. سلتك محفوظة في الذاكرة فقط وقد تضيع عند إعادة التحميل.",
+    error_bag_storage_failed:
+      "تعذّر حفظ السلة على هذا الجهاز. سلتك محفوظة في الذاكرة فقط وقد تضيع عند إعادة التحميل.",
 
     status_no_hours: "ساعات العمل غير متوفرة",
     status_no_hours_desc: "لم يحدد المتجر ساعات العمل بعد",
@@ -141,8 +142,10 @@ export const ui: DictGroup = {
     pwa_install_cta: "Install",
 
     error_unexpected_title: "An unexpected error occurred",
-    error_unexpected_hint: "Reopen the app. If the problem persists, send us the details from the diagnostic log.",
-    error_bag_storage_failed: "Could not save your bag on this device. It is kept in memory only and may be lost on reload.",
+    error_unexpected_hint:
+      "Reopen the app. If the problem persists, send us the details from the diagnostic log.",
+    error_bag_storage_failed:
+      "Could not save your bag on this device. It is kept in memory only and may be lost on reload.",
 
     status_no_hours: "Opening hours unavailable",
     status_no_hours_desc: "The store has not set its opening hours yet",

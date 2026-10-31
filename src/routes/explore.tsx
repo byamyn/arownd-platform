@@ -66,7 +66,6 @@ function Explore() {
   const navigate = useNavigate({ from: "/explore" });
   const { t } = useTranslation();
 
-
   const [text, setText] = useState(s.q ?? "");
   const [committed, setCommitted] = useState(s.q ?? "");
   const [visual, setVisual] = useState<VisualProfile | null>(null);
@@ -115,8 +114,6 @@ function Explore() {
       navigate({ search: (prev) => ({ ...prev, q: q || undefined }), replace: true });
     }
   }, [q, navigate]);
-
-
 
   // استعادة موضع التمرير عند العودة
   useEffect(() => {
@@ -211,9 +208,9 @@ function Explore() {
 
   const displayProducts =
     visualIds.length > 0
-      ? all.filter((g) => visualIds.includes(g.product.id)).sort(
-          (a, b) => visualIds.indexOf(a.product.id) - visualIds.indexOf(b.product.id),
-        )
+      ? all
+          .filter((g) => visualIds.includes(g.product.id))
+          .sort((a, b) => visualIds.indexOf(a.product.id) - visualIds.indexOf(b.product.id))
       : all;
 
   const current = displayProducts[currentIndex];
@@ -237,25 +234,36 @@ function Explore() {
     } else if (!products.isLoading && !products.hasNextPage) {
       restoreRef.current = null;
     }
-  }, [displayProducts.length, products.hasNextPage, products.isFetchingNextPage, products.isLoading]);
+  }, [
+    displayProducts.length,
+    products.hasNextPage,
+    products.isFetchingNextPage,
+    products.isLoading,
+  ]);
 
   useEffect(() => {
     if (restoreRef.current != null) return;
     try {
-      sessionStorage.setItem("sooqy:explore-index", JSON.stringify({ sig: feedSig, index: currentIndex }));
+      sessionStorage.setItem(
+        "sooqy:explore-index",
+        JSON.stringify({ sig: feedSig, index: currentIndex }),
+      );
     } catch {
       /* تجاهل */
     }
   }, [feedSig, currentIndex]);
 
-  const handleImagePick = useCallback((file: File) => {
-    profileFromFile(file)
-      .then((profile) => {
-        setVisual(profile);
-        setCurrentIndex(0);
-      })
-      .catch(() => toast.error(t("explore_visual_failed")));
-  }, [t]);
+  const handleImagePick = useCallback(
+    (file: File) => {
+      profileFromFile(file)
+        .then((profile) => {
+          setVisual(profile);
+          setCurrentIndex(0);
+        })
+        .catch(() => toast.error(t("explore_visual_failed")));
+    },
+    [t],
+  );
 
   const clearVisual = useCallback(() => {
     setVisual(null);
@@ -283,16 +291,18 @@ function Explore() {
     navigatingRef.current = true;
     setCurrentIndex((i) => i + 1);
     setTimeout(() => (navigatingRef.current = false), 250);
-  }, [currentIndex, displayProducts.length, products.hasNextPage, products.isFetchingNextPage, products.fetchNextPage]);
+  }, [
+    currentIndex,
+    displayProducts.length,
+    products.hasNextPage,
+    products.isFetchingNextPage,
+    products.fetchNextPage,
+  ]);
 
   const applyFilters = () => {
     const min = minText ? Number(minText) : undefined;
     const max = maxText ? Number(maxText) : undefined;
-    if (
-      (min != null && Number.isNaN(min)) ||
-      (max != null && Number.isNaN(max))
-    )
-      return;
+    if ((min != null && Number.isNaN(min)) || (max != null && Number.isNaN(max))) return;
     navigate({
       search: (prev) => ({
         ...prev,
@@ -338,7 +348,10 @@ function Explore() {
             <button
               type="button"
               aria-label={t("explore_clear_search")}
-              onClick={() => { setText(""); setCommitted(""); }}
+              onClick={() => {
+                setText("");
+                setCommitted("");
+              }}
               className="text-muted-foreground"
             >
               <X className="size-4" />
@@ -400,7 +413,12 @@ function Explore() {
         <div className="no-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto">
           {[
             s.cat
-              ? { key: "cat", label: categoryLabel(s.cat), clear: () => navigate({ search: (p) => ({ ...p, cat: undefined }), replace: true }) }
+              ? {
+                  key: "cat",
+                  label: categoryLabel(s.cat),
+                  clear: () =>
+                    navigate({ search: (p) => ({ ...p, cat: undefined }), replace: true }),
+                }
               : null,
             min != null || max != null
               ? {
@@ -409,7 +427,10 @@ function Explore() {
                   clear: () => {
                     setMinText("");
                     setMaxText("");
-                    navigate({ search: (p) => ({ ...p, min: undefined, max: undefined }), replace: true });
+                    navigate({
+                      search: (p) => ({ ...p, min: undefined, max: undefined }),
+                      replace: true,
+                    });
                   },
                 }
               : null,
@@ -490,7 +511,10 @@ function Explore() {
         {isLoading && !current && (
           <div className="max-w-xl mx-auto mt-10 space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
-              <div key={i} className="h-[560px] overflow-hidden rounded-3xl border border-border bg-card">
+              <div
+                key={i}
+                className="h-[560px] overflow-hidden rounded-3xl border border-border bg-card"
+              >
                 <div className="aspect-[4/5] animate-pulse bg-neutral-200" />
                 <div className="p-4 space-y-2">
                   <div className="h-5 w-3/4 animate-pulse rounded-full bg-neutral-200" />
@@ -543,93 +567,81 @@ function Explore() {
           </article>
         )}
         {!isLoading && products.isFetchingNextPage && (
-          <div className="px-4 text-center text-muted-foreground">
-            {t("state_loading")}
-          </div>
+          <div className="px-4 text-center text-muted-foreground">{t("state_loading")}</div>
         )}
         {!isLoading && !products.hasNextPage && displayProducts.length > 0 && (
-          <div className="px-4 text-center text-muted-foreground">
-            {t("explore_no_more")}
-          </div>
+          <div className="px-4 text-center text-muted-foreground">{t("explore_no_more")}</div>
         )}
         <div ref={sentinelRef} className="h-24" />
       </main>
 
       <SideSheet
-          open={showFilters}
-          onOpenChange={setShowFilters}
-          title={t("explore_filter")}
-          footer={
-            <div className="flex gap-2">
-              <button
-                type="button"
-                onClick={clearFilters}
-                className="flex-1 btn-secondary"
-              >
-                {t("explore_clear_filters")}
-              </button>
-              <button
-                type="button"
-                onClick={applyFilters}
-                className="flex-1 btn-primary"
-              >
-                {t("explore_apply")}
-              </button>
-            </div>
-          }
-        >
-          <div className="space-y-4">
-            <div>
-              <p className="text-caption-sm text-muted-foreground mb-2">{t("explore_sort_label")}</p>
-              <div className="grid grid-cols-2 gap-2">
-                {(["newest", "cheapest", "nearest", "rating"] as SortBy[]).map((o) => (
-                  <button
-                    key={o}
-                    type="button"
-                    onClick={() => setSort(o)}
-                    className={cn(
-                      "rounded-xl border px-3 py-2 text-sm font-bold transition",
-                      sort === o
-                        ? "border-primary bg-primary-soft text-primary-soft-foreground"
-                        : "border-border bg-card text-foreground",
-                    )}
-                  >
-                    {t(`explore_sort_${o}`)}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <label className="flex items-center gap-2 text-sm font-bold">
-              <input
-                type="checkbox"
-                checked={inStockOnly}
-                onChange={(e) => setInStockOnly(e.target.checked)}
-              />
-              {t("explore_in_stock_only")}
-            </label>
-            <div className="grid grid-cols-2 gap-3">
-              <label className="space-y-1">
-                <span className="text-caption-sm text-muted-foreground">{t("explore_from")}</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={minText}
-                  onChange={(e) => setMinText(e.target.value)}
-                  className="input-base"
-                />
-              </label>
-              <label className="space-y-1">
-                <span className="text-caption-sm text-muted-foreground">{t("explore_to")}</span>
-                <input
-                  type="number"
-                  min={0}
-                  value={maxText}
-                  onChange={(e) => setMaxText(e.target.value)}
-                  className="input-base"
-                />
-              </label>
+        open={showFilters}
+        onOpenChange={setShowFilters}
+        title={t("explore_filter")}
+        footer={
+          <div className="flex gap-2">
+            <button type="button" onClick={clearFilters} className="flex-1 btn-secondary">
+              {t("explore_clear_filters")}
+            </button>
+            <button type="button" onClick={applyFilters} className="flex-1 btn-primary">
+              {t("explore_apply")}
+            </button>
+          </div>
+        }
+      >
+        <div className="space-y-4">
+          <div>
+            <p className="text-caption-sm text-muted-foreground mb-2">{t("explore_sort_label")}</p>
+            <div className="grid grid-cols-2 gap-2">
+              {(["newest", "cheapest", "nearest", "rating"] as SortBy[]).map((o) => (
+                <button
+                  key={o}
+                  type="button"
+                  onClick={() => setSort(o)}
+                  className={cn(
+                    "rounded-xl border px-3 py-2 text-sm font-bold transition",
+                    sort === o
+                      ? "border-primary bg-primary-soft text-primary-soft-foreground"
+                      : "border-border bg-card text-foreground",
+                  )}
+                >
+                  {t(`explore_sort_${o}`)}
+                </button>
+              ))}
             </div>
           </div>
+          <label className="flex items-center gap-2 text-sm font-bold">
+            <input
+              type="checkbox"
+              checked={inStockOnly}
+              onChange={(e) => setInStockOnly(e.target.checked)}
+            />
+            {t("explore_in_stock_only")}
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <label className="space-y-1">
+              <span className="text-caption-sm text-muted-foreground">{t("explore_from")}</span>
+              <input
+                type="number"
+                min={0}
+                value={minText}
+                onChange={(e) => setMinText(e.target.value)}
+                className="input-base"
+              />
+            </label>
+            <label className="space-y-1">
+              <span className="text-caption-sm text-muted-foreground">{t("explore_to")}</span>
+              <input
+                type="number"
+                min={0}
+                value={maxText}
+                onChange={(e) => setMaxText(e.target.value)}
+                className="input-base"
+              />
+            </label>
+          </div>
+        </div>
       </SideSheet>
     </div>
   );

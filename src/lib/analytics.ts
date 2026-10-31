@@ -4,12 +4,7 @@
  * إلى أي مزوّد تحليلات عند الحاجة.
  */
 export type AnalyticsEvent =
-  | "view_product"
-  | "add_to_bag"
-  | "buy_now"
-  | "begin_checkout"
-  | "place_order"
-  | "search";
+  "view_product" | "add_to_bag" | "buy_now" | "begin_checkout" | "place_order" | "search";
 
 export function track(event: AnalyticsEvent, data?: Record<string, unknown>) {
   try {
