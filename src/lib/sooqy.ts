@@ -1489,8 +1489,13 @@ export async function walletWithdraw(params: {
   method: string;
   note?: string | null;
 }): Promise<void> {
+  const { data: authData, error: authError } = await supabase.auth.getUser();
+  if (authError) throw authError;
+  if (!authData.user) throw new Error(ERRORS["not_authenticated"]);
+
   const sb = supabase as unknown as DynamicTableClient;
   const { error } = await sb.from("wallet_transactions").insert({
+    user_id: authData.user.id,
     type: "withdraw",
     amount: -Math.abs(params.amount),
     status: "pending",
