@@ -714,11 +714,22 @@ export async function uploadImageToBucket(
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) throw new Error(ERRORS["not_authenticated"]);
   if (file.size > 10 * 1024 * 1024) throw new Error("الصورة أكبر من 10MB");
-  const ext = (file.name.split(".").pop() || "jpg").toLowerCase().replace(/[^a-z0-9]/g, "");
+  const mimeToExtension: Record<string, string> = {
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+    "image/avif": "avif",
+    "image/gif": "gif",
+    "image/heic": "heic",
+    "image/heif": "heif",
+  };
+  const mimeType = file.type.toLowerCase();
+  const ext = mimeToExtension[mimeType];
+  if (!ext) throw new Error("نوع الصورة غير مدعوم. استخدم JPG أو PNG أو WebP أو AVIF.");
   const path = `${u.user.id}/${crypto.randomUUID()}.${ext}`;
   const { error } = await supabase.storage
     .from(bucketName)
-    .upload(path, file, { contentType: file.type, upsert: false });
+    .upload(path, file, { contentType: mimeType, upsert: false });
   if (error) throw error;
   const ttl = bucketName === "receipts" ? 60 * 60 * 24 * 365 : 60 * 60 * 24 * 365 * 10;
   const { data: signed, error: sErr } = await supabase.storage
