@@ -878,9 +878,9 @@ export async function createOrderWithDelivery(
         order_id: orderId,
         company_id: deliveryCompanyId,
         status: "pending",
-        delivery_address: contact.address,
-        recipient_name: contact.fullName,
-        recipient_phone: contact.phone,
+        delivery_address: contact.address.trim(),
+        recipient_name: contact.fullName.trim(),
+        recipient_phone: contact.phone.trim(),
         fee: deliveryCoverageFee,
         notes: `الشركة: ${deliveryCompany.company_name} — الهاتف: ${deliveryCompany.contact_phone}`,
       };
