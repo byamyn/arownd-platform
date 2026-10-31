@@ -112,20 +112,26 @@ function AuthPage() {
   };
 
   const google = async () => {
-    if (redirect) sessionStorage.setItem("sooqy-redirect", redirect);
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
-      options: {
-        redirectTo: AUTH_REDIRECT_URL,
-        skipBrowserRedirect: Capacitor.isNativePlatform(),
-      },
-    });
-    if (error || !data.url) {
+    if (busy) return;
+    setBusy(true);
+    try {
+      if (redirect) sessionStorage.setItem("sooqy-redirect", redirect);
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: "google",
+        options: {
+          redirectTo: AUTH_REDIRECT_URL,
+          skipBrowserRedirect: Capacitor.isNativePlatform(),
+        },
+      });
+      if (error) throw error;
+      if (!data.url) throw new Error("OAuth provider did not return a redirect URL");
+      if (Capacitor.isNativePlatform()) {
+        await Browser.open({ url: data.url });
+      }
+    } catch (error) {
+      console.error("[auth:google]", error);
       toast.error(t("error"));
-      return;
-    }
-    if (Capacitor.isNativePlatform()) {
-      await Browser.open({ url: data.url });
+      setBusy(false);
     }
   };
 

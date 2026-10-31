@@ -8,6 +8,7 @@ import {
   merchantCreateStore,
 } from "@/lib/sooqy";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { MerchantOnboarding, type StoreForm, defaultStoreForm } from "@/components/sooqy/merchant-onboarding";
 
 export const Route = createFileRoute("/create-store")({
@@ -37,6 +38,27 @@ function CreateStorePage() {
             تسجيل الدخول
           </Link>
         </div>
+      </div>
+    );
+  }
+
+  if (myStore.isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ التحقق من المتجر">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (myStore.isError) {
+    return (
+      <div className="mx-auto max-w-xl px-4 pt-6">
+        <PageHeader title="أصبح تاجر" back="/settings" />
+        <ErrorState
+          scope="create-store:existing-store"
+          error={myStore.error}
+          onRetry={() => myStore.refetch()}
+        />
       </div>
     );
   }
