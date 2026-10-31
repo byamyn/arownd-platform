@@ -138,6 +138,7 @@ function Explore() {
 
   const min = minText !== "" && Number.isFinite(Number(minText)) ? Number(minText) : undefined;
   const max = maxText !== "" && Number.isFinite(Number(maxText)) ? Number(maxText) : undefined;
+  const activeFilterCount = Number(Boolean(s.cat)) + Number(min != null || max != null) + Number(inStockOnly) + Number(sort !== "newest");
   const feedSig = JSON.stringify([q, s.cat, sort, inStockOnly, min, max, s.w, s.commune]);
 
   // أي تغيير في البحث/الفلاتر يعيد البطاقة إلى الأولى (سابقًا كان الفرز يترك فهرسًا قديمًا)
@@ -329,8 +330,18 @@ function Explore() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-30 flex max-w-xl mx-auto w-full px-4 pb-2 pt-[max(0.75rem,env(safe-area-inset-top))] bg-background/95 backdrop-blur-md border-b border-border">
-        <div className="flex w-full items-center gap-2 rounded-xl border border-border bg-card px-3.5 py-2.5 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all">
+      <header className="sticky top-0 z-30 mx-auto w-full max-w-xl border-b border-border/70 bg-background/95 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] shadow-sm shadow-black/[0.02] backdrop-blur-xl">
+        <div className="mb-3 flex items-end justify-between gap-3">
+          <div className="min-w-0">
+            <p className="mb-1 text-[11px] font-bold tracking-[0.16em] text-primary uppercase">AROWND</p>
+            <h1 className="text-2xl font-black tracking-tight text-foreground">{t("explore_heading")}</h1>
+            <p className="mt-1 line-clamp-1 text-xs text-muted-foreground">{t("explore_description")}</p>
+          </div>
+          <div className="mb-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+            <Search className="size-5" aria-hidden="true" />
+          </div>
+        </div>
+        <div className="flex w-full items-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-2.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
           <Search className="size-5 shrink-0 text-muted-foreground" />
           <input
             value={text}
@@ -381,13 +392,18 @@ function Explore() {
             aria-expanded={showFilters}
             onClick={() => setShowFilters((v) => !v)}
             className={cn(
-              "flex size-9 shrink-0 items-center justify-center rounded-full transition",
-              showFilters
-                ? "bg-primary text-primary-foreground"
+              "relative flex size-9 shrink-0 items-center justify-center rounded-full transition",
+              showFilters || activeFilterCount > 0
+                ? "bg-primary-soft text-primary"
                 : "text-muted-foreground hover:bg-neutral-100 dark:hover:bg-neutral-800",
             )}
           >
             <SlidersHorizontal className="size-4.5" />
+            {activeFilterCount > 0 && (
+              <span className="absolute -right-0.5 -top-0.5 flex size-4 items-center justify-center rounded-full bg-primary text-[9px] font-black text-primary-foreground">
+                {activeFilterCount}
+              </span>
+            )}
           </button>
         </div>
       </header>
@@ -409,7 +425,7 @@ function Explore() {
       )}
 
       {/* شرائح الفلاتر النشطة + تبديل العرض */}
-      <div className="mx-auto flex w-full max-w-xl items-center gap-2 px-4 pt-3">
+      <div className="mx-auto flex w-full max-w-xl items-center gap-2 px-4 pt-4">
         <div className="no-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto">
           {[
             s.cat
@@ -462,7 +478,7 @@ function Explore() {
                 type="button"
                 onClick={c.clear}
                 aria-label={`${t("explore_remove_filter")}: ${c.label}`}
-                className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full bg-primary-soft px-3 text-xs font-bold text-accent-ink"
+                className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-primary/15 bg-primary-soft px-3 text-xs font-bold text-accent-ink shadow-sm"
               >
                 {c.label}
                 <X className="size-3.5" aria-hidden="true" />
@@ -478,7 +494,7 @@ function Explore() {
             </span>
           )}
         </div>
-        <div className="flex shrink-0 gap-1 rounded-xl border border-border bg-card p-1">
+        <div className="flex shrink-0 gap-1 rounded-xl border border-border/80 bg-card p-1 shadow-sm">
           {(
             [
               { id: "cards", label: t("explore_mode_cards"), Icon: Layers },
@@ -505,7 +521,7 @@ function Explore() {
       <main
         className={cn(
           "flex-1 px-4",
-          current && mode === "cards" ? "overflow-hidden pb-4" : "overflow-y-auto pb-32",
+          current && mode === "cards" ? "overflow-hidden pb-6" : "overflow-y-auto pb-32",
         )}
       >
         {isLoading && !current && (
@@ -537,7 +553,11 @@ function Explore() {
           </div>
         )}
         {current && mode === "grid" && (
-          <div className="mx-auto mt-3 max-w-xl space-y-3">
+          <div className="mx-auto mt-4 max-w-xl space-y-4">
+            <div className="flex items-center justify-between px-0.5">
+              <h2 className="text-sm font-extrabold tracking-tight text-foreground">{t("explore_discovery")}</h2>
+              <span className="text-[11px] font-medium text-muted-foreground">{displayProducts.length}</span>
+            </div>
             <div className="grid grid-cols-2 gap-3">
               {displayProducts.map((g) => (
                 <ProductCard key={g.product.id} g={g} />
