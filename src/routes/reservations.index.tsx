@@ -125,77 +125,83 @@ function ReservationsPage() {
                 ? "bg-muted text-muted-foreground"
                 : "bg-primary-soft text-accent-ink";
           return (
-            <article key={reservation.id} className="rounded-2xl border border-border bg-card p-4">
-              <div className="flex items-start justify-between gap-3">
-                <div className="min-w-0">
-                  <p className="truncate text-sm font-bold text-foreground">{reservation.offer?.product?.name ?? "منتج محجوز"}</p>
-                  <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                    <Store className="size-3.5" /> {reservation.store?.name ?? "المتجر"}
-                  </p>
+            <article key={reservation.id} className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+              <div className="absolute inset-y-0 start-0 w-1 bg-primary" />
+              <div className="space-y-4 p-4">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="truncate text-base font-extrabold text-foreground">{reservation.offer?.product?.name ?? "منتج محجوز"}</p>
+                    <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground"><Store className="size-3.5" />{reservation.store?.name ?? "المتجر"}</p>
+                  </div>
+                  <span className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${statusStyle}`}>{status}</span>
                 </div>
-                <span className={`shrink-0 rounded-full px-2.5 py-1 text-[11px] font-bold ${statusStyle}`}>{status}</span>
+
+                <div className="rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 text-center">
+                  <p className="text-[11px] font-semibold text-muted-foreground">رمز الحجز</p>
+                  <p className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground" dir="ltr">{reservation.code}</p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-background p-3">
+                    <p className="text-[11px] text-muted-foreground">الكمية</p>
+                    <p className="mt-1 text-sm font-bold text-foreground">{reservation.quantity}</p>
+                  </div>
+                  <div className="rounded-2xl bg-background p-3">
+                    <p className="text-[11px] text-muted-foreground">سعر الوحدة</p>
+                    <p className="mt-1 text-sm font-extrabold text-accent-ink">{reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}</p>
+                  </div>
+                  <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
+                    <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                    <div className="min-w-0"><p className="text-[11px] text-muted-foreground">تاريخ الحجز</p><p className="mt-1 text-xs font-semibold text-foreground">{formatDate(reservation.created_at)}</p></div>
+                  </div>
+                  <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
+                    <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+                    <div className="min-w-0"><p className="text-[11px] text-muted-foreground">انتهاء الصلاحية</p><p className="mt-1 text-xs font-semibold text-foreground">{expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}</p></div>
+                  </div>
+                </div>
+
+                {reservation.status === "pending" && !expired && (
+                  <button
+                    type="button"
+                    disabled={cancellingId === reservation.id}
+                    onClick={async () => {
+                      if (!window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")) return;
+                      setCancellingId(reservation.id);
+                      try {
+                        await cancelMyReservation(reservation.id);
+                        await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                        toast.success("تم إلغاء الحجز بنجاح.");
+                      } catch (error) {
+                        toast.error(error instanceof Error ? error.message : "تعذر إلغاء الحجز.");
+                      } finally {
+                        setCancellingId(null);
+                      }
+                    }}
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                  >
+                    <XCircle className="size-4" />
+                    {cancellingId === reservation.id ? "جارٍ الإلغاء..." : "إلغاء الحجز"}
+                  </button>
+                )}
+                {archivable && (
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      if (!window.confirm("هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.")) return;
+                      try {
+                        await archiveMyActivity("reservation", reservation.id);
+                        await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                        toast.success("تم إخفاء الحجز من سجلك.");
+                      } catch (error) {
+                        toast.error(error instanceof Error ? error.message : "تعذر إخفاء الحجز.");
+                      }
+                    }}
+                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                  >
+                    <Archive className="size-4" /> إخفاء من السجل
+                  </button>
+                )}
               </div>
-              <div className="mt-3 grid grid-cols-2 gap-2 rounded-xl bg-background p-3 text-xs">
-                <div>
-                  <span className="text-muted-foreground">رمز الحجز</span>
-                  <p className="mt-1 font-bold text-foreground" dir="ltr">{reservation.code}</p>
-                </div>
-                <div>
-                  <span className="text-muted-foreground">الكمية</span>
-                  <p className="mt-1 font-bold text-foreground">{reservation.quantity}</p>
-                </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <CalendarDays className="size-3.5" /> {formatDate(reservation.created_at)}
-                </div>
-                <div className="flex items-center gap-1 text-muted-foreground">
-                  <Clock3 className="size-3.5" /> {expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}
-                </div>
-              </div>
-              <div className="mt-3 flex items-center justify-between">
-                <span className="text-xs text-muted-foreground">{reservation.offer?.price != null ? "سعر الوحدة" : ""}</span>
-                {reservation.offer?.price != null && <b className="text-sm font-extrabold text-accent-ink">{formatDA(reservation.offer.price)}</b>}
-              </div>
-              {reservation.status === "pending" && !expired && (
-                <button
-                  type="button"
-                  disabled={cancellingId === reservation.id}
-                  onClick={async () => {
-                    if (!window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")) return;
-                    setCancellingId(reservation.id);
-                    try {
-                      await cancelMyReservation(reservation.id);
-                      await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                      toast.success("تم إلغاء الحجز بنجاح.");
-                    } catch (error) {
-                      toast.error(error instanceof Error ? error.message : "تعذر إلغاء الحجز.");
-                    } finally {
-                      setCancellingId(null);
-                    }
-                  }}
-                  className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-danger/30 bg-danger-soft px-3 text-sm font-semibold text-danger transition hover:bg-danger/15 disabled:opacity-50"
-                >
-                  <XCircle className="size-4" />
-                  {cancellingId === reservation.id ? "جارٍ الإلغاء..." : "إلغاء الحجز"}
-                </button>
-              )}
-              {archivable && (
-                <button
-                  type="button"
-                  onClick={async () => {
-                    if (!window.confirm("هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.")) return;
-                    try {
-                      await archiveMyActivity("reservation", reservation.id);
-                      await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                      toast.success("تم إخفاء الحجز من سجلك.");
-                    } catch (error) {
-                      toast.error(error instanceof Error ? error.message : "تعذر إخفاء الحجز.");
-                    }
-                  }}
-                  className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
-                >
-                  <Archive className="size-4" /> إخفاء من السجل
-                </button>
-              )}
             </article>
           );
         })}
