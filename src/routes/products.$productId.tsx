@@ -133,6 +133,12 @@ function ProductPage() {
         <ProductCardSkeleton className="h-80" />
       </div>
     );
+  if (product.isError)
+    return (
+      <div className="p-8 text-center">
+        <ErrorState scope="product:details" error={product.error} onRetry={() => product.refetch()} />
+      </div>
+    );
   if (!product.data)
     return (
       <div className="p-8 text-center">
@@ -536,6 +542,13 @@ function ProductPage() {
             <h2 className="text-lg font-bold text-foreground">
               {t("product_where_to_find")}
             </h2>
+            {offers.isError && (
+              <ErrorState
+                scope="product:offers"
+                error={offers.error}
+                onRetry={() => offers.refetch()}
+              />
+            )}
             {sorted.map((o) => {
               const lv = stockLevel(o);
               return (

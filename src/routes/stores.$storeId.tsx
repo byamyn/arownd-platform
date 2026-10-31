@@ -331,6 +331,20 @@ function StorePage() {
           {/* المنتجات */}
           {tab === "products" && (
             <div className="space-y-4">
+              {offers.isError && (
+                <ErrorState
+                  scope="store:offers"
+                  error={offers.error}
+                  onRetry={() => offers.refetch()}
+                />
+              )}
+              {offers.isLoading && (
+                <div className="grid grid-cols-2 gap-3" aria-label="Loading products">
+                  {[0, 1, 2, 3].map((i) => (
+                    <div key={i} className="h-56 animate-pulse rounded-2xl bg-muted" />
+                  ))}
+                </div>
+              )}
               {[...byCat.entries()].map(([cat, list]) => (
                 <section key={cat} className="space-y-2">
                   <h2 className="text-section text-foreground">{categoryLabel(cat)}</h2>
@@ -365,7 +379,7 @@ function StorePage() {
                   </div>
                 </section>
               ))}
-              {!offers.isLoading && !offers.data?.length && (
+              {!offers.isLoading && !offers.isError && !offers.data?.length && (
                 <EmptyState
                   Icon={Store}
                   title={isOwner ? "متجرك لا يعرض أي سلعة بعد" : "لم يضف المتجر أي سلعة بعد"}

@@ -10,6 +10,7 @@ import { getOffersByIds, primaryImage } from "@/lib/sooqy";
 import { getShippingFee } from "@/lib/shipping";
 import { QtyStepper } from "@/components/sooqy/qty-stepper";
 import { EmptyState } from "@/components/sooqy/empty-state";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { AppShell } from "@/components/sooqy/app-shell";
 import { SectionHeader } from "@/components/sooqy/section-header";
 import { StickyActionBar } from "@/components/sooqy/sticky-action-bar";
@@ -31,7 +32,11 @@ function BagPage() {
   const { t, lang } = useTranslation();
   const [confirmClear, setConfirmClear] = useState(false);
   const ids = bag.items.map((i) => i.offerId);
-  const offers = useQuery({ queryKey: ["bag-offers", ids], queryFn: () => getOffersByIds(ids) });
+  const offers = useQuery({
+    queryKey: ["bag-offers", ids],
+    queryFn: () => getOffersByIds(ids),
+    enabled: ids.length > 0,
+  });
 
   // مصدر واحد للحقيقة: نفس التقييم المستخدَم في صفحة الدفع.
   const evaluation = evaluateBag(bag.items, offers.data, lang);
@@ -71,6 +76,14 @@ function BagPage() {
             </button>
           )}
         </div>
+
+        {offers.isError && bag.items.length > 0 && (
+          <ErrorState
+            scope="bag:offers"
+            error={offers.error}
+            onRetry={() => offers.refetch()}
+          />
+        )}
 
         {bag.items.length === 0 && (
           <EmptyState
@@ -235,6 +248,14 @@ function BagPage() {
             <p className="mt-2 rounded-xl bg-danger-soft px-3 py-2 text-center text-xs font-bold text-danger">
               {t("bag_checkout_blocked")}
             </p>
+          ) : offers.isLoading || !evaluation.loaded ? (
+            <button type="button" disabled className="btn-primary mt-3 w-full opacity-60">
+              {t("state_loading")}
+            </button>
+          ) : offers.isError ? (
+            <button type="button" disabled className="btn-primary mt-3 w-full opacity-60">
+              {t("checkout_verify_failed_short")}
+            </button>
           ) : (
             <Link to="/checkout" className="btn-primary mt-3 w-full">
               {t("bag_checkout_cta")} <ArrowLeft className="size-4" />
