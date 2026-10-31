@@ -20,6 +20,7 @@ import {
   fetchWalletTransactions,
   summarizeWallet,
   uploadImageToBucket,
+  createReceiptSignedUrl,
   walletTopup,
   walletWithdraw,
   type WalletTxType,
@@ -558,15 +559,21 @@ function WalletPage() {
                   </p>
                 )}
                 {t.receipt_url && (
-                  <a
-                    href={t.receipt_url}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <button
+                    type="button"
+                    onClick={async () => {
+                      try {
+                        const url = await createReceiptSignedUrl(t.receipt_url!);
+                        window.location.assign(url);
+                      } catch (error) {
+                        showError(error);
+                      }
+                    }}
                     className="mt-2 flex items-center gap-1.5 text-xs font-bold text-accent-ink"
                   >
                     <ReceiptText className="size-3.5" />
                     عرض سند الدفع
-                  </a>
+                  </button>
                 )}
               </div>
             );
