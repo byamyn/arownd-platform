@@ -738,10 +738,28 @@ export async function uploadImageToBucket(
 
 /** Create a short-lived URL only when an authorized user opens a private receipt. */
 export async function createReceiptSignedUrl(receiptRef: string): Promise<string> {
-  if (/^https?:\/\//i.test(receiptRef)) return receiptRef; // Existing legacy receipt links.
+  let objectPath = receiptRef.trim();
+  const signedPathMarker = "/storage/v1/object/sign/receipts/";
+
+  // Migrate old long-lived signed links to a fresh, short-lived link.
+  if (/^https?:\/\//i.test(objectPath)) {
+    const markerIndex = objectPath.indexOf(signedPathMarker);
+    if (markerIndex < 0) throw new Error("رابط إيصال الدفع غير صالح");
+    objectPath = objectPath.slice(markerIndex + signedPathMarker.length).split("?")[0];
+    try {
+      objectPath = decodeURIComponent(objectPath);
+    } catch {
+      throw new Error("رابط إيصال الدفع غير صالح");
+    }
+  }
+
+  if (!objectPath || objectPath.startsWith("/") || objectPath.includes("..")) {
+    throw new Error("مسار إيصال الدفع غير صالح");
+  }
+
   const { data, error } = await supabase.storage
     .from("receipts")
-    .createSignedUrl(receiptRef, 15 * 60);
+    .createSignedUrl(objectPath, 15 * 60);
   if (error) throw error;
   return data.signedUrl;
 }
