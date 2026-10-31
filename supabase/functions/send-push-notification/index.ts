@@ -2,7 +2,8 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-push-webhook-secret",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-push-webhook-secret",
 };
 
 function base64Url(input: Uint8Array): string {
@@ -47,14 +48,17 @@ async function getGoogleAccessToken(serviceAccount: {
     await crypto.subtle.sign("RSASSA-PKCS1-v1_5", key, new TextEncoder().encode(unsigned)),
   );
   const assertion = `${unsigned}.${base64Url(signature)}`;
-  const tokenResponse = await fetch(serviceAccount.token_uri || "https://oauth2.googleapis.com/token", {
-    method: "POST",
-    headers: { "Content-Type": "application/x-www-form-urlencoded" },
-    body: new URLSearchParams({
-      grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
-      assertion,
-    }),
-  });
+  const tokenResponse = await fetch(
+    serviceAccount.token_uri || "https://oauth2.googleapis.com/token",
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({
+        grant_type: "urn:ietf:params:oauth:grant-type:jwt-bearer",
+        assertion,
+      }),
+    },
+  );
   const tokenBody = await tokenResponse.json();
   if (!tokenResponse.ok || typeof tokenBody.access_token !== "string") {
     throw new Error("Google OAuth token exchange failed");
@@ -64,9 +68,7 @@ async function getGoogleAccessToken(serviceAccount: {
 
 function toFcmData(record: Record<string, unknown>): Record<string, string> {
   const source =
-    record.data && typeof record.data === "object"
-      ? (record.data as Record<string, unknown>)
-      : {};
+    record.data && typeof record.data === "object" ? (record.data as Record<string, unknown>) : {};
   const data: Record<string, string> = {
     notification_id: String(record.id ?? ""),
     type: String(record.type ?? "info"),
@@ -149,14 +151,20 @@ Deno.serve(async (req: Request) => {
                   body: String(record.body || "لديك إشعار جديد."),
                 },
                 data,
-                android: { priority: "high", notification: { channel_id: "arownd_updates" } },
+                android: {
+                  priority: "high",
+                  notification: { channel_id: "arownd_updates" },
+                },
               },
             }),
           },
         );
         if (!response.ok) {
           const failure = await response.text();
-          if (failure.includes("UNREGISTERED") || failure.includes("registration-token-not-registered")) {
+          if (
+            failure.includes("UNREGISTERED") ||
+            failure.includes("registration-token-not-registered")
+          ) {
             await fetch(
               `${supabaseUrl}/rest/v1/push_device_tokens?token=eq.${encodeURIComponent(token)}`,
               { method: "DELETE", headers: restHeaders },
@@ -168,9 +176,12 @@ Deno.serve(async (req: Request) => {
       }),
     );
 
-    return new Response(JSON.stringify({ sent: results.filter(Boolean).length, total: devices.length }), {
-      headers: { ...corsHeaders, "Content-Type": "application/json" },
-    });
+    return new Response(
+      JSON.stringify({ sent: results.filter(Boolean).length, total: devices.length }),
+      {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      },
+    );
   } catch (error) {
     console.error("[send-push-notification]", error);
     return new Response(JSON.stringify({ error: "Push delivery failed" }), {

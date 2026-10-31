@@ -8,18 +8,17 @@ type PushResult = "unsupported" | "denied" | "requested";
 let listenersReady = false;
 let registeredDeviceToken: string | null = null;
 
-type Rpc = (
-  name: string,
-  args?: Record<string, string>,
-) => Promise<{ error: Error | null }>;
+type Rpc = (name: string, args?: Record<string, string>) => Promise<{ error: Error | null }>;
 
-const callRpc = supabase.rpc as unknown as Rpc;
+function callRpc(name: string, args?: Record<string, string>) {
+  return (supabase.rpc as unknown as Rpc)(name, args);
+}
 
 function openNotificationTarget(action: ActionPerformed) {
   const data = action.notification.data as Record<string, unknown> | undefined;
-  const orderId = typeof data?.order_id === "string" ? data.order_id : null;
+  const orderId = typeof data?.["order_id"] === "string" ? data["order_id"] : null;
   const reservationId =
-    typeof data?.reservation_id === "string" ? data.reservation_id : null;
+    typeof data?.["reservation_id"] === "string" ? data["reservation_id"] : null;
 
   if (orderId) {
     window.location.assign(`/orders/${encodeURIComponent(orderId)}`);
