@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 type PushResult = "unsupported" | "denied" | "requested";
 
 let listenersReady = false;
+let registeredDeviceToken: string | null = null;
 
 type Rpc = (
   name: string,
@@ -34,6 +35,7 @@ async function installListeners() {
   listenersReady = true;
 
   await PushNotifications.addListener("registration", async ({ value }) => {
+    registeredDeviceToken = value;
     const platform = Capacitor.getPlatform();
     if (platform !== "android" && platform !== "ios") return;
     const { error } = await callRpc("register_my_push_device", {
@@ -90,6 +92,10 @@ export async function enableNativePush(): Promise<PushResult> {
 
 /** Remove server-side device associations before the user signs out. */
 export async function unregisterMyPushDevices(): Promise<void> {
-  const { error } = await callRpc("unregister_my_push_devices");
+  if (!registeredDeviceToken) return;
+  const { error } = await callRpc("unregister_my_push_device", {
+    _token: registeredDeviceToken,
+  });
   if (error) throw error;
+  registeredDeviceToken = null;
 }
