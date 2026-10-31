@@ -37,9 +37,6 @@ jobs:
           node -e 'const fs=require("fs"); const p=JSON.parse(fs.readFileSync("package.json","utf8")); p.overrides={...p.overrides,"@tanstack/router-generator":{zod:"4.6.7"},"@tanstack/router-plugin":{zod:"4.6.7"},"@tanstack/start-plugin-core":{zod:"4.6.7"}}; fs.writeFileSync("package.json",JSON.stringify(p,null,2)+"\n");'
           npm install --package-lock-only --no-audit --no-fund
 
-      - name: Apply non-breaking transitive fixes
-        run: npm audit fix --no-fund
-
       - name: Verify high-severity vulnerabilities are cleared
         run: npm audit --audit-level=high
 
