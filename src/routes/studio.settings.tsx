@@ -10,6 +10,7 @@ import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/c
 import { geoErrorMessage, useGeo } from "@/lib/geo";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 
 const DAYS = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
@@ -107,7 +108,24 @@ function StoreSettingsPage() {
         </Link>
       </div>
     );
-  if (!store.isLoading && !store.data)
+  if (store.isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل المتجر">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (store.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="تخصيص المتجر" subtitle="هوية متجرك تظهر للعملاء في صفحته" back="/studio" />
+        <ErrorState scope="studio:settings:store" error={store.error} onRetry={() => store.refetch()} />
+      </div>
+    );
+  }
+
+  if (!store.data)
     return (
       <div className="space-y-4 px-4 pt-20 text-center">
         <Store className="mx-auto size-12 text-accent-ink" />

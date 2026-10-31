@@ -15,6 +15,7 @@ import {
   type ShipmentStatus,
 } from "@/lib/delivery";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
@@ -133,6 +134,27 @@ function DeliveryDashboardPage() {
     );
   }
 
+  if (company.isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل حساب شركة التوصيل">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (company.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="لوحة شركة التوصيل" back="/" />
+        <ErrorState
+          scope="delivery-dashboard:company"
+          error={company.error}
+          onRetry={() => company.refetch()}
+        />
+      </div>
+    );
+  }
+
   if (!company.data) {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
@@ -163,6 +185,29 @@ function DeliveryDashboardPage() {
         <p className="text-xs text-muted-foreground mt-2">
           يمكنك متابعة حالة الطلب من خلال التواصل مع دعم المنصة.
         </p>
+      </div>
+    );
+  }
+
+  const activeShipmentsQuery = activeTab === "pending" ? pendingShipments : allShipments;
+
+  if (activeShipmentsQuery.isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل الشحنات">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (activeShipmentsQuery.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
+        <ErrorState
+          scope="delivery-dashboard:shipments"
+          error={activeShipmentsQuery.error}
+          onRetry={() => activeShipmentsQuery.refetch()}
+        />
       </div>
     );
   }

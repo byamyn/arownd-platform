@@ -10,6 +10,7 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { Trash2 } from "lucide-react";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
@@ -51,6 +52,44 @@ function StudioOrderDetailPage() {
   });
 
   if (!ready) return null;
+  if (!user) {
+    return (
+      <div className="space-y-4 px-4 pt-16 text-center">
+        <PageHeader title="تفاصيل الطلب" back="/studio" />
+        <p className="text-sm text-muted-foreground">سجّل الدخول لعرض تفاصيل الطلب.</p>
+        <Link to="/auth" search={{ redirect: `/studio/orders/${orderId}` }} className="btn-primary inline-block">
+          تسجيل الدخول
+        </Link>
+      </div>
+    );
+  }
+
+  if (store.isLoading || orderQuery.isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status" aria-label="جارٍ تحميل تفاصيل الطلب">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (store.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="تفاصيل الطلب" back="/studio" />
+        <ErrorState scope="studio:order:store" error={store.error} onRetry={() => store.refetch()} />
+      </div>
+    );
+  }
+
+  if (orderQuery.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title="تفاصيل الطلب" back="/studio" />
+        <ErrorState scope="studio:order:details" error={orderQuery.error} onRetry={() => orderQuery.refetch()} />
+      </div>
+    );
+  }
+
   const order = orderQuery.data;
   if (!order) {
     return (
