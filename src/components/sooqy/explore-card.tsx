@@ -148,7 +148,9 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
             }}
             className={cn(
               "absolute end-3 top-3 z-20 flex size-11 items-center justify-center rounded-full border bg-card/95 text-muted-foreground shadow-md backdrop-blur-md transition-all duration-200 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
-              active ? "border-primary/40 text-primary" : "border-border/80 hover:border-primary/30",
+              active
+                ? "border-primary/40 text-primary"
+                : "border-border/80 hover:border-primary/30",
             )}
           >
             <svg
@@ -169,9 +171,13 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
       </a>
 
       <div className="min-w-0 space-y-2 px-1 pb-1">
-        <h2 className="line-clamp-2 text-base font-extrabold leading-snug text-foreground sm:text-lg">{product.name}</h2>
+        <h2 className="line-clamp-2 text-base font-extrabold leading-snug text-foreground sm:text-lg">
+          {product.name}
+        </h2>
         {product.description && (
-          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">
+            {product.description}
+          </p>
         )}
         {rating > 0 && (
           <div className="flex items-center gap-1.5">
@@ -181,7 +187,9 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
           </div>
         )}
         <div className="flex items-center justify-between gap-3 border-t border-border/70 pt-2">
-          <span className="text-xl font-black tracking-tight text-accent-ink">{formatDA(minPrice)}</span>
+          <span className="text-xl font-black tracking-tight text-accent-ink">
+            {formatDA(minPrice)}
+          </span>
           {level === "out" && (
             <span className="rounded-lg bg-black/60 text-[10px] font-bold text-white px-2 py-0.5 backdrop-blur-sm">
               {t("stock_out")}

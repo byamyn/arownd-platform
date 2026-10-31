@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { MapPage } from "./map";
+import { MapPage } from "@/components/sooqy/MapPage";
 
 export const Route = createFileRoute("/explore")({
   head: () => ({

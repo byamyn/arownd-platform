@@ -38,19 +38,35 @@ export function friendlyErrorMessage(
   ) {
     return translate("feedback_session_error");
   }
-  if (/permission denied|row-level security|rls|not authorized|insufficient privilege|42501/i.test(normalized)) {
+  if (
+    /permission denied|row-level security|rls|not authorized|insufficient privilege|42501/i.test(
+      normalized,
+    )
+  ) {
     return translate("feedback_permission_error");
   }
   if (/duplicate key|already exists|unique constraint|23505/i.test(normalized)) {
     return translate("feedback_duplicate_error");
   }
-  if (/out of stock|insufficient stock|stock.*(not enough|insufficient)|quantity unavailable/i.test(normalized)) {
+  if (
+    /out of stock|insufficient stock|stock.*(not enough|insufficient)|quantity unavailable/i.test(
+      normalized,
+    )
+  ) {
     return translate("feedback_stock_error");
   }
-  if (/storage.*(upload|object)|file too large|payload too large|unsupported.*file|invalid mime/i.test(normalized)) {
+  if (
+    /storage.*(upload|object)|file too large|payload too large|unsupported.*file|invalid mime/i.test(
+      normalized,
+    )
+  ) {
     return translate("feedback_upload_error");
   }
-  if (/invalid input|validation|violates.*constraint|not-null constraint|23502|22p02/i.test(normalized)) {
+  if (
+    /invalid input|validation|violates.*constraint|not-null constraint|23502|22p02/i.test(
+      normalized,
+    )
+  ) {
     return translate("feedback_validation_error");
   }
 
@@ -60,7 +76,12 @@ export function friendlyErrorMessage(
   }
 
   // Keep short, human-written application messages; replace technical or oversized text.
-  if (message && message.length <= 120 && !/[{}<>]/.test(message) && !/error:|exception:|failed to/i.test(message)) {
+  if (
+    message &&
+    message.length <= 120 &&
+    !/[{}<>]/.test(message) &&
+    !/error:|exception:|failed to/i.test(message)
+  ) {
     return message;
   }
   return translate(fallback);

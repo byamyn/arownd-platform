@@ -61,7 +61,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     placeholder?: string;
   }> = [
     { to: "/", expect: "وصل حديثًا" },
-    { to: "/explore", placeholder: "ابحث عن منتج أو متجر..." },
+    { to: "/explore", placeholder: "ابحث عن متجر أو مكان..." },
     { to: "/stores", expect: "المتاجر" },
     { to: "/stores/$storeId", params: { storeId: "store-1" }, expect: "متجر التجربة" },
     { to: "/category/$catId", params: { catId: "shoes" }, expect: "الأحذية" },
