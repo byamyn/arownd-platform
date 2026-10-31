@@ -84,7 +84,7 @@ function StoresPage() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = sentinelRef.current;
-    if (!el || browsing || !results.hasNextPage) return;
+    if (!el || browsing || !results.hasNextPage || results.isFetchingNextPage) return;
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) results.fetchNextPage();
@@ -94,7 +94,7 @@ function StoresPage() {
     io.observe(el);
     return () => io.disconnect();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [browsing, results.hasNextPage, q, wilaya, commune, openOnly, verifiedOnly, minRating]);
+  }, [browsing, results.hasNextPage, results.isFetchingNextPage, q, wilaya, commune, openOnly, verifiedOnly, minRating]);
 
   const list = browsing ? (nearStores.data ?? []) : (results.data?.pages ?? []).flat();
   const loading = browsing ? nearStores.isLoading : results.isLoading;
@@ -199,6 +199,14 @@ function StoresPage() {
           </Reveal>
         ))}
       </div>
+      {!browsing && results.isFetchingNextPage && <ListSkeleton count={2} />}
+      {!browsing && results.isFetchNextPageError && (
+        <ErrorState
+          scope="stores:next-page"
+          error={results.error}
+          onRetry={() => void results.fetchNextPage()}
+        />
+      )}
       <div ref={sentinelRef} className="h-2" />
 
       {/* لوحة الفلاتر */}

@@ -65,7 +65,7 @@ function CategoryPage() {
   const sentinelRef = useRef<HTMLDivElement | null>(null);
   useEffect(() => {
     const el = sentinelRef.current;
-    if (!el || !products.hasNextPage) return;
+    if (!el || !products.hasNextPage || products.isFetchingNextPage) return;
     const io = new IntersectionObserver(
       (entries) => {
         if (entries.some((e) => e.isIntersecting)) products.fetchNextPage();
@@ -74,7 +74,7 @@ function CategoryPage() {
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [products.hasNextPage, catId, sort, inStock]);
+  }, [products.hasNextPage, products.isFetchingNextPage, catId, sort, inStock]);
 
   const list = (products.data?.pages ?? []).flat();
   const active = resolveCategoryId(catId);
@@ -189,6 +189,14 @@ function CategoryPage() {
             </Reveal>
           ))}
         </div>
+        {products.isFetchingNextPage && <ProductGridSkeleton count={2} />}
+        {products.isFetchNextPageError && (
+          <ErrorState
+            scope="category:next-page"
+            error={products.error}
+            onRetry={() => void products.fetchNextPage()}
+          />
+        )}
         <div ref={sentinelRef} className="h-2" />
 
         {/* استكشاف تصنيفات أخرى */}
