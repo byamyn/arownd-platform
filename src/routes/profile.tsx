@@ -185,33 +185,15 @@ function ProfilePage() {
           title="الملف الشخصي"
           subtitle="حسابك وبياناتك في مكان واحد"
           action={
-            <div className="inline-flex shrink-0 items-center gap-2">
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  aria-label="لوحة الإدارة"
-                  className="inline-flex shrink-0 items-center justify-center rounded-full bg-amber-500 text-white shadow-soft size-10 transition hover:bg-amber-600 active:scale-95"
-                >
-                  <Shield className="size-4.5" />
-                </Link>
-              )}
-              {/* زر المحفظة */}
+            isAdmin ? (
               <Link
-                to="/wallet"
-                aria-label="المحفظة"
-                className="inline-flex shrink-0 items-center justify-center rounded-full bg-primary text-accent-ink-foreground shadow-soft size-10 transition hover:bg-primary/90 active:scale-95"
+                to="/admin"
+                aria-label="لوحة الإدارة"
+                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white shadow-soft transition hover:bg-amber-600 active:scale-95"
               >
-                <Wallet className="size-4.5" />
+                <Shield className="size-4.5" />
               </Link>
-              {/* عندما يكون المستخدم تاجرًا، يتحول ملفه الشخصي إلى استوديو التاجر (redirect أدناه) */}
-              <Link
-                to="/settings"
-                aria-label="الإعدادات"
-                className="inline-flex shrink-0 items-center justify-center rounded-full bg-card border border-border shadow-soft size-10 transition hover:bg-neutral-100 active:scale-95"
-              >
-                <Settings className="size-4.5" />
-              </Link>
-            </div>
+            ) : undefined
           }
         />
 
@@ -314,8 +296,10 @@ function ProfilePage() {
           </div>
         </section>
 
-        {/* الوصول السريع — بلاطات إحصاء قابلة للنقر */}
-        <section className="grid grid-cols-3 gap-2" aria-label="الوصول السريع">
+        {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
+        <section className="space-y-2" aria-label="نشاط الحساب">
+          <SectionTitle>نشاطك</SectionTitle>
+          <div className="grid grid-cols-3 gap-2">
           {[
             { to: "/orders", Icon: Package, label: "طلباتي", value: orders.data?.length ?? 0 },
             { to: "/favorites", Icon: Heart, label: "المفضلة", value: favCount },
@@ -343,11 +327,12 @@ function ProfilePage() {
               )}
             </Link>
           ))}
+          </div>
         </section>
 
-        {/* الإعدادات — مجموعات مرتبة */}
+        {/* إدارة الحساب — مجموعات مرتبة */}
         <section className="space-y-2">
-          <SectionTitle>الإعدادات</SectionTitle>
+          <SectionTitle>إدارة الحساب</SectionTitle>
           <MenuCard>
             <MenuRow
               icon={User}
