@@ -175,6 +175,7 @@ export type Database = {
           description: string | null;
           id: string;
           name: string;
+          rating: number;
           view_count: number;
         };
         Insert: {
@@ -185,6 +186,7 @@ export type Database = {
           description?: string | null;
           id?: string;
           name: string;
+          rating?: number;
           view_count?: number;
         };
         Update: {
@@ -195,6 +197,7 @@ export type Database = {
           description?: string | null;
           id?: string;
           name?: string;
+          rating?: number;
           view_count?: number;
         };
         Relationships: [];
