@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate, useParams } from "@tanstack/react-router";
-import { translate } from "@/lib/i18n";
+import { useTranslation } from "@/lib/i18n";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
@@ -28,6 +28,7 @@ export const Route = createFileRoute("/studio/orders/$orderId")({
 });
 
 function StudioOrderDetailPage() {
+  const { t } = useTranslation();
   const { orderId } = Route.useParams();
   const { user, ready } = useAuth();
   const [note, setNote] = useState("");
@@ -61,8 +62,8 @@ function StudioOrderDetailPage() {
   if (!user) {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
-        <PageHeader title="تفاصيل الطلب" back="/studio" />
-        <p className="text-sm text-muted-foreground">سجّل الدخول لعرض تفاصيل الطلب.</p>
+        <PageHeader title={t("studio_order_details")} back="/studio" />
+        <p className="text-sm text-muted-foreground">{t("studio_login_order_detail")}</p>
         <Link
           to="/auth"
           search={{ redirect: `/studio/orders/${orderId}` }}
@@ -79,7 +80,7 @@ function StudioOrderDetailPage() {
       <div
         className="flex min-h-[50vh] items-center justify-center"
         role="status"
-        aria-label="جارٍ تحميل تفاصيل الطلب"
+        aria-label={t("studio_order_details_loading")}
       >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
@@ -89,7 +90,7 @@ function StudioOrderDetailPage() {
   if (store.isError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="تفاصيل الطلب" back="/studio" />
+        <PageHeader title={t("studio_order_details")} back="/studio" />
         <ErrorState
           scope="studio:order:store"
           error={store.error}
@@ -102,7 +103,7 @@ function StudioOrderDetailPage() {
   if (orderQuery.isError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="تفاصيل الطلب" back="/studio" />
+        <PageHeader title={t("studio_order_details")} back="/studio" />
         <ErrorState
           scope="studio:order:details"
           error={orderQuery.error}
@@ -116,8 +117,8 @@ function StudioOrderDetailPage() {
   if (!order) {
     return (
       <div className="p-4 text-center">
-        <p className="text-sm text-muted-foreground">الطلب غير موجود أو غير متاح.</p>
-        <button onClick={() => goBackOrTo(router, "/studio")}>رجوع</button>
+        <p className="text-sm text-muted-foreground">{t("studio_order_unavailable")}</p>
+        <button onClick={() => goBackOrTo(router, "/studio")}>{t("studio_back")}</button>
       </div>
     );
   }
@@ -133,28 +134,30 @@ function StudioOrderDetailPage() {
 
   return (
     <>
-      <div className="space-y-4 px-4 pt-4">
-        <PageHeader title="تفاصيل الطلب" back="/studio" />
-        <div className="rounded-2xl border border-border bg-card p-4">
-          <p className="text-sm font-bold">طلب #{order.id.slice(-6)}</p>
-          <p className="text-xs text-muted-foreground">
+      <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
+        <PageHeader title={t("studio_order_details")} back="/studio" />
+        <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-sm">
+          <div className="rounded-t-[1.75rem] bg-[#111813] p-5 text-white sm:p-6"><p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · ORDER</p><p className="mt-2 text-xl font-black">{t("studio_order_number")} #{order.id.slice(-6)}</p>
+          <p className="mt-1 text-xs text-white/65">
             {formatDate(order.created_at, undefined, {
               day: "numeric",
               month: "long",
               year: "numeric",
             })}
           </p>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="flex items-center gap-1 font-semibold text-foreground">المجموع: </span>
+          </div>
+          <div className="space-y-4 p-4 sm:p-6">
+          <div className="flex items-center gap-2">
+            <span className="flex items-center gap-1 font-semibold text-foreground">{t("studio_total")}</span>
             <b className="text-price text-accent-ink">{formatDA(order.total)}</b>
           </div>
           <div className="mt-3 flex items-center gap-2">
-            <span className="flex items-center gap-1 font-semibold text-foreground">الحالة: </span>
+            <span className="flex items-center gap-1 font-semibold text-foreground">{t("studio_status")}</span>
             <OrderStatusBadge status={order.status} className="mt-1" />
           </div>
           <div className="mt-3 space-y-2">
             {order.items?.map((it) => (
-              <div key={it.id} className="flex items-center justify-between gap-3">
+              <div key={it.id} className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-background/60 p-3">
                 <div>
                   <p className="font-semibold">{it.product_name}</p>
                   <p className="text-xs text-muted-foreground">× {it.quantity}</p>
@@ -163,13 +166,13 @@ function StudioOrderDetailPage() {
               </div>
             ))}
           </div>
-          <div className="mt-4 space-y-3">
-            <div className="flex items-center gap-2">
+          <div className="space-y-3 border-t border-border pt-4">
+            <div className="flex flex-col gap-2 sm:flex-row">
               <input
                 value={note}
                 onChange={(e) => setNote(e.target.value)}
-                placeholder="أضف ملاحظة (اختياري)"
-                className="h-11 flex-1 rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/25"
+                placeholder={t("studio_order_note_ph")}
+                className="h-12 min-w-0 flex-1 rounded-xl border border-input bg-background px-4 text-sm outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/25"
               />
               <button
                 onClick={async () => {
@@ -180,32 +183,32 @@ function StudioOrderDetailPage() {
                       order.status as "confirmed" | "shipped" | "delivered" | "cancelled",
                       note.trim(),
                     );
-                    showSuccess("تم حفظ الملاحظة ✅");
+                    showSuccess(t("studio_note_saved"));
                     await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
                   } catch (error) {
                     showError(error);
                   }
                 }}
-                className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+                className="min-h-12 rounded-xl bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
               >
                 حفظ
               </button>
             </div>
-            <div className="mt-4 flex gap-2">
+            <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {(["confirmed", "shipped", "delivered", "cancelled"] as const).map((s) => (
                 <button
                   key={s}
                   onClick={() => handleStatus(s)}
-                  className="rounded-lg bg-muted px-2 py-1 text-[10px] font-bold transition hover:bg-primary hover:text-primary-foreground"
+                  className="min-h-11 rounded-xl border border-border bg-muted/60 px-3 py-2 text-xs font-extrabold transition hover:border-accent-ink/40 hover:bg-primary hover:text-primary-foreground active:scale-[.98]"
                 >
-                  {translate(`status_${s}`)}
+                  {t(`status_${s}`)}
                 </button>
               ))}
               <button
                 type="button"
                 onClick={() => setPendingDelete(true)}
-                aria-label={translate("studio_delete_order_aria")}
-                className="rounded-lg bg-danger-soft px-2 py-1 text-[10px] font-bold text-danger transition hover:bg-danger/25"
+                aria-label={t("studio_delete_order_aria")}
+                className="col-span-2 flex min-h-11 items-center justify-center rounded-xl bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/25 sm:col-span-4"
               >
                 <Trash2 className="size-3.5" />
               </button>
@@ -216,9 +219,9 @@ function StudioOrderDetailPage() {
 
       <ConfirmDialog
         open={pendingDelete}
-        title="حذف الطلب"
-        message="سيتم حذف هذا الطلب نهائيًا من متجرك ولا يمكن استعادته. هل أنت متأكد؟"
-        confirmLabel="حذف نهائي"
+        title={t("studio_delete_order")}
+        message={t("studio_delete_order_confirm")}
+        confirmLabel={t("studio_delete_confirm")}
         busy={deleting}
         onCancel={() => {
           if (!deleting) setPendingDelete(false);
@@ -228,7 +231,7 @@ function StudioOrderDetailPage() {
           setDeleting(true);
           try {
             await deleteOrder(orderId, undefined, store.data?.id);
-            showSuccess("تم حذف الطلب ✅");
+            showSuccess(t("studio_order_deleted"));
             setPendingDelete(false);
             await qc.invalidateQueries({ queryKey: ["store-orders"] });
             router.navigate({ to: "/studio" });

@@ -5,6 +5,7 @@ import { Camera, ImagePlus, MapPin, Save, Store } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/lib/i18n";
 import { fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
 import { childrenOf } from "@/lib/taxonomy";
 import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
@@ -13,8 +14,6 @@ import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
-
-const DAYS = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
 
 export const Route = createFileRoute("/studio/settings")({
   head: () => ({
@@ -27,6 +26,8 @@ export const Route = createFileRoute("/studio/settings")({
 });
 
 function StoreSettingsPage() {
+  const { t } = useTranslation();
+  const days = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"].map((day) => t(`studio_day_${day}`));
   const { user, ready } = useAuth();
   const qc = useQueryClient();
   const { ask, locating } = useGeo();
@@ -39,7 +40,7 @@ function StoreSettingsPage() {
       return;
     }
     setForm((f) => ({ ...f, latitude: found.lat, longitude: found.lng }));
-    showSuccess("تم تحديد موقع المتجر");
+    showSuccess(t("studio_store_location_found"));
   };
 
   const [form, setForm] = useState({
@@ -102,8 +103,8 @@ function StoreSettingsPage() {
     return (
       <div className="space-y-4 px-4 pt-20 text-center">
         <Store className="mx-auto size-12 text-accent-ink" />
-        <h1 className="text-h1 text-foreground">تخصيص المتجر</h1>
-        <p className="text-sm text-muted-foreground">سجّل الدخول لتعديل إعدادات متجرك.</p>
+        <h1 className="text-h1 text-foreground">{t("studio_store_info")}</h1>
+        <p className="text-sm text-muted-foreground">{t("studio_login_store_settings")}</p>
         <Link to="/auth" className="btn-primary mx-auto w-fit px-8">
           دخول
         </Link>
@@ -114,7 +115,7 @@ function StoreSettingsPage() {
       <div
         className="flex min-h-[50vh] items-center justify-center"
         role="status"
-        aria-label="جارٍ تحميل المتجر"
+        aria-label={t("studio_store_loading")}
       >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
@@ -125,8 +126,8 @@ function StoreSettingsPage() {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader
-          title="تخصيص المتجر"
-          subtitle="هوية متجرك تظهر للعملاء في صفحته"
+          title={t("studio_store_info")}
+          subtitle={t("studio_settings_subtitle")}
           back="/studio"
         />
         <ErrorState
@@ -142,8 +143,8 @@ function StoreSettingsPage() {
     return (
       <div className="space-y-4 px-4 pt-20 text-center">
         <Store className="mx-auto size-12 text-accent-ink" />
-        <h1 className="text-h1 text-foreground">لا يوجد متجر بعد</h1>
-        <p className="text-sm text-muted-foreground">أنشئ متجرك أولًا ثم عدّل إعداداته من هنا.</p>
+        <h1 className="text-h1 text-foreground">{t("studio_no_store_yet")}</h1>
+        <p className="text-sm text-muted-foreground">{t("studio_create_store_first")}</p>
         <Link to="/studio" className="btn-primary mx-auto w-fit px-8">
           إنشاء متجر
         </Link>
@@ -166,7 +167,7 @@ function StoreSettingsPage() {
   const save = async () => {
     if (!store.data) return;
     if (!form.name.trim() || !form.wilaya_id || !form.commune.trim() || !form.address_line.trim()) {
-      toast.error("املأ اسم المتجر والولاية والبلدية والعنوان.");
+      toast.error(t("studio_store_required_fields"));
       return;
     }
     setBusy(true);
@@ -196,7 +197,7 @@ function StoreSettingsPage() {
         subcategories: form.subcategories,
       });
       await qc.invalidateQueries({ queryKey: ["my-store"] });
-      showSuccess("تم حفظ إعدادات المتجر ✅");
+      showSuccess(t("studio_store_settings_saved"));
     } catch (e) {
       showError(e);
     } finally {
@@ -209,8 +210,12 @@ function StoreSettingsPage() {
   const labelCls = "mb-1 block text-xs font-bold text-muted-foreground";
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 px-4 pb-24 pt-6">
-      <PageHeader title="تخصيص المتجر" subtitle="هوية متجرك تظهر للعملاء في صفحته" back="/studio" />
+    <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
+      <PageHeader title={t("studio_settings_heading")} subtitle={t("studio_settings_subtitle")} back="/studio" />
+      <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-5 text-white shadow-lg sm:p-6">
+        <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · STORE PROFILE</p>
+        <p className="mt-2 text-sm text-white/75">{t("studio_settings_intro")}</p>
+      </section>
 
       {/* بطاقة الهوية: الغلاف + الشعار + الاسم */}
       <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
@@ -220,14 +225,14 @@ function StoreSettingsPage() {
           ) : (
             <div className="flex size-full flex-col items-center justify-center gap-1 text-muted-foreground">
               <ImagePlus className="size-6" />
-              <span className="text-xs font-bold">غلاف المتجر</span>
+              <span className="text-xs font-bold">{t("studio_cover")}</span>
             </div>
           )}
           <button
             type="button"
             onClick={() => coverInputRef.current?.click()}
             className="absolute bottom-2 end-2 flex items-center gap-1 rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-white backdrop-blur transition active:scale-95"
-            aria-label="تغيير غلاف المتجر"
+            aria-label={t("studio_change_store_cover")}
           >
             <Camera className="size-3.5" /> تغيير الغلاف
           </button>
@@ -237,7 +242,7 @@ function StoreSettingsPage() {
             type="button"
             onClick={() => logoInputRef.current?.click()}
             className="relative -mt-9 size-20 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-primary-soft shadow-soft transition active:scale-95"
-            aria-label="تغيير شعار المتجر"
+            aria-label={t("studio_change_store_logo")}
           >
             {logoPreview ? (
               <img src={logoPreview} alt="شعار المتجر" className="size-full object-cover" />
@@ -254,7 +259,7 @@ function StoreSettingsPage() {
             <p className="truncate text-base font-extrabold text-foreground">
               {form.name.trim() || "اسم متجرك"}
             </p>
-            <p className="text-xs text-muted-foreground">اضغط على الشعار أو الغلاف لتغييرهما</p>
+            <p className="text-xs text-muted-foreground">{t("studio_change_logo_cover")}</p>
           </div>
         </div>
         <input
@@ -274,30 +279,30 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: معلومات المتجر */}
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-        <h2 className="text-section text-foreground">معلومات المتجر</h2>
+      <section className="space-y-3 rounded-[1.35rem] border border-border bg-card p-4 shadow-sm sm:p-5">
+        <h2 className="text-section text-foreground">{t("studio_store_info")}</h2>
         <div>
-          <label className={labelCls}>اسم المتجر *</label>
+          <label className={labelCls}>{t("studio_store_name_required")}</label>
           <input
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
-            placeholder="اسم المتجر"
+            placeholder={t("studio_store_name_ph")}
             className={inputCls}
           />
         </div>
         <div>
-          <label className={labelCls}>الوصف</label>
+          <label className={labelCls}>{t("studio_store_description")}</label>
           <textarea
             value={form.description}
             onChange={(e) => setForm({ ...form, description: e.target.value })}
-            placeholder="وصف قصير يظهر في صفحة المتجر"
+            placeholder={t("studio_short_store_description_ph")}
             rows={2}
             className={cn(inputCls, "resize-none")}
           />
         </div>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={labelCls}>رقم الهاتف</label>
+            <label className={labelCls}>{t("studio_phone")}</label>
             <input
               value={form.phone}
               onChange={(e) => setForm({ ...form, phone: e.target.value })}
@@ -308,7 +313,7 @@ function StoreSettingsPage() {
             />
           </div>
           <div>
-            <label className={labelCls}>الواتساب</label>
+            <label className={labelCls}>{t("studio_whatsapp")}</label>
             <input
               value={form.whatsapp}
               onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
@@ -324,7 +329,7 @@ function StoreSettingsPage() {
       {/* بطاقة: تصنيف المتجر */}
       <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
         <div>
-          <h2 className="text-section text-foreground">تصنيف المتجر</h2>
+          <h2 className="text-section text-foreground">{t("studio_store_category")}</h2>
           <p className="text-xs text-muted-foreground">
             تصنيف رئيسي واحد على الأقل، ويمكنك إضافة الفئات الفرعية التي تبيعها.
           </p>
@@ -343,7 +348,7 @@ function StoreSettingsPage() {
         />
         {form.category && (
           <div className="space-y-2">
-            <label className={labelCls}>الفئات الفرعية (اختيارية)</label>
+            <label className={labelCls}>{t("studio_subcategories_optional")}</label>
             <SubcategoryMultiSelect
               categoryId={form.category}
               value={form.subcategories}
@@ -367,33 +372,33 @@ function StoreSettingsPage() {
 
       {/* بطاقة: الموقع */}
       <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-        <h2 className="text-sm font-extrabold text-foreground">الموقع</h2>
+        <h2 className="text-sm font-extrabold text-foreground">{t("studio_location")}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={labelCls}>الولاية *</label>
+            <label className={labelCls}>{t("studio_wilaya_required")}</label>
             <WilayaSelect
               value={form.wilaya_id}
               onChange={(wilaya_id) => setForm({ ...form, wilaya_id })}
-              allLabel="اختر الولاية"
+              allLabel={t("studio_choose_wilaya")}
               className={inputCls}
             />
           </div>
           <div>
-            <label className={labelCls}>البلدية *</label>
+            <label className={labelCls}>{t("studio_commune_required")}</label>
             <input
               value={form.commune}
               onChange={(e) => setForm({ ...form, commune: e.target.value })}
-              placeholder="البلدية"
+              placeholder={t("studio_commune_ph")}
               className={inputCls}
             />
           </div>
         </div>
         <div>
-          <label className={labelCls}>العنوان *</label>
+          <label className={labelCls}>{t("studio_address_required")}</label>
           <input
             value={form.address_line}
             onChange={(e) => setForm({ ...form, address_line: e.target.value })}
-            placeholder="العنوان التفصيلي"
+            placeholder={t("studio_detailed_address_ph")}
             className={inputCls}
           />
         </div>
@@ -404,19 +409,19 @@ function StoreSettingsPage() {
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-soft py-2.5 text-sm font-bold text-accent-ink transition active:scale-[0.98] disabled:opacity-50"
         >
           <MapPin className="size-4" />
-          {locating ? "جارٍ تحديد الموقع..." : "تحديد موقعي على الخريطة"}
+          {locating ? t("studio_locating") : t("studio_locate_on_map")}
         </button>
         {form.latitude != null && form.longitude != null && (
-          <p className="text-center text-xs font-bold text-success">✓ موقع المتجر محدد</p>
+          <p className="text-center text-xs font-bold text-success">{t("studio_location_selected")}</p>
         )}
       </section>
 
       {/* بطاقة: ساعات العمل */}
       <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-        <h2 className="text-sm font-extrabold text-foreground">ساعات العمل</h2>
+        <h2 className="text-sm font-extrabold text-foreground">{t("studio_working_hours")}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={labelCls}>يبدأ من</label>
+            <label className={labelCls}>{t("studio_start_at")}</label>
             <input
               type="time"
               value={form.open}
@@ -425,7 +430,7 @@ function StoreSettingsPage() {
             />
           </div>
           <div>
-            <label className={labelCls}>ينتهي عند</label>
+            <label className={labelCls}>{t("studio_end_at")}</label>
             <input
               type="time"
               value={form.close}
@@ -435,9 +440,9 @@ function StoreSettingsPage() {
           </div>
         </div>
         <div>
-          <label className={labelCls}>أيام العطلة</label>
+          <label className={labelCls}>{t("studio_holidays")}</label>
           <div className="grid grid-cols-4 gap-1.5">
-            {DAYS.map((day, i) => (
+            {days.map((day, i) => (
               <button
                 key={day}
                 type="button"
@@ -459,10 +464,10 @@ function StoreSettingsPage() {
 
       {/* بطاقة: التواصل الاجتماعي */}
       <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
-        <h2 className="text-sm font-extrabold text-foreground">التواصل الاجتماعي</h2>
+        <h2 className="text-sm font-extrabold text-foreground">{t("studio_social")}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
-            <label className={labelCls}>إنستغرام</label>
+            <label className={labelCls}>{t("studio_instagram")}</label>
             <input
               value={form.instagram}
               onChange={(e) => setForm({ ...form, instagram: e.target.value })}
@@ -471,11 +476,11 @@ function StoreSettingsPage() {
             />
           </div>
           <div>
-            <label className={labelCls}>فيسبوك</label>
+            <label className={labelCls}>{t("studio_facebook")}</label>
             <input
               value={form.facebook}
               onChange={(e) => setForm({ ...form, facebook: e.target.value })}
-              placeholder="صفحتك على فيسبوك"
+              placeholder={t("studio_facebook_page_ph")}
               className={inputCls}
             />
           </div>
@@ -486,7 +491,7 @@ function StoreSettingsPage() {
       <button
         onClick={save}
         disabled={busy}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-bold text-primary-foreground shadow-soft transition active:scale-[0.98] disabled:opacity-50"
+        className="sticky bottom-3 z-20 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-extrabold text-primary-foreground shadow-lg transition active:scale-[0.98] disabled:opacity-50"
       >
         <Save className="size-4.5" />
         {busy ? "جارٍ الحفظ..." : "حفظ التغييرات"}

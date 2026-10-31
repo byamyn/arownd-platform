@@ -4,12 +4,12 @@ import { useState } from "react";
 import { ArrowRight, Check, Truck, X, Clock, PackageCheck, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
+import { useTranslation } from "@/lib/i18n";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchShipmentsByStore, type Shipment } from "@/lib/delivery";
 import { fetchMyStore } from "@/lib/sooqy";
 import { ErrorState } from "@/components/sooqy/error-state";
-import { SHIPMENT_STATUS_LABELS } from "@/lib/delivery";
 import { formatDate } from "@/lib/market";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { EmptyState } from "@/components/sooqy/empty-state";
@@ -20,6 +20,7 @@ export const Route = createFileRoute("/studio/shipments")({
 });
 
 function StudioShipmentsPage() {
+  const { t } = useTranslation();
   const { user, ready } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
 
@@ -56,8 +57,8 @@ function StudioShipmentsPage() {
   if (!user) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title="الشحنات" back="/studio/settings" />
-        <div className="text-danger-foreground">سجّل الدخول لعرض شحنات متجرك</div>
+        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <div className="text-danger-foreground">{t("studio_login_shipments")}</div>
         <Link to="/auth" className="btn-primary mt-4 inline-block">
           تسجيل الدخول
         </Link>
@@ -68,7 +69,7 @@ function StudioShipmentsPage() {
   if (error) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title="الشحنات" back="/studio/settings" />
+        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
         <ErrorState scope="studio:shipments" error={error} onRetry={() => void refetch()} />
       </div>
     );
@@ -77,8 +78,8 @@ function StudioShipmentsPage() {
   if (isLoading) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title="الشحنات" back="/studio/settings" />
-        <div className="animate-pulse text-muted-foreground">جاري التحميل...</div>
+        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <div className="animate-pulse text-muted-foreground">{t("studio_loading")}</div>
       </div>
     );
   }
@@ -86,8 +87,8 @@ function StudioShipmentsPage() {
   if (!storeId) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title="الشحنات" back="/studio/settings" />
-        <div className="text-danger-foreground">لا يوجد متجر مرتبط بهذا الحساب</div>
+        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <div className="text-danger-foreground">{t("studio_no_store_linked")}</div>
       </div>
     );
   }
@@ -106,58 +107,58 @@ function StudioShipmentsPage() {
     (statusFilter ? (shipments ?? []).filter((s) => s.status === statusFilter) : shipments) ?? [];
 
   return (
-    <div className="min-h-screen bg-background">
-      <PageHeader title="الشحنات" back="/studio/settings" />
+    <div className="min-h-screen bg-background pb-24">
+      <PageHeader title={t("studio_shipments")} back="/studio/settings" />
 
-      <div className="max-w-7xl mx-auto px-4 py-6">
+      <div className="mx-auto max-w-6xl space-y-5 px-4 py-5 sm:px-6">
         {/* ملخص الحالات */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white sm:p-5"><p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · DELIVERY</p><h2 className="mt-1 text-xl font-black">{t("studio_shipments_heading")}</h2><p className="mt-1 text-xs text-white/60">{t("studio_shipments_intro")}</p></section><div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
           {[
             {
               key: null,
-              label: "الجميع",
+              label: t("shipment_status_all"),
               count: (shipments ?? []).length,
               color: "border-accent-ink bg-primary-soft text-accent-ink",
             },
             {
               key: "pending",
-              label: "قيد الانتظار",
+              label: t("shipment_status_pending"),
               count: statusCounts.pending,
               color: "bg-warning-soft text-warning",
             },
             {
               key: "accepted",
-              label: "تم القبول",
+              label: t("shipment_status_accepted"),
               count: statusCounts.accepted,
               color: "bg-primary-soft text-accent-ink",
             },
             {
               key: "picked_up",
-              label: "تم الاستلام",
+              label: t("shipment_status_picked_up"),
               count: statusCounts.picked_up,
               color: "bg-primary-soft text-accent-ink",
             },
             {
               key: "in_transit",
-              label: "قيد التوصيل",
+              label: t("shipment_status_in_transit"),
               count: statusCounts.in_transit,
               color: "bg-primary-soft text-accent-ink",
             },
             {
               key: "delivered",
-              label: "تم التسليم",
+              label: t("shipment_status_delivered"),
               count: statusCounts.delivered,
               color: "bg-success-soft text-success",
             },
             {
               key: "failed",
-              label: "تعذر التسليم",
+              label: t("shipment_status_failed"),
               count: statusCounts.failed,
               color: "bg-danger-soft text-danger",
             },
             {
               key: "returned",
-              label: "مرتجع",
+              label: t("shipment_status_returned"),
               count: statusCounts.returned,
               color: "bg-danger-soft text-danger",
             },
@@ -166,7 +167,7 @@ function StudioShipmentsPage() {
               key={item.key ?? "all"}
               onClick={() => setStatusFilter(item.key ?? null)}
               className={cn(
-                "px-3 py-2 rounded-lg text-sm font-medium border transition-colors",
+                "min-h-11 rounded-xl px-3 py-2 text-xs font-extrabold border transition-colors",
                 item.color,
                 statusFilter === item.key ? "ring-2 ring-primary" : "",
               )}
@@ -177,12 +178,12 @@ function StudioShipmentsPage() {
         </div>
 
         {/* قائمة الشحنات */}
-        <div className="space-y-2">
+        <div className="space-y-3">
           {(filteredShipments ?? []).length === 0 ? (
             <EmptyState
               Icon={Truck}
-              title="لا توجد شحنات"
-              hint="عندما تُنشأ شحنات لمتجرك، ستظهر هنا مع حالتها."
+              title={t("studio_no_shipments")}
+              hint={t("shipment_empty_hint")}
             />
           ) : (
             (filteredShipments ?? []).map((shipment) => (
@@ -196,6 +197,7 @@ function StudioShipmentsPage() {
 }
 
 function BadgeStatus({ status }: { status: string }) {
+  const { t } = useTranslation();
   const variants: Record<string, string> = {
     pending: "bg-warning-soft text-warning",
     accepted: "bg-primary-soft text-accent-ink",
@@ -213,7 +215,7 @@ function BadgeStatus({ status }: { status: string }) {
         variants[status],
       )}
     >
-      {SHIPMENT_STATUS_LABELS[status as keyof typeof SHIPMENT_STATUS_LABELS] ?? status}
+      {t(`shipment_status_${status}`)}
     </span>
   );
 }
@@ -223,13 +225,14 @@ function ShipmentRow({
 }: {
   shipment: Shipment & { order?: { id: string; full_name: string; phone: string; total: number } };
 }) {
+  const { t } = useTranslation();
   const order = shipment.order;
 
   return (
-    <div className="rounded-2xl border border-border bg-card p-4 shadow-soft">
+    <div className="rounded-[1.35rem] border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5">
       <div className="flex justify-between items-start mb-2">
         <div>
-          <div className="font-semibold text-foreground">{order?.full_name ?? "عميل"}</div>
+          <div className="font-semibold text-foreground">{order?.full_name ?? t("shipment_customer")}</div>
           <div className="text-sm text-muted-foreground">
             طلب #{order?.id?.slice(-6) ?? shipment.id.slice(-6)}
           </div>
@@ -237,14 +240,14 @@ function ShipmentRow({
         <BadgeStatus status={shipment.status} />
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm mb-3">
-        <div className="text-muted-foreground">الهاتف</div>
+      <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-xl bg-muted/40 p-3 text-xs sm:grid-cols-4 sm:text-sm mb-3">
+        <div className="text-muted-foreground">{t("studio_phone")}</div>
         <div className="font-semibold text-foreground">{order?.phone ?? "—"}</div>
-        <div className="text-muted-foreground">المبلغ</div>
+        <div className="text-muted-foreground">{t("studio_amount")}</div>
         <div className="font-semibold text-foreground">{order?.total ?? 0} دج</div>
-        <div className="text-muted-foreground">الشركة</div>
+        <div className="text-muted-foreground">{t("studio_company")}</div>
         <div className="font-semibold text-foreground">{shipment.company_id?.slice(-4) ?? "—"}</div>
-        <div className="text-muted-foreground">تاريخ الإنشاء</div>
+        <div className="text-muted-foreground">{t("studio_created_at")}</div>
         <div className="font-semibold text-foreground">{formatDate(shipment.created_at)}</div>
       </div>
 
@@ -253,7 +256,7 @@ function ShipmentRow({
           <Link
             to="/orders/$orderId"
             params={{ orderId: order.id }}
-            className="flex-1 px-3 py-2 rounded-xl bg-primary text-accent-ink-foreground text-sm font-medium text-center"
+            className="flex min-h-11 flex-1 items-center justify-center rounded-xl bg-primary px-3 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
           >
             عرض الطلب
           </Link>

@@ -607,10 +607,9 @@ const DICTIONARY: Record<Lang, Record<string, string>> = {
 const STORAGE_KEY = "sooqy:lang";
 
 /**
- * مفتاح تفعيل الإنجليزية. false = الواجهة عربية فقط (إيقاف مؤقت للنسخة التجريبية).
- * القواميس الإنجليزية تبقى كاملة ومُختبَرة؛ لإعادة التفعيل غيّر القيمة إلى true.
+ * تفعيل الواجهة الإنجليزية بعد اكتمال مراجعة القواميس العربية والإنجليزية.
  */
-export const ENGLISH_ENABLED = false;
+export const ENGLISH_ENABLED = true;
 
 /** يحوّل أي لغة مطلوبة إلى لغة مفعّلة فعلًا. */
 export function resolveEnabledLang(lang: Lang): Lang {

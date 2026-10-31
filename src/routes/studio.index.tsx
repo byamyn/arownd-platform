@@ -173,7 +173,7 @@ function StudioPage() {
       <div
         className="flex min-h-[60vh] items-center justify-center"
         role="status"
-        aria-label="جارٍ تحميل استوديو التاجر"
+        aria-label={t("studio_dashboard_loading")}
       >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
@@ -183,7 +183,7 @@ function StudioPage() {
     const error = store.error ?? roles.error;
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="استوديو التاجر" back="/" />
+        <PageHeader title={t("studio_title")} back="/" />
         <ErrorState
           scope="studio:account"
           error={error}
@@ -212,7 +212,7 @@ function StudioPage() {
   if (dashboardError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="استوديو التاجر" back="/" />
+        <PageHeader title={t("studio_title")} back="/" />
         <ErrorState
           scope="studio:dashboard-data"
           error={dashboardError}
@@ -241,12 +241,12 @@ function StudioPage() {
   const confirmReservation = async () => {
     const clean = code.trim();
     if (!clean) {
-      toast.error("اكتب كود الحجز أولاً.");
+      toast.error(t("studio_reservation_code_required"));
       return;
     }
     try {
       await merchantConfirmReservation(clean);
-      showSuccess("تم تأكيد الاستلام ✅");
+      showSuccess(t("studio_reservation_received"));
       setCode("");
       await qc.invalidateQueries({ queryKey: ["store-reservations", store.data?.id] });
     } catch (error) {
@@ -258,7 +258,7 @@ function StudioPage() {
     if (!store.data) return;
     const clean = productForm.name.trim();
     if (!clean || !productForm.price || !Number(productForm.stock)) {
-      toast.error("املأ اسم المنتج والسعر والكمية.");
+      toast.error(t("studio_product_required_fields"));
       return;
     }
     setBusy(true);
@@ -287,7 +287,7 @@ function StudioPage() {
         },
         images.length ? images : null,
       );
-      showSuccess("تمت إضافة المنتج بنجاح");
+      showSuccess(t("studio_product_added"));
       setProductForm({
         name: "",
         price: "",
@@ -346,7 +346,7 @@ function StudioPage() {
     if (!editing) return;
     const clean = editForm.name.trim();
     if (!clean || !editForm.price || !Number(editForm.stock)) {
-      toast.error("املأ اسم المنتج والسعر والكمية.");
+      toast.error(t("studio_product_required_fields"));
       return;
     }
     setBusy(true);
@@ -368,7 +368,7 @@ function StudioPage() {
         await merchantAddOfferImages(editing.id, newEditFiles);
       }
 
-      showSuccess("تم تحديث المنتج ✅");
+      showSuccess(t("studio_product_updated"));
       setEditing(null);
       setEditImages([]);
       setEditExistingImages([]);
@@ -386,7 +386,7 @@ function StudioPage() {
       await merchantRemoveOfferImage(item.id);
       setEditExistingImages((prev) => prev.filter((i) => i.id !== item.id));
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
-      showSuccess("تم حذف الصورة ✅");
+      showSuccess(t("studio_image_deleted"));
     } catch (error) {
       showError(error, "feedback_upload_error");
     }
@@ -426,7 +426,7 @@ function StudioPage() {
       await merchantRemoveOfferImage(item.id);
       setManagingImages((prev) => prev.filter((i) => i.id !== item.id));
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
-      showSuccess("تم حذف الصورة ✅");
+      showSuccess(t("studio_image_deleted"));
     } catch (error) {
       showError(error, "feedback_upload_error");
     }
@@ -499,106 +499,77 @@ function StudioPage() {
   };
 
   return (
-    <div className="space-y-5 px-4 pb-24 pt-6">
-      <header className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-sm font-semibold tracking-wide text-accent-ink">Arownd MERCHANT</p>
-          <h1 className="text-h1">استوديو التاجر</h1>
+    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
+      <header className="flex items-center justify-between gap-3">
+        <div className="min-w-0">
+          <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-accent-ink">AROWND · MERCHANT</p>
+          <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">{t("studio_dashboard_heading")}</h1>
+          <p className="mt-1 text-xs text-muted-foreground sm:text-sm">{t("studio_dashboard_intro")}</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex shrink-0 items-center gap-2">
           <Link
             to="/settings"
-            className="rounded-full bg-primary-soft p-2 text-accent-ink transition active:scale-95"
-            aria-label="الإعدادات"
+            className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground shadow-sm transition hover:border-accent-ink/40 active:scale-95"
+            aria-label={t("studio_settings")}
           >
             <Settings className="size-5" />
           </Link>
-          <div className="rounded-full bg-primary-soft p-2 text-accent-ink-soft-foreground">
+          <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
             <Store className="size-5" />
           </div>
         </div>
       </header>
 
-      {/* بطاقة معلومات المتجر */}
-      <section className="rounded-2xl border border-border bg-card p-4">
-        <div className="flex items-center gap-3">
-          <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl bg-primary-soft">
-            {store.data?.logo_url ? (
-              <img
-                src={store.data.logo_url}
-                alt={`شعار ${store.data.name}`}
-                className="size-full rounded-2xl object-cover"
-              />
-            ) : (
-              <Store className="size-6 text-accent-ink" />
-            )}
-          </div>
-          <div className="min-w-0 flex-1">
-            <p className="line-clamp-1 text-section">{store.data?.name}</p>
-            <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground flex items-center gap-1">
-              {store.data?.commune ? (
-                <>
-                  <MapPin className="size-3 shrink-0 text-muted-foreground" />
-                  {store.data.commune}
-                </>
+      {/* بطاقة المتجر الرئيسية */}
+      <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-accent-ink/20 bg-[#111813] p-4 text-white shadow-lg sm:p-6">
+        <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-[#D4F56A]/10 blur-3xl" />
+        <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex min-w-0 items-center gap-3 sm:gap-4">
+            <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:size-[4.5rem]">
+              {store.data?.logo_url ? (
+                <img src={store.data.logo_url} alt={`شعار ${store.data.name}`} className="size-full object-cover" />
               ) : (
-                "الموقع قيد الإعداد"
-              )}
-            </p>
-            <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-              {(() => {
-                const st = getStoreStatus(store.data?.opening_hours);
-                return (
-                  <span
-                    className={cn(
-                      "flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
-                      st.isOpen
-                        ? "bg-success-soft text-success"
-                        : "bg-neutral-200 text-neutral-500",
-                    )}
-                  >
-                    <span
-                      className={cn(
-                        "size-1.5 rounded-full",
-                        st.isOpen ? "bg-success" : "bg-neutral-500",
-                      )}
-                    />
-                    {st.isOpen ? "مفتوح الآن" : "مغلق حاليًا"}
-                  </span>
-                );
-              })()}
-              {store.data?.is_verified && (
-                <span className="flex items-center gap-1 rounded-full bg-primary-soft px-2 py-0.5 text-[10px] font-bold text-accent-ink">
-                  <ShieldCheck className="size-3" /> موثق
-                </span>
+                <Store className="size-7 text-[#D4F56A]" />
               )}
             </div>
+            <div className="min-w-0">
+              <p className="text-[10px] font-bold tracking-wide text-[#D4F56A]">{t("studio_store_on_arownd")}</p>
+              <h2 className="mt-1 truncate text-xl font-black sm:text-2xl">{store.data?.name}</h2>
+              <p className="mt-1 flex items-center gap-1 truncate text-xs text-white/60">
+                <MapPin className="size-3 shrink-0" />
+                {store.data?.commune || "الموقع قيد الإعداد"}
+              </p>
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                {(() => {
+                  const st = getStoreStatus(store.data?.opening_hours);
+                  return (
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold">
+                      <span className={cn("size-1.5 rounded-full", st.isOpen ? "bg-[#D4F56A]" : "bg-white/40")} />
+                      {st.isOpen ? "مفتوح الآن" : "مغلق حاليًا"}
+                    </span>
+                  );
+                })()}
+                {store.data?.is_verified && (
+                  <span className="inline-flex items-center gap-1 rounded-full bg-[#D4F56A]/15 px-2.5 py-1 text-[10px] font-bold text-[#D4F56A]">
+                    <ShieldCheck className="size-3" /> متجر موثق
+                  </span>
+                )}
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="mt-3 flex gap-2">
-          <Link
-            to="/studio/settings"
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary-soft py-2 text-xs font-bold text-accent-ink transition active:scale-95"
-          >
-            <Settings className="size-3.5" /> تخصيص المتجر
-          </Link>
-          <Link
-            to="/stores/$storeId"
-            params={{ storeId: store.data?.id ?? "" }}
-            className="flex flex-1 items-center justify-center gap-1.5 rounded-xl bg-primary-soft py-2 text-xs font-bold text-accent-ink transition active:scale-95"
-          >
-            <Eye className="size-3.5" /> معاينة متجري
-          </Link>
-          {store.data?.latitude != null && store.data?.longitude != null && (
-            <DirectionsButton
-              lat={store.data.latitude}
-              lng={store.data.longitude}
-              label={store.data?.name ?? ""}
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-primary-soft px-3 py-2 text-xs font-bold text-accent-ink"
-            >
-              <MapPin className="size-3.5" /> الموقع
-            </DirectionsButton>
-          )}
+          <div className="grid grid-cols-2 gap-2 sm:min-w-[250px]">
+            <Link to="/studio/settings" className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4F56A] px-3 text-xs font-extrabold text-[#111813] transition hover:brightness-95 active:scale-[.98]">
+              <Settings className="size-4" /> تخصيص المتجر
+            </Link>
+            <Link to="/stores/$storeId" params={{ storeId: store.data?.id ?? "" }} className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/10 active:scale-[.98]">
+              <Eye className="size-4" /> معاينة المتجر
+            </Link>
+            {store.data?.latitude != null && store.data?.longitude != null && (
+              <DirectionsButton lat={store.data.latitude} lng={store.data.longitude} label={store.data?.name ?? ""} className="col-span-2 flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-white/80">
+                <MapPin className="size-4" /> عرض الموقع والاتجاهات
+              </DirectionsButton>
+            )}
+          </div>
         </div>
       </section>
 
@@ -619,44 +590,48 @@ function StudioPage() {
         </button>
       )}
 
-      {/* ملخص النشاط */}
-      <section className="grid grid-cols-2 gap-2">
-        <div className="rounded-2xl border border-border bg-card p-3">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
-            <Package className="size-4.5" />
-          </span>
-          <p className="mt-2 text-xl font-extrabold">{offers.data?.length ?? 0}</p>
-          <p className="text-[10px] font-bold text-muted-foreground">المنتجات</p>
+      {/* مؤشرات المتجر */}
+      <section className="space-y-3">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <h2 className="text-base font-extrabold text-foreground">{t("studio_overview")}</h2>
+            <p className="mt-0.5 text-xs text-muted-foreground">{t("studio_live_summary")}</p>
+          </div>
+          <span className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">{t("studio_store_data")}</span>
         </div>
-        <div className="rounded-2xl border border-border bg-card p-3">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
-            <ShoppingBag className="size-4.5" />
-          </span>
-          <p className="mt-2 text-xl font-extrabold">
-            {(orders.data?.filter((o) => o.order.status === "pending").length ?? 0) +
-              (reservations.data?.filter((r) => r.status === "pending").length ?? 0)}
-          </p>
-          <p className="text-[10px] font-bold text-muted-foreground">طلبات جديدة</p>
-        </div>
-        <div className="rounded-2xl border border-border bg-card p-3">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
-            <Eye className="size-4.5" />
-          </span>
-          <p className="mt-2 text-xl font-extrabold">
-            {offers.data
-              ? offers.data.reduce((sum, o) => sum + (o.product.view_count ?? 0), 0)
-              : "—"}
-          </p>
-          <p className="text-[10px] font-bold text-muted-foreground">المشاهدات</p>
-        </div>
-        <div className="rounded-2xl border border-border bg-card p-3">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
-            <Star className="size-4.5" />
-          </span>
-          <p className="mt-2 text-xl font-extrabold">
-            {store.data?.rating ? Number(store.data.rating).toFixed(1) : "—"}
-          </p>
-          <p className="text-[10px] font-bold text-muted-foreground">التقييم</p>
+        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink"><Package className="size-4.5" /></span>
+              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_catalog")}</span>
+            </div>
+            <p className="mt-3 text-2xl font-black tabular-nums">{offers.data?.length ?? 0}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_total_products")}</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-warning-soft text-warning"><ShoppingBag className="size-4.5" /></span>
+              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_follow_up")}</span>
+            </div>
+            <p className="mt-3 text-2xl font-black tabular-nums">{pendingCount}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_pending_orders_reservations")}</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-blue-soft text-blue"><Eye className="size-4.5" /></span>
+              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_reach")}</span>
+            </div>
+            <p className="mt-3 text-2xl font-black tabular-nums">{offers.data ? offers.data.reduce((sum, o) => sum + (o.product.view_count ?? 0), 0) : "—"}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_product_views")}</p>
+          </div>
+          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+            <div className="flex items-center justify-between gap-2">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-success-soft text-success"><Star className="size-4.5" /></span>
+              <span className="text-[10px] font-semibold text-muted-foreground">{t("studio_store_reputation")}</span>
+            </div>
+            <p className="mt-3 text-2xl font-black tabular-nums">{store.data?.rating ? Number(store.data.rating).toFixed(1) : "—"}</p>
+            <p className="mt-0.5 text-xs font-semibold text-muted-foreground">{t("studio_average_rating")}</p>
+          </div>
         </div>
       </section>
 
@@ -675,7 +650,7 @@ function StudioPage() {
         return (
           <section className="rounded-2xl border border-accent-ink/25 bg-primary-soft/40 p-4">
             <div className="flex items-center justify-between gap-2">
-              <h2 className="text-sm font-extrabold text-foreground">أكمل إعداد متجرك</h2>
+              <h2 className="text-sm font-extrabold text-foreground">{t("studio_setup_heading")}</h2>
               <span className="text-xs font-bold text-accent-ink">{pct}%</span>
             </div>
             <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-primary/15">
@@ -727,7 +702,7 @@ function StudioPage() {
       {/* طلبات تحتاج إجراءً — أول ما يراه التاجر */}
       {(actionOrders.length > 0 || actionReservations.length > 0) && (
         <section className="space-y-2">
-          <h2 className="px-1 text-section text-muted-foreground">يحتاج إجراءً الآن</h2>
+          <h2 className="px-1 text-section text-muted-foreground">{t("studio_action_needed_now")}</h2>
           <div className="divide-y divide-border overflow-hidden rounded-2xl border border-danger/25 bg-card">
             {actionOrders.map((o) => (
               <Link
@@ -785,7 +760,7 @@ function StudioPage() {
 
       {/* قائمة إدارة المتجر */}
       <section className="space-y-2">
-        <h2 className="px-1 text-section text-muted-foreground">إدارة المتجر</h2>
+        <h2 className="px-1 text-section text-muted-foreground">{t("studio_manage_store")}</h2>
         <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
           <button
             type="button"
@@ -796,7 +771,7 @@ function StudioPage() {
               <Package className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">منتجاتي</span>
+              <span className="block text-sm font-bold text-foreground">{t("studio_my_products")}</span>
               <span className="block text-xs text-muted-foreground">
                 إضافة المنتجات وتعديلها وحذفها
               </span>
@@ -812,7 +787,7 @@ function StudioPage() {
               <ShoppingBag className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">الطلبات</span>
+              <span className="block text-sm font-bold text-foreground">{t("studio_orders")}</span>
               <span className="block text-xs text-muted-foreground">
                 إدارة الطلبات وتحديث حالاتها
               </span>
@@ -832,7 +807,7 @@ function StudioPage() {
               <Store className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">معلومات المتجر</span>
+              <span className="block text-sm font-bold text-foreground">{t("studio_store_info")}</span>
               <span className="block text-xs text-muted-foreground">
                 تعديل الاسم والوصف والصور والتصنيف
               </span>
@@ -847,8 +822,8 @@ function StudioPage() {
               <Clock className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">الموقع وساعات العمل</span>
-              <span className="block text-xs text-muted-foreground">إدارة الموقع وأوقات العمل</span>
+              <span className="block text-sm font-bold text-foreground">{t("studio_location_hours")}</span>
+              <span className="block text-xs text-muted-foreground">{t("studio_manage_location_hours")}</span>
             </span>
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
           </Link>
@@ -861,7 +836,7 @@ function StudioPage() {
               <Eye className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">معاينة متجري</span>
+              <span className="block text-sm font-bold text-foreground">{t("studio_preview_store")}</span>
               <span className="block text-xs text-muted-foreground">
                 عرض الصفحة كما يراها العميل
               </span>
@@ -873,7 +848,8 @@ function StudioPage() {
 
       {/* تبويب المنتجات */}
       {mode === "offers" && (
-        <section className="space-y-4">
+        <section className="space-y-5">
+          <div className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white shadow-sm sm:p-5"><p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">AROWND · CATALOG</p><h2 className="mt-1 text-xl font-black">{t("studio_catalog_heading")}</h2><p className="mt-1 text-xs text-white/60">{t("studio_catalog_intro")}</p><div className="mt-4 grid grid-cols-3 gap-2"><div className="rounded-xl bg-white/5 p-2.5"><p className="text-lg font-black">{allOffers.length}</p><p className="text-[10px] text-white/60">{t("studio_products_total")}</p></div><div className="rounded-xl bg-white/5 p-2.5"><p className="text-lg font-black text-[#D4F56A]">{lowCount}</p><p className="text-[10px] text-white/60">{t("studio_stock_low")}</p></div><div className="rounded-xl bg-white/5 p-2.5"><p className="text-lg font-black">{outCount}</p><p className="text-[10px] text-white/60">{t("studio_stock_out")}</p></div></div></div>
           <div className="flex gap-2">
             <button
               onClick={refreshStock}
@@ -884,7 +860,7 @@ function StudioPage() {
             </button>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="rounded-[1.4rem] border border-border bg-card p-4 shadow-sm sm:p-5">
             <h2 className="mb-3 flex items-center gap-2 font-bold">
               <PackagePlus className="size-5 text-accent-ink" /> إضافة منتج في 30 ثانية
             </h2>
@@ -892,22 +868,22 @@ function StudioPage() {
               <input
                 value={productForm.name}
                 onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                placeholder="اسم المنتج"
-                className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                placeholder={t("studio_product_name_ph")}
+                className="h-12 rounded-xl border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
               />
               <div className="grid grid-cols-2 gap-2">
                 <input
                   value={productForm.price}
                   onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                  placeholder="السعر دج"
+                  placeholder={t("studio_price_dzd_ph")}
                   type="number"
                   min="0"
-                  className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-12 rounded-xl border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
                 />
                 <input
                   value={productForm.stock}
                   onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
-                  placeholder="الكمية"
+                  placeholder={t("studio_quantity_ph")}
                   type="number"
                   min="0"
                   className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
@@ -920,37 +896,37 @@ function StudioPage() {
               <input
                 value={productForm.brand}
                 onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
-                placeholder="العلامة التجارية"
+                placeholder={t("studio_brand_ph")}
                 className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <input
                 value={productForm.sizes}
                 onChange={(e) => setProductForm({ ...productForm, sizes: e.target.value })}
-                placeholder="المقاسات: S, M, L"
+                placeholder={t("studio_sizes_ph")}
                 className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <input
                 value={productForm.colors}
                 onChange={(e) => setProductForm({ ...productForm, colors: e.target.value })}
-                placeholder="الألوان: أسود، أبيض"
+                placeholder={t("studio_colors_ph")}
                 className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <textarea
                 value={productForm.description}
                 onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                placeholder="وصف المنتج"
+                placeholder={t("studio_description_ph")}
                 rows={2}
-                className="rounded-xl border border-input bg-background px-3 py-2 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="min-h-24 rounded-xl border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
               />
               <ImageUploader
                 initialItems={[]}
                 onChange={(items) => setImages(items.map((i) => i.file).filter(Boolean))}
-                label="إضافة صور المنتج (حتى 10)"
+                label={t("studio_add_product_images_label")}
               />
               <button
                 onClick={addProduct}
                 disabled={busy}
-                className="rounded-2xl bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50"
+                className="min-h-12 rounded-xl bg-primary py-3 font-extrabold text-primary-foreground shadow-sm transition active:scale-[.99] disabled:opacity-50"
               >
                 {busy ? "جارٍ الحفظ..." : "حفظ المنتج"}
               </button>
@@ -958,7 +934,7 @@ function StudioPage() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-4">
-            <h2 className="mb-3 font-bold">المنتجات الحالية</h2>
+            <div className="mb-4 flex items-center justify-between gap-3"><div><h2 className="font-extrabold">{t("studio_current_products")}</h2><p className="mt-0.5 text-xs text-muted-foreground">{t("studio_results_shown", { count: visibleOffers.length })}</p></div><span className="rounded-full bg-primary-soft px-3 py-1 text-[10px] font-bold text-accent-ink">{t("studio_inventory")}</span></div>
 
             <SideSheet
               open={!!editing}
@@ -982,14 +958,14 @@ function StudioPage() {
                 <input
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  placeholder="اسم المنتج"
+                  placeholder={t("studio_product_name_ph")}
                   className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
-                    placeholder="السعر دج"
+                    placeholder={t("studio_price_dzd_ph")}
                     type="number"
                     min="0"
                     className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
@@ -997,7 +973,7 @@ function StudioPage() {
                   <input
                     value={editForm.stock}
                     onChange={(e) => setEditForm({ ...editForm, stock: e.target.value })}
-                    placeholder="الكمية"
+                    placeholder={t("studio_quantity_ph")}
                     type="number"
                     min="0"
                     className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
@@ -1010,20 +986,20 @@ function StudioPage() {
                 <input
                   value={editForm.brand}
                   onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })}
-                  placeholder="العلامة التجارية"
+                  placeholder={t("studio_brand_ph")}
                   className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
                 <textarea
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
-                  placeholder="وصف المنتج"
+                  placeholder={t("studio_description_ph")}
                   rows={2}
-                  className="rounded-xl border border-input bg-background px-3 py-2 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="min-h-24 rounded-xl border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
                 />
                 <ImageUploader
                   initialItems={editExistingImages}
                   onChange={setEditExistingImages}
-                  label="إدارة صور المنتج"
+                  label={t("studio_manage_product_images_label")}
                   onRemove={removeEditImage}
                   onSetPrimary={setEditPrimaryImage}
                 />
@@ -1054,7 +1030,7 @@ function StudioPage() {
                       await qc.invalidateQueries({
                         queryKey: ["my-store-offers", store.data?.id],
                       });
-                      showSuccess("تم رفع الصور ✅");
+                      showSuccess(t("studio_images_uploaded"));
                       closeImageManagement();
                     } catch (error) {
                       showError(error, "feedback_upload_error");
@@ -1063,13 +1039,13 @@ function StudioPage() {
                   }
                   setManagingImages(items);
                 }}
-                label="إدارة صور المنتج (حتى 10)"
+                label={t("studio_manage_product_images_label")}
                 onRemove={removeManagingImage}
                 onSetPrimary={setManagingPrimaryImage}
               />
             </SideSheet>
 
-            <div className="mb-3 space-y-2">
+            <div className="mb-4 space-y-3 rounded-xl bg-muted/30 p-3">
               <input
                 type="search"
                 value={productQuery}
@@ -1147,9 +1123,9 @@ function StudioPage() {
       />
       <ConfirmDialog
         open={!!pendingDelete}
-        title="حذف المنتج"
-        message={`سيُحذف «${pendingDelete?.product.name ?? ""}» نهائيًا من متجرك ولن يظهر للعملاء بعد الآن. طلباتك السابقة تبقى محفوظة.`}
-        confirmLabel="حذف نهائي"
+        title={t("studio_delete_product")}
+        message={t("studio_delete_product_confirm", { name: pendingDelete?.product.name ?? "" })}
+        confirmLabel={t("studio_delete_permanently")}
         busy={deleting}
         onCancel={() => {
           if (!deleting) setPendingDelete(null);
@@ -1160,7 +1136,7 @@ function StudioPage() {
           try {
             await merchantDeleteOffer(pendingDelete.id);
             await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
-            showSuccess("تم حذف المنتج ✅");
+            showSuccess(t("studio_product_deleted"));
             setPendingDelete(null);
           } catch (error) {
             showError(error);
@@ -1173,7 +1149,7 @@ function StudioPage() {
       {mode === "orders" && (
         <section className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-4">
-            <h2 className="mb-3 font-bold">تأكيد الحجز</h2>
+            <h2 className="mb-3 font-bold">{t("studio_confirm_reservation")}</h2>
             <div className="flex gap-2">
               <input
                 value={code}
@@ -1191,7 +1167,7 @@ function StudioPage() {
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-4">
-            <h2 className="mb-3 font-bold">الحجوزات</h2>
+            <h2 className="mb-3 font-bold">{t("studio_reservations")}</h2>
             <div className="space-y-2">
               {reservations.data?.map((r) => (
                 <div key={r.id} className="rounded-2xl bg-background p-3">
@@ -1226,7 +1202,7 @@ function StudioPage() {
                       onClick={async () => {
                         try {
                           await merchantConfirmReservation(r.code);
-                          showSuccess("تم تأكيد الاستلام ✅");
+                          showSuccess(t("studio_reservation_received"));
                           await qc.invalidateQueries({
                             queryKey: ["store-reservations", store.data?.id],
                           });
@@ -1242,13 +1218,13 @@ function StudioPage() {
                 </div>
               ))}
               {!reservations.data?.length && (
-                <p className="text-sm text-muted-foreground">لا توجد حجوزات.</p>
+                <p className="text-sm text-muted-foreground">{t("studio_no_reservations")}</p>
               )}
             </div>
           </div>
 
           <div className="rounded-2xl border border-border bg-card p-4">
-            <h2 className="mb-3 font-bold">طلبات التوصيل</h2>
+            <h2 className="mb-3 font-bold">{t("studio_delivery_orders")}</h2>
             {(() => {
               const soldTotal = (orders.data ?? []).reduce(
                 (sum, i) => sum + i.unit_price * i.quantity,
@@ -1260,7 +1236,7 @@ function StudioPage() {
                 <div className="mb-3 grid grid-cols-3 gap-2">
                   <div className="rounded-2xl bg-neutral-100 p-3 text-center">
                     <p className="text-base font-bold">{formatDA(soldTotal)}</p>
-                    <p className="text-[10px] text-muted-foreground">مبيعات المتجر</p>
+                    <p className="text-[10px] text-muted-foreground">{t("studio_store_sales")}</p>
                   </div>
                   <div className="rounded-2xl bg-neutral-100 p-3 text-center">
                     <p className="text-base font-bold">{formatDA(commission)}</p>
@@ -1270,7 +1246,7 @@ function StudioPage() {
                     <p className="text-base font-bold text-success">
                       {formatDA(soldTotal - commission)}
                     </p>
-                    <p className="text-[10px] text-muted-foreground">صافي المستحق</p>
+                    <p className="text-[10px] text-muted-foreground">{t("studio_net_due")}</p>
                   </div>
                 </div>
               ) : null;
@@ -1328,7 +1304,7 @@ function StudioPage() {
                 </div>
               ))}
               {!orders.data?.length && (
-                <p className="text-sm text-muted-foreground">لا توجد طلبات بعد.</p>
+                <p className="text-sm text-muted-foreground">{t("studio_no_orders")}</p>
               )}
             </div>
           </div>
@@ -1339,11 +1315,12 @@ function StudioPage() {
 }
 
 function AuthGate({ onLogin }: { onLogin: () => void }) {
+  const { t } = useTranslation();
   return (
     <div className="space-y-4 px-4 pt-20 text-center">
       <Store className="mx-auto size-12 text-accent-ink" />
-      <h1 className="text-2xl font-bold">لوحة التاجر</h1>
-      <p className="text-sm text-muted-foreground">سجّل الدخول لعرض المخزون والحجوزات.</p>
+      <h1 className="text-2xl font-bold">{t("studio_merchant_dashboard")}</h1>
+      <p className="text-sm text-muted-foreground">{t("studio_login_inventory")}</p>
       <button
         onClick={onLogin}
         className="rounded-2xl bg-primary px-8 py-3 font-bold text-primary-foreground"
@@ -1362,6 +1339,7 @@ const CATEGORY_FIELD_CLS =
  * ما يُخزَّن في `products.category` هو الفئة الفرعية، أو التصنيف الرئيسي إن لم تكن له فرعيات.
  */
 function CategorySelect({ value, onChange }: { value: string; onChange: (id: string) => void }) {
+  const { t } = useTranslation();
   const resolved = resolveCategoryId(value);
   const main = parentOf(resolved)?.id ?? MAIN_CATEGORIES[0]!.id;
   const subs = childrenOf(main);
@@ -1372,7 +1350,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
       <div className="grid grid-cols-2 gap-2">
         <select
           value={main}
-          aria-label="التصنيف الرئيسي"
+          aria-label={t("studio_main_category_aria")}
           onChange={(e) => {
             const next = e.target.value;
             onChange(childrenOf(next)[0]?.id ?? next);
@@ -1384,7 +1362,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
               {c.label}
             </option>
           ))}
-          <optgroup label="تصنيفات أخرى">
+          <optgroup label={t("studio_other_categories")}>
             {OTHER_CATEGORIES.map((c) => (
               <option key={c.id} value={c.id}>
                 {c.label}
@@ -1394,12 +1372,12 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
         </select>
         <select
           value={subValue}
-          aria-label="الفئة الفرعية"
+          aria-label={t("studio_subcategory_aria")}
           onChange={(e) => onChange(e.target.value)}
           className={CATEGORY_FIELD_CLS}
         >
           {subs.length === 0 ? (
-            <option value={main}>لا توجد فئات فرعية</option>
+            <option value={main}>{t("studio_no_subcategories")}</option>
           ) : (
             subs.map((c) => (
               <option key={c.id} value={c.id}>
@@ -1409,7 +1387,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
           )}
         </select>
       </div>
-      <p className="text-[11px] text-muted-foreground">تصنيف المنتج مستقل عن تصنيف متجرك.</p>
+      <p className="text-[11px] text-muted-foreground">{t("studio_product_category_note")}</p>
     </div>
   );
 }
