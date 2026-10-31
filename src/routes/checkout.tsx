@@ -35,6 +35,7 @@ import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { AppShell } from "@/components/sooqy/app-shell";
 import { StickyActionBar } from "@/components/sooqy/sticky-action-bar";
+import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/checkout")({
@@ -434,7 +435,15 @@ function CheckoutPage() {
                 {deliveryCompanies.isLoading && (
                   <p className="text-xs text-muted-foreground">{t("checkout_companies_loading")}</p>
                 )}
-                {deliveryCompanies.data?.length === 0 && (
+                {deliveryCompanies.isError && (
+                  <ErrorState
+                    scope="checkout:delivery-companies"
+                    error={deliveryCompanies.error}
+                    onRetry={() => deliveryCompanies.refetch()}
+                    className="py-5"
+                  />
+                )}
+                {deliveryCompanies.data?.length === 0 && !deliveryCompanies.isError && (
                   <p className="text-xs text-muted-foreground">
                     {t("checkout_companies_none")}
                   </p>
