@@ -176,11 +176,7 @@ function StudioOrderDetailPage() {
                   onClick={async () => {
                     if (!note.trim()) return;
                     try {
-                      await merchantUpdateOrderStatus(
-                        order.id,
-                        order.status as "confirmed" | "shipped" | "delivered" | "cancelled",
-                        note.trim(),
-                      );
+                      await merchantUpdateOrderNote(order.id, note.trim());
                       showSuccess(t("studio_note_saved"));
                       await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
                     } catch (error) {
