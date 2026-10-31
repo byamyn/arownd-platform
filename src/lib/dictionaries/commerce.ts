@@ -116,6 +116,8 @@ export const commerce: DictGroup = {
       "لا توجد شركة توصيل معتمدة تغطي الولاية والبلدية المحددتين حاليًا. يمكنك اختيار الاستلام من المكتب.",
     checkout_address_detail_placeholder: "عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)",
     checkout_fee_note: "رسوم التوصيل تُحسب حسب الولاية وتظهر في الملخص أسفل الشاشة.",
+    checkout_no_commission_note:
+      "لا تفرض Arownd أي عمولة. الإجمالي يشمل قيمة المنتجات ورسوم التوصيل فقط.",
     checkout_payment_cod_label: "الدفع عند الاستلام",
     checkout_payment_only_cod_note:
       "متاح حاليًا الدفع عند الاستلام فقط. الدفع عبر بريدي موب والبطاقة قيد التطوير وسيُفعّل بعد اختباره.",
@@ -295,6 +297,8 @@ export const commerce: DictGroup = {
     checkout_address_detail_placeholder: "Detailed delivery address (required for home delivery)",
     checkout_fee_note:
       "Delivery fees depend on your wilaya and appear in the summary at the bottom of the screen.",
+    checkout_no_commission_note:
+      "Arownd does not charge any commission. The total includes products and delivery fees only.",
     checkout_payment_cod_label: "Cash on delivery",
     checkout_payment_only_cod_note:
       "Only cash on delivery is available for now. BaridiMob and card payments are in development and will be enabled after testing.",

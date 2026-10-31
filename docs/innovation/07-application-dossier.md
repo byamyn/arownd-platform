@@ -31,7 +31,7 @@ Voir `08-pitch-deck.md` (slides 4–7). Points clés:
 **Produit prêt** (web + PWA + Android) — avec backend Supabase. [Vérifier déploiement prod].
 
 ## 7. Modèle économique
-B2C (consommateurs) + B2B (commerçants) — commission 7% + [TODO abonnement].
+B2C (consommateurs) + B2B (commerçants) — aucune commission sur les commandes; éventuels services optionnels à définir séparément.
 
 ## 8. Équipe (à compléter — OBLIGATOIRE)
 Voir `12-founder-profile.md` pour le template. Remplir nominativement.

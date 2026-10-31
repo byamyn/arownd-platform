@@ -41,7 +41,7 @@
 - Cible principale: clients/utilisateurs/bénéficiaires (segments).
 
 ## Slide 11 — Modèle économique (business model)
-- Génération de revenus + rentabilité (commission 7%, etc.).
+- Modèle économique sans commission sur les commandes; autres sources de revenus à définir séparément.
 
 ## Slide 12 — Roadmap et stratégie de développement
 - Étapes clés (tech/commercial/expansion)

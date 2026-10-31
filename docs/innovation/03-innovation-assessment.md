@@ -16,7 +16,7 @@
 9. **مراجعات موثّقة** (فقط بعد طلب مُسلَّم/حجز مُستلَم) — `submit_review` RPC.
 10. **تجربة تاجر «30 ثانية لإضافة منتج»** (رفع صور، sizes/colors, multi-image) — `merchantQuickAddProduct`.
 11. **بحث بالصور** — `src/lib/image-search.ts`.
-12. **عمولة مدمجة** (commission_rate 7% + commission_amount) — إيراد مدمج.
+12. **لا عمولة على الطلبات** — يجب أن تبقى قيمة العمولة صفرًا في الواجهة وقاعدة البيانات.
 13. **observability:** Sentry + ErrorBoundary + diagnostics.
 
 ## 3. نواقص / مخاطر (Innovation Gaps)
@@ -27,7 +27,7 @@
 - **لا offensive moat** (network effects/switching costs) موثّق — [فرضية] marketplace liquidity.
 - **اسم غير موحد** (Arownd vs SOOQY) — [TODO].
 - **اختبارات UI (32) failing/timeout** — [TODO] before demo.
-- **لا خطة تسعير/عمولة** موثّقة للمستثمرين — TODO.
+- **لا توجد عمولة على الطلبات**؛ تسعير أي خدمات اختيارية مستقبلية يحتاج قرارًا منفصلًا — TODO.
 
 ## 4. منافسون (بدون بيانات موثّقة)
 > [TODO/فرضية] المنافسون المحتملون في الجزائر:

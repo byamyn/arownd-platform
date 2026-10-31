@@ -636,6 +636,9 @@ function CheckoutPage() {
           <p className="rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             {t("checkout_payment_only_cod_note")}
           </p>
+          <p className="rounded-2xl border border-success/20 bg-success-soft/50 p-3 text-xs leading-relaxed text-success">
+            {t("checkout_no_commission_note")}
+          </p>
         </section>
       )}
 
@@ -747,6 +750,9 @@ function SuccessScreen({
             </span>
             <span className="font-bold text-foreground">{formatDA(snapshot.total)}</span>
           </div>
+          <p className="rounded-xl bg-success-soft/50 p-2.5 text-[11px] leading-relaxed text-success">
+            {t("checkout_no_commission_note")}
+          </p>
           <p className="flex items-start gap-1.5 pt-1 text-[11px] leading-relaxed text-muted-foreground">
             <BellRing className="mt-0.5 size-3.5 shrink-0 text-primary" />
             {t("close_notify_note")}

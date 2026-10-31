@@ -1249,6 +1249,7 @@ export async function fetchStoreReservations(storeId: string) {
     .from("reservations")
     .select("*, offer:store_offers(price, product:products(name))")
     .eq("store_id", storeId)
+    .is("merchant_archived_at", null)
     .order("created_at", { ascending: false })
     .limit(50);
   if (error) throw error;
@@ -1262,10 +1263,34 @@ export async function fetchStoreOrderItems(storeId: string) {
       "*, order:orders(id, full_name, phone, commune, delivery_type, payment_method, receipt_url, status, total, created_at, wilaya:wilayas(name_ar))",
     )
     .eq("store_id", storeId)
+    .is("merchant_archived_at", null)
     .order("id", { ascending: false })
     .limit(100);
   if (error) throw error;
   return data;
+}
+
+export async function merchantArchiveReservation(reservationId: string): Promise<void> {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _reservation_id: string },
+  ) => Promise<{ error: unknown }>;
+  const { error } = await rpc("merchant_archive_reservation", {
+    _reservation_id: reservationId,
+  });
+  if (error) throw error;
+}
+
+export async function merchantArchiveOrderItems(orderId: string, storeId: string): Promise<void> {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _order_id: string; _store_id: string },
+  ) => Promise<{ error: unknown }>;
+  const { error } = await rpc("merchant_archive_order_items", {
+    _order_id: orderId,
+    _store_id: storeId,
+  });
+  if (error) throw error;
 }
 
 export async function merchantUpdateOrderStatus(

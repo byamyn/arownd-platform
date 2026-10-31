@@ -10,6 +10,7 @@ export type Database = {
     Tables: {
       order_items: {
         Row: {
+          merchant_archived_at: string | null;
           id: string;
           offer_id: string | null;
           options: Json;
@@ -20,6 +21,7 @@ export type Database = {
           unit_price: number;
         };
         Insert: {
+          merchant_archived_at?: string | null;
           id?: string;
           offer_id?: string | null;
           options?: Json;
@@ -30,6 +32,7 @@ export type Database = {
           unit_price: number;
         };
         Update: {
+          merchant_archived_at?: string | null;
           id?: string;
           offer_id?: string | null;
           options?: Json;
@@ -292,6 +295,7 @@ export type Database = {
       };
       reservations: {
         Row: {
+          merchant_archived_at: string | null;
           code: string;
           created_at: string;
           expires_at: string;
@@ -304,6 +308,7 @@ export type Database = {
           user_id: string;
         };
         Insert: {
+          merchant_archived_at?: string | null;
           code: string;
           created_at?: string;
           expires_at: string;
@@ -316,6 +321,7 @@ export type Database = {
           user_id: string;
         };
         Update: {
+          merchant_archived_at?: string | null;
           code?: string;
           created_at?: string;
           expires_at?: string;

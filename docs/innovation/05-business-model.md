@@ -5,7 +5,7 @@
 - للتاجر: presence digitale + تحديث مخزون في 30s + وصول لعملاء + تحليلات مشاهدات.
 
 ## 2. مصادر الإيراد (Revenue Streams)
-1. **عمولة على الطلبات** — `stores.commission_rate` (افتراضي 7%) + `orders.commission_amount` (create_order) — [مدمج في الكود].
+1. **لا توجد عمولة على الطلبات أو الحجوزات** — Arownd لا تقتطع نسبة من قيمة المعاملة.
 2. **اشتراك تاجر (Pro)** — [TODO: تسعير] (priority listing, analytics, multi-store).
 3. **إعلانات/ترويج منتجات** — [TODO].
 4. **رسوم توصيل (share)** — [TODO] (شراكة شركات توصيل).
@@ -16,7 +16,7 @@
 - [TODO] أرقام (COGS, CAC, opex).
 
 ## 4. وحدة اقتصادية (Unit Economics) [فرضية]
-- GMV/طلب × 7% = إيراد/طلب.
+- لا توجد عمولة على الطلبات؛ GMV ليس مصدر إيراد مباشر لـ Arownd.
 - CAC (acquisition) vs LTV (repeat) — [TODO].
 
 ## 5. B2B/B2C/B2G

@@ -36,7 +36,7 @@
 - **RPC (من sooqy.ts):** create_reservation, cancel_reservation, merchant_confirm_reservation, merchant_confirm_all_stock, create_order, link_order_shipment, submit_review, increment_product_view, get_most_viewed_products, become_merchant, merchant_* (images), category_stats.
 - **RLS:** سياسات قراءة عامة للمتاجر المعتمدة/العروض المتوفرة؛ صلاحيات merchant/admin.
 - **Storage buckets:** store-media, product-media, receipts (signed URLs).
-- **عمولة:** `stores.commission_rate` (افتراضي 7%) + `orders.commission_amount` (create_order) — من README beta.
+- **العمولة:** لا تفرض Arownd أي عمولة على الطلبات أو الحجوزات؛ قيمة العمولة في قاعدة البيانات صفر.
 
 ## 4. ميزات «الحقيقة» (Truth Layer)
 - `pickBestOffer()` — مصدر واحد للسعر (`src/lib/sooqy.ts`).

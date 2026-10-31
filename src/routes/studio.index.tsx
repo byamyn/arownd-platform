@@ -14,6 +14,7 @@ import {
   ShoppingBag,
   Star,
   Store,
+  Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
@@ -31,6 +32,8 @@ import {
   merchantConfirmReservation,
   merchantCreateStore,
   merchantDeleteOffer,
+  merchantArchiveReservation,
+  merchantArchiveOrderItems,
   merchantQuickAddProduct,
   merchantRemoveOfferImage,
   merchantReplaceOfferImage,
@@ -84,6 +87,10 @@ function StudioPage() {
   const { t } = useTranslation();
   const [pendingDelete, setPendingDelete] = useState<OfferFull | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [pendingHistoryDelete, setPendingHistoryDelete] = useState<
+    { kind: "reservation"; id: string } | { kind: "order"; id: string } | null
+  >(null);
+  const [deletingHistory, setDeletingHistory] = useState(false);
   const [storeForm, setStoreForm] = useState({
     name: "",
     phone: "",
@@ -1251,6 +1258,50 @@ function StudioPage() {
         }}
       />
 
+      <ConfirmDialog
+        open={!!pendingHistoryDelete}
+        title={
+          pendingHistoryDelete?.kind === "reservation"
+            ? t("studio_delete_reservation")
+            : t("studio_delete_order")
+        }
+        message={
+          pendingHistoryDelete?.kind === "reservation"
+            ? t("studio_delete_reservation_confirm")
+            : t("studio_delete_order_confirm")
+        }
+        confirmLabel={t("studio_delete_confirm")}
+        busy={deletingHistory}
+        onCancel={() => {
+          if (!deletingHistory) setPendingHistoryDelete(null);
+        }}
+        onConfirm={async () => {
+          if (!pendingHistoryDelete || !store.data || deletingHistory) return;
+          setDeletingHistory(true);
+          try {
+            if (pendingHistoryDelete.kind === "reservation") {
+              await merchantArchiveReservation(pendingHistoryDelete.id);
+              await qc.invalidateQueries({
+                queryKey: ["store-reservations", store.data.id],
+              });
+            } else {
+              await merchantArchiveOrderItems(pendingHistoryDelete.id, store.data.id);
+              await qc.invalidateQueries({ queryKey: ["store-orders", store.data.id] });
+            }
+            showSuccess(
+              pendingHistoryDelete.kind === "reservation"
+                ? t("studio_reservation_deleted")
+                : t("studio_order_deleted"),
+            );
+            setPendingHistoryDelete(null);
+          } catch (error) {
+            showError(error);
+          } finally {
+            setDeletingHistory(false);
+          }
+        }}
+      />
+
       {mode === "orders" && (
         <section className="space-y-4">
           <div className="rounded-2xl border border-border bg-card p-4">
@@ -1286,14 +1337,14 @@ function StudioPage() {
                     <span
                       className={cn(
                         "rounded-full px-2 py-1 text-[10px] font-bold",
-                        r.status === "pending"
+                        isActiveReservation(r)
                           ? "bg-warning-soft text-warning"
                           : r.status === "collected"
                             ? "bg-success-soft text-success"
                             : "bg-muted text-muted-foreground",
                       )}
                     >
-                      {r.status === "pending"
+                      {isActiveReservation(r)
                         ? "في الانتظار"
                         : r.status === "collected"
                           ? "تم الاستلام"
@@ -1302,7 +1353,7 @@ function StudioPage() {
                             : "منتهي"}
                     </span>
                   </div>
-                  {r.status === "pending" && (
+                  {isActiveReservation(r) && (
                     <button
                       onClick={async () => {
                         try {
@@ -1320,6 +1371,15 @@ function StudioPage() {
                       تأكيد الاستلام
                     </button>
                   )}
+                  {!isActiveReservation(r) && (
+                    <button
+                      type="button"
+                      onClick={() => setPendingHistoryDelete({ kind: "reservation", id: r.id })}
+                      className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-danger/20 bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15"
+                    >
+                      <Trash2 className="size-3.5" /> {t("studio_delete_history")}
+                    </button>
+                  )}
                 </div>
               ))}
               {!reservations.data?.length && (
@@ -1330,32 +1390,6 @@ function StudioPage() {
 
           <div className="rounded-2xl border border-border bg-card p-4">
             <h2 className="mb-3 font-bold">{t("studio_delivery_orders")}</h2>
-            {(() => {
-              const soldTotal = (orders.data ?? []).reduce(
-                (sum, i) => sum + i.unit_price * i.quantity,
-                0,
-              );
-              const rate = store.data?.commission_rate ?? 7;
-              const commission = Math.round((soldTotal * rate) / 100);
-              return soldTotal > 0 ? (
-                <div className="mb-3 grid grid-cols-3 gap-2">
-                  <div className="rounded-2xl bg-neutral-100 p-3 text-center">
-                    <p className="text-base font-bold">{formatDA(soldTotal)}</p>
-                    <p className="text-[10px] text-muted-foreground">{t("studio_store_sales")}</p>
-                  </div>
-                  <div className="rounded-2xl bg-neutral-100 p-3 text-center">
-                    <p className="text-base font-bold">{formatDA(commission)}</p>
-                    <p className="text-[10px] text-muted-foreground">عمولة Arownd ({rate}%)</p>
-                  </div>
-                  <div className="rounded-2xl bg-success-soft p-3 text-center">
-                    <p className="text-base font-bold text-success">
-                      {formatDA(soldTotal - commission)}
-                    </p>
-                    <p className="text-[10px] text-muted-foreground">{t("studio_net_due")}</p>
-                  </div>
-                </div>
-              ) : null;
-            })()}
             <div className="space-y-2">
               {orders.data?.map((item) => (
                 <div key={item.id} className="rounded-2xl bg-background p-3">
@@ -1406,6 +1440,15 @@ function StudioPage() {
                       </button>
                     ))}
                   </div>
+                  {(item.order.status === "delivered" || item.order.status === "cancelled") && (
+                    <button
+                      type="button"
+                      onClick={() => setPendingHistoryDelete({ kind: "order", id: item.order.id })}
+                      className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-danger/20 bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15"
+                    >
+                      <Trash2 className="size-3.5" /> {t("studio_delete_history")}
+                    </button>
+                  )}
                 </div>
               ))}
               {!orders.data?.length && (
@@ -1417,6 +1460,12 @@ function StudioPage() {
       )}
     </div>
   );
+}
+
+function isActiveReservation(reservation: { status: string; expires_at: string }) {
+  const isPending = reservation.status === "pending";
+  const hasNotExpired = Date.parse(reservation.expires_at) > Date.now();
+  return isPending && hasNotExpired;
 }
 
 function AuthGate({ onLogin }: { onLogin: () => void }) {

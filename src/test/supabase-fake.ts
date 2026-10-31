@@ -28,7 +28,7 @@ export const store1 = {
   rating: 4.5,
   instagram_url: null,
   facebook_url: null,
-  commission_rate: 7,
+  commission_rate: 0,
   created_at: "2026-01-01T10:00:00Z",
 };
 
@@ -170,6 +170,14 @@ function makeBuilder(table: string) {
   b["eq"] = (col: string, val: unknown) => {
     record("eq", [col, val]);
     filters.push((row) => getPath(row, col) === val);
+    return b;
+  };
+  b["is"] = (col: string, val: unknown) => {
+    record("is", [col, val]);
+    filters.push((row) => {
+      const current = getPath(row, col);
+      return current === val || (val === null && current === undefined);
+    });
     return b;
   };
   b["neq"] = (col: string, val: unknown) => {
