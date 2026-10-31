@@ -5,6 +5,14 @@ export type Lang = "ar" | "en";
 
 const DICTIONARY: Record<Lang, Record<string, string>> = {
   ar: {
+    feedback_generic_error: "تعذّر إتمام العملية. حاول مرة أخرى.",
+    feedback_network_error: "تعذّر الاتصال بالإنترنت. تحقق من اتصالك وحاول مجددًا.",
+    feedback_session_error: "انتهت جلستك. سجّل الدخول ثم حاول مجددًا.",
+    feedback_permission_error: "ليست لديك صلاحية لتنفيذ هذا الإجراء.",
+    feedback_duplicate_error: "هذه البيانات مسجلة بالفعل.",
+    feedback_validation_error: "تحقق من البيانات المدخلة ثم حاول مجددًا.",
+    feedback_stock_error: "الكمية المطلوبة غير متوفرة حاليًا.",
+    feedback_upload_error: "تعذّر رفع الصورة. تحقق من الملف واتصالك بالإنترنت.",
     // عامة
     app_name: "Arownd",
     or: "أو",
@@ -296,6 +304,14 @@ const DICTIONARY: Record<Lang, Record<string, string>> = {
     region_tamanrasset: "تمنراست",
   },
   en: {
+    feedback_generic_error: "We couldn't complete that action. Please try again.",
+    feedback_network_error: "Couldn't connect. Check your internet connection and try again.",
+    feedback_session_error: "Your session has expired. Sign in and try again.",
+    feedback_permission_error: "You don't have permission to do that.",
+    feedback_duplicate_error: "These details are already registered.",
+    feedback_validation_error: "Please check the entered details and try again.",
+    feedback_stock_error: "The requested quantity is currently unavailable.",
+    feedback_upload_error: "Couldn't upload the image. Check the file and your connection.",
     // General
     app_name: "Arownd",
     or: "or",

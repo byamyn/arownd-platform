@@ -11,6 +11,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
@@ -150,13 +151,13 @@ function WalletPage() {
         receiptUrl,
         method: topupMethod,
       });
-      toast.success("أُرسل طلب الشحن — سيُعتمد بعد مراجعة الإدارة.");
+      showSuccess("أُرسل طلب الشحن — سيُعتمد بعد مراجعة الإدارة.");
       setTopupAmount("");
       setTopupReceipt(null);
       setShowTopup(false);
       await qc.invalidateQueries({ queryKey: ["wallet"] });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "تعذّر إرسال طلب الشحن.");
+      showError(e);
     } finally {
       setBusyTopup(false);
     }
@@ -179,13 +180,13 @@ function WalletPage() {
         method: withdrawMethod,
         note: withdrawNote.trim() || undefined,
       });
-      toast.success("أُرسل طلب السحب — سيُنفَّذ بعد مراجعة الإدارة.");
+      showSuccess("أُرسل طلب السحب — سيُنفَّذ بعد مراجعة الإدارة.");
       setWithdrawAmount("");
       setWithdrawNote("");
       setShowWithdraw(false);
       await qc.invalidateQueries({ queryKey: ["wallet"] });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "تعذّر إرسال طلب السحب.");
+      showError(e);
     } finally {
       setBusyWithdraw(false);
     }

@@ -19,6 +19,7 @@ import {
   Wallet,
 } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { useFavorites } from "@/lib/favorites";
@@ -167,12 +168,12 @@ function ProfilePage() {
       if (avatarSkipped) {
         toast.warning("حُفظت بياناتك، لكن الصورة الشخصية تحتاج تحديث قاعدة البيانات.");
       } else {
-        toast.success("تم حفظ الملف الشخصي ✅");
+        showSuccess("تم حفظ الملف الشخصي ✅");
       }
       setEditing(false);
       navigate({ to: "/settings" });
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "تعذر الحفظ.");
+      showError(e);
     } finally {
       setBusy(false);
     }

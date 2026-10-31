@@ -27,7 +27,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { useState } from "react";
-import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { goBackOrTo } from "@/lib/nav";
 
 export const Route = createFileRoute("/notifications")({
@@ -115,8 +115,8 @@ function NotificationsPage() {
     try {
       await markNotificationsRead();
       await qc.invalidateQueries({ queryKey: ["notifications"] });
-    } catch {
-      toast.error("تعذّر تحديث الإشعارات");
+    } catch (error) {
+      showError(error);
     } finally {
       setMarkingAll(false);
     }
@@ -128,8 +128,8 @@ function NotificationsPage() {
     try {
       await markNotificationRead(id);
       await qc.invalidateQueries({ queryKey: ["notifications"] });
-    } catch {
-      toast.error("تعذّر تحديث الإشعار");
+    } catch (error) {
+      showError(error);
     } finally {
       setMarkingId(null);
     }
@@ -141,9 +141,9 @@ function NotificationsPage() {
     try {
       await deleteNotification(id);
       await qc.invalidateQueries({ queryKey: ["notifications"] });
-      toast.success("تم حذف الإشعار");
-    } catch {
-      toast.error("فشل الحذف");
+      showSuccess("تم حذف الإشعار");
+    } catch (error) {
+      showError(error);
     } finally {
       setDeletingId(null);
     }

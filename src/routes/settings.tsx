@@ -18,6 +18,7 @@ import {
   User,
 } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { fetchMyStore } from "@/lib/sooqy";
@@ -60,7 +61,7 @@ function SettingsPage() {
       await qc.invalidateQueries();
       navigate({ to: "/" });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذّر تسجيل الخروج.");
+      showError(error);
     } finally {
       setSigningOut(false);
     }
@@ -80,12 +81,12 @@ function SettingsPage() {
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      toast.success("تم تغيير كلمة المرور.");
+      showSuccess("تم تغيير كلمة المرور.");
       setNewPassword("");
       setConfirmPassword("");
       setShowSecurity(false);
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "تعذّر تغيير كلمة المرور.");
+      showError(e);
     } finally {
       setSavingPassword(false);
     }

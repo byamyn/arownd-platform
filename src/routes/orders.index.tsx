@@ -12,7 +12,7 @@ import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { cn } from "@/lib/utils";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
-import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { SeoHead } from "@/components/seo/SeoHead";
 
 export const Route = createFileRoute("/orders/")({
@@ -219,9 +219,9 @@ function OrdersPage() {
                       try {
                         await cancelMyOrder(o.id);
                         await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                        toast.success("تم إلغاء الطلب بنجاح.");
+                        showSuccess("تم إلغاء الطلب بنجاح.");
                       } catch (error) {
-                        toast.error(error instanceof Error ? error.message : "تعذر إلغاء الطلب.");
+                        showError(error);
                       } finally {
                         setCancellingOrderId(null);
                       }
@@ -245,9 +245,9 @@ function OrdersPage() {
                       try {
                         await archiveMyActivity("order", o.id);
                         await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                        toast.success("تم إخفاء الطلب من سجلك.");
+                        showSuccess("تم إخفاء الطلب من سجلك.");
                       } catch (error) {
-                        toast.error(error instanceof Error ? error.message : "تعذر إخفاء الطلب.");
+                        showError(error);
                       }
                     }}
                     className="mx-4 mb-4 mt-2 inline-flex min-h-10 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"

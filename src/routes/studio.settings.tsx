@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { Camera, ImagePlus, MapPin, Save, Store } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
 import { childrenOf } from "@/lib/taxonomy";
@@ -38,7 +39,7 @@ function StoreSettingsPage() {
       return;
     }
     setForm((f) => ({ ...f, latitude: found.lat, longitude: found.lng }));
-    toast.success("تم تحديد موقع المتجر");
+    showSuccess("تم تحديد موقع المتجر");
   };
 
   const [form, setForm] = useState({
@@ -195,9 +196,9 @@ function StoreSettingsPage() {
         subcategories: form.subcategories,
       });
       await qc.invalidateQueries({ queryKey: ["my-store"] });
-      toast.success("تم حفظ إعدادات المتجر ✅");
+      showSuccess("تم حفظ إعدادات المتجر ✅");
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : "تعذر الحفظ.");
+      showError(e);
     } finally {
       setBusy(false);
     }

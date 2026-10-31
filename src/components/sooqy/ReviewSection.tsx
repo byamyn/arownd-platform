@@ -2,7 +2,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Star } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
-import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { formatDate as formatMarketDate } from "@/lib/market";
 import { fetchMyReview, fetchReviews, submitReview, type Review } from "@/lib/sooqy";
@@ -54,11 +54,11 @@ export function ReviewSection({
     }
     try {
       await submitReview(targetType, targetId, rating, nextComment?.trim() || undefined);
-      toast.success("تم إرسال التقييم بنجاح");
+      showSuccess("تم إرسال التقييم بنجاح");
       qc.invalidateQueries({ queryKey: ["reviews", targetType, targetId] });
       qc.invalidateQueries({ queryKey: ["my-review", targetType, targetId] });
     } catch (error) {
-      toast.error((error as Error).message);
+      showError(error);
     }
   };
 

@@ -16,6 +16,7 @@ import {
   Upload,
 } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { useBag } from "@/lib/bag";
 import { translate, useTranslation } from "@/lib/i18n";
@@ -235,7 +236,7 @@ function CheckoutPage() {
       qc.clear();
       track("place_order", { total, paymentMethod, deliveryType, wilayaId });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : t("checkout_send_failed"));
+      showError(error, "feedback_generic_error");
     } finally {
       submittingRef.current = false;
       setSubmitting(false);
@@ -250,7 +251,7 @@ function CheckoutPage() {
         onReorder={() => {
           // «اطلب مجددًا» — نعيد العناصر نفسها إلى السلة بنقرة واحدة.
           snapshot?.items.forEach((i) => bag.add(i));
-          toast.success(t("close_reorder"));
+          showSuccess(t("close_reorder"));
           navigate({ to: "/bag" });
         }}
       />
@@ -705,7 +706,7 @@ function SuccessScreen({
         return;
       }
       await navigator.clipboard.writeText(`${text}\n${url}`);
-      toast.success(t("close_copied"));
+      showSuccess(t("close_copied"));
     } catch {
       // ألغى المستخدم المشاركة — لا نُظهر خطأ.
     }

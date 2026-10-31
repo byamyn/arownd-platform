@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Dispatch, SetStateAction } from "react";
 import { Check, MapPin } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useGeo, geoErrorMessage } from "@/lib/geo";
 import { childrenOf } from "@/lib/taxonomy";
 import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
@@ -61,7 +62,7 @@ export function MerchantOnboarding({
       return;
     }
     setForm((f) => ({ ...f, latitude: found.lat, longitude: found.lng }));
-    toast.success("تم تحديد موقع المتجر");
+    showSuccess("تم تحديد موقع المتجر");
   };
 
   const submit = async () => {
@@ -82,9 +83,9 @@ export function MerchantOnboarding({
         latitude: hasCoords ? form.latitude : null,
         longitude: hasCoords ? form.longitude : null,
       });
-      toast.success("تم فتح المتجر بنجاح");
+      showSuccess("تم فتح المتجر بنجاح");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر فتح المتجر.");
+      showError(error);
     } finally {
       setBusy(false);
     }

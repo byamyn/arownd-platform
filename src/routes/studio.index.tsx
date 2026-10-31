@@ -16,6 +16,7 @@ import {
   Store,
 } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useTranslation } from "@/lib/i18n";
 import { logNetError } from "@/lib/conn";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
@@ -228,10 +229,10 @@ function StudioPage() {
     setBusy(true);
     try {
       const updated = await merchantConfirmAll(store.data.id);
-      toast.success(`${updated} منتج تم تحديثه اليوم`);
+      showSuccess(`${updated} منتج تم تحديثه اليوم`);
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data.id] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تحديث المخزون.");
+      showError(error);
     } finally {
       setBusy(false);
     }
@@ -245,11 +246,11 @@ function StudioPage() {
     }
     try {
       await merchantConfirmReservation(clean);
-      toast.success("تم تأكيد الاستلام ✅");
+      showSuccess("تم تأكيد الاستلام ✅");
       setCode("");
       await qc.invalidateQueries({ queryKey: ["store-reservations", store.data?.id] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "كود الحجز غير صالح.");
+      showError(error);
     }
   };
 
@@ -286,7 +287,7 @@ function StudioPage() {
         },
         images.length ? images : null,
       );
-      toast.success("تمت إضافة المنتج بنجاح");
+      showSuccess("تمت إضافة المنتج بنجاح");
       setProductForm({
         name: "",
         price: "",
@@ -300,7 +301,7 @@ function StudioPage() {
       setImages([]);
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data.id] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر إضافة المنتج.");
+      showError(error);
     } finally {
       setBusy(false);
     }
@@ -367,13 +368,13 @@ function StudioPage() {
         await merchantAddOfferImages(editing.id, newEditFiles);
       }
 
-      toast.success("تم تحديث المنتج ✅");
+      showSuccess("تم تحديث المنتج ✅");
       setEditing(null);
       setEditImages([]);
       setEditExistingImages([]);
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تحديث المنتج.");
+      showError(error);
     } finally {
       setBusy(false);
     }
@@ -385,9 +386,9 @@ function StudioPage() {
       await merchantRemoveOfferImage(item.id);
       setEditExistingImages((prev) => prev.filter((i) => i.id !== item.id));
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
-      toast.success("تم حذف الصورة ✅");
+      showSuccess("تم حذف الصورة ✅");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر حذف الصورة.");
+      showError(error, "feedback_upload_error");
     }
   };
 
@@ -398,7 +399,7 @@ function StudioPage() {
       setEditExistingImages((prev) => prev.map((i) => ({ ...i, isPrimary: i.id === item.id })));
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تحديد الصورة الأساسية.");
+      showError(error);
     }
   };
 
@@ -425,9 +426,9 @@ function StudioPage() {
       await merchantRemoveOfferImage(item.id);
       setManagingImages((prev) => prev.filter((i) => i.id !== item.id));
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
-      toast.success("تم حذف الصورة ✅");
+      showSuccess("تم حذف الصورة ✅");
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر حذف الصورة.");
+      showError(error, "feedback_upload_error");
     }
   };
 
@@ -438,7 +439,7 @@ function StudioPage() {
       setManagingImages((prev) => prev.map((i) => ({ ...i, isPrimary: i.id === item.id })));
       await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تحديد الصورة الأساسية.");
+      showError(error);
     }
   };
 
@@ -1053,10 +1054,10 @@ function StudioPage() {
                       await qc.invalidateQueries({
                         queryKey: ["my-store-offers", store.data?.id],
                       });
-                      toast.success("تم رفع الصور ✅");
+                      showSuccess("تم رفع الصور ✅");
                       closeImageManagement();
                     } catch (error) {
-                      toast.error(error instanceof Error ? error.message : "تعذر رفع الصور.");
+                      showError(error, "feedback_upload_error");
                     }
                     return;
                   }
@@ -1159,10 +1160,10 @@ function StudioPage() {
           try {
             await merchantDeleteOffer(pendingDelete.id);
             await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data?.id] });
-            toast.success("تم حذف المنتج ✅");
+            showSuccess("تم حذف المنتج ✅");
             setPendingDelete(null);
           } catch (error) {
-            toast.error(error instanceof Error ? error.message : "تعذّر حذف المنتج.");
+            showError(error);
           } finally {
             setDeleting(false);
           }
@@ -1225,12 +1226,12 @@ function StudioPage() {
                       onClick={async () => {
                         try {
                           await merchantConfirmReservation(r.code);
-                          toast.success("تم تأكيد الاستلام ✅");
+                          showSuccess("تم تأكيد الاستلام ✅");
                           await qc.invalidateQueries({
                             queryKey: ["store-reservations", store.data?.id],
                           });
                         } catch (error) {
-                          toast.error(error instanceof Error ? error.message : "تعذر التأكيد.");
+                          showError(error);
                         }
                       }}
                       className="mt-2 w-full rounded-xl bg-success-soft py-2 text-xs font-bold text-success transition hover:bg-success/25"

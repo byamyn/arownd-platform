@@ -13,7 +13,7 @@ import {
   fetchMyStore,
 } from "@/lib/sooqy";
 import { Link, useRouter } from "@tanstack/react-router";
-import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { cn } from "@/lib/utils";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
@@ -127,7 +127,7 @@ function StudioOrderDetailPage() {
       await merchantUpdateOrderStatus(order.id, status);
       await qc.invalidateQueries({ queryKey: ["store-orders"] });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "خطأ");
+      showError(error);
     }
   };
 
@@ -180,10 +180,10 @@ function StudioOrderDetailPage() {
                       order.status as "confirmed" | "shipped" | "delivered" | "cancelled",
                       note.trim(),
                     );
-                    toast.success("تم حفظ الملاحظة ✅");
+                    showSuccess("تم حفظ الملاحظة ✅");
                     await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
-                  } catch {
-                    toast.error("تعذّر حفظ الملاحظة.");
+                  } catch (error) {
+                    showError(error);
                   }
                 }}
                 className="rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
@@ -228,12 +228,12 @@ function StudioOrderDetailPage() {
           setDeleting(true);
           try {
             await deleteOrder(orderId, undefined, store.data?.id);
-            toast.success("تم حذف الطلب ✅");
+            showSuccess("تم حذف الطلب ✅");
             setPendingDelete(false);
             await qc.invalidateQueries({ queryKey: ["store-orders"] });
             router.navigate({ to: "/studio" });
           } catch (error) {
-            toast.error(error instanceof Error ? error.message : "تعذّر حذف الطلب.");
+            showError(error);
           } finally {
             setDeleting(false);
           }

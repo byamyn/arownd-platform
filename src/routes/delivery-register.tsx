@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Truck } from "lucide-react";
 import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { registerDeliveryCompany } from "@/lib/delivery";
@@ -80,12 +81,12 @@ function DeliveryRegisterPage() {
       await registerDeliveryCompany(
         payload as Database["public"]["Tables"]["delivery_companies"]["Insert"],
       );
-      toast.success(
+      showSuccess(
         "تم إرسال طلب تسجيل الشركة. سيتم مراجعته واعتماده من قبل المنصة قبل تفعيل الحساب.",
       );
       navigate({ to: "/", replace: true });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "تعذر تسجيل الشركة. أعد المحاولة.");
+      showError(error);
     } finally {
       setBusy(false);
     }

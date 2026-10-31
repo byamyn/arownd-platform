@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { Archive, CalendarDays, Clock3, Store, XCircle } from "lucide-react";
-import { toast } from "sonner";
+import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { archiveMyActivity, cancelMyReservation, fetchMyReservations } from "@/lib/sooqy";
 import { formatDA } from "@/lib/geo";
@@ -223,9 +223,9 @@ function ReservationsPage() {
                       try {
                         await cancelMyReservation(reservation.id);
                         await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                        toast.success("تم إلغاء الحجز بنجاح.");
+                        showSuccess("تم إلغاء الحجز بنجاح.");
                       } catch (error) {
-                        toast.error(error instanceof Error ? error.message : "تعذر إلغاء الحجز.");
+                        showError(error);
                       } finally {
                         setCancellingId(null);
                       }
@@ -249,9 +249,9 @@ function ReservationsPage() {
                       try {
                         await archiveMyActivity("reservation", reservation.id);
                         await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                        toast.success("تم إخفاء الحجز من سجلك.");
+                        showSuccess("تم إخفاء الحجز من سجلك.");
                       } catch (error) {
-                        toast.error(error instanceof Error ? error.message : "تعذر إخفاء الحجز.");
+                        showError(error);
                       }
                     }}
                     className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
