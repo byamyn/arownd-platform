@@ -411,76 +411,31 @@ function ProductPage() {
 
         {/* Product info */}
         <div className="space-y-6 px-5 pt-6">
-          <div className="space-y-3">
-            <div className="flex items-center justify-between gap-2">
-              {p.brand && (
-                <span className="text-xs font-semibold tracking-wide text-muted-foreground">
-                  {p.brand}
-                </span>
-              )}
+          <section className="overflow-hidden rounded-3xl border border-border bg-card p-4 shadow-soft">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                {p.brand && <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">{p.brand}</span>}
+                {p.category && <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">{categoryLabel(p.category)}</span>}
+              </div>
               <StockBadge level={level} />
             </div>
-
-            <h1 className="text-2xl font-bold leading-tight text-foreground">{p.name}</h1>
-
-            {sorted.some((o) => Number(o.store.rating) > 0) && (
-              <div className="flex items-center gap-1.5">
-                <Star className="size-3.5 fill-warning text-warning" />
-                <span className="text-sm font-bold text-foreground">
-                  {Math.max(...sorted.map((o) => Number(o.store.rating) || 0)).toFixed(1)}
-                </span>
-                <span className="text-xs text-muted-foreground">{t("product_store_rating")}</span>
+            <h1 className="mt-4 text-[1.65rem] font-extrabold leading-tight tracking-tight text-foreground">{p.name}</h1>
+            {selected && (
+              <div className="mt-4 flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
+                <div>
+                  <p className="text-xs font-medium text-muted-foreground">{t("product_price_label")}</p>
+                  <div className="mt-1 flex flex-wrap items-center gap-2">
+                    <span className="text-3xl font-black tracking-tight text-foreground">{formatDA(selected.price)}</span>
+                    {selected.old_price && selected.old_price > selected.price && <span className="text-sm text-muted-foreground line-through">{formatDA(selected.old_price)}</span>}
+                    {discount > 0 && <span className="rounded-full bg-danger-soft px-2.5 py-1 text-xs font-bold text-danger">-{discount}%</span>}
+                  </div>
+                </div>
+                {sorted.length > 1 && <span className="rounded-xl bg-muted px-3 py-2 text-[11px] font-semibold text-muted-foreground">{t("product_available_in", {count:sorted.length,min:formatDA(sorted[0]!.price),max:formatDA(sorted[sorted.length-1]!.price)})}</span>}
               </div>
             )}
-
-            {selected && (
-              <div className="flex items-baseline gap-3">
-                <span className="text-3xl font-extrabold text-foreground">
-                  {formatDA(selected.price)}
-                </span>
-                {selected.old_price && selected.old_price > selected.price && (
-                  <>
-                    <span className="text-base text-muted-foreground line-through">
-                      {formatDA(selected.old_price)}
-                    </span>
-                    {discount > 0 && (
-                      <span className="rounded-full bg-danger-soft px-2 py-0.5 text-xs font-bold text-danger">
-                        -{discount}%
-                      </span>
-                    )}
-                  </>
-                )}
-              </div>
-            )}
-
-            {sorted.length > 1 && (
-              <p className="text-xs text-muted-foreground">
-                {t("product_available_in", {
-                  count: sorted.length,
-                  min: formatDA(sorted[0]!.price),
-                  max: formatDA(sorted[sorted.length - 1]!.price),
-                })}
-              </p>
-            )}
-
-            {selected && (
-              <p className="text-[11px] text-muted-foreground">
-                {t("product_stock_confirmed")}{" "}
-                {selected.last_confirmed_at
-                  ? formatDistanceToNow(new Date(selected.last_confirmed_at), {
-                      addSuffix: true,
-                      locale: ar,
-                    })
-                  : t("product_stock_not_confirmed")}{" "}
-                · {selected.store.name}
-              </p>
-            )}
-
-            {p.description && (
-              <p className="text-sm leading-relaxed text-muted-foreground">{p.description}</p>
-            )}
-          </div>
-
+            {selected && <div className="mt-3 flex items-start gap-2 rounded-2xl bg-muted/60 px-3 py-2.5"><Timer className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" /><p className="text-[11px] leading-relaxed text-muted-foreground">{t("product_stock_confirmed")} {selected.last_confirmed_at ? formatDistanceToNow(new Date(selected.last_confirmed_at), {addSuffix:true,locale:ar}) : t("product_stock_not_confirmed")} · {selected.store.name}</p></div>}
+            {p.description && <p className="mt-4 border-t border-border pt-4 text-sm leading-7 text-muted-foreground">{p.description}</p>}
+          </section>
           {/* Options */}
           <div className="space-y-4">
             {opts.colors?.length ? (
@@ -513,7 +468,7 @@ function ProductPage() {
           {/* Specs / delivery info */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_specs_title")}</h2>
-            <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+            <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
               {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
               {p.category && (
                 <SpecRow label={t("product_category_label")} value={categoryLabel(p.category)} />
@@ -541,7 +496,7 @@ function ProductPage() {
                   key={o.id}
                   onClick={() => setSelectedId(o.id)}
                   className={cn(
-                    "cursor-pointer space-y-3 rounded-2xl border-2 bg-card p-3 shadow-soft transition-all duration-200",
+                    "cursor-pointer space-y-3 rounded-3xl border-2 bg-card p-4 shadow-soft transition-all duration-200 active:scale-[0.995]",
                     selected?.id === o.id ? "border-primary" : "border-transparent",
                   )}
                 >
