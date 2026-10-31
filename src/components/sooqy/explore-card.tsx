@@ -83,7 +83,7 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
   const disabled = !bestOffer || level === "out";
 
   return (
-    <article className="flex flex-col gap-2 max-h-[calc(100dvh-9rem)] overflow-hidden">
+    <article className="mx-auto flex max-h-[calc(100dvh-8rem)] w-full flex-col gap-3 overflow-hidden rounded-[1.75rem] border border-border/70 bg-card p-3 shadow-soft sm:p-4">
       {/* opening the product details page when tapping the image */}
       <a
         href={`/products/${product.id}`}
@@ -93,10 +93,10 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
           navigate({ to: "/products/$productId", params: { productId: product.id } });
         }}
       >
-        <div className="relative w-full overflow-hidden rounded-3xl bg-neutral-100 dark:bg-neutral-800 aspect-[4/5] sm:aspect-[3/4] max-h-[48vh] group">
+        <div className="group relative aspect-[4/5] max-h-[45vh] w-full overflow-hidden rounded-2xl bg-muted sm:aspect-[5/4] sm:max-h-[420px]">
           {image ? (
             <img
-              src={src}
+              src={imageFailed ? PLACEHOLDER : src}
               alt={t("product_image_alt", { name: product.name, n: 1 })}
               loading="lazy"
               decoding="async"
@@ -147,19 +147,15 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
               toggleFavorite("products", product.id);
             }}
             className={cn(
-              "absolute top-3 end-3 z-20 flex size-10 items-center justify-center rounded-full bg-card/90 backdrop-blur-sm transition-all duration-200 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-              active
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "text-muted-foreground border border-border",
+              "absolute end-3 top-3 z-20 flex size-11 items-center justify-center rounded-full border bg-card/95 text-muted-foreground shadow-md backdrop-blur-md transition-all duration-200 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2",
+              active ? "border-primary/40 text-primary" : "border-border/80 hover:border-primary/30",
             )}
           >
             <svg
               viewBox="0 0 24 24"
               className={cn(
-                "transition-colors duration-200",
-                active
-                  ? "fill-accent-ink text-accent-ink"
-                  : "fill-transparent text-muted-foreground",
+                "size-[21px] transition-colors duration-200",
+                active ? "fill-primary text-primary" : "fill-transparent text-current",
               )}
               stroke="currentColor"
               strokeWidth="2"
@@ -172,10 +168,10 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
         </div>
       </a>
 
-      <div className="space-y-1.5">
-        <h2 className="text-h3 font-bold text-foreground line-clamp-1">{product.name}</h2>
+      <div className="min-w-0 space-y-2 px-1 pb-1">
+        <h2 className="line-clamp-2 text-base font-extrabold leading-snug text-foreground sm:text-lg">{product.name}</h2>
         {product.description && (
-          <p className="line-clamp-1 text-body text-muted-foreground">{product.description}</p>
+          <p className="line-clamp-2 text-sm leading-relaxed text-muted-foreground">{product.description}</p>
         )}
         {rating > 0 && (
           <div className="flex items-center gap-1.5">
@@ -184,15 +180,15 @@ export function DiscoveryCard({ group, canPrev, canNext, onPrev, onNext }: Props
             <span className="text-xs text-muted-foreground">{t("product_store_rating")}</span>
           </div>
         )}
-        <div className="flex items-baseline gap-2">
-          <span className="text-h4 font-extrabold text-foreground">{formatDA(minPrice)}</span>
+        <div className="flex items-center justify-between gap-3 border-t border-border/70 pt-2">
+          <span className="text-xl font-black tracking-tight text-accent-ink">{formatDA(minPrice)}</span>
           {level === "out" && (
             <span className="rounded-lg bg-black/60 text-[10px] font-bold text-white px-2 py-0.5 backdrop-blur-sm">
               {t("stock_out")}
             </span>
           )}
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-2">
+        <div className="mt-1 grid grid-cols-2 gap-2.5">
           <button
             type="button"
             onClick={(e) => {

@@ -334,7 +334,7 @@ function Explore() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="sticky top-0 z-30 mx-auto w-full max-w-xl border-b border-border/70 bg-background/95 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] shadow-sm shadow-black/[0.02] backdrop-blur-xl">
+      <header className="sticky top-0 z-30 mx-auto w-full max-w-5xl border-b border-border/70 bg-background/95 px-4 pb-3 pt-[max(0.75rem,env(safe-area-inset-top))] shadow-sm shadow-black/[0.02] backdrop-blur-xl">
         <div className="mb-3 flex items-end justify-between gap-3">
           <div className="min-w-0">
             <p className="mb-1 text-[11px] font-bold tracking-[0.16em] text-primary uppercase">
@@ -351,7 +351,7 @@ function Explore() {
             <Search className="size-5" aria-hidden="true" />
           </div>
         </div>
-        <div className="flex w-full items-center gap-2 rounded-2xl border border-border bg-card px-3.5 py-2.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
+        <div className="flex w-full items-center gap-2 rounded-2xl border border-border/80 bg-card px-3.5 py-2.5 shadow-sm transition-all focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10">
           <Search className="size-5 shrink-0 text-muted-foreground" />
           <input
             value={text}
@@ -419,7 +419,7 @@ function Explore() {
       </header>
 
       {visual && (
-        <div className="max-w-xl mx-auto px-4 mb-3 flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-4 mb-3 flex items-center justify-between">
           <div className="flex items-center gap-1.5 rounded-full bg-warning/10 px-2.5 py-1 text-[11px] font-bold text-warning">
             <Camera className="size-3.5" /> {t("explore_visual_search_active")}
           </div>
@@ -435,7 +435,7 @@ function Explore() {
       )}
 
       {/* شرائح الفلاتر النشطة + تبديل العرض */}
-      <div className="mx-auto flex w-full max-w-xl items-center gap-2 px-4 pt-4">
+      <div className="mx-auto flex w-full max-w-5xl items-center gap-3 px-4 pt-4">
         <div className="no-scrollbar flex min-w-0 flex-1 gap-2 overflow-x-auto">
           {[
             s.cat
@@ -488,7 +488,7 @@ function Explore() {
                 type="button"
                 onClick={c.clear}
                 aria-label={`${t("explore_remove_filter")}: ${c.label}`}
-                className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-primary/15 bg-primary-soft px-3 text-xs font-bold text-accent-ink shadow-sm"
+                className="flex min-h-9 shrink-0 items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3.5 text-xs font-bold text-accent-ink transition hover:border-primary/40"
               >
                 {c.label}
                 <X className="size-3.5" aria-hidden="true" />
@@ -535,7 +535,7 @@ function Explore() {
         )}
       >
         {isLoading && !current && (
-          <div className="max-w-xl mx-auto mt-10 space-y-3">
+          <div className="max-w-5xl mx-auto mt-8 space-y-3">
             {Array.from({ length: 3 }).map((_, i) => (
               <div
                 key={i}
@@ -554,7 +554,7 @@ function Explore() {
           </div>
         )}
         {!isLoading && !current && (
-          <div className="max-w-xl mx-auto mt-10 text-center">
+          <div className="max-w-5xl mx-auto mt-8 text-center">
             <EmptyState
               Icon={Search}
               title={t("explore_empty_title")}
@@ -563,7 +563,7 @@ function Explore() {
           </div>
         )}
         {current && mode === "grid" && (
-          <div className="mx-auto mt-4 max-w-xl space-y-4">
+          <div className="mx-auto mt-5 max-w-5xl space-y-5">
             <div className="flex items-center justify-between px-0.5">
               <h2 className="text-sm font-extrabold tracking-tight text-foreground">
                 {t("explore_discovery")}
@@ -572,7 +572,7 @@ function Explore() {
                 {displayProducts.length}
               </span>
             </div>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
               {displayProducts.map((g) => (
                 <ProductCard key={g.product.id} g={g} />
               ))}
@@ -590,7 +590,7 @@ function Explore() {
           </div>
         )}
         {current && mode === "cards" && (
-          <article className="sticky top-14 z-20 max-w-xl mx-auto w-full">
+          <article className="sticky top-14 z-20 mx-auto w-full max-w-2xl">
             <DiscoveryCard
               group={current}
               canPrev={currentIndex > 0}
