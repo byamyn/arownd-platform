@@ -738,7 +738,7 @@ export async function uploadImageToBucket(
 
 /** Create a short-lived URL only when an authorized user opens a private receipt. */
 export async function createReceiptSignedUrl(receiptRef: string): Promise<string> {
-  if (/^https?:\\/\\//i.test(receiptRef)) return receiptRef; // Existing legacy receipt links.
+  if (/^https?:\/\//i.test(receiptRef)) return receiptRef; // Existing legacy receipt links.
   const { data, error } = await supabase.storage
     .from("receipts")
     .createSignedUrl(receiptRef, 15 * 60);
