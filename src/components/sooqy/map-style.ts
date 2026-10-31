@@ -44,9 +44,9 @@ export const MAP_COLORS = {
   labelWater: "#6B86B8",
   halo: "#FFFFFF",
   /** هوية العلامات والعناصر التفاعلية */
-  primary: "#C6F36B",
-  primaryDark: "#A8D955",
-  primaryDeep: "#8FC44A",
+  primary: "#DFFF45",
+  primaryDark: "#C6E62E",
+  primaryDeep: "#9DBB18",
   ink: "#17191C",
   green_user: "#10B981",
 } as const;
@@ -414,7 +414,7 @@ const layers: unknown[] = [
  */
 export const SOOQY_VECTOR_STYLE = {
   version: 8,
-  name: "SooQy",
+  name: "Arownd",
   glyphs: GLYPHS_URL,
   sources: {
     [VECTOR_SOURCE_ID]: {
@@ -433,7 +433,7 @@ export const SOOQY_VECTOR_STYLE = {
  */
 export const OSM_RASTER_FALLBACK = {
   version: 8,
-  name: "SooQy-fallback",
+  name: "Arownd-fallback",
   sources: {
     osm: {
       type: "raster",
@@ -469,7 +469,7 @@ export const OSM_RASTER_FALLBACK = {
  */
 export const SATELLITE_STYLE = {
   version: 8,
-  name: "SooQy-satellite",
+  name: "Arownd-satellite",
   sources: {
     satellite: {
       type: "raster",

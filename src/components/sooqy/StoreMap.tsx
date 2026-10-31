@@ -102,7 +102,7 @@ function applyMarkerStyle(el: HTMLElement, active: boolean, label = ""): HTMLEle
   const size = active ? 36 : 28;
   const border = active ? 4 : 3;
   const shadow = active
-    ? "0 10px 30px rgba(99,102,241,.35), 0 0 0 6px rgba(99,102,241,.14)"
+    ? "0 10px 30px rgba(180,205,30,.38), 0 0 0 6px rgba(223,255,69,.26)"
     : "0 6px 18px rgba(15,23,42,.16)";
   pin.style.width = size + "px";
   pin.style.height = size + "px";
@@ -362,9 +362,7 @@ const StoreMapComponent = React.memo(
       if (!user) return;
       const el = document.createElement("div");
       el.style.cssText =
-        "width:14px;height:14px;border-radius:9999px;background:" +
-        C.green_user +
-        ";border:2px solid #fff;box-shadow:0 0 0 4px rgba(16,185,129,.25),0 6px 16px rgba(16,185,129,.35);animation:sooqy-pulse 1.8s ease-in-out infinite;";
+        "width:14px;height:14px;border-radius:9999px;background:#2563EB;border:2px solid #fff;box-shadow:0 0 0 4px rgba(37,99,235,.22),0 6px 16px rgba(37,99,235,.3);animation:sooqy-pulse 1.8s ease-in-out infinite;";
       userMarkerRef.current = new maplibregl.Marker({ element: el, anchor: "center" })
         .setLngLat([user.lng, user.lat])
         .addTo(map);
@@ -392,7 +390,7 @@ const StoreMapComponent = React.memo(
               setError(null);
               setAttempt((a) => a + 1);
             }}
-            className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#6366F1] px-4 py-2 text-sm font-bold text-white shadow-soft"
+            className="mt-2 inline-flex items-center gap-2 rounded-full bg-[#DFFF45] px-4 py-2 text-sm font-bold text-[#17191C] shadow-soft"
           >
             إعادة المحاولة
           </button>
@@ -447,9 +445,9 @@ const StoreMapComponent = React.memo(
         </div>
         <style>{`
         @keyframes sooqy-pulse {
-          0% { box-shadow: 0 0 0 0 rgba(16,185,129,.45), 0 6px 16px rgba(16,185,129,.35); }
-          70% { box-shadow: 0 0 0 10px rgba(16,185,129,0), 0 6px 16px rgba(16,185,129,.35); }
-          100% { box-shadow: 0 0 0 0 rgba(16,185,129,0), 0 6px 16px rgba(16,185,129,.35); }
+          0% { box-shadow: 0 0 0 0 rgba(37,99,235,.45), 0 6px 16px rgba(37,99,235,.3); }
+          70% { box-shadow: 0 0 0 10px rgba(37,99,235,0), 0 6px 16px rgba(37,99,235,.3); }
+          100% { box-shadow: 0 0 0 0 rgba(37,99,235,0), 0 6px 16px rgba(37,99,235,.3); }
         }
       `}</style>
       </div>
