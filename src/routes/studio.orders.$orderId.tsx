@@ -198,7 +198,7 @@ function StudioOrderDetailPage() {
                   onClick={() => handleStatus(s)}
                   className="rounded-lg bg-muted px-2 py-1 text-[10px] font-bold transition hover:bg-primary hover:text-primary-foreground"
                 >
-                  {s}
+                  {translate(`status_${s}`)}
                 </button>
               ))}
               <button
