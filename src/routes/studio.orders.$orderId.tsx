@@ -9,7 +9,6 @@ import {
   fetchOrder,
   merchantUpdateOrderStatus,
   merchantUpdateOrderNote,
-  deleteOrder,
   fetchMyStore,
 } from "@/lib/sooqy";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -17,8 +16,6 @@ import { showError, showSuccess } from "@/lib/feedback";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
-import { Trash2 } from "lucide-react";
-import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { useState } from "react";
 import { goBackOrTo } from "@/lib/nav";
 
@@ -31,8 +28,6 @@ function StudioOrderDetailPage() {
   const { orderId } = Route.useParams();
   const { user, ready } = useAuth();
   const [note, setNote] = useState("");
-  const [pendingDelete, setPendingDelete] = useState(false);
-  const [deleting, setDeleting] = useState(false);
   const router = useRouter();
   const qc = useQueryClient();
 
@@ -204,45 +199,13 @@ function StudioOrderDetailPage() {
                     {t(`status_${s}`)}
                   </button>
                 ))}
-                <button
-                  type="button"
-                  onClick={() => setPendingDelete(true)}
-                  aria-label={t("studio_delete_order_aria")}
-                  className="col-span-2 flex min-h-11 items-center justify-center rounded-xl bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/25 sm:col-span-4"
-                >
-                  <Trash2 className="size-3.5" />
-                </button>
+
               </div>
             </div>
           </div>
         </div>
       </div>
 
-      <ConfirmDialog
-        open={pendingDelete}
-        title={t("studio_delete_order")}
-        message={t("studio_delete_order_confirm")}
-        confirmLabel={t("studio_delete_confirm")}
-        busy={deleting}
-        onCancel={() => {
-          if (!deleting) setPendingDelete(false);
-        }}
-        onConfirm={async () => {
-          if (deleting) return;
-          setDeleting(true);
-          try {
-            await deleteOrder(orderId, undefined, store.data?.id);
-            showSuccess(t("studio_order_deleted"));
-            setPendingDelete(false);
-            await qc.invalidateQueries({ queryKey: ["store-orders"] });
-            router.navigate({ to: "/studio" });
-          } catch (error) {
-            showError(error);
-          } finally {
-            setDeleting(false);
-          }
-        }}
-      />
     </>
   );
 }
