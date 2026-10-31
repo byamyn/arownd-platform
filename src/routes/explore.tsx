@@ -70,11 +70,19 @@ function Explore() {
   const [text, setText] = useState(s.q ?? "");
   const [committed, setCommitted] = useState(s.q ?? "");
   const [visual, setVisual] = useState<VisualProfile | null>(null);
-  const [sort, setSort] = useState<SortBy>("newest");
-  const [inStockOnly, setInStockOnly] = useState(false);
+  const [sort, setSort] = useState<SortBy>(s.sort ?? "newest");
+  const [inStockOnly, setInStockOnly] = useState(s.stock ?? false);
   const [minText, setMinText] = useState(s.min != null ? String(s.min) : "");
   const [maxText, setMaxText] = useState(s.max != null ? String(s.max) : "");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Keep the existing filter controls aligned with URL state (refresh/back/forward).
+  useEffect(() => {
+    setSort(s.sort ?? "newest");
+    setInStockOnly(s.stock ?? false);
+    setMinText(s.min != null ? String(s.min) : "");
+    setMaxText(s.max != null ? String(s.max) : "");
+  }, [s.sort, s.stock, s.min, s.max]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const navigatingRef = useRef(false);
   const [mode, setMode] = useState<"cards" | "grid">(() => {
@@ -290,6 +298,8 @@ function Explore() {
         ...prev,
         min: min != null && min >= 0 ? min : undefined,
         max: max != null && max > 0 ? max : undefined,
+        sort: sort !== "newest" ? sort : undefined,
+        stock: inStockOnly ? true : undefined,
       }),
       replace: true,
     });
@@ -404,10 +414,24 @@ function Explore() {
                 }
               : null,
             inStockOnly
-              ? { key: "stock", label: t("explore_chip_in_stock"), clear: () => setInStockOnly(false) }
+              ? {
+                  key: "stock",
+                  label: t("explore_chip_in_stock"),
+                  clear: () => {
+                    setInStockOnly(false);
+                    navigate({ search: (p) => ({ ...p, stock: undefined }), replace: true });
+                  },
+                }
               : null,
             sort !== "newest"
-              ? { key: "sort", label: t(`explore_sort_${sort}`), clear: () => setSort("newest") }
+              ? {
+                  key: "sort",
+                  label: t(`explore_sort_${sort}`),
+                  clear: () => {
+                    setSort("newest");
+                    navigate({ search: (p) => ({ ...p, sort: undefined }), replace: true });
+                  },
+                }
               : null,
           ]
             .filter((c): c is NonNullable<typeof c> => c !== null)

@@ -156,7 +156,7 @@ function Home() {
         </section>
 
         {/* متاجر قريبة منك */}
-        {(nearbyStores.isLoading || stores.length > 0) && (
+        {(nearbyStores.isLoading || nearbyStores.isError || stores.length > 0) && (
           <section className="space-y-2">
             <SectionHeader
               title={t("home_nearby_stores")}
@@ -170,6 +170,13 @@ function Home() {
               action={<SeeAllLink to="/stores">{t("home_explore_stores")}</SeeAllLink>}
             />
             {nearbyStores.isLoading && <ProductGridSkeleton count={2} />}
+            {nearbyStores.isError && (
+              <ErrorState
+                scope="home:nearby-stores"
+                error={nearbyStores.error}
+                onRetry={() => nearbyStores.refetch()}
+              />
+            )}
             <div className="no-scrollbar -mx-4 flex gap-3 overflow-x-auto px-4 pb-1">
               {stores.map((st, i) => (
                 <Reveal key={st.id} index={i}>
@@ -207,14 +214,14 @@ function Home() {
               hint={t("home_no_products_hint")}
             />
           )}
-          {trending.hasNextPage && !trending.isFetchingNextPage && (
+          {trending.hasNextPage && (
             <div className="mt-3 text-center">
               <button
                 onClick={() => trending.fetchNextPage()}
                 className="btn-secondary w-full py-2"
                 disabled={trending.isFetchingNextPage}
               >
-                {t("home_new_arrivals")}
+                {trending.isFetchingNextPage ? t("state_loading") : t("explore_load_more")}
               </button>
             </div>
           )}
