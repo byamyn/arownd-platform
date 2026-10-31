@@ -1,10 +1,10 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Archive, CalendarDays, Clock3, Store } from "lucide-react";
+import { Archive, CalendarDays, Clock3, Store, XCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { archiveMyActivity, fetchMyReservations } from "@/lib/sooqy";
+import { archiveMyActivity, cancelMyReservation, fetchMyReservations } from "@/lib/sooqy";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
 import { EmptyState } from "@/components/sooqy/empty-state";
@@ -38,6 +38,7 @@ function ReservationsPage() {
   const { user, ready } = useAuth();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<ReservationTab>("all");
+  const [cancellingId, setCancellingId] = useState<string | null>(null);
   const reservations = useQuery({
     queryKey: ["my-reservations"],
     queryFn: fetchMyReservations,
@@ -154,6 +155,29 @@ function ReservationsPage() {
                 <span className="text-xs text-muted-foreground">{reservation.offer?.price != null ? "سعر الوحدة" : ""}</span>
                 {reservation.offer?.price != null && <b className="text-sm font-extrabold text-accent-ink">{formatDA(reservation.offer.price)}</b>}
               </div>
+              {reservation.status === "pending" && !expired && (
+                <button
+                  type="button"
+                  disabled={cancellingId === reservation.id}
+                  onClick={async () => {
+                    if (!window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")) return;
+                    setCancellingId(reservation.id);
+                    try {
+                      await cancelMyReservation(reservation.id);
+                      await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                      toast.success("تم إلغاء الحجز بنجاح.");
+                    } catch (error) {
+                      toast.error(error instanceof Error ? error.message : "تعذر إلغاء الحجز.");
+                    } finally {
+                      setCancellingId(null);
+                    }
+                  }}
+                  className="mt-3 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-danger/30 bg-danger-soft px-3 text-sm font-semibold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                >
+                  <XCircle className="size-4" />
+                  {cancellingId === reservation.id ? "جارٍ الإلغاء..." : "إلغاء الحجز"}
+                </button>
+              )}
               {archivable && (
                 <button
                   type="button"
