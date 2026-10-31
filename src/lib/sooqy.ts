@@ -950,7 +950,6 @@ export async function merchantCreateStore(input: {
     latitude: number | null;
     longitude: number | null;
     opening_hours: { open: string; close: string; closed_days: string[] };
-    is_verified: boolean;
     category?: string | null;
     subcategories?: string[];
   } = {
@@ -965,7 +964,7 @@ export async function merchantCreateStore(input: {
     latitude: input.latitude,
     longitude: input.longitude,
     opening_hours: { open: input.open, close: input.close, closed_days: [] },
-    is_verified: true, // التوثيق التلقائي — المتجر يظهر موثقًا فورًا
+    // is_verified is database-managed; the current default is applied by PostgreSQL.
   };
   if (input.category) payload.category = resolveCategoryId(input.category);
   if (input.subcategories?.length) payload.subcategories = input.subcategories;
@@ -1236,12 +1235,9 @@ export async function fetchStoreOrderItems(storeId: string) {
 export async function merchantUpdateOrderStatus(
   orderId: string,
   status: "confirmed" | "shipped" | "delivered" | "cancelled",
-  note?: string | null,
 ) {
-  const data: Record<string, unknown> = { status };
-  if (note !== undefined) data["notes"] = note;
   const sb = supabase as unknown as DynamicTableClient;
-  const { error } = await sb.from("orders").update(data).eq("id", orderId);
+  const { error } = await sb.from("orders").update({ status }).eq("id", orderId);
   if (error) throw error;
 }
 
