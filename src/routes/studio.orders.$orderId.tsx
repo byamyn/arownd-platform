@@ -199,13 +199,11 @@ function StudioOrderDetailPage() {
                     {t(`status_${s}`)}
                   </button>
                 ))}
-
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </>
   );
 }
