@@ -15,8 +15,8 @@ This document records the security controls currently enforced by the applicatio
 - Use ownership checks in RLS and server-side RPCs; do not rely on client-side role checks.
 - Sensitive columns such as verification flags, commissions, ratings, order totals, and shipment ownership must not be writable by ordinary authenticated users.
 - Create orders through the validated `create_order` RPC. It verifies the caller, item payload bounds, stock, contact fields, and ownership of any payment receipt.
-- Customers can only cancel pending orders; merchants must follow the allowed order-state transitions. Direct order deletion is disabled.
-- Shipment creation is limited to the order owner, one shipment per order, an approved delivery company, a matching active coverage area, and the configured coverage fee.
+- Customers can only cancel pending orders; cancellation atomically rejects a still-pending shipment and restores reserved stock. Merchants can advance only orders whose line items all belong to stores they own; a single merchant cannot advance a multi-store parent order. Direct order deletion is disabled.
+- Shipment creation is limited to the order owner, one shipment per order, an approved delivery company, a matching active coverage area, and the configured coverage fee. Shipment status changes are checked against the delivery company's ownership and allowed state transitions.
 - Delivery companies can update only their own shipment status and must follow the allowed shipment-state transitions.
 - Merchant order notes are saved through an ownership-checked RPC.
 - Wallet inserts are limited to pending top-ups and withdrawals; top-up receipts must be owned by the submitting user.
