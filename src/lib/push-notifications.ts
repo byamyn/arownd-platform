@@ -74,6 +74,16 @@ export async function enableNativePush(): Promise<PushResult> {
   }
   if (permission.receive !== "granted") return "denied";
 
+  if (Capacitor.getPlatform() === "android") {
+    await PushNotifications.createChannel({
+      id: "arownd_updates",
+      name: "تحديثات Arownd",
+      description: "تحديثات الطلبات والحجوزات وإشعارات الحساب",
+      importance: 4,
+      vibration: true,
+    });
+  }
+
   await PushNotifications.register();
   return "requested";
 }
