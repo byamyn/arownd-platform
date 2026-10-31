@@ -20,6 +20,7 @@ import {
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
+import { unregisterMyPushDevices } from "@/lib/push-notifications";
 import { useAuth } from "@/lib/auth";
 import { fetchMyStore } from "@/lib/sooqy";
 import { useTheme, type Theme } from "@/lib/theme";
@@ -56,6 +57,12 @@ function SettingsPage() {
     if (signingOut) return;
     try {
       setSigningOut(true);
+      // Best-effort cleanup: do not block sign-out if the device is offline.
+      try {
+        await unregisterMyPushDevices();
+      } catch (pushError) {
+        console.warn("[push] could not detach device before sign-out", pushError);
+      }
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       await qc.invalidateQueries();
