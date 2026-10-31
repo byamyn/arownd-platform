@@ -33,23 +33,19 @@ export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: 
         e.stopPropagation();
         toggleFavorite(kind, id);
       }}
-      className={cn(
-        "flex size-8 items-center justify-center rounded-full backdrop-blur transition-all duration-200 active:scale-90",
-        active
-          ? "bg-primary text-primary-foreground shadow-sm"
-          : "bg-card/80 text-muted-foreground border border-border",
-      )}
+      className="flex size-8 items-center justify-center transition-transform duration-200 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
     >
       <svg
         viewBox="0 0 24 24"
         className={cn(
-          "transition-colors",
-          active ? "fill-accent-ink text-accent-ink" : "fill-transparent text-muted-foreground",
+          "size-5 transition-colors duration-200",
+          active ? "fill-rose-500 text-rose-500" : "fill-transparent text-muted-foreground",
         )}
         stroke="currentColor"
         strokeWidth="2"
         strokeLinecap="round"
         strokeLinejoin="round"
+        aria-hidden="true"
       >
         <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" />
       </svg>
