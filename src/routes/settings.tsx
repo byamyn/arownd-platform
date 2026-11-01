@@ -112,7 +112,7 @@ function SettingsPage() {
 
   if (!user) {
     return (
-      <div className="mx-auto max-w-xl px-4 pb-28 pt-4">
+      <div className="mx-auto max-w-xl px-4 pb-6 pt-4">
         <PageHeader title="الإعدادات" back="/profile" />
         <div className="mt-6 rounded-2xl border border-border bg-card p-6 text-center">
           <p className="text-body text-muted-foreground">يرجى تسجيل الدخول للوصول إلى الإعدادات</p>
@@ -129,7 +129,7 @@ function SettingsPage() {
   const initial = (email || "؟").slice(0, 1).toUpperCase();
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 px-4 pb-28 pt-4">
+    <div className="mx-auto max-w-xl space-y-5 px-4 pb-6 pt-4">
       <PageHeader title="الإعدادات" subtitle="خصّص تجربتك في Arownd" back="/profile" />
 
       {/* بطاقة الحساب */}
