@@ -38,7 +38,7 @@ import {
   setMyProfileVisibility,
   uploadImageToBucket,
 } from "@/lib/sooqy";
-import { WilayaButton, wilayasQuery } from "@/components/sooqy/WilayaSelect";
+import { WilayaSelect, wilayasQuery } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
 import { AppShell } from "@/components/sooqy/app-shell";
@@ -360,7 +360,6 @@ function ProfilePage() {
           title={t("profile_hub_title")}
           subtitle={t("profile_hub_subtitle")}
           back={accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant") ? "/studio" : undefined}
-          showLanguageToggle
           action={
             <div className="flex items-center gap-2">
               {isAdmin && (
@@ -470,7 +469,8 @@ function ProfilePage() {
           </div>
         </section>
 
-        {accountTypeQuery.data === "personal" && (
+        {/* visibility moved to settings */}
+        {false && accountTypeQuery.data === "personal" && (
           <section className="rounded-2xl border border-border bg-card p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
@@ -543,7 +543,7 @@ function ProfilePage() {
           </div>
         </section>
 
-        {/* إدارة الحساب — مجموعات مرتبة */}
+        {/* إدارة الحساب removed */}
         <section className="space-y-2">
           <SectionTitle>{t("profile_account_management")}</SectionTitle>
           <MenuCard>
