@@ -1431,22 +1431,34 @@ function StudioPage() {
                     </div>
                     <OrderStatusBadge status={item.merchant_order.status} />
                   </div>
-                  <div className="mt-2 flex gap-2">
-                    {(["confirmed", "shipped", "delivered"] as const).map((status) => (
+                  <div className="mt-2 flex flex-wrap items-center gap-2">
+                    {item.merchant_order.status === "pending" && (
+                      <Link
+                        to="/studio/orders/$orderId"
+                        params={{ orderId: item.order.id }}
+                        className="inline-flex min-h-10 items-center justify-center rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground"
+                      >
+                        {t("studio_order_details")}
+                      </Link>
+                    )}
+                    {item.merchant_order.status === "quoted" && (
+                      <p className="w-full rounded-xl bg-warning-soft p-2 text-xs leading-relaxed text-warning">
+                        {t("studio_quote_pending_customer")}
+                      </p>
+                    )}
+                    {item.merchant_order.status === "confirmed" && item.order.delivery_type === "home" && (
+                      <p className="w-full rounded-xl bg-primary-soft p-2 text-xs leading-relaxed text-muted-foreground">
+                        {t("studio_order_approved_wait_delivery")}
+                      </p>
+                    )}
+                    {item.merchant_order.status === "confirmed" && item.order.delivery_type === "desk" && (
                       <button
-                        key={status}
-                        disabled={
-                          busyOrder === item.merchant_order.id ||
-                          (status === "confirmed" && item.merchant_order.status !== "pending") ||
-                          (status === "shipped" && item.merchant_order.status !== "confirmed") ||
-                          (status === "delivered" &&
-                            (item.merchant_order.status !== "shipped" ||
-                              item.order.delivery_type === "home"))
-                        }
+                        type="button"
+                        disabled={busyOrder === item.merchant_order.id}
                         onClick={async () => {
                           setBusyOrder(item.merchant_order.id);
                           try {
-                            await merchantUpdateOrderStatus(item.order.id, status);
+                            await merchantUpdateOrderStatus(item.order.id, "delivered");
                             await qc.invalidateQueries({
                               queryKey: ["store-orders", store.data?.id],
                             });
@@ -1457,15 +1469,11 @@ function StudioPage() {
                             setBusyOrder(null);
                           }
                         }}
-                        className="rounded-lg bg-neutral-100 px-2 py-1 text-[10px] font-bold transition hover:bg-primary hover:text-primary-foreground disabled:opacity-50"
+                        className="min-h-10 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
                       >
-                        {status === "confirmed"
-                          ? t("studio_action_confirm")
-                          : status === "shipped"
-                            ? t("studio_action_ship")
-                            : t("studio_action_deliver")}
+                        {t("studio_action_deliver")}
                       </button>
-                    ))}
+                    )}
                   </div>
                   {item.merchant_order.status === "delivered" && (
                     <button
