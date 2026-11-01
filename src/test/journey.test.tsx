@@ -226,10 +226,10 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
     // الخطوة 3: الدفع عند الاستلام (افتراضي)
     await expectText("طريقة الدفع");
-    fireEvent.click(screen.getByRole("button", { name: "تأكيد الطلب" }));
+    fireEvent.click(screen.getByRole("button", { name: "إرسال طلب الشراء" }));
 
     // شاشة النجاح
-    await expectText("تم تأكيد طلبك!");
+    await expectText("تم إرسال طلبك إلى المتاجر");
     await expectText(/رمز التتبع/);
     await waitFor(() =>
       expect(state.calls.some((c) => c.startsWith("rpc.create_order"))).toBe(true),
