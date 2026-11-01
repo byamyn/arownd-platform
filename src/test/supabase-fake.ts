@@ -282,7 +282,8 @@ async function rpc(name: string, _params?: Record<string, unknown>) {
       // القاعدة الحية تفتقدها — نختبر مسار السقوط الاحتياطي (أحدث المنتجات)
       return { data: null, error: RPC_MISSING };
     case "create_order":
-      // القاعدة الحقيقية تُرجع نصّ معرّف الطلب
+    case "create_order_with_delivery":
+      // دالة Checkout الحالية تنشئ الطلب الرئيسي والطلبات الفرعية وتُرجع معرّفًا نصيًا.
       return ok("order-1");
     case "create_reservation":
       return ok({ id: "res-1", code: "ABC123" });
