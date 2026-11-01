@@ -142,6 +142,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
   it("تاجر بلا متجر ينشئ متجره من الاستوديو وتظهر اللوحة", async () => {
     setSession({ id: "user-2", email: "tajir@test.dz" });
+    state.userRoles = [{ user_id: "user-2", role: "merchant" }];
     const router = renderApp();
     await go(router, "/studio");
 
@@ -164,9 +165,9 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     fireEvent.click(screen.getByRole("button", { name: "فتح المتجر" }));
 
     await waitFor(() =>
-      expect(state.calls.some((c) => c.startsWith("rpc.become_merchant"))).toBe(true),
+      expect(state.calls.some((c) => c.startsWith("rpc.create_my_store"))).toBe(true),
     );
-    await waitFor(() => expect(state.calls.some((c) => c.startsWith("stores.insert"))).toBe(true));
+    await waitFor(() => expect(state.stores.some((store) => store["id"] === "store-created")).toBe(true));
 
     // بعد التحديث تظهر لوحة التاجر مع اسم المتجر الجديد
     await expectText("مساحة عمل متجرك");
