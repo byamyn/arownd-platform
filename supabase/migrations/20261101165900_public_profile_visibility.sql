@@ -4,7 +4,6 @@ alter table public.profiles
 
 -- Preserve the profile table's strict column allowlist while allowing owners to
 -- change only their own public/private preference under the existing RLS policy.
-grant update (is_public) on table public.profiles to authenticated;
 
 -- Keep the public projection in an unexposed schema. The public view is
 -- SECURITY INVOKER, so its SELECT is still governed by this table's RLS policy.
