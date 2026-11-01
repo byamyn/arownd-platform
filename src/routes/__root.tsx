@@ -175,7 +175,6 @@ function RootComponent() {
   // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
   const isStudio =
     location.pathname === "/studio" || location.pathname.startsWith("/studio/");
-  const isStudioHome = location.pathname === "/studio" || location.pathname === "/studio/";
   const isAccountSubpage = ["/settings", "/notifications", "/wallet", "/create-store"].includes(location.pathname);
 
   return (
@@ -186,7 +185,7 @@ function RootComponent() {
             <div
               className={
                 isAuth || isStudio
-                  ? "min-h-screen w-full max-w-none " + (isStudioHome ? "pb-24" : "pb-0")
+                  ? "min-h-screen w-full max-w-none pb-0"
                   : "mx-auto min-h-screen max-w-xl " + (isPersonalSubpage ? "pb-0" : "pb-28")
               }
             >
