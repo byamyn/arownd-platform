@@ -88,6 +88,86 @@ set account_type = case
   else 'personal'::public.account_type
 end;
 
+-- Public profile projection is restricted to personal accounts only. Converting
+-- an account to merchant automatically removes its public personal projection.
+create or replace function private.sync_public_personal_profile()
+returns trigger
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+begin
+  if tg_op = 'DELETE' then
+    delete from private.public_personal_profiles
+    where user_id = old.user_id;
+    return old;
+  end if;
+
+  if new.is_public is true
+     and new.account_type = 'personal'::public.account_type then
+    insert into private.public_personal_profiles (
+      user_id, full_name, avatar_url, wilaya_id, commune, updated_at
+    )
+    values (
+      new.user_id, new.full_name, new.avatar_url, new.wilaya_id, new.commune, now()
+    )
+    on conflict (user_id) do update
+    set full_name = excluded.full_name,
+        avatar_url = excluded.avatar_url,
+        wilaya_id = excluded.wilaya_id,
+        commune = excluded.commune,
+        updated_at = now();
+  else
+    delete from private.public_personal_profiles
+    where user_id = new.user_id;
+  end if;
+
+  return new;
+end;
+$function$;
+
+delete from private.public_personal_profiles projection
+using public.profiles p
+where projection.user_id = p.user_id
+  and p.account_type <> 'personal'::public.account_type;
+
+create or replace function public.set_my_profile_visibility(_is_public boolean)
+returns void
+language plpgsql
+security definer
+set search_path = ''
+set row_security = off
+as $function$
+declare
+  current_type public.account_type;
+begin
+  if auth.uid() is null then
+    raise exception 'not_authenticated';
+  end if;
+
+  select p.account_type
+    into current_type
+  from public.profiles p
+  where p.user_id = auth.uid()
+  for update;
+
+  if not found then
+    raise exception 'profile_not_found';
+  end if;
+
+  if current_type <> 'personal'::public.account_type then
+    raise exception 'personal_profile_only';
+  end if;
+
+  update public.profiles
+  set is_public = coalesce(_is_public, false)
+  where user_id = auth.uid();
+end;
+$function$;
+
+revoke all on function public.set_my_profile_visibility(boolean) from public, anon;
+grant execute on function public.set_my_profile_visibility(boolean) to authenticated;
+
 -- Merchant onboarding changes account identity and grants the merchant capability
 -- in the same transaction. Admin remains an independent role.
 create or replace function public.become_merchant()
