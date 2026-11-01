@@ -22,7 +22,7 @@ import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { unregisterMyPushDevices } from "@/lib/push-notifications";
 import { useAuth } from "@/lib/auth";
-import { fetchMyStore, fetchMyProfile, setMyProfileVisibility } from "@/lib/sooqy";
+import { fetchMyStore, fetchMyProfile, fetchMyAccountType, setMyProfileVisibility } from "@/lib/sooqy";
 import { useTheme, type Theme } from "@/lib/theme";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
@@ -47,6 +47,7 @@ function SettingsPage() {
   const [showTheme, setShowTheme] = useState(false);
   const myStore = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
+  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
   const [visibilityBusy, setVisibilityBusy] = useState(false);
   const changeVisibility = async () => {
     if (!profile.data || visibilityBusy) return;
@@ -164,7 +165,8 @@ function SettingsPage() {
         </Link>
       </div>
 
-      {/* ظهور الملف الشخصي */}
+      {/* ظهور الملف الشخصي للحسابات الشخصية فقط */}
+      {accountType.data === "personal" && (
       <section className="space-y-2">
         <SectionTitle>ظهور الملف الشخصي</SectionTitle>
         <MenuCard>
@@ -182,6 +184,7 @@ function SettingsPage() {
           {profile.data?.is_public && <div className="px-4 pb-3"><Link to="/profile" search={{ public_id: user.id }} className="text-sm font-bold text-accent-ink">معاينة الملف الشخصي العام</Link></div>}
         </MenuCard>
       </section>
+      )}
 
       {/* مجموعة: الحساب */}
       <section className="space-y-2">
