@@ -19,9 +19,11 @@ export function AccountBottomNav({ pathname }: { pathname: string }) {
 
   if (!ready) return null;
   if (!user) return <BottomNav />;
-  if (accountType.isLoading) return null;
+  if (accountType.isLoading || accountType.isError || !accountType.isSuccess) return null;
   if (accountType.data === "merchant") {
     return isMerchantArea ? <StudioNav /> : null;
   }
+  // لا نعرض تنقل العميل للحسابات غير الشخصية؛ تنقل التوصيل خارج هذا النطاق.
+  if (accountType.data !== "personal") return null;
   return <BottomNav />;
 }
