@@ -92,6 +92,24 @@ function ProfilePage() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [editing, setEditing] = useState(false);
+  const avatarInputRef = useRef<HTMLInputElement>(null);
+  const displayName = public_id
+    ? publicProfile.data?.full_name ?? "مستخدم Arownd"
+    : profile.data?.full_name ??
+      (typeof user?.user_metadata?.full_name === "string" ? user.user_metadata.full_name : null) ??
+      user?.email ?? "مستخدم Arownd";
+  const initial = displayName.trim().charAt(0) || "A";
+  const favCount = favorites.products.length + favorites.stores.length;
+
+  useEffect(() => {
+    if (!profile.data || public_id) return;
+    setFullName(profile.data.full_name ?? "");
+    setPhone(profile.data.phone ?? "");
+    setWilayaId(profile.data.wilaya_id ?? null);
+    setCommune(profile.data.commune ?? "");
+    setAvatarPreview(profile.data.avatar_url ?? null);
+  }, [profile.data, public_id]);
 
   // لا تعرض بيانات الحساب ولا تسمح بتحميلها قبل اكتمال التحقق من الجلسة.
   if (!ready) return null;
@@ -246,7 +264,7 @@ function ProfilePage() {
 
             <div className="mt-3 min-w-0">
               <h2 className="truncate text-xl font-extrabold text-foreground">{displayName}</h2>
-              <p className="truncate text-sm text-muted-foreground">{user.email}</p>
+              <p className="truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
