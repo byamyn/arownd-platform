@@ -187,7 +187,7 @@ export async function fetchSuggestedStores(
 /** Increment product view count (fire-and-forget). */
 export async function incrementProductView(productId: string): Promise<void> {
   // RPC موجود في الهجرات (202610120001) — لا مسار احتياطي بـ supabase.raw (غير موجودة في supabase-js v2)
-  const call = supabase.rpc as unknown as (
+  const call = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     vars?: Record<string, unknown>,
   ) => Promise<{ data: unknown; error: unknown }>;
@@ -202,7 +202,7 @@ export async function fetchMostViewedProducts(
   const { limit = 10, offset = 0 } = opts;
   // 1) المسار الأساسي: RPC (يتطلب هجرة 202610120001_product_views.sql —
   //    نفس الهجرة تُنشئ الدالة وعمود view_count معًا، فلا حاجة لمسار وسيط)
-  const call = supabase.rpc as unknown as (
+  const call = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     vars?: Record<string, unknown>,
   ) => Promise<{ data: unknown; error: unknown }>;
@@ -567,7 +567,7 @@ export async function cancelMyReservation(reservationId: string): Promise<void> 
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("يجب تسجيل الدخول لإلغاء الحجز.");
 
-  const call = supabase.rpc as unknown as (
+  const call = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     vars?: Record<string, unknown>,
   ) => Promise<{ data: unknown; error: { message?: string; code?: string } | null }>;
@@ -809,7 +809,7 @@ export type CategoryStat = { id: string; products: number; stores: number };
  * بدل إخفائها، فلا تفرغ الصفحة الرئيسية على قاعدة جديدة.
  */
 export async function fetchCategoryStats(): Promise<CategoryStat[] | null> {
-  const call = supabase.rpc as unknown as (
+  const call = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
   ) => Promise<{ data: unknown; error: unknown }>;
   const { data, error } = await call("category_stats");
