@@ -37,7 +37,7 @@ import {
   setMyProfileVisibility,
   uploadImageToBucket,
 } from "@/lib/sooqy";
-import { WilayaButton, WilayaSelect, wilayasQuery } from "@/components/sooqy/WilayaSelect";
+import { WilayaButton, wilayasQuery } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
 import { AppShell } from "@/components/sooqy/app-shell";
