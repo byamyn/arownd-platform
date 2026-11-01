@@ -644,7 +644,7 @@ export async function fetchMyOrders() {
   const archivedIds = await fetchArchivedActivityIds(u.user.id, "order");
   const { data, error } = await supabase
     .from("orders")
-    .select("*, items:order_items(*), wilaya:wilayas(name_ar)")
+    .select("*, items:order_items(*), merchant_orders(id, status, subtotal, shipping_fee, quoted_at, store:stores(name)), wilaya:wilayas(name_ar)")
     .eq("user_id", u.user.id)
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -834,20 +834,10 @@ export async function createOrderWithDelivery(
   deliveryType: "home" | "desk",
   wilayaId: number,
   commune: string,
-  paymentMethod: "cod" | "baridimob",
-  receiptFile: File | null,
+  paymentMethod: "cod",
   contact: { fullName: string; phone: string; address: string },
-  deliveryCompanyId?: string,
 ) {
-  if (deliveryType === "home" && !deliveryCompanyId) {
-    throw new Error(ERRORS["delivery_company_required"]);
-  }
-
-  let receiptUrl: string | null = null;
-  if (paymentMethod === "baridimob") {
-    if (!receiptFile) throw new Error(ERRORS["receipt_required"]);
-    receiptUrl = await uploadImageToBucket(receiptFile, "receipts");
-  }
+  if (paymentMethod !== "cod") throw new Error(ERRORS["invalid_payment_method"]);
 
   const orderArgs = {
     _items: bagItems.map((item) => ({
@@ -861,25 +851,15 @@ export async function createOrderWithDelivery(
     _address_line: contact.address,
     _full_name: contact.fullName,
     _phone: contact.phone,
-    _payment_method: paymentMethod,
-    ...(receiptUrl ? { _receipt_url: receiptUrl } : {}),
+    _payment_method: "cod",
   };
 
-  // Home delivery uses one server transaction for order, stock reservation,
-  // shipment creation, and order/shipment linking. Desk pickup needs no shipment.
-  const result =
-    deliveryType === "home"
-      ? await supabase.rpc("create_order_with_delivery", {
-          ...orderArgs,
-          _delivery_company_id: deliveryCompanyId!,
-        })
-      : await supabase.rpc("create_order", orderArgs);
-
-  if (result.error) throw new Error(friendlyError(result.error));
-  if (typeof result.data !== "string") {
-    throw new Error("تعذر تأكيد إنشاء الطلب.");
-  }
-  return result.data;
+  // The checkout creates only the parent order and store suborders.
+  // Each merchant sets its delivery fee after reviewing its own suborder.
+  const { data, error } = await supabase.rpc("create_order_with_delivery", orderArgs);
+  if (error) throw new Error(friendlyError(error));
+  if (typeof data !== "string") throw new Error("تعذر تأكيد إنشاء الطلب.");
+  return data;
 }
 // ---------- Merchant ----------
 
@@ -1196,7 +1176,7 @@ export async function fetchStoreOrderItems(storeId: string) {
   const { data, error } = await supabase
     .from("order_items")
     .select(
-      "*, merchant_order:merchant_orders!inner(id, status, subtotal), order:orders(id, full_name, phone, commune, delivery_type, payment_method, receipt_url, status, total, created_at, wilaya:wilayas(name_ar))",
+      "*, merchant_order:merchant_orders!inner(id, status, subtotal, shipping_fee, quoted_at), order:orders(id, full_name, phone, commune, delivery_type, payment_method, receipt_url, status, total, created_at, wilaya:wilayas(name_ar))",
     )
     .eq("store_id", storeId)
     .eq("merchant_order.store_id", storeId)
@@ -1222,6 +1202,48 @@ export async function merchantArchiveOrderItems(orderId: string, storeId: string
   const { error } = await supabase.rpc("merchant_archive_order_items", {
     _order_id: orderId,
     _store_id: storeId,
+  });
+  if (error) throw new Error(friendlyError(error));
+}
+
+export async function merchantSubmitOrderQuote(
+  orderId: string,
+  shippingFee: number,
+): Promise<void> {
+  const store = await fetchMyStore();
+  if (!store) throw new Error("المتجر غير موجود");
+
+  const { data: merchantOrder, error: lookupError } = await supabase
+    .from("merchant_orders")
+    .select("id")
+    .eq("order_id", orderId)
+    .eq("store_id", store.id)
+    .maybeSingle();
+  if (lookupError) throw lookupError;
+  if (!merchantOrder) throw new Error("طلب المتجر غير موجود");
+
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _merchant_order_id: string; _shipping_fee: number },
+  ) => Promise<{ error: unknown }>;
+  const { error } = await rpc("merchant_submit_order_quote", {
+    _merchant_order_id: merchantOrder.id,
+    _shipping_fee: Math.round(shippingFee),
+  });
+  if (error) throw new Error(friendlyError(error));
+}
+
+export async function customerRespondToMerchantOrder(
+  merchantOrderId: string,
+  accept: boolean,
+): Promise<void> {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _merchant_order_id: string; _accept: boolean },
+  ) => Promise<{ error: unknown }>;
+  const { error } = await rpc("customer_respond_to_merchant_order", {
+    _merchant_order_id: merchantOrderId,
+    _accept: accept,
   });
   if (error) throw new Error(friendlyError(error));
 }
@@ -1275,7 +1297,7 @@ export async function fetchOrder(orderId: string) {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "*, items:order_items(*, store:stores(id, name, phone, whatsapp)), merchant_orders(id, store_id, status, subtotal), wilaya:wilayas(name_ar)",
+      "*, items:order_items(*, store:stores(id, name, phone, whatsapp)), merchant_orders(id, store_id, status, subtotal, shipping_fee, quoted_at), wilaya:wilayas(name_ar)",
     )
     .eq("id", orderId)
     .maybeSingle();
