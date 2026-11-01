@@ -474,6 +474,7 @@ function ProfilePage() {
           </div>
         </section>
 
+        {accountTypeQuery.data === "personal" && (
         <section className="rounded-2xl border border-border bg-card p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
@@ -504,6 +505,7 @@ function ProfilePage() {
             </Link>
           )}
         </section>
+        )}
 
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
         <section className="space-y-2" aria-label={t("profile_activity")}>
