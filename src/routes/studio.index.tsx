@@ -68,7 +68,6 @@ import {
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { cn } from "@/lib/utils";
-import { StudioNav } from "@/components/sooqy/StudioNav";
 
 export const Route = createFileRoute("/studio/")({
   head: () => ({
@@ -554,8 +553,6 @@ function StudioPage() {
           </div>
         </div>
       </header>
-
-      <StudioNav />
 
       {/* بطاقة المتجر الرئيسية */}
       <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-accent-ink/20 bg-[#111813] p-4 text-white shadow-lg sm:p-6">
