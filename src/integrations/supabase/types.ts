@@ -918,6 +918,16 @@ export type Database = {
         };
         Relationships: [];
       };
+      public_personal_profiles: {
+        Row: {
+          user_id: string;
+          full_name: string | null;
+          avatar_url: string | null;
+          wilaya_id: number | null;
+          commune: string | null;
+        };
+        Relationships: [];
+      };
     };
     Functions: {
       become_merchant: { Args: never; Returns: undefined };
@@ -987,15 +997,6 @@ export type Database = {
       get_my_account_type: {
         Args: Record<PropertyKey, never>;
         Returns: Database["public"]["Enums"]["account_type"];
-      };
-      get_public_profile: {
-        Args: { _user_id: string };
-        Returns: {
-          avatar_url: string | null;
-          commune: string | null;
-          full_name: string | null;
-          wilaya_id: number | null;
-        }[];
       };
       set_my_profile_visibility: {
         Args: { _is_public: boolean };
