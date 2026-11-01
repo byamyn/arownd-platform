@@ -175,7 +175,7 @@ function RootComponent() {
   // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
   const isStudio =
     location.pathname === "/studio" || location.pathname.startsWith("/studio/");
-  const isAccountSubpage = [
+  const accountSubpages = new Set([
     "/settings",
     "/notifications",
     "/wallet",
@@ -183,7 +183,9 @@ function RootComponent() {
     "/orders",
     "/reservations",
     "/favorites",
-  ].includes(location.pathname);
+  ]);
+  const currentPath = location.pathname.replace(/\\/+$/, "") || "/";
+  const isAccountSubpage = accountSubpages.has(currentPath);
 
   return (
     <QueryClientProvider client={queryClient}>
