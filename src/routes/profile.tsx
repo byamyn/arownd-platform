@@ -67,18 +67,18 @@ function ProfilePage() {
     queryFn: () => fetchPublicProfile(public_id!),
     enabled: !!public_id,
   });
-  const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user });
+  const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user && !public_id });
   const reservations = useQuery({
     queryKey: ["my-reservations"],
     queryFn: fetchMyReservations,
-    enabled: !!user,
+    enabled: !!user && !public_id,
   });
   // user_roles يقبل عدة صفوف لكل مستخدم (customer/merchant/admin) —
   // نقرأها كمصفوفة؛ الاستعلام بـ.single() كان يفشل بخطأ 406 عند أكثر من صف
   const roleQuery = useQuery({
     queryKey: ["my-role", user?.id],
     queryFn: fetchMyRoles,
-    enabled: !!user,
+    enabled: !!user && !public_id,
   });
   const isAdmin = roleQuery.data?.includes("admin") ?? false;
   const wilayas = useQuery(wilayasQuery);
