@@ -41,7 +41,7 @@ New personal accounts receive `personal` from the database default and the exist
 
 ## Profile privacy
 
-Public personal profiles remain opt-in. `is_public` defaults to false; a synchronization trigger copies only display name, avatar, and general location into the private-schema projection table. Public reads use the narrow `public.public_personal_profiles` view; the base `profiles` table is never opened to anonymous users. The owner changes visibility through the `set_my_profile_visibility()` security-definer RPC, while direct profile UPDATE grants remain restricted to the existing column allowlist.
+Public personal profiles remain opt-in and are available only for accounts whose database-backed type is `personal`. `is_public` defaults to false; a synchronization trigger copies only display name, avatar, and general location into the private-schema projection table. Public reads use the narrow `public.public_personal_profiles` view; the base `profiles` table is never opened to anonymous users. The owner changes visibility through the `set_my_profile_visibility()` security-definer RPC, while direct profile UPDATE grants remain restricted to the existing column allowlist.
 
 ## Migration order
 
