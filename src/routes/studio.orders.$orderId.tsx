@@ -18,7 +18,6 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useState } from "react";
 import { goBackOrTo } from "@/lib/nav";
-import { StudioNav } from "@/components/sooqy/StudioNav";
 
 export const Route = createFileRoute("/studio/orders/$orderId")({
   component: StudioOrderDetailPage,
@@ -125,7 +124,6 @@ function StudioOrderDetailPage() {
     <>
       <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
         <PageHeader title={t("studio_order_details")} back="/studio" />
-        <StudioNav />
         <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-sm">
           <div className="rounded-t-[1.75rem] bg-[#111813] p-5 text-white sm:p-6">
             <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
