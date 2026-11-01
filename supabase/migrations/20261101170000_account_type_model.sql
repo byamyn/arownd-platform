@@ -168,8 +168,8 @@ $function$;
 revoke all on function public.set_my_profile_visibility(boolean) from public, anon;
 grant execute on function public.set_my_profile_visibility(boolean) to authenticated;
 
--- Merchant onboarding changes account identity and grants the merchant capability
--- in the same transaction. Admin remains an independent role.
+-- Retain the legacy function definition for rollback compatibility only; client execution
+-- is revoked below. The supported merchant path is the atomic create_my_store() RPC.
 create or replace function public.become_merchant()
 returns void
 language plpgsql
