@@ -13,6 +13,7 @@ import {
   Shield,
   User,
   Wallet,
+  Settings,
 } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
@@ -40,7 +41,6 @@ import { SideSheet } from "@/components/sooqy/side-sheet";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
-import { Settings } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   validateSearch: (s: Record<string, unknown>): { setup?: boolean; public_id?: string } => ({
