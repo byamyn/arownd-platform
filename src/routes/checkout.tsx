@@ -68,7 +68,7 @@ function CheckoutPage() {
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("home");
   const [wilayaId, setWilayaId] = useState<number | null>(null);
   const [commune, setCommune] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
+  const paymentMethod: PaymentMethod = "cod";
   const [fullName, setFullName] = useState(user?.user_metadata?.["full_name"] ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState("");
