@@ -45,6 +45,8 @@ begin
   from public.merchant_orders
   where order_id = _order_id;
 
+  perform set_config('arownd.internal_aggregate_order_status', 'on', true);
+
   update public.orders
   set subtotal = coalesce((
         select sum(subtotal) from public.merchant_orders
@@ -60,6 +62,8 @@ begin
       ), 0),
       status = coalesce(next_status, 'pending')
   where id = _order_id;
+
+  perform set_config('arownd.internal_aggregate_order_status', '', true);
 end;
 $function$;
 revoke all on function public.refresh_parent_order_totals(uuid)
