@@ -1,5 +1,5 @@
 /**
- * Service Worker — SOOQY
+ * Service Worker — Arownd
  *
  * الاستراتيجية:
  *  • هيكل التطبيق (HTML/JS/CSS): precache عند التثبيت + stale-while-revalidate
@@ -98,7 +98,7 @@ self.addEventListener("fetch", (event) => {
           const cached = await caches.match("/");
           return (
             cached ||
-            new Response("<!doctype html><meta charset=utf-8><title>SOOQY</title>", {
+            new Response("<!doctype html><meta charset=utf-8><title>Arownd</title>", {
               status: 200,
               headers: { "Content-Type": "text/html; charset=utf-8" },
             })

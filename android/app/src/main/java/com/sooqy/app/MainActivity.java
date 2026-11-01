@@ -7,7 +7,7 @@ import android.webkit.WebView;
 import com.getcapacitor.BridgeActivity;
 
 public class MainActivity extends BridgeActivity {
-    private static final String TAG = "SooQy";
+    private static final String TAG = "Arownd";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

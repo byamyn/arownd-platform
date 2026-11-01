@@ -1,7 +1,7 @@
 import type { StyleSpecification } from "maplibre-gl";
 
 /**
- * نمط الخريطة الخاص بـ SooQy — طبقات متجهية (OpenMapTiles عبر OpenFreeMap)
+ * نمط خريطة Arownd — طبقات متجهية (OpenMapTiles عبر OpenFreeMap)
  * مصمّمة يدويًا على هوية Indigo بدل بلاطات OSM النقطية القديمة.
  *
  * لماذا متجهي؟
@@ -412,7 +412,7 @@ const layers: unknown[] = [
  * النمط المتجهي النهائي — يُبنى كبنية بيانات ثم يُصرَّح كنوع MapLibre
  * (تعبيرات MapLibre أوسع من أنواع TS المفردة، والتحقق يجري عبر tsc للمكوّن).
  */
-export const SOOQY_VECTOR_STYLE = {
+export const AROWND_VECTOR_STYLE = {
   version: 8,
   name: "Arownd",
   glyphs: GLYPHS_URL,

@@ -54,7 +54,7 @@ export function logEvent(level: LogLevel, event: string, details?: Record<string
     // تجاهل خطأ التخزين المحلي (مثل وضع التصفح المتخفي)
   }
 
-  const prefix = `[SooQy][${level}] ${event}`;
+  const prefix = `[Arownd][${level}] ${event}`;
 
   if (level === "error") console.error(prefix, entry.details);
   else if (level === "warn") console.warn(prefix, entry.details);
@@ -151,7 +151,7 @@ export function exposeDiagnosticsToConsole() {
   window.__sooqyLogs = (asJson?: boolean): LogEntry[] | void => {
     const logs = readLogs();
     if (asJson) return logs;
-    console.groupCollapsed(`[SooQy] سجلات التشخيص (${logs.length})`);
+    console.groupCollapsed(`[Arownd] سجلات التشخيص (${logs.length})`);
     for (const entry of logs) {
       const line = `${entry.time} [${entry.level}] ${entry.event}`;
       if (entry.details) console.info(line, entry.details);
@@ -162,7 +162,7 @@ export function exposeDiagnosticsToConsole() {
   };
   window.__sooqyClearLogs = () => {
     clearDiagnosticLogs();
-    console.info("[SooQy] تم مسح سجلات التشخيص");
+    console.info("[Arownd] تم مسح سجلات التشخيص");
   };
   window.__sooqyDeviceInfo = () => getDeviceInfo();
 }
