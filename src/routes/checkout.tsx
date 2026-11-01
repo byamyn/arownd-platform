@@ -6,7 +6,6 @@ import {
   Check,
   ChevronLeft,
   CreditCard,
-  Home,
   MapPin,
   PackageCheck,
   RotateCcw,
@@ -27,6 +26,7 @@ import {
   getOffersByIds,
   isValidDzPhone,
   normalizePhone,
+  fetchMyProfile,
   primaryImage,
 } from "@/lib/sooqy";
 import { type DeliveryType } from "@/lib/shipping";
@@ -72,6 +72,16 @@ function CheckoutPage() {
   const [fullName, setFullName] = useState(user?.user_metadata?.["full_name"] ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState("");
+  const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
+  const profilePrefilled = useRef(false);
+  useEffect(() => {
+    if (!profile.data || profilePrefilled.current) return;
+    profilePrefilled.current = true;
+    setFullName(profile.data.full_name ?? user?.user_metadata?.["full_name"] ?? "");
+    setPhone(profile.data.phone ?? user?.phone ?? "");
+    setWilayaId(profile.data.wilaya_id ?? null);
+    setCommune(profile.data.commune ?? "");
+  }, [profile.data, user]);
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
   useEffect(() => {
@@ -103,8 +113,8 @@ function CheckoutPage() {
   const stepValid: Record<number, boolean> = {
     0: bag.items.length > 0 && !!offers.data && problems.length === 0,
     1: !!wilayaId && !!commune.trim() && !!fullName.trim() && isValidDzPhone(phone.trim()),
-    2: true,
-    3: deliveryType === "desk" || !!address.trim(),
+    2: !!address.trim(),
+    3: true,
   };
 
   if (!ready) return null;
@@ -395,49 +405,19 @@ function CheckoutPage() {
             <Truck className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_delivery_heading")}</h2>
           </div>
-          <div className="grid grid-cols-2 gap-2">
-            {(
-              [
-                {
-                  id: "home",
-                  label: t("checkout_delivery_home"),
-                  icon: <Home className="size-5" />,
-                },
-                {
-                  id: "desk",
-                  label: t("checkout_delivery_desk"),
-                  icon: <MapPin className="size-5" />,
-                },
-              ] as const
-            ).map((option) => (
-              <button
-                key={option.id}
-                type="button"
-                onClick={() => setDeliveryType(option.id)}
-                className={cn(
-                  "rounded-2xl border p-3 text-sm font-bold transition",
-                  deliveryType === option.id
-                    ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
-                    : "border-border bg-card text-muted-foreground",
-                )}
-              >
-                {option.icon}
-                {option.label}
-                <span className="mt-1 block text-[11px] font-medium opacity-70">
-                  {option.id === "desk" ? t("checkout_fee_free") : t("checkout_fee_pending")}
-                </span>
-              </button>
-            ))}
+          <div className="rounded-2xl border border-border bg-background p-3 text-sm">
+            <p className="mb-2 text-xs font-bold text-muted-foreground">بيانات التوصيل من ملفك الشخصي</p>
+            <div className="flex justify-between gap-3"><span className="text-muted-foreground">الاسم</span><strong>{fullName || "—"}</strong></div>
+            <div className="mt-1 flex justify-between gap-3"><span className="text-muted-foreground">رقم الهاتف</span><strong dir="ltr">{phone || "—"}</strong></div>
+            <div className="mt-1 flex justify-between gap-3"><span className="text-muted-foreground">الولاية والبلدية</span><strong>{[profile.data?.commune, profile.data?.wilaya_id != null ? String(profile.data.wilaya_id).padStart(2, "0") : ""].filter(Boolean).join("، ") || "—"}</strong></div>
           </div>
-          {deliveryType === "home" && (
-            <textarea
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              placeholder={t("checkout_address_detail_placeholder")}
-              rows={3}
-              className="w-full rounded-xl border bg-background px-3 py-2 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
-            />
-          )}
+          <textarea
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            placeholder={t("checkout_address_detail_placeholder")}
+            rows={3}
+            className="w-full rounded-xl border bg-background px-3 py-2 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
+          />
           <p className="flex items-start gap-2 rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             <Truck className="mt-0.5 size-4 shrink-0 text-accent-ink" />
             {t("checkout_fee_note")}
