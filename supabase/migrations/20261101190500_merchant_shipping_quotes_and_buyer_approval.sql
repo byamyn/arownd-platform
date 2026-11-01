@@ -204,7 +204,10 @@ begin
   insert into public.notifications (user_id, type, title, body, data)
   values (
     mo.customer_id, 'order', 'عرض المتجر جاهز للموافقة',
-    'حدد المتجر رسوم التوصيل. راجع سعر المنتجات والإجمالي ثم وافق أو ارفض هذا الطلب.',
+    'قيمة المنتجات: ' || mo.subtotal::text || ' دج، التوصيل: ' ||
+      mo.shipping_fee::text || ' دج، الإجمالي: ' ||
+      (mo.subtotal + mo.shipping_fee)::text ||
+      ' دج. راجع العرض ووافق أو ارفض هذا الطلب.',
     jsonb_build_object(
       'order_id', mo.order_id,
       'merchant_order_id', mo.id,
