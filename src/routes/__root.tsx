@@ -175,7 +175,15 @@ function RootComponent() {
   // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
   const isStudio =
     location.pathname === "/studio" || location.pathname.startsWith("/studio/");
-  const isAccountSubpage = ["/settings", "/notifications", "/wallet", "/create-store"].includes(location.pathname);
+  const isAccountSubpage = [
+    "/settings",
+    "/notifications",
+    "/wallet",
+    "/create-store",
+    "/orders",
+    "/reservations",
+    "/favorites",
+  ].includes(location.pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
