@@ -171,11 +171,14 @@ export function WilayaSelect({
   className?: string;
   required?: boolean;
 }) {
-  const { data = [] } = useQuery(wilayasQuery);
+  const { data = [], isLoading, isError, refetch } = useQuery(wilayasQuery);
   return (
+    <div className="w-full">
     <select
       value={value ?? ""}
       required={required}
+      disabled={isLoading || isError}
+      aria-busy={isLoading}
       aria-label="اختيار الولاية"
       onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
       className={cn(
@@ -183,18 +186,20 @@ export function WilayaSelect({
         className,
       )}
     >
-      {allLabel !== null ? (
-        <option value="">{allLabel}</option>
-      ) : (
-        <option value="" disabled>
-          اختر الولاية
-        </option>
-      )}
+      <option value="" disabled>
+        {isLoading ? "جارٍ تحميل الولايات..." : isError ? "تعذر تحميل الولايات" : allLabel ?? "اختر الولاية"}
+      </option>
       {data.map((w) => (
         <option key={w.id} value={w.id}>
           {String(w.id).padStart(2, "0")} - {w.name_ar}
         </option>
       ))}
     </select>
+    {isError && (
+      <button type="button" onClick={() => void refetch()} className="mt-1 text-xs font-semibold text-primary underline">
+        إعادة تحميل الولايات
+      </button>
+    )}
+    </div>
   );
 }
