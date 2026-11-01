@@ -14,13 +14,12 @@ import {
   merchantUpdateOrderNote,
   fetchMyStore,
 } from "@/lib/sooqy";
-import { Link, useRouter } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { showError, showSuccess } from "@/lib/feedback";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useState } from "react";
-import { goBackOrTo } from "@/lib/nav";
 
 export const Route = createFileRoute("/studio/orders/$orderId")({
   component: StudioOrderDetailPage,
@@ -34,7 +33,7 @@ function StudioOrderDetailPage() {
   const [shippingFee, setShippingFee] = useState("");
   const [savingQuote, setSavingQuote] = useState(false);
   const [savingDecision, setSavingDecision] = useState(false);
-  const router = useRouter();
+  const navigate = useNavigate();
   const qc = useQueryClient();
 
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
@@ -110,7 +109,7 @@ function StudioOrderDetailPage() {
     return (
       <div className="p-4 text-center">
         <p className="text-sm text-muted-foreground">{t("studio_order_unavailable")}</p>
-        <button onClick={() => goBackOrTo(router, "/studio")}>{t("studio_back")}</button>
+        <button onClick={() => navigate({ to: "/studio" })}>{t("studio_back")}</button>
       </div>
     );
   }
