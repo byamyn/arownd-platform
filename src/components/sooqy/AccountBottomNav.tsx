@@ -23,7 +23,9 @@ export function AccountBottomNav({ pathname }: { pathname: string }) {
   if (accountType.data === "merchant") {
     return isMerchantArea ? <StudioNav /> : null;
   }
-  // لا نعرض تنقل العميل للحسابات غير الشخصية؛ تنقل التوصيل خارج هذا النطاق.
-  if (accountType.data !== "personal") return null;
-  return <BottomNav />;
+  // أبقِ سلوك تنقل شركات التوصيل كما هو؛ لا يشمله تحديث تنقل الحسابات الشخصية والتجارية.
+  if (accountType.data === "personal" || accountType.data === "delivery_company") {
+    return <BottomNav />;
+  }
+  return null;
 }
