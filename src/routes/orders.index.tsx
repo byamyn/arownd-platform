@@ -6,7 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
-import { archiveMyActivity, cancelMyOrder, fetchMyOrders } from "@/lib/sooqy";
+import { archiveMyActivity, cancelMyOrder, customerRespondToMerchantOrder, fetchMyOrders } from "@/lib/sooqy";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { cn } from "@/lib/utils";
@@ -41,6 +41,7 @@ function OrdersPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<Tab>("all");
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
+  const [respondingQuoteId, setRespondingQuoteId] = useState<string | null>(null);
   const orders = useQuery({
     queryKey: ["my-orders"],
     queryFn: fetchMyOrders,
@@ -51,6 +52,13 @@ function OrdersPage() {
   useRealtimeSubscription({
     table: "orders",
     filter: user?.id ? `user_id=eq.${user.id}` : undefined,
+    queryKeys: [["my-orders"]],
+    enabled: !!user,
+  });
+
+  useRealtimeSubscription({
+    table: "merchant_orders",
+    filter: user?.id ? `customer_id=eq.${user.id}` : undefined,
     queryKeys: [["my-orders"]],
     enabled: !!user,
   });
@@ -196,6 +204,86 @@ function OrdersPage() {
                   )}
                 </div>
 
+                {(o.merchant_orders ?? []).map((suborder) => (
+                  <div
+                    key={suborder.id}
+                    className="mx-4 mt-3 space-y-2 rounded-2xl border border-border bg-background p-3"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <p className="text-sm font-bold">
+                        {suborder.store?.name ?? t("orders_store_quote_heading")}
+                      </p>
+                      <OrderStatusBadge status={suborder.status} />
+                    </div>
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="text-muted-foreground">{t("orders_items_subtotal")}</span>
+                      <b>{formatDA(suborder.subtotal)}</b>
+                    </div>
+                    {suborder.status !== "pending" && (
+                      <div className="flex items-center justify-between text-xs">
+                        <span className="text-muted-foreground">{t("orders_shipping_fee")}</span>
+                        <b>{formatDA(suborder.shipping_fee)}</b>
+                      </div>
+                    )}
+                    {suborder.status !== "cancelled" && (
+                      <div className="flex items-center justify-between border-t border-border pt-2 text-sm">
+                        <span className="font-semibold">{t("orders_store_total")}</span>
+                        <b className="text-accent-ink">
+                          {formatDA(suborder.subtotal + suborder.shipping_fee)}
+                        </b>
+                      </div>
+                    )}
+                    {suborder.status === "quoted" && (
+                      <>
+                        <p className="text-xs leading-relaxed text-muted-foreground">
+                          {t("orders_quote_waiting")}
+                        </p>
+                        <div className="grid grid-cols-2 gap-2">
+                          <button
+                            type="button"
+                            disabled={respondingQuoteId === suborder.id}
+                            onClick={async () => {
+                              setRespondingQuoteId(suborder.id);
+                              try {
+                                await customerRespondToMerchantOrder(suborder.id, true);
+                                await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                                showSuccess(t("orders_quote_accepted"));
+                              } catch (error) {
+                                showError(error);
+                              } finally {
+                                setRespondingQuoteId(null);
+                              }
+                            }}
+                            className="min-h-10 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
+                          >
+                            {t("orders_quote_accept")}
+                          </button>
+                          <button
+                            type="button"
+                            disabled={respondingQuoteId === suborder.id}
+                            onClick={async () => {
+                              if (!window.confirm(t("orders_quote_decline") + "?")) return;
+                              setRespondingQuoteId(suborder.id);
+                              try {
+                                await customerRespondToMerchantOrder(suborder.id, false);
+                                await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                                showSuccess(t("orders_quote_declined"));
+                              } catch (error) {
+                                showError(error);
+                              } finally {
+                                setRespondingQuoteId(null);
+                              }
+                            }}
+                            className="min-h-10 rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-xs font-bold text-danger disabled:opacity-50"
+                          >
+                            {t("orders_quote_decline")}
+                          </button>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                ))}
+
                 <div className="mx-4 mt-3 flex items-center justify-between gap-3 rounded-2xl bg-primary-soft/50 px-3 py-3">
                   <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
                     <Truck className="size-3.5" />
@@ -213,7 +301,7 @@ function OrdersPage() {
                 >
                   {t("orders_track")}
                 </Link>
-                {o.status === "pending" && (
+                {o.status === "pending" && !(o.merchant_orders ?? []).some((suborder) => suborder.status !== "pending") && (
                   <button
                     type="button"
                     disabled={cancellingOrderId === o.id}
