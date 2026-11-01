@@ -89,7 +89,7 @@ function OrdersPage() {
         keywords={t("orders_seo_keywords")}
         ogType="website"
       />
-      <div className="space-y-4 px-4 pt-5">
+      <div className="space-y-4 px-4 pb-6 pt-5">
         <header className="flex items-center gap-2 py-1">
           <button
             type="button"
