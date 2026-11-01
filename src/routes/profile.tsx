@@ -134,7 +134,7 @@ function ProfilePage() {
     if (
       public_id ||
       !user ||
-      !accountTypeQuery.isFetched ||
+      !accountTypeQuery.isSuccess ||
       !roleQuery.isSuccess ||
       isAdmin
     ) return;
@@ -235,6 +235,51 @@ function ProfilePage() {
             {t("profile_login_action")}
           </Link>
         </div>
+      </AppShell>
+    );
+  }
+
+  if (!isAdmin && (accountTypeQuery.isLoading || roleQuery.isLoading)) {
+    return (
+      <AppShell className="space-y-4 pb-24 pt-6">
+        <PageHeader title={t("profile_hub_title")} />
+        <div className="h-36 animate-pulse rounded-3xl bg-muted" />
+      </AppShell>
+    );
+  }
+
+  if (!isAdmin && (accountTypeQuery.isError || roleQuery.isError)) {
+    return (
+      <AppShell className="space-y-4 pb-24 pt-6">
+        <PageHeader title={t("profile_hub_title")} />
+        <ErrorState
+          scope="profile:account-identity"
+          error={accountTypeQuery.error ?? roleQuery.error}
+          onRetry={() => {
+            void accountTypeQuery.refetch();
+            void roleQuery.refetch();
+          }}
+        />
+      </AppShell>
+    );
+  }
+
+  if (
+    !isAdmin &&
+    accountTypeQuery.data === "merchant" &&
+    !roleQuery.data?.includes("merchant")
+  ) {
+    return (
+      <AppShell className="space-y-4 pb-24 pt-6">
+        <PageHeader title={t("profile_hub_title")} />
+        <ErrorState
+          scope="profile:account-identity"
+          error={new Error(t("profile_account_identity_error"))}
+          onRetry={() => {
+            void accountTypeQuery.refetch();
+            void roleQuery.refetch();
+          }}
+        />
       </AppShell>
     );
   }
