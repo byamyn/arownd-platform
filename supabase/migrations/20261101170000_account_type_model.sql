@@ -65,7 +65,10 @@ begin
     raise exception 'profile_not_found';
   end if;
 
-  if current_type = 'delivery_company'::public.account_type then
+  if current_type = 'delivery_company'::public.account_type
+     or exists (
+       select 1 from public.delivery_companies dc where dc.user_id = auth.uid()
+     ) then
     raise exception 'account_type_conflict';
   end if;
 
@@ -101,7 +104,12 @@ begin
     raise exception 'profile_not_found';
   end if;
 
-  if current_type = 'merchant'::public.account_type then
+  if current_type = 'merchant'::public.account_type
+     or exists (
+       select 1 from public.user_roles ur
+       where ur.user_id = new.user_id
+         and ur.role = 'merchant'::public.app_role
+     ) then
     raise exception 'account_type_conflict';
   end if;
 
