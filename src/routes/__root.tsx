@@ -196,7 +196,7 @@ function RootComponent() {
               className={
                 isAuth || isStudio
                   ? "min-h-screen w-full max-w-none pb-0"
-                  : "mx-auto min-h-screen max-w-xl " + (isAccountSubpage ? "pb-0" : "pb-28")
+                  : "mx-auto min-h-screen max-w-xl " + (isAccountSubpage || location.pathname === "/profile" ? "pb-0" : "pb-28")
               }
             >
               <PageTransition>
