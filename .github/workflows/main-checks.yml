@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - arownd-premium
   pull_request:
     branches:
       - main
