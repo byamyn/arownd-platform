@@ -29,7 +29,7 @@ join public.user_roles ur
  and ur.role = 'merchant'::public.app_role;
 ```
 
-The query should return no rows before applying `20261101170000_account_type_model.sql`. The migration also fails safely if a delivery-company owner or merchant-role owner has no matching `profiles.user_id` row.
+The query should return no rows before applying `20261101170000_account_type_model.sql`. Also inspect store owners without a merchant role and owners with multiple stores; the migration intentionally stops instead of inferring authorization from store ownership. The migration also fails safely if a delivery-company owner or merchant-role owner has no matching `profiles.user_id` row, if an existing store owner lacks the trusted merchant role, or if an owner has multiple stores (the current workspace model is one store per account).
 
 ## Delivery identity
 
