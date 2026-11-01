@@ -175,6 +175,7 @@ export function OrderStatusBadge({ status, className }: { status: string; classN
   const { t } = useTranslation();
   const map: Record<string, { key: string; cls: string }> = {
     pending: { key: "status_pending", cls: "bg-warning-soft text-warning" },
+    quoted: { key: "status_quoted", cls: "bg-warning-soft text-warning" },
     confirmed: { key: "status_confirmed", cls: "bg-primary-soft text-accent-ink" },
     shipped: { key: "status_shipped", cls: "bg-blue-soft text-blue" },
     delivered: { key: "status_delivered", cls: "bg-success-soft text-success" },
