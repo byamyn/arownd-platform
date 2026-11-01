@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/lib/i18n";
-import { fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
+import { fetchMyRoles, fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
 import { childrenOf } from "@/lib/taxonomy";
 import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
 import { geoErrorMessage, useGeo } from "@/lib/geo";
@@ -35,6 +35,7 @@ function StoreSettingsPage() {
   const { user, ready } = useAuth();
   const qc = useQueryClient();
   const { ask, locating } = useGeo();
+  const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
 
   const locate = async () => {
@@ -114,6 +115,34 @@ function StoreSettingsPage() {
         </Link>
       </div>
     );
+  if (roles.isLoading) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+  if (roles.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title={t("studio_store_info")} back="/profile" />
+        <ErrorState scope="studio:settings:roles" error={roles.error} onRetry={() => roles.refetch()} />
+      </div>
+    );
+  }
+  if (!roles.data?.includes("merchant")) {
+    return (
+      <div className="space-y-4 px-4 pt-20 text-center">
+        <Store className="mx-auto size-12 text-accent-ink" />
+        <h1 className="text-h1 text-foreground">{t("studio_title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("studio_login_store_settings")}</p>
+        <Link to="/profile" className="btn-primary mx-auto inline-flex px-8">
+          {t("profile_hub_title")}
+        </Link>
+      </div>
+    );
+  }
+
   if (store.isLoading) {
     return (
       <div
