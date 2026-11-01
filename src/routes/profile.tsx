@@ -475,7 +475,7 @@ function ProfilePage() {
         </section>
 
         {accountTypeQuery.data === "personal" && (
-        <section className="rounded-2xl border border-border bg-card p-4">
+          <section className="rounded-2xl border border-border bg-card p-4">
           <div className="flex flex-wrap items-start justify-between gap-3">
             <div className="min-w-0">
               <h3 className="font-bold text-foreground">{t("profile_visibility_title")}</h3>
@@ -504,7 +504,7 @@ function ProfilePage() {
               {t("profile_preview_public")}
             </Link>
           )}
-        </section>
+          </section>
         )}
 
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
