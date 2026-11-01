@@ -165,7 +165,7 @@ export async function fetchUnassignedShipments() {
   const { data, error } = await supabase
     .from("shipments")
     .select("*, order:orders!inner(id, full_name, phone, commune, wilaya_id, delivery_type)")
-    .is("company_id", null)
+    .or("company_id.is.null,status.eq.rejected")
     .in("status", ["pending", "rejected"])
     .eq("order.delivery_type", "home")
     .order("created_at", { ascending: true });
