@@ -100,7 +100,7 @@ function ProfilePage() {
   const [visibilityBusy, setVisibilityBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  // يبقى الملف الشخصي متاحًا للتاجر أيضًا؛ الانتقال إلى الاستوديو إجراء اختياري.
+  // نوع الحساب يحدد مساحة العمل؛ لا يُستنتج من بيانات العميل أو metadata.
   const [editing, setEditing] = useState(false);
   const [setupOpened, setSetupOpened] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -249,6 +249,7 @@ function ProfilePage() {
     try {
       await setMyProfileVisibility(!(profile.data?.is_public ?? false));
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
+      await qc.invalidateQueries({ queryKey: ["public-profile", user.id] });
       showSuccess(t((profile.data?.is_public ?? false) ? "profile_visibility_private" : "profile_visibility_public"));
     } catch (e) {
       showError(e);
