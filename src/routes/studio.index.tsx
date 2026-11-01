@@ -23,7 +23,6 @@ import { logNetError } from "@/lib/conn";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useAuth } from "@/lib/auth";
 import {
-  becomeMerchant,
   fetchMyStore,
   fetchStoreOrderItems,
   fetchStoreReservations,
@@ -219,7 +218,6 @@ function StudioPage() {
     return (
       <MerchantOnboarding
         onSubmit={async (input) => {
-          await becomeMerchant(); // يضمن دور التاجر (idempotent) قبل إنشاء المتجر
           await merchantCreateStore(input);
           await qc.invalidateQueries({ queryKey: ["my-store"] });
           await store.refetch();
