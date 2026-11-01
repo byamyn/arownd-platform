@@ -71,6 +71,7 @@ export const wilayaFixtures = [
 export const state = {
   sessionUser: null as FakeUser | null,
   stores: [] as Record<string, unknown>[],
+  userRoles: [] as Record<string, unknown>[],
   offers: [] as Record<string, unknown>[],
   products: [] as Record<string, unknown>[],
   images: [] as Record<string, unknown>[],
@@ -83,6 +84,7 @@ export const state = {
 export function resetSupabaseFake() {
   state.sessionUser = null;
   state.stores = [store1];
+  state.userRoles = [];
   state.offers = [offer1];
   state.products = [product1];
   state.images = [];
@@ -109,6 +111,8 @@ function tableData(table: string): Record<string, unknown>[] {
   switch (table) {
     case "stores":
       return state.stores;
+    case "user_roles":
+      return state.userRoles.filter((r) => r["user_id"] === state.sessionUser?.id);
     case "store_offers":
       return state.offers;
     case "products":
@@ -238,6 +242,31 @@ function makeBuilder(table: string) {
 async function rpc(name: string, _params?: Record<string, unknown>) {
   state.calls.push(`rpc.${name}`);
   switch (name) {
+    case "create_my_store": {
+      const params = (_params ?? {}) as Record<string, unknown>;
+      const store = {
+        id: "store-created",
+        owner_id: state.sessionUser?.id,
+        name: params["_store_name"],
+        slug: params["_slug"],
+        phone: params["_phone"],
+        whatsapp: params["_whatsapp"],
+        wilaya_id: params["_wilaya_id"],
+        commune: params["_commune"],
+        address_line: params["_address_line"],
+        latitude: params["_latitude"],
+        longitude: params["_longitude"],
+        opening_hours: params["_opening_hours"],
+        category: params["_category"],
+        subcategories: params["_subcategories"] ?? [],
+        is_verified: false,
+        commission_rate: 0,
+        created_at: "2026-01-01T10:00:00Z",
+      };
+      state.stores.unshift(store);
+      state.userRoles.push({ user_id: state.sessionUser?.id, role: "merchant" });
+      return ok("store-created");
+    }
     case "become_merchant":
     case "increment_product_view":
     case "cancel_reservation":
