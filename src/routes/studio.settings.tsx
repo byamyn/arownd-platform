@@ -15,6 +15,7 @@ import { StoreLocationPicker } from "@/components/sooqy/StoreLocationPicker";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
+import { StudioNav } from "@/components/sooqy/StudioNav";
 
 export const Route = createFileRoute("/studio/settings")({
   head: () => ({
@@ -219,6 +220,7 @@ function StoreSettingsPage() {
         subtitle={t("studio_settings_subtitle")}
         back="/studio"
       />
+      <StudioNav />
       <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-5 text-white shadow-lg sm:p-6">
         <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
           AROWND · STORE PROFILE

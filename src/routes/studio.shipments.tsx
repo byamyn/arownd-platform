@@ -14,6 +14,7 @@ import { formatDate } from "@/lib/market";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { cn } from "@/lib/utils";
+import { StudioNav } from "@/components/sooqy/StudioNav";
 
 export const Route = createFileRoute("/studio/shipments")({
   component: StudioShipmentsPage,
@@ -108,7 +109,10 @@ function StudioShipmentsPage() {
 
   return (
     <div className="min-h-screen bg-background pb-24">
-      <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+      <PageHeader title={t("studio_shipments")} back="/studio" />
+      <div className="mx-auto max-w-screen-2xl px-4 pt-3 sm:px-6">
+        <StudioNav />
+      </div>
 
       <div className="mx-auto max-w-6xl space-y-5 px-4 py-5 sm:px-6">
         {/* ملخص الحالات */}

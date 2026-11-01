@@ -42,6 +42,7 @@ import { AppShell } from "@/components/sooqy/app-shell";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { ErrorState } from "@/components/sooqy/error-state";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/profile")({
   validateSearch: (s: Record<string, unknown>): { setup?: boolean } => ({
@@ -53,6 +54,7 @@ export const Route = createFileRoute("/profile")({
 
 function ProfilePage() {
   const { user, ready } = useAuth();
+  const { t } = useTranslation();
   const { setup } = Route.useSearch();
   const navigate = useNavigate();
   const qc = useQueryClient();
@@ -117,14 +119,14 @@ function ProfilePage() {
   if (!user) {
     return (
       <AppShell className="pb-24 pt-6">
-        <PageHeader title="الملف الشخصي" subtitle="حسابك وبياناتك في مكان واحد" />
+        <PageHeader title={t("profile_hub_title")} subtitle={t("profile_hub_subtitle")} />
         <div className="rounded-2xl border border-border bg-card p-6 text-center">
           <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary-soft text-accent-ink">
             <User className="size-7" />
           </span>
-          <p className="mt-3 text-body font-bold text-foreground">سجّل الدخول لتخصيص ملفك</p>
+          <p className="mt-3 text-body font-bold text-foreground">{t("profile_signin_title")}</p>
           <p className="mt-1 text-sm text-muted-foreground">
-            تابع طلباتك ومفضلتك وإعدادات حسابك في مكان واحد
+            {t("profile_signin_hint")}
           </p>
           <Link to="/auth" className="btn-primary mt-4 w-full">
             تسجيل الدخول
@@ -142,12 +144,12 @@ function ProfilePage() {
   const save = async () => {
     const cleanName = fullName.trim();
     if (!cleanName) {
-      toast.error("اكتب اسمك الكامل.");
+      toast.error(t("profile_name_required"));
       return;
     }
     const p = normalizePhone(phone.trim());
     if (p && !isValidDzPhone(p)) {
-      toast.error("رقم الهاتف غير صالح — يجب أن يبدأ بـ 05 أو 06 أو 07.");
+      toast.error(t("profile_phone_invalid"));
       return;
     }
     setBusy(true);
@@ -171,9 +173,9 @@ function ProfilePage() {
       await supabase.auth.updateUser({ data: { full_name: cleanName } });
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
       if (avatarSkipped) {
-        toast.warning("حُفظت بياناتك، لكن الصورة الشخصية تحتاج تحديث قاعدة البيانات.");
+        toast.warning(t("profile_saved_schema_warning"));
       } else {
-        showSuccess("تم حفظ الملف الشخصي ✅");
+        showSuccess(t("profile_saved"));
       }
       setEditing(false);
       if (setup) {
@@ -198,14 +200,15 @@ function ProfilePage() {
       />
       <AppShell className="space-y-5 pb-24 pt-6">
         <PageHeader
-          title="الملف الشخصي"
-          subtitle="حسابك وبياناتك في مكان واحد"
+          title={t("profile_hub_title")}
+          subtitle={t("profile_hub_subtitle")}
+          showLanguageToggle
           action={
             <div className="flex items-center gap-2">
               {myStore.data && (
                 <Link
                   to="/studio"
-                  aria-label="استوديو التاجر"
+                  aria-label={t("profile_merchant_studio")}
                   className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-accent-ink-foreground shadow-soft transition hover:opacity-90 active:scale-95"
                 >
                   <Store className="size-4.5" />
@@ -306,17 +309,17 @@ function ProfilePage() {
               )}
               {profile.data?.is_phone_verified && (
                 <span className="flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-bold text-success">
-                  <BadgeCheck className="size-3.5" /> هاتف موثّق
+                  <BadgeCheck className="size-3.5" /> {t("profile_phone_verified")}
                 </span>
               )}
               {myStore.data && (
                 <span className="flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-xs font-bold text-accent-ink">
-                  <Store className="size-3.5" /> تاجر
+                  <Store className="size-3.5" /> {t("profile_merchant_role")}
                 </span>
               )}
               {isAdmin && (
                 <span className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
-                  <Shield className="size-3.5" /> مدير
+                  <Shield className="size-3.5" /> {t("profile_admin_role")}
                 </span>
               )}
             </div>
@@ -325,18 +328,18 @@ function ProfilePage() {
 
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
         <section className="space-y-2" aria-label="نشاط الحساب">
-          <SectionTitle>نشاطك</SectionTitle>
+          <SectionTitle>{t("profile_activity")}</SectionTitle>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-              { to: "/orders", Icon: Package, label: "طلباتي", value: orders.data?.length ?? 0 },
+              { to: "/orders", Icon: Package, label: t("orders"), value: orders.data?.length ?? 0 },
               {
                 to: "/reservations",
                 Icon: CalendarDays,
-                label: "حجوزاتي",
+                label: t("reservations"),
                 value: reservations.data?.length ?? 0,
               },
-              { to: "/favorites", Icon: Heart, label: "المفضلة", value: favCount },
-              { to: "/wallet", Icon: Wallet, label: "المحفظة", value: null },
+              { to: "/favorites", Icon: Heart, label: t("favorites"), value: favCount },
+              { to: "/wallet", Icon: Wallet, label: t("wallet"), value: null },
             ].map(({ to, Icon, label, value }) => (
               <Link
                 key={to}
@@ -365,26 +368,26 @@ function ProfilePage() {
 
         {/* إدارة الحساب — مجموعات مرتبة */}
         <section className="space-y-2">
-          <SectionTitle>إدارة الحساب</SectionTitle>
+          <SectionTitle>{t("profile_account_management")}</SectionTitle>
           <MenuCard>
             <MenuRow
               icon={User}
-              label="البيانات الشخصية"
-              hint="الاسم، الهاتف، الولاية والبلدية"
+              label={t("profile_personal_data")}
+              hint={t("profile_personal_data_hint")}
               onClick={() => setEditing(true)}
             />
             {myStore.data && (
               <MenuRow
                 icon={Store}
                 label="استوديو التاجر"
-                hint="إدارة المنتجات والطلبات والمتجر"
+                hint={t("profile_merchant_studio_hint")}
                 to="/studio"
               />
             )}
             <MenuRow
               icon={Bell}
-              label="الإشعارات"
-              hint="طلباتك وحصريات متجرك"
+              label={t("profile_notifications")}
+              hint={t("profile_notifications_hint")}
               to="/notifications"
             />
           </MenuCard>
@@ -392,10 +395,10 @@ function ProfilePage() {
 
         {/* الدعم والمعلومات القانونية */}
         <section className="space-y-2">
-          <SectionTitle>الدعم والمعلومات</SectionTitle>
+          <SectionTitle>{t("profile_support_info")}</SectionTitle>
           <MenuCard>
-            <MenuRow icon={HelpCircle} label="المساعدة والدعم" to="/help" />
-            <MenuRow icon={FileText} label="الشروط وسياسة الخصوصية" to="/terms" />
+            <MenuRow icon={HelpCircle} label={t("profile_help_support")} to="/help" />
+            <MenuRow icon={FileText} label={t("profile_terms_privacy")} to="/terms" />
           </MenuCard>
         </section>
 
@@ -409,8 +412,8 @@ function ProfilePage() {
         <SideSheet
           open={editing}
           onOpenChange={setEditing}
-          title="تعديل الملف الشخصي"
-          description="الاسم والهاتف والموقع الذي تُحسب عليه التوصيل والعروض القريبة."
+          title={t("profile_edit_title")}
+          description={t("profile_edit_description")}
           footer={
             <button
               type="button"
@@ -418,7 +421,7 @@ function ProfilePage() {
               disabled={busy}
               className="btn-primary w-full py-3 disabled:opacity-50"
             >
-              {busy ? "جارٍ الحفظ..." : "حفظ التغييرات"}
+              {busy ? t("profile_saving") : t("profile_save_changes")}
             </button>
           }
         >

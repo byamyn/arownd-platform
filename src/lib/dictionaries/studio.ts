@@ -22,6 +22,11 @@ export const studio: DictGroup = {
     studio_status_update_failed: "تعذّر تحديث حالة الطلب.",
     studio_needs_action: "يحتاج إجراء",
     studio_no_pending_orders: "لا توجد طلبات تحتاج إجراء.",
+    studio_nav_overview: "نظرة عامة",
+    studio_nav_shipments: "الشحنات",
+    studio_nav_settings: "إعدادات المتجر",
+    studio_nav_profile: "حسابي",
+    studio_nav_aria: "التنقل في استوديو التاجر",
     studio_title: "استوديو Arownd للتجار",
     studio_subtitle: "إدارة متجرك، منتجاتك وطلباتك بأسلوب احترافي",
 
@@ -248,6 +253,11 @@ export const studio: DictGroup = {
     studio_status_update_failed: "Could not update the order status.",
     studio_needs_action: "Needs action",
     studio_no_pending_orders: "No orders need action.",
+    studio_nav_overview: "Overview",
+    studio_nav_shipments: "Shipments",
+    studio_nav_settings: "Store settings",
+    studio_nav_profile: "My account",
+    studio_nav_aria: "Merchant Studio navigation",
     studio_title: "Arownd Merchant Studio",
     studio_subtitle: "Manage your store, products, and orders professionally",
 

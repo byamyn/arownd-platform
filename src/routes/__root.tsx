@@ -196,7 +196,7 @@ function RootComponent() {
               <>
                 <ConnectionBanner />
                 <DynamicIsland />
-                <BottomNav />
+                {!isStudio && <BottomNav />}
                 <PwaPrompt />
               </>
             )}

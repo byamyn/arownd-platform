@@ -68,6 +68,7 @@ import {
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { cn } from "@/lib/utils";
+import { StudioNav } from "@/components/sooqy/StudioNav";
 
 export const Route = createFileRoute("/studio/")({
   head: () => ({
@@ -506,7 +507,7 @@ function StudioPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-6xl space-y-6 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
+    <div className="mx-auto w-full max-w-screen-2xl space-y-6 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-accent-ink">
@@ -521,7 +522,7 @@ function StudioPage() {
         </div>
         <div className="flex shrink-0 items-center gap-2">
           <Link
-            to="/settings"
+            to="/studio/settings"
             className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground shadow-sm transition hover:border-accent-ink/40 active:scale-95"
             aria-label={t("studio_settings")}
           >
@@ -532,6 +533,8 @@ function StudioPage() {
           </div>
         </div>
       </header>
+
+      <StudioNav />
 
       {/* بطاقة المتجر الرئيسية */}
       <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-accent-ink/20 bg-[#111813] p-4 text-white shadow-lg sm:p-6">
