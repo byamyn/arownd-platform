@@ -996,6 +996,14 @@ export type Database = {
       };
     };
     Functions: {
+      collect_merchant_order_cod: {
+        Args: { _merchant_order_id: string };
+        Returns: Database["public"]["Tables"]["merchant_order_cod_collections"]["Row"];
+      };
+      merchant_reject_order: {
+        Args: { _merchant_order_id: string; _reason?: string | null };
+        Returns: Database["public"]["Tables"]["merchant_orders"]["Row"];
+      };
       admin_set_delivery_company_approval: {
         Args: { _company_id: string; _is_approved: boolean };
         Returns: undefined;
