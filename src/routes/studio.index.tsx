@@ -139,8 +139,16 @@ function StudioPage() {
   const [managingImageOfferId, setManagingImageOfferId] = useState<string | null>(null);
   const [managingImages, setManagingImages] = useState<ImageUploaderItem[]>([]);
 
-  const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
-  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
+  const roles = useQuery({
+    queryKey: ["my-roles"],
+    queryFn: fetchMyRoles,
+    enabled: !!user,
+  });
+  const accountType = useQuery({
+    queryKey: ["my-account-type", user?.id],
+    queryFn: fetchMyAccountType,
+    enabled: !!user,
+  });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   const offers = useQuery({
     queryKey: ["my-store-offers", store.data?.id],
@@ -150,7 +158,7 @@ function StudioPage() {
       const data = await import("@/lib/sooqy").then((m) => m.getStoreOffers(sid));
       return data;
     },
-    enabled: !!store.data,
+    enabled: !!store.data && canManage,
   });
   const reservations = useQuery({
     queryKey: ["store-reservations", store.data?.id],
