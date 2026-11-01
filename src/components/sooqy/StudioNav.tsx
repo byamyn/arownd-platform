@@ -15,16 +15,18 @@ export function StudioNav() {
   const { t } = useTranslation();
 
   return (
-    <nav aria-label={t("studio_nav_aria")} className="sticky top-[4.25rem] z-20 -mx-1 flex gap-1 overflow-x-auto rounded-2xl border border-border bg-card/95 p-1 shadow-sm backdrop-blur sm:mx-0 sm:gap-2 sm:p-1.5">
+    <nav aria-label={t("studio_nav_aria")} className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_28px_rgba(0,0,0,0.06)] backdrop-blur">
+      <div className="mx-auto flex w-full max-w-2xl items-stretch gap-1 px-1">
       {ITEMS.map(({ to, key, Icon }) => {
         const active = pathname === to || (to === "/studio" && pathname.startsWith("/studio/orders/"));
         return (
-          <Link key={to} to={to} aria-current={active ? "page" : undefined} className={cn("flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl px-3 text-xs font-bold transition-colors sm:flex-1 sm:px-4 sm:text-sm", active ? "bg-primary text-primary-foreground shadow-sm" : "text-muted-foreground hover:bg-muted hover:text-foreground")}>
-            <Icon className="size-4 shrink-0" aria-hidden="true" />
+          <Link key={to} to={to} aria-current={active ? "page" : undefined} className={cn("group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold transition-colors", active ? "text-accent-ink" : "text-muted-foreground hover:bg-muted hover:text-foreground")}>
+            <span className={cn("flex size-8 items-center justify-center rounded-xl transition-colors", active ? "bg-primary/15" : "group-active:bg-muted")}><Icon className="size-5 shrink-0" aria-hidden="true" /></span>
             <span>{t(key)}</span>
           </Link>
         );
       })}
+      </div>
     </nav>
   );
 }
