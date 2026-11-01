@@ -169,7 +169,7 @@ function StudioPage() {
     },
     enabled: !!store.data,
   });
-  const canManage = roles.data?.includes("merchant") || !!store.data;
+  const canManage = roles.data?.includes("merchant") ?? false;
   const dashboardError = offers.error ?? reservations.error ?? orders.error;
 
   if (!ready) return null;
@@ -202,7 +202,20 @@ function StudioPage() {
       </div>
     );
   }
-  if (!canManage || !store.data) {
+  if (!canManage) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-16 text-center">
+        <Store className="mx-auto size-12 text-accent-ink" />
+        <h1 className="text-h1 text-foreground">{t("studio_title")}</h1>
+        <p className="text-sm text-muted-foreground">{t("studio_login_store_settings")}</p>
+        <Link to="/profile" className="btn-primary mx-auto inline-flex px-8">
+          {t("profile_hub_title")}
+        </Link>
+      </div>
+    );
+  }
+
+  if (!store.data) {
     return (
       <MerchantOnboarding
         onSubmit={async (input) => {
