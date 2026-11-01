@@ -84,6 +84,9 @@ export type Database = {
           customer_id: string;
           status: string;
           subtotal: number;
+          shipping_fee: number;
+          quoted_at: string | null;
+          responded_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -94,6 +97,9 @@ export type Database = {
           customer_id: string;
           status?: string;
           subtotal?: number;
+          shipping_fee?: number;
+          quoted_at?: string | null;
+          responded_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -104,6 +110,9 @@ export type Database = {
           customer_id?: string;
           status?: string;
           subtotal?: number;
+          shipping_fee?: number;
+          quoted_at?: string | null;
+          responded_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
