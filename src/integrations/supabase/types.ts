@@ -12,6 +12,7 @@ export type Database = {
         Row: {
           merchant_archived_at: string | null;
           id: string;
+          merchant_order_id: string | null;
           offer_id: string | null;
           options: Json;
           order_id: string;
@@ -23,6 +24,7 @@ export type Database = {
         Insert: {
           merchant_archived_at?: string | null;
           id?: string;
+          merchant_order_id?: string | null;
           offer_id?: string | null;
           options?: Json;
           order_id: string;
@@ -34,6 +36,7 @@ export type Database = {
         Update: {
           merchant_archived_at?: string | null;
           id?: string;
+          merchant_order_id?: string | null;
           offer_id?: string | null;
           options?: Json;
           order_id?: string;
@@ -51,6 +54,13 @@ export type Database = {
             referencedColumns: ["id"];
           },
           {
+            foreignKeyName: "order_items_merchant_order_id_fkey";
+            columns: ["merchant_order_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_orders";
+            referencedColumns: ["id"];
+          },
+          {
             foreignKeyName: "order_items_order_id_fkey";
             columns: ["order_id"];
             isOneToOne: false;
@@ -59,6 +69,54 @@ export type Database = {
           },
           {
             foreignKeyName: "order_items_store_id_fkey";
+            columns: ["store_id"];
+            isOneToOne: false;
+            referencedRelation: "stores";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      merchant_orders: {
+        Row: {
+          id: string;
+          order_id: string;
+          store_id: string;
+          customer_id: string;
+          status: string;
+          subtotal: number;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id: string;
+          store_id: string;
+          customer_id: string;
+          status?: string;
+          subtotal?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string;
+          store_id?: string;
+          customer_id?: string;
+          status?: string;
+          subtotal?: number;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "merchant_orders_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "merchant_orders_store_id_fkey";
             columns: ["store_id"];
             isOneToOne: false;
             referencedRelation: "stores";
@@ -714,6 +772,7 @@ export type Database = {
         Row: {
           id: string;
           order_id: string;
+          merchant_order_id: string | null;
           company_id: string | null;
           status: string;
           pickup_address: string | null;
@@ -728,6 +787,7 @@ export type Database = {
         Insert: {
           id?: string;
           order_id: string;
+          merchant_order_id?: string | null;
           company_id?: string;
           status?: string;
           pickup_address?: string;
@@ -742,6 +802,7 @@ export type Database = {
         Update: {
           id?: string;
           order_id?: string;
+          merchant_order_id?: string | null;
           company_id?: string;
           status?: string;
           pickup_address?: string;
@@ -759,6 +820,13 @@ export type Database = {
             columns: ["order_id"];
             isOneToOne: false;
             referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "shipments_merchant_order_id_fkey";
+            columns: ["merchant_order_id"];
+            isOneToOne: false;
+            referencedRelation: "merchant_orders";
             referencedColumns: ["id"];
           },
           {
@@ -869,6 +937,21 @@ export type Database = {
         };
         Returns: string;
       };
+      create_order_with_delivery: {
+        Args: {
+          _address_line: string;
+          _commune: string;
+          _delivery_company_id: string;
+          _delivery_type: string;
+          _full_name: string;
+          _items: Json;
+          _payment_method: string;
+          _phone: string;
+          _receipt_url?: string | null;
+          _wilaya_id: number;
+        };
+        Returns: string;
+      };
       create_reservation: {
         Args: {
           _hours?: number;
@@ -933,6 +1016,50 @@ export type Database = {
           _shipment_id: string;
         };
         Returns: undefined;
+      };
+      merchant_update_merchant_order_status: {
+        Args: {
+          _merchant_order_id: string;
+          _status: string;
+        };
+        Returns: {
+          created_at: string;
+          customer_id: string;
+          id: string;
+          order_id: string;
+          status: string;
+          store_id: string;
+          subtotal: number;
+          updated_at: string;
+        };
+      };
+      merchant_archive_order_items: {
+        Args: {
+          _order_id: string;
+          _store_id: string;
+        };
+        Returns: undefined;
+      };
+      update_shipment_status: {
+        Args: {
+          _note?: string | null;
+          _shipment_id: string;
+          _status: string;
+        };
+        Returns: {
+          company_id: string | null;
+          created_at: string;
+          delivery_address: string | null;
+          fee: number | null;
+          id: string;
+          notes: string | null;
+          order_id: string;
+          pickup_address: string | null;
+          recipient_name: string | null;
+          recipient_phone: string | null;
+          status: string;
+          updated_at: string;
+        };
       };
       is_offer_owner: { Args: { _offer_id: string }; Returns: boolean };
       is_order_merchant: { Args: { _order_id: string }; Returns: boolean };

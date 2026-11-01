@@ -432,7 +432,8 @@ function StoreSettingsPage() {
         </button>
         {form.latitude != null && form.longitude != null && (
           <p className="text-center text-xs font-bold text-success">
-            {t("studio_location_selected")} · {form.latitude.toFixed(5)}, {form.longitude.toFixed(5)}
+            {t("studio_location_selected")} · {form.latitude.toFixed(5)},{" "}
+            {form.longitude.toFixed(5)}
           </p>
         )}
       </section>

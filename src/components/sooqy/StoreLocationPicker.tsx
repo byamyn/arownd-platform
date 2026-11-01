@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import maplibreglWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
@@ -11,6 +11,7 @@ type Props = {
 };
 
 export function StoreLocationPicker({ value, onChange }: Props) {
+  const [mapUnavailable, setMapUnavailable] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markerRef = useRef<maplibregl.Marker | null>(null);
@@ -21,25 +22,29 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     const container = containerRef.current;
     if (!container) return;
     maplibregl.setWorkerUrl(maplibreglWorkerUrl);
-    const initial: [number, number] = value
-      ? [value.lng, value.lat]
-      : [3.0588, 36.7538];
-    const map = new maplibregl.Map({
-      container,
-      style: SOOQY_VECTOR_STYLE as maplibregl.StyleSpecification,
-      center: initial,
-      zoom: value ? 15 : 6,
-      attributionControl: { compact: true },
-      dragRotate: false,
-      touchPitch: false,
-    });
+    const initial: [number, number] = value ? [value.lng, value.lat] : [3.0588, 36.7538];
+    let map: maplibregl.Map;
+    try {
+      map = new maplibregl.Map({
+        container,
+        style: SOOQY_VECTOR_STYLE as maplibregl.StyleSpecification,
+        center: initial,
+        zoom: value ? 15 : 6,
+        attributionControl: { compact: true },
+        dragRotate: false,
+        touchPitch: false,
+      });
+    } catch {
+      // WebGL may be unavailable in older devices and test browsers.
+      // Store address fields remain usable without the optional map picker.
+      setMapUnavailable(true);
+      return;
+    }
     mapRef.current = map;
 
     const placeMarker = (lngLat: maplibregl.LngLat) => {
       markerRef.current?.remove();
-      markerRef.current = new maplibregl.Marker({ color: "#D4F56A" })
-        .setLngLat(lngLat)
-        .addTo(map);
+      markerRef.current = new maplibregl.Marker({ color: "#D4F56A" }).setLngLat(lngLat).addTo(map);
       onChangeRef.current({ lat: lngLat.lat, lng: lngLat.lng });
     };
 
@@ -79,17 +84,26 @@ export function StoreLocationPicker({ value, onChange }: Props) {
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !value) return;
-    if (markerRef.current) markerRef.current.setLngLat([value.lng, value.lat]);
-    else markerRef.current = new maplibregl.Marker({ color: "#D4F56A" })
-      .setLngLat([value.lng, value.lat])
-      .addTo(map);
+    if (markerRef.current) {
+      markerRef.current.setLngLat([value.lng, value.lat]);
+    } else {
+      markerRef.current = new maplibregl.Marker({ color: "#D4F56A" })
+        .setLngLat([value.lng, value.lat])
+        .addTo(map);
+    }
   }, [value?.lat, value?.lng]);
 
   return (
     <div className="space-y-2">
-      <div className="h-72 overflow-hidden rounded-xl border border-border bg-muted">
-        <div ref={containerRef} className="size-full" />
-      </div>
+      {mapUnavailable ? (
+        <div className="rounded-xl border border-border bg-muted/50 p-4 text-sm text-muted-foreground">
+          الخريطة غير متاحة على هذا الجهاز. يمكنك متابعة إعداد المتجر باستخدام العنوان والبلدية.
+        </div>
+      ) : (
+        <div className="h-72 overflow-hidden rounded-xl border border-border bg-muted">
+          <div ref={containerRef} className="size-full" />
+        </div>
+      )}
       <p className="text-xs text-muted-foreground">
         اضغط على الخريطة لتحديد موقع متجرك، أو حرّك الخريطة ثم اضغط على الموقع الصحيح.
       </p>

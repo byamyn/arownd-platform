@@ -109,7 +109,9 @@ function StudioOrderDetailPage() {
     );
   }
 
-  const handleStatus = async (status: "confirmed" | "shipped" | "delivered" | "cancelled") => {
+  const merchantOrderStatus = order.merchant_orders?.[0]?.status ?? order.status;
+
+  const handleStatus = async (status: "confirmed" | "shipped" | "delivered") => {
     try {
       await merchantUpdateOrderStatus(order.id, status);
       await qc.invalidateQueries({ queryKey: ["store-orders"] });
@@ -149,7 +151,7 @@ function StudioOrderDetailPage() {
               <span className="flex items-center gap-1 font-semibold text-foreground">
                 {t("studio_status")}
               </span>
-              <OrderStatusBadge status={order.status} className="mt-1" />
+              <OrderStatusBadge status={merchantOrderStatus} className="mt-1" />
             </div>
             <div className="mt-3 space-y-2">
               {order.items?.map((it) => (
@@ -190,10 +192,16 @@ function StudioOrderDetailPage() {
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {(["confirmed", "shipped", "delivered", "cancelled"] as const).map((s) => (
+                {(["confirmed", "shipped", "delivered"] as const).map((s) => (
                   <button
                     key={s}
                     onClick={() => handleStatus(s)}
+                    disabled={
+                      (s === "confirmed" && merchantOrderStatus !== "pending") ||
+                      (s === "shipped" && merchantOrderStatus !== "confirmed") ||
+                      (s === "delivered" &&
+                        (merchantOrderStatus !== "shipped" || order.delivery_type === "home"))
+                    }
                     className="min-h-11 rounded-xl border border-border bg-muted/60 px-3 py-2 text-xs font-extrabold transition hover:border-accent-ink/40 hover:bg-primary hover:text-primary-foreground active:scale-[.98]"
                   >
                     {t(`status_${s}`)}

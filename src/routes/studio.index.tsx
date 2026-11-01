@@ -452,10 +452,10 @@ function StudioPage() {
 
   const pendingCount =
     (reservations.data?.filter((r) => r.status === "pending").length ?? 0) +
-    (orders.data?.filter((o) => o.order.status === "pending").length ?? 0);
+    (orders.data?.filter((o) => o.merchant_order.status === "pending").length ?? 0);
 
   // الطلبات التي تحتاج إجراءً — تظهر في أعلى مساحة العمل
-  const actionOrders = (orders.data ?? []).filter((o) => o.order.status === "pending");
+  const actionOrders = (orders.data ?? []).filter((o) => o.merchant_order.status === "pending");
   const actionReservations = (reservations.data ?? []).filter((r) => r.status === "pending");
 
   // ——— قائمة المنتجات: بحث/فلترة محليان (بلا استدعاءات إضافية) وعمليات سريعة ———
@@ -1407,15 +1407,22 @@ function StudioPage() {
                         {item.quantity > 1 ? ` × ${item.quantity}` : ""}
                       </p>
                     </div>
-                    <OrderStatusBadge status={item.order.status} />
+                    <OrderStatusBadge status={item.merchant_order.status} />
                   </div>
                   <div className="mt-2 flex gap-2">
-                    {(["confirmed", "shipped", "delivered", "cancelled"] as const).map((status) => (
+                    {(["confirmed", "shipped", "delivered"] as const).map((status) => (
                       <button
                         key={status}
-                        disabled={busyOrder === item.order.id}
+                        disabled={
+                          busyOrder === item.merchant_order.id ||
+                          (status === "confirmed" && item.merchant_order.status !== "pending") ||
+                          (status === "shipped" && item.merchant_order.status !== "confirmed") ||
+                          (status === "delivered" &&
+                            (item.merchant_order.status !== "shipped" ||
+                              item.order.delivery_type === "home"))
+                        }
                         onClick={async () => {
-                          setBusyOrder(item.order.id);
+                          setBusyOrder(item.merchant_order.id);
                           try {
                             await merchantUpdateOrderStatus(item.order.id, status);
                             await qc.invalidateQueries({
@@ -1434,13 +1441,11 @@ function StudioPage() {
                           ? t("studio_action_confirm")
                           : status === "shipped"
                             ? t("studio_action_ship")
-                            : status === "delivered"
-                              ? t("studio_action_deliver")
-                              : t("studio_action_cancel")}
+                            : t("studio_action_deliver")}
                       </button>
                     ))}
                   </div>
-                  {(item.order.status === "delivered" || item.order.status === "cancelled") && (
+                  {item.merchant_order.status === "delivered" && (
                     <button
                       type="button"
                       onClick={() => setPendingHistoryDelete({ kind: "order", id: item.order.id })}

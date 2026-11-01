@@ -184,28 +184,20 @@ export async function fetchPendingShipmentsForCompany(companyId: string): Promis
   return data;
 }
 
-/** تحديث حالة الشحنة (تُستدعى من شركة التوصيل). */
+/** تحديث حالة الشحنة وسجلها في معاملة واحدة داخل قاعدة البيانات. */
 export async function updateShipmentStatus(
   id: string,
   status: ShipmentStatus,
   note?: string,
 ): Promise<Shipment> {
-  const { data, error } = await supabase
-    .from("shipments")
-    .update({ status })
-    .eq("id", id)
-    .select()
-    .single();
-  if (error) throw error;
-
-  // تسجيل في سجل الحالات
-  await supabase.from("shipment_status_logs").insert({
-    shipment_id: id,
-    status,
-    ...(note !== undefined ? { note } : {}),
+  const { data, error } = await supabase.rpc("update_shipment_status", {
+    _shipment_id: id,
+    _status: status,
+    _note: note ?? null,
   });
-
-  return data;
+  if (error) throw error;
+  if (!data) throw new Error("تعذر تأكيد تحديث حالة الشحنة.");
+  return data as Shipment;
 }
 
 /** تحديث بيانات التتبع (GPS) للشحنة. */
@@ -250,23 +242,26 @@ export async function linkOrderToShipment(
   if (error) throw error;
 }
 
-/** جلب طلب مع شحنته المرتبطة. */
+/** جلب الطلب مع جميع الشحنات التابعة له، بما فيها شحنات المتاجر المتعددة. */
 export async function fetchOrderWithShipment(orderId: string) {
-  const { data, error } = await supabase
-    .from("orders")
-    .select("*, shipment:shipments(*)")
-    .eq("id", orderId)
-    .single();
-  if (error) throw error;
-  return data;
+  const [{ data: order, error: orderError }, { data: shipments, error: shipmentsError }] =
+    await Promise.all([
+      supabase.from("orders").select("*").eq("id", orderId).single(),
+      supabase.from("shipments").select("*").eq("order_id", orderId).order("created_at"),
+    ]);
+  if (orderError) throw orderError;
+  if (shipmentsError) throw shipmentsError;
+  return { ...order, shipments };
 }
 
 /** جلب شحنات متجر معين (تُستدعى من لوحة المتجر). */
 export async function fetchShipmentsByStore(storeId: string): Promise<Shipment[]> {
   const { data, error } = await supabase
     .from("shipments")
-    .select("*, order:orders!inner(id, store_id, status, total, created_at, full_name, phone)")
-    .eq("order.store_id", storeId)
+    .select(
+      "*, merchant_order:merchant_orders!inner(store_id, status), order:orders!inner(id, status, total, created_at, full_name, phone)",
+    )
+    .eq("merchant_order.store_id", storeId)
     .order("created_at", { ascending: false });
   if (error) throw error;
   return data;

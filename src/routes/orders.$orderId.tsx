@@ -60,7 +60,7 @@ function TrackPage() {
 
   if (!ready) return null;
   const order = orders.data?.find((o) => o.id === orderId);
-  const orderShipment = shipment.data?.shipment?.[0];
+  const orderShipments = shipment.data?.shipments ?? [];
 
   if (!user) {
     return (
@@ -245,25 +245,32 @@ function TrackPage() {
           onRetry={() => shipment.refetch()}
         />
       )}
-      {orderShipment && (
+      {orderShipments.length > 0 && (
         <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
           <h2 className="text-section text-foreground flex items-center gap-2">
             <TruckIcon className="size-5" /> {t("track_shipment_heading")}
           </h2>
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-medium text-foreground">
-                {t(`ship_status_${orderShipment.status}`)}
-              </p>
-              <p className="text-xs text-muted-foreground">
-                {t("track_shipment_updated", { date: formatDate(orderShipment.updated_at) })}
-              </p>
+          {orderShipments.map((orderShipment) => (
+            <div
+              key={orderShipment.id}
+              className="space-y-2 rounded-xl border border-border/70 p-3"
+            >
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-medium text-foreground">
+                    {t(`ship_status_${orderShipment.status}`)}
+                  </p>
+                  <p className="text-xs text-muted-foreground">
+                    {t("track_shipment_updated", { date: formatDate(orderShipment.updated_at) })}
+                  </p>
+                </div>
+                <BadgeStatus status={orderShipment.status} />
+              </div>
+              {orderShipment.notes && (
+                <p className="text-sm text-muted-foreground italic">{orderShipment.notes}</p>
+              )}
             </div>
-            <BadgeStatus status={orderShipment.status} />
-          </div>
-          {orderShipment.notes && (
-            <p className="text-sm text-muted-foreground italic">{orderShipment.notes}</p>
-          )}
+          ))}
         </div>
       )}
 

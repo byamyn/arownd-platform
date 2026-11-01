@@ -473,6 +473,9 @@ export async function getOffersByIds(ids: string[]): Promise<OfferFull[]> {
 
 const ERRORS: Record<string, string> = {
   not_authenticated: "يجب تسجيل الدخول أولاً",
+  delivery_company_required: "اختر شركة توصيل قبل تأكيد الطلب",
+  delivery_company_unavailable: "شركة التوصيل المختارة غير متاحة أو لم تعد معتمدة",
+  delivery_area_not_covered: "شركة التوصيل المختارة لا تغطي البلدية المحددة",
   out_of_stock: "المنتج غير متوفر أو الكمية غير كافية",
   offer_not_found: "العرض غير موجود",
   invalid_quantity: "كمية غير صالحة",
@@ -836,34 +839,8 @@ export async function createOrderWithDelivery(
   contact: { fullName: string; phone: string; address: string },
   deliveryCompanyId?: string,
 ) {
-  // تحقق من الشركة وتغطيتها قبل إنشاء الطلب حتى لا نقبل اختيارًا غير صالح.
-  let deliveryCompany: { company_name: string; contact_phone: string } | null = null;
-  let deliveryCoverageFee: number | null = null;
-  if (deliveryType === "home") {
-    if (!deliveryCompanyId) throw new Error("اختر شركة توصيل قبل تأكيد الطلب.");
-    const { data: company, error: companyError } = await supabase
-      .from("approved_delivery_companies")
-      .select("company_name, contact_phone")
-      .eq("id", deliveryCompanyId)
-      .maybeSingle();
-    if (companyError) throw new Error(friendlyError(companyError));
-    if (!company) throw new Error("شركة التوصيل المختارة غير متاحة أو لم تعد معتمدة.");
-
-    const { data: coverageRows, error: coverageError } = await supabase
-      .from("delivery_coverage_areas")
-      .select("base_fee, communes")
-      .eq("company_id", deliveryCompanyId)
-      .eq("wilaya_id", wilayaId)
-      .eq("is_active", true);
-    if (coverageError) throw new Error(friendlyError(coverageError));
-    const coverage = (coverageRows ?? []).find(
-      (area) => !area.communes?.length || area.communes.includes(commune.trim()),
-    );
-    if (!coverage) {
-      throw new Error("شركة التوصيل المختارة لا تغطي البلدية المحددة.");
-    }
-    deliveryCompany = company;
-    deliveryCoverageFee = coverage.base_fee;
+  if (deliveryType === "home" && !deliveryCompanyId) {
+    throw new Error(ERRORS["delivery_company_required"]);
   }
 
   let receiptUrl: string | null = null;
@@ -871,11 +848,12 @@ export async function createOrderWithDelivery(
     if (!receiptFile) throw new Error(ERRORS["receipt_required"]);
     receiptUrl = await uploadImageToBucket(receiptFile, "receipts");
   }
-  const { data, error } = await supabase.rpc("create_order", {
-    _items: bagItems.map((b) => ({
-      offer_id: b.offerId,
-      quantity: b.quantity,
-      options: b.options,
+
+  const orderArgs = {
+    _items: bagItems.map((item) => ({
+      offer_id: item.offerId,
+      quantity: item.quantity,
+      options: item.options,
     })),
     _delivery_type: deliveryType,
     _wilaya_id: wilayaId,
@@ -885,46 +863,23 @@ export async function createOrderWithDelivery(
     _phone: contact.phone,
     _payment_method: paymentMethod,
     ...(receiptUrl ? { _receipt_url: receiptUrl } : {}),
-  });
-  if (error) throw new Error(friendlyError(error));
-  const orderId = data as string;
+  };
 
-  // ربط الشحنة بالشركة التي اختارها المستخدم بعد التحقق من اعتمادها وتغطيتها.
-  if (deliveryType === "home" && deliveryCompanyId && deliveryCompany) {
-    try {
-      const shipmentPayload: Record<string, unknown> = {
-        order_id: orderId,
-        company_id: deliveryCompanyId,
-        status: "pending",
-        delivery_address: contact.address.trim(),
-        recipient_name: contact.fullName.trim(),
-        recipient_phone: contact.phone.trim(),
-        fee: deliveryCoverageFee,
-        notes: `الشركة: ${deliveryCompany.company_name} — الهاتف: ${deliveryCompany.contact_phone}`,
-      };
-      const { data: shipment, error: shipError } = await supabase
-        .from("shipments")
-        .insert(shipmentPayload as Database["public"]["Tables"]["shipments"]["Insert"])
-        .select()
-        .single();
-      if (shipError) throw shipError;
+  // Home delivery uses one server transaction for order, stock reservation,
+  // shipment creation, and order/shipment linking. Desk pickup needs no shipment.
+  const result =
+    deliveryType === "home"
+      ? await supabase.rpc("create_order_with_delivery", {
+          ...orderArgs,
+          _delivery_company_id: deliveryCompanyId!,
+        })
+      : await supabase.rpc("create_order", orderArgs);
 
-      const { error: linkError } = await supabase.rpc("link_order_shipment", {
-        _order_id: orderId,
-        _shipment_id: shipment.id,
-        _delivery_method: "delivery",
-      });
-      if (linkError) throw linkError;
-    } catch (shipmentError) {
-      // لا نطلب من المستخدم إعادة إنشاء الطلب بعد أن أصبح موجودًا؛ نسجل المشكلة للمراجعة.
-      console.error(
-        "[createOrderWithDelivery] shipment link failed after order creation",
-        shipmentError,
-      );
-    }
+  if (result.error) throw new Error(friendlyError(result.error));
+  if (typeof result.data !== "string") {
+    throw new Error("تعذر تأكيد إنشاء الطلب.");
   }
-
-  return orderId;
+  return result.data;
 }
 // ---------- Merchant ----------
 
@@ -1260,9 +1215,10 @@ export async function fetchStoreOrderItems(storeId: string) {
   const { data, error } = await supabase
     .from("order_items")
     .select(
-      "*, order:orders(id, full_name, phone, commune, delivery_type, payment_method, receipt_url, status, total, created_at, wilaya:wilayas(name_ar))",
+      "*, merchant_order:merchant_orders!inner(id, status, subtotal), order:orders(id, full_name, phone, commune, delivery_type, payment_method, receipt_url, status, total, created_at, wilaya:wilayas(name_ar))",
     )
     .eq("store_id", storeId)
+    .eq("merchant_order.store_id", storeId)
     .is("merchant_archived_at", null)
     .order("id", { ascending: false })
     .limit(100);
@@ -1282,24 +1238,34 @@ export async function merchantArchiveReservation(reservationId: string): Promise
 }
 
 export async function merchantArchiveOrderItems(orderId: string, storeId: string): Promise<void> {
-  const rpc = supabase.rpc as unknown as (
-    fn: string,
-    args: { _order_id: string; _store_id: string },
-  ) => Promise<{ error: unknown }>;
-  const { error } = await rpc("merchant_archive_order_items", {
+  const { error } = await supabase.rpc("merchant_archive_order_items", {
     _order_id: orderId,
     _store_id: storeId,
   });
-  if (error) throw error;
+  if (error) throw new Error(friendlyError(error));
 }
 
 export async function merchantUpdateOrderStatus(
   orderId: string,
-  status: "confirmed" | "shipped" | "delivered" | "cancelled",
+  status: "confirmed" | "shipped" | "delivered",
 ) {
-  const sb = supabase as unknown as DynamicTableClient;
-  const { error } = await sb.from("orders").update({ status }).eq("id", orderId);
-  if (error) throw error;
+  const store = await fetchMyStore();
+  if (!store) throw new Error("المتجر غير موجود");
+
+  const { data: merchantOrder, error: lookupError } = await supabase
+    .from("merchant_orders")
+    .select("id")
+    .eq("order_id", orderId)
+    .eq("store_id", store.id)
+    .maybeSingle();
+  if (lookupError) throw lookupError;
+  if (!merchantOrder) throw new Error("طلب المتجر غير موجود");
+
+  const { error } = await supabase.rpc("merchant_update_merchant_order_status", {
+    _merchant_order_id: merchantOrder.id,
+    _status: status,
+  });
+  if (error) throw new Error(friendlyError(error));
 }
 
 export async function merchantUpdateOrderNote(orderId: string, note: string) {
@@ -1328,7 +1294,7 @@ export async function fetchOrder(orderId: string) {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "*, items:order_items(*, store:stores(id, name, phone, whatsapp)), wilaya:wilayas(name_ar)",
+      "*, items:order_items(*, store:stores(id, name, phone, whatsapp)), merchant_orders(id, store_id, status, subtotal), wilaya:wilayas(name_ar)",
     )
     .eq("id", orderId)
     .maybeSingle();
