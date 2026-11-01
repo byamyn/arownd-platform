@@ -2,7 +2,7 @@
 
 ## 1. الهوية والمكدس التقني
 - **الاسم (BRAND.md):** Arownd — «Discover What's Around You.» / «اكتشف ما حولك.»
-- **الاسم (الكود/SEO/manifest):** SOOQY (انظر ملاحظة الهوية في README).
+- **اسم المنتج المعتمد:** Arownd. بعض المسارات والمعرّفات التقنية القديمة محفوظة للتوافق ولا تمثل الاسم التجاري.
 - **المكدس:** Vite 8 + React 19 + TanStack Start/Router + Tailwind 4 + TypeScript 5.8 + Supabase (Postgres + RLS + Storage + Auth) + Capacitor 8 (Android).
 - **اللغات:** ar/en (i18n 10 مجموعات قاموس) — `src/lib/dictionaries/*`.
 - **PWA:** `public/sw.js`, `public/manifest*.json`, `src/lib/pwa.ts`, `src/components/sooqy/PwaPrompt.tsx`.

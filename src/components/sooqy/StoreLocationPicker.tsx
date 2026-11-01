@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import maplibreglWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { OSM_RASTER_FALLBACK, SOOQY_VECTOR_STYLE } from "./map-style";
+import { OSM_RASTER_FALLBACK, AROWND_VECTOR_STYLE } from "./map-style";
 import type { LatLng } from "@/lib/geo";
 
 type Props = {
@@ -27,7 +27,7 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     try {
       map = new maplibregl.Map({
         container,
-        style: SOOQY_VECTOR_STYLE as maplibregl.StyleSpecification,
+        style: AROWND_VECTOR_STYLE as maplibregl.StyleSpecification,
         center: initial,
         zoom: value ? 15 : 6,
         attributionControl: { compact: true },

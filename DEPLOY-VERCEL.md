@@ -19,7 +19,7 @@ git push
 ## 2) اربط المشروع بـ Vercel
 
 1. افتح [vercel.com/new](https://vercel.com/new) وسجّل الدخول بحساب GitHub.
-2. **Import Git Repository** → اختر مستودع SooQy.
+2. **Import Git Repository** → اختر مستودع Arownd.
 3. لا تغيّر شيئًا في الإعدادات: `vercel.json` يضبط كل شيء تلقائيًا:
    - **Build Command**: `npm run build:vercel`
    - **Output Directory**: `dist/client`
