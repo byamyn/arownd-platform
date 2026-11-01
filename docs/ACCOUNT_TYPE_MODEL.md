@@ -29,7 +29,7 @@ join public.user_roles ur
  and ur.role = 'merchant'::public.app_role;
 ```
 
-The query should return no rows before applying `20261101170000_account_type_model.sql`.
+The query should return no rows before applying `20261101170000_account_type_model.sql`. The migration also fails safely if a delivery-company owner or merchant-role owner has no matching `profiles.user_id` row.
 
 ## Delivery identity
 
@@ -37,7 +37,7 @@ The delivery identity lookup uses `delivery_companies.user_id -> auth.users.id`,
 
 ## Profile privacy
 
-Public personal profiles remain opt-in. `is_public` defaults to false; public reads use a narrow RPC that returns only display name, avatar, and general location. The owner changes visibility through `set_my_profile_visibility()` because authenticated profile updates are intentionally restricted to an explicit column allowlist.
+Public personal profiles remain opt-in. `is_public` defaults to false; a synchronization trigger copies only display name, avatar, and general location into the private-schema projection table. Public reads use the narrow `public.public_personal_profiles` view; the base `profiles` table is never opened to anonymous users. The owner changes visibility through the `set_my_profile_visibility()` security-definer RPC, while direct profile UPDATE grants remain restricted to the existing column allowlist.
 
 ## Migration order
 
