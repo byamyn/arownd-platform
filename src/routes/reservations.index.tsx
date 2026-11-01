@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Archive, CalendarDays, Clock3, Store, XCircle } from "lucide-react";
+import { Archive, ArrowLeft, CalendarDays, Clock3, Store, XCircle } from "lucide-react";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { archiveMyActivity, cancelMyReservation, fetchMyReservations } from "@/lib/sooqy";
@@ -81,10 +81,10 @@ function ReservationsPage() {
   ];
 
   return (
-    <main className="space-y-4 px-4 pb-24 pt-5">
+    <main className="space-y-4 px-4 pb-6 pt-5">
       <header className="flex items-center gap-3">
         <Link to="/profile" aria-label="العودة إلى الملف الشخصي" className="icon-btn">
-          ‹
+          <ArrowLeft className="size-5 rtl:rotate-180" />
         </Link>
         <div>
           <h1 className="text-h1 text-foreground">حجوزاتي</h1>
