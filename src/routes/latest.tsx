@@ -55,6 +55,11 @@ function LatestStoreProductsPage() {
     return <div className="flex min-h-[50vh] items-center justify-center" role="status"><span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" /></div>;
   }
 
+  if (accountType.isError || roles.isError) {
+    const error = accountType.error ?? roles.error;
+    return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-access" error={error} onRetry={() => Promise.all([accountType.refetch(), roles.refetch()])} /></div>;
+  }
+
   if (!user || accountType.data !== "merchant" || !roles.data?.includes("merchant")) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
