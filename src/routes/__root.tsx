@@ -198,7 +198,7 @@ function RootComponent() {
               <>
                 <ConnectionBanner />
                 <DynamicIsland />
-                <AccountBottomNav pathname={location.pathname} />
+                <AccountBottomNav />
                 <PwaPrompt />
               </>
             )}
