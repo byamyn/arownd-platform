@@ -105,6 +105,7 @@ function StudioOrderDetailPage() {
   }
 
   const order = orderQuery.data;
+  const storeData = store.data;
   if (!order) {
     return (
       <div className="p-4 text-center">
@@ -114,7 +115,7 @@ function StudioOrderDetailPage() {
     );
   }
 
-  if (!store.data) {
+  if (!storeData) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_order_details")} back="/studio" />
@@ -126,7 +127,7 @@ function StudioOrderDetailPage() {
   }
 
   const merchantOrder = order.merchant_orders?.find(
-    (item) => item.store_id === store.data.id,
+    (item) => item.store_id === storeData.id,
   );
 
   if (!merchantOrder) {
@@ -141,7 +142,7 @@ function StudioOrderDetailPage() {
   }
 
   const storeOrderItems = (order.items ?? []).filter(
-    (item) => item.store_id === store.data!.id,
+    (item) => item.store_id === storeData.id,
   );
   const merchantOrderStatus = merchantOrder.status;
 
