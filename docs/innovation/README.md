@@ -24,7 +24,7 @@
 | 10 | `10-incubators-funding-partners.md` | حاضنات، إرشاد، تمويل، شركاء |
 | 11 | `11-readiness-report.md` | تقرير جاهزية + نواقص + خطوات |
 | 12 | `12-founder-profile.md` | معلومات المؤسس (قالب) |
-| 13 | `13-identity-unification.md` | تثبيت هوية Arownd عبر جميع واجهات المشروع |
+| 13 | `13-identity-unification.md` | توحيد الهوية (Arownd vs SOOQY) |
 | — | `sources.md` | سجل المصادر (URL + تاريخ تحقق) |
 | — | `Canevas-label-Projet-Innovant-2025-final.pptx` | قالب Pitch Deck الرسمي (startup.dz) |
 

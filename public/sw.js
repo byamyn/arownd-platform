@@ -11,9 +11,9 @@
  */
 
 const VERSION = "v1";
-const SHELL_CACHE = `sooqy-shell-${VERSION}`;
-const ASSET_CACHE = `sooqy-assets-${VERSION}`;
-const DATA_CACHE = `sooqy-data-${VERSION}`;
+const SHELL_CACHE = `arownd-shell-${VERSION}`;
+const ASSET_CACHE = `arownd-assets-${VERSION}`;
+const DATA_CACHE = `arownd-data-${VERSION}`;
 const MAX_ASSETS = 80;
 const MAX_DATA_ENTRIES = 40;
 const DATA_TTL_MS = 24 * 60 * 60 * 1000; // يوم
@@ -157,7 +157,7 @@ self.addEventListener("fetch", (event) => {
 
 // مزامنة في الخلفية: تُرسل المراجعات عندما تعود الشبكة.
 self.addEventListener("sync", (event) => {
-  if (event.tag === "sooqy-sync") {
+  if (event.tag === "arownd-sync") {
     event.waitUntil(
       (async () => {
         const clients = await self.clients.matchAll({ type: "window" });

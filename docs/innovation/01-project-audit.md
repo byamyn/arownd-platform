@@ -8,7 +8,7 @@
 - **PWA:** `public/sw.js`, `public/manifest*.json`, `src/lib/pwa.ts`, `src/components/sooqy/PwaPrompt.tsx`.
 - **SEO:** `src/components/seo/SeoHead.tsx` (meta/OG/Twitter/JSON-LD/canonical/hreflang), `public/sitemap.xml`, `public/robots.txt`.
 - **الخط (Arownd):** Inter + Noto Sans Arabic (`BRAND.md`).
-- **الخط السابق:** IBM Plex Sans Arabic/Tajawal (`README.md` master prompt).
+- **الخط (SOOQY legacy):** IBM Plex Sans Arabic/Tajawal (`README.md` master prompt).
 
 ## 2. المسارات (src/routes) — 31 route
 العميل:
@@ -57,7 +57,7 @@
 - **174 اختبار** في 17 ملفًا (`src/test/*`).
 - تشغيل في بيئة sandbox (2026-10-22): **142 passed / 32 failed (timeouts)**.
   - الفشل: `src/test/journey.test.tsx` (28) + `src/test/shop-truth.test.tsx` (4) — timeouts 5s (likely بيئة/شبكة/Supabase).
-  - النجاح: i18n-parity, market, locale, geo, search, taxonomy, image-search, pwa, conn, db-sync, reviews, merchant-upgrade, app-routing, legacy-compat.
+  - النجاح: i18n-parity, market, locale, geo, search, taxonomy, image-search, pwa, conn, db-sync, reviews, merchant-upgrade, app-routing, sooqy.
 - **Build:** لم يُشغّل في هذا التقييم (حسب قواعد D2 — check_preview فقط). [TODO: run npm run build before submission].
 - **TypeScript:** `npx tsc --noEmit` غير مشغّل هنا [TODO].
 
@@ -69,7 +69,7 @@
 - **لا IP** (براءة/علامة/حقوق تأليف) — TODO (أو «لا يوجد»).
 - **لا pitch deck** (سننشئ محتوى في 08).
 - **لا إيرادات/مستخدمون/ traction** موثّقة — TODO.
-- **معرّفات تقنية قديمة:** بقيت بعض المسارات والمفاتيح الداخلية لأسباب التوافق، ولا تمثل الاسم التجاري.
+- **اسم غير موحد** (Arownd vs SOOQY).
 
 ## 8. مراجع ملفات
 - `src/routes/*`, `src/lib/sooqy.ts`, `src/lib/bag-check.ts`, `src/lib/market.ts`, `src/lib/geo.ts`, `src/lib/i18n.ts`, `src/lib/dictionaries/*`
