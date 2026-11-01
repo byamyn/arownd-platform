@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/lib/i18n";
-import { fetchMyRoles, fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
+import { fetchMyAccountType, fetchMyRoles, fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
 import { childrenOf } from "@/lib/taxonomy";
 import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
 import { geoErrorMessage, useGeo } from "@/lib/geo";
@@ -36,6 +36,7 @@ function StoreSettingsPage() {
   const qc = useQueryClient();
   const { ask, locating } = useGeo();
   const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
+  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
 
   const locate = async () => {
@@ -115,22 +116,22 @@ function StoreSettingsPage() {
         </Link>
       </div>
     );
-  if (roles.isLoading) {
+  if (roles.isLoading || accountType.isLoading) {
     return (
       <div className="flex min-h-[50vh] items-center justify-center" role="status">
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
       </div>
     );
   }
-  if (roles.isError) {
+  if (roles.isError || accountType.isError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_store_info")} back="/profile" />
-        <ErrorState scope="studio:settings:roles" error={roles.error} onRetry={() => roles.refetch()} />
+        <ErrorState scope="studio:settings:roles" error={roles.error ?? accountType.error} onRetry={() => Promise.all([roles.refetch(), accountType.refetch()])} />
       </div>
     );
   }
-  if (!roles.data?.includes("merchant")) {
+  if (accountType.data !== "merchant" || !roles.data?.includes("merchant")) {
     return (
       <div className="space-y-4 px-4 pt-20 text-center">
         <Store className="mx-auto size-12 text-accent-ink" />
