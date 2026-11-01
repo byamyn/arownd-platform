@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
-import { useTranslation } from "@/lib/i18n";
+import { translate, useTranslation } from "@/lib/i18n";
 
 type RegistrationIntent = "customer" | "merchant" | "delivery";
 
@@ -32,10 +32,10 @@ export const Route = createFileRoute("/auth_/callback")({
   }),
   head: () => ({
     meta: [
-      { title: "جارٍ تسجيل الدخول — Arownd" },
-      { name: "description", content: "يتم التحقق من حسابك وتحويلك." },
-      { property: "og:title", content: "تسجيل الدخول — Arownd" },
-      { property: "og:description", content: "التحقق من جلسة الدخول." },
+      { title: translate("auth_callback_seo_title") },
+      { name: "description", content: translate("auth_callback_seo_description") },
+      { property: "og:title", content: translate("auth_callback_seo_title") },
+      { property: "og:description", content: translate("auth_callback_seo_description") },
       { name: "robots", content: "noindex" },
     ],
   }),
