@@ -31,6 +31,28 @@ join public.user_roles ur
 
 The query should return no rows before applying `20261101170000_account_type_model.sql`. Also inspect store owners without a merchant role and owners with multiple stores; the migration intentionally stops instead of inferring authorization from store ownership. The migration also fails safely if a delivery-company owner or merchant-role owner has no matching `profiles.user_id` row, if an existing store owner lacks the trusted merchant role, or if an owner has multiple stores (the current workspace model is one store per account).
 
+Additional preflight checks for existing merchant stores:
+
+```sql
+select s.owner_id, s.id
+from public.stores s
+where s.owner_id is not null
+  and not exists (
+    select 1
+    from public.user_roles ur
+    where ur.user_id = s.owner_id
+      and ur.role = 'merchant'::public.app_role
+  );
+
+select owner_id, count(*)
+from public.stores
+where owner_id is not null
+group by owner_id
+having count(*) > 1;
+```
+
+Both queries must return no rows. The migration intentionally stops instead of inferring authorization from store ownership or silently selecting one of multiple stores.
+
 ## Delivery identity
 
 The delivery identity lookup uses `delivery_companies.user_id -> auth.users.id`, matching the stabilization migration `20261030201916_stabilize_delivery_identity_and_tracking.sql`. The registration trigger only records the account type; it does not change approval state or grant the `delivery_company` role.
