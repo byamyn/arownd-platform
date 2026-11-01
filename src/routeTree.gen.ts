@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as LatestRouteImport } from './routes/latest'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as BagRouteImport } from './routes/bag'
@@ -45,6 +46,11 @@ import { Route as StudioOrdersOrderIdRouteImport } from './routes/studio.orders.
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LatestRoute = LatestRouteImport.update({
+  id: '/latest',
+  path: '/latest',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -215,6 +221,8 @@ export interface FileRoutesByFullPath {
   '/explore': typeof ExploreRoute
   '/favorites': typeof FavoritesRoute
   '/help': typeof HelpRoute
+  '/latest': typeof LatestRoute
+  '/latest': typeof LatestRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
@@ -320,6 +328,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/favorites'
     | '/help'
+    | '/latest'
     | '/map'
     | '/notifications'
     | '/privacy'
@@ -423,6 +432,7 @@ export interface RootRouteChildren {
   ExploreRoute: typeof ExploreRoute
   FavoritesRoute: typeof FavoritesRoute
   HelpRoute: typeof HelpRoute
+  LatestRoute: typeof LatestRoute
   MapRoute: typeof MapRoute
   NotificationsRoute: typeof NotificationsRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -516,6 +526,13 @@ declare module '@tanstack/react-router' {
       path: '/favorites'
       fullPath: '/favorites'
       preLoaderRoute: typeof FavoritesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/latest': {
+      id: '/latest'
+      path: '/latest'
+      fullPath: '/latest'
+      preLoaderRoute: typeof LatestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/help': {
@@ -687,6 +704,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExploreRoute: ExploreRoute,
   FavoritesRoute: FavoritesRoute,
   HelpRoute: HelpRoute,
+  LatestRoute: LatestRoute,
   MapRoute: MapRoute,
   NotificationsRoute: NotificationsRoute,
   PrivacyRoute: PrivacyRoute,
