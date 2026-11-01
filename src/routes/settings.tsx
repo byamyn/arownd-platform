@@ -4,6 +4,8 @@ import { useState } from "react";
 import {
   Bell,
   FileText,
+  Eye,
+  EyeOff,
   Globe,
   HelpCircle,
   Info,
@@ -22,7 +24,7 @@ import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { unregisterMyPushDevices } from "@/lib/push-notifications";
 import { useAuth } from "@/lib/auth";
-import { fetchMyStore } from "@/lib/sooqy";
+import { fetchMyStore, fetchMyProfile, setMyProfileVisibility } from "@/lib/sooqy";
 import { useTheme, type Theme } from "@/lib/theme";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
@@ -46,6 +48,21 @@ function SettingsPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
   const myStore = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
+  const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
+  const [visibilityBusy, setVisibilityBusy] = useState(false);
+  const changeVisibility = async () => {
+    if (!profile.data || visibilityBusy) return;
+    setVisibilityBusy(true);
+    try {
+      await setMyProfileVisibility(!profile.data.is_public);
+      await qc.invalidateQueries({ queryKey: ["my-profile"] });
+      showSuccess(!profile.data.is_public ? "أصبح ملفك الشخصي عاماً" : "أصبح ملفك الشخصي خاصاً");
+    } catch (error) {
+      showError(error);
+    } finally {
+      setVisibilityBusy(false);
+    }
+  };
   const [showSecurity, setShowSecurity] = useState(false);
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -148,6 +165,25 @@ function SettingsPage() {
           تعديل
         </Link>
       </div>
+
+      {/* ظهور الملف الشخصي */}
+      <section className="space-y-2">
+        <SectionTitle>ظهور الملف الشخصي</SectionTitle>
+        <MenuCard>
+          <div className="flex items-center justify-between gap-3 p-4">
+            <div className="min-w-0">
+              <p className="font-bold text-foreground">الملف الشخصي العام</p>
+              <p className="mt-1 text-sm text-muted-foreground">تحكم فيما إذا كان بإمكان الآخرين مشاهدة ملفك</p>
+              <p className="mt-2 text-xs font-semibold text-muted-foreground">{profile.data?.is_public ? "ظاهر للآخرين" : "خاص"}</p>
+            </div>
+            <button type="button" onClick={() => void changeVisibility()} disabled={visibilityBusy || profile.isLoading || !profile.data} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-foreground disabled:opacity-50">
+              {profile.data?.is_public ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              {visibilityBusy ? "جارٍ الحفظ..." : profile.data?.is_public ? "جعله خاصاً" : "جعله عاماً"}
+            </button>
+          </div>
+          {profile.data?.is_public && <div className="px-4 pb-3"><Link to="/profile" search={{ public_id: user.id }} className="text-sm font-bold text-accent-ink">معاينة الملف الشخصي العام</Link></div>}
+        </MenuCard>
+      </section>
 
       {/* مجموعة: الحساب */}
       <section className="space-y-2">
