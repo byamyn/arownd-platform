@@ -112,10 +112,36 @@ function StudioOrderDetailPage() {
     );
   }
 
-  const merchantOrder =
-    order.merchant_orders?.find((item) => item.store_id === store.data?.id) ??
-    order.merchant_orders?.[0];
-  const merchantOrderStatus = merchantOrder?.status ?? order.status;
+  if (!store.data) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title={t("studio_order_details")} back="/studio" />
+        <p className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+          {t("studio_order_unavailable")}
+        </p>
+      </div>
+    );
+  }
+
+  const merchantOrder = order.merchant_orders?.find(
+    (item) => item.store_id === store.data.id,
+  );
+
+  if (!merchantOrder) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title={t("studio_order_details")} back="/studio" />
+        <p className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+          {t("studio_order_unavailable")}
+        </p>
+      </div>
+    );
+  }
+
+  const storeOrderItems = (order.items ?? []).filter(
+    (item) => item.store_id === store.data!.id,
+  );
+  const merchantOrderStatus = merchantOrder.status;
 
   const handleStatus = async (status: "delivered") => {
     try {
@@ -162,7 +188,7 @@ function StudioOrderDetailPage() {
               <OrderStatusBadge status={merchantOrderStatus} className="mt-1" />
             </div>
             <div className="mt-3 space-y-2">
-              {order.items?.map((it) => (
+              {storeOrderItems.map((it) => (
                 <div
                   key={it.id}
                   className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-background/60 p-3"
@@ -208,9 +234,11 @@ function StudioOrderDetailPage() {
                     id="merchant-shipping-fee"
                     type="number"
                     min="0"
+                    max="1000000"
                     step="1"
                     inputMode="numeric"
-                    value={shippingFee}
+                    value={order.delivery_type === "desk" ? "0" : shippingFee}
+                    disabled={order.delivery_type === "desk"}
                     onChange={(event) => setShippingFee(event.target.value)}
                     placeholder="0"
                     className="h-12 w-full rounded-xl border border-input bg-card px-3 outline-none focus:ring-2 focus:ring-primary/30"
@@ -220,10 +248,17 @@ function StudioOrderDetailPage() {
                   </p>
                   <button
                     type="button"
-                    disabled={savingQuote || shippingFee.trim() === "" || !Number.isFinite(Number(shippingFee)) || Number(shippingFee) < 0}
+                    disabled={
+                      savingQuote ||
+                      (order.delivery_type === "home" &&
+                        (shippingFee.trim() === "" ||
+                          !Number.isFinite(Number(shippingFee)) ||
+                          Number(shippingFee) < 0 ||
+                          Number(shippingFee) > 1000000))
+                    }
                     onClick={async () => {
-                      const fee = Number(shippingFee);
-                      if (!Number.isFinite(fee) || fee < 0) {
+                      const fee = order.delivery_type === "desk" ? 0 : Number(shippingFee);
+                      if (!Number.isFinite(fee) || fee < 0 || fee > 1000000) {
                         showError(new Error(t("studio_quote_invalid_fee")));
                         return;
                       }
