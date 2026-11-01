@@ -930,7 +930,6 @@ export type Database = {
       };
     };
     Functions: {
-      become_merchant: { Args: never; Returns: undefined };
       admin_set_delivery_company_approval: {
         Args: { _company_id: string; _is_approved: boolean };
         Returns: undefined;
