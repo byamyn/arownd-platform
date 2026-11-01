@@ -184,7 +184,7 @@ function RootComponent() {
     "/reservations",
     "/favorites",
   ]);
-  const currentPath = location.pathname.replace(/\\/+$/, "") || "/";
+  const currentPath = location.pathname.replace(/\/+$/, "") || "/";
   const isAccountSubpage = accountSubpages.has(currentPath);
 
   return (
