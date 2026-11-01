@@ -123,6 +123,13 @@ function ProfilePage() {
     setSetupOpened(true);
   }, [setup, setupOpened, user, loaded, profile.isLoading]);
 
+  // مساحة الحساب التجاري مستقلة عن الملف الشخصي؛ المدير يحتفظ بإمكانية الوصول إلى الملف.
+  useEffect(() => {
+    if (!public_id && user && roleQuery.isFetched && roleQuery.data?.includes("merchant") && !isAdmin) {
+      navigate({ to: "/studio", replace: true });
+    }
+  }, [public_id, user, roleQuery.isFetched, roleQuery.data, isAdmin, navigate]);
+
   if (!ready) return null;
   if (public_id) {
     if (publicProfile.isLoading) {
