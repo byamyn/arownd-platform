@@ -201,7 +201,7 @@ function WalletPage() {
         keywords="المحفظة, شحن الرصيد, سحب, Arownd"
         ogType="website"
       />
-      <div className="mx-auto max-w-xl space-y-4 px-4 pb-24 pt-5">
+      <div className="mx-auto max-w-xl space-y-4 px-4 pb-6 pt-5">
         <PageHeader
           title="المحفظة"
           subtitle="رصيدك وعملياتك المالية في مكان واحد"
