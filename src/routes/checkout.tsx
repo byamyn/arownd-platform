@@ -147,7 +147,6 @@ function CheckoutPage() {
         wilayaId!,
         commune.trim(),
         paymentMethod,
-        null, // لا وصل دفع — الدفع عند الاستلام فقط حاليًا
         { fullName: fullName.trim(), phone: normalizePhone(phone.trim()), address: address.trim() },
       );
       setOrderId(id);
