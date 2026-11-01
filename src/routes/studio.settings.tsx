@@ -35,8 +35,16 @@ function StoreSettingsPage() {
   const { user, ready } = useAuth();
   const qc = useQueryClient();
   const { ask, locating } = useGeo();
-  const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
-  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
+  const roles = useQuery({
+    queryKey: ["my-roles"],
+    queryFn: fetchMyRoles,
+    enabled: !!user,
+  });
+  const accountType = useQuery({
+    queryKey: ["my-account-type", user?.id],
+    queryFn: fetchMyAccountType,
+    enabled: !!user,
+  });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
 
   const locate = async () => {
@@ -127,7 +135,11 @@ function StoreSettingsPage() {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_store_info")} back="/profile" />
-        <ErrorState scope="studio:settings:roles" error={roles.error ?? accountType.error} onRetry={() => Promise.all([roles.refetch(), accountType.refetch()])} />
+        <ErrorState
+          scope="studio:settings:roles"
+          error={roles.error ?? accountType.error}
+          onRetry={() => Promise.all([roles.refetch(), accountType.refetch()])}
+        />
       </div>
     );
   }
