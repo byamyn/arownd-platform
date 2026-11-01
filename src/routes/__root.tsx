@@ -21,7 +21,7 @@ import "@/utils/sentry";
 import { AppErrorBoundary, ErrorFallback } from "@/components/AppErrorBoundary";
 import { BagProvider } from "@/lib/bag";
 import { ThemeProvider } from "@/lib/theme";
-import { BottomNav } from "@/components/sooqy/BottomNav";
+import { AccountBottomNav } from "@/components/sooqy/AccountBottomNav";
 import { PwaPrompt, useServiceWorkerRegistration } from "@/components/sooqy/PwaPrompt";
 import { ConnectionBanner } from "@/components/sooqy/ConnectionBanner";
 import { DynamicIsland } from "@/components/sooqy/DynamicIsland";
@@ -186,7 +186,7 @@ function RootComponent() {
               className={
                 isAuth || isStudio
                   ? "min-h-screen w-full max-w-none pb-0"
-                  : "mx-auto min-h-screen max-w-xl " + (isPersonalSubpage ? "pb-0" : "pb-28")
+                  : "mx-auto min-h-screen max-w-xl " + (isAccountSubpage ? "pb-0" : "pb-28")
               }
             >
               <PageTransition>
@@ -197,7 +197,7 @@ function RootComponent() {
               <>
                 <ConnectionBanner />
                 <DynamicIsland />
-                {!isStudio && !isPersonalSubpage && <BottomNav />}
+                {!isStudio && !isAccountSubpage && <AccountBottomNav pathname={location.pathname} />}
                 <PwaPrompt />
               </>
             )}
