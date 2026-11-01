@@ -97,7 +97,7 @@ function ProfilePage() {
   const displayName = public_id
     ? publicProfile.data?.full_name ?? "مستخدم Arownd"
     : profile.data?.full_name ??
-      (typeof user?.user_metadata?.full_name === "string" ? user.user_metadata.full_name : null) ??
+      (typeof user?.user_metadata?.["full_name"] === "string" ? user.user_metadata.full_name : null) ??
       user?.email ?? "مستخدم Arownd";
   const initial = displayName.trim().charAt(0) || "A";
   const favCount = favorites.products.length + favorites.stores.length;
