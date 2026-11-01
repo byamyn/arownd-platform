@@ -4,20 +4,25 @@ import { useSyncExternalStore } from "react";
  * المفضلة — تحفظ معرفات المنتجات والمتاجر محليًا فقط (localStorage).
  * البيانات المعروضة تُجلب حقيقية من قاعدة البيانات عند العرض.
  */
-const KEY = "sooqy:favorites";
+const KEY = "arownd:favorites";
+const LEGACY_KEY = "sooqy:favorites";
 
 type Fav = { products: string[]; stores: string[] };
 
 function read(): Fav {
   if (typeof window === "undefined") return { products: [], stores: [] };
   try {
-    const raw = window.localStorage.getItem(KEY);
+    const raw = window.localStorage.getItem(KEY) ?? window.localStorage.getItem(LEGACY_KEY);
     if (!raw) return { products: [], stores: [] };
     const parsed = JSON.parse(raw) as Partial<Fav>;
-    return {
+    const favorites = {
       products: Array.isArray(parsed.products) ? parsed.products : [],
       stores: Array.isArray(parsed.stores) ? parsed.stores : [],
     };
+    if (!window.localStorage.getItem(KEY)) {
+      window.localStorage.setItem(KEY, JSON.stringify(favorites));
+    }
+    return favorites;
   } catch {
     return { products: [], stores: [] };
   }

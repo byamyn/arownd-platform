@@ -7,14 +7,18 @@ import { useCallback, useEffect, useState } from "react";
  * من صفحة لا يُبَثّ إلى غيرها. الآن كتابة واحدة + حدث مخصّص يبثّ التغيير
  * لكل المكوّناتmounted في نفس الوقت.
  */
-const STORAGE_KEY = "sooqy:wilaya";
-const CHANGE_EVENT = "sooqy:wilaya-change";
+const STORAGE_KEY = "arownd:wilaya";
+const LEGACY_STORAGE_KEY = "sooqy:wilaya";
+const CHANGE_EVENT = "arownd:wilaya-change";
 
 /** يقرأ الولاية المفضّلة من التخزين المحلي. */
 export function getSelectedWilaya(): number | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
+    const raw = window.localStorage.getItem(STORAGE_KEY) ?? window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (raw && !window.localStorage.getItem(STORAGE_KEY)) {
+      window.localStorage.setItem(STORAGE_KEY, raw);
+    }
     if (!raw) return null;
     const n = Number(raw);
     return Number.isInteger(n) && n > 0 ? n : null;

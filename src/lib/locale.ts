@@ -11,8 +11,10 @@ export type Lang = "ar" | "en";
 
 export const LANGS: Lang[] = ["ar", "en"];
 export const DEFAULT_LANG: Lang = "ar";
-export const LANG_COOKIE = "sooqy:lang";
-export const LANG_HEADER = "x-sooqy-lang";
+export const LANG_COOKIE = "arownd:lang";
+export const LANG_HEADER = "x-arownd-lang";
+const LEGACY_LANG_COOKIE = "sooqy:lang";
+const LEGACY_LANG_HEADER = "x-sooqy-lang";
 
 /** هل المسار يبدأ ببادئة لغة؟ */
 export function parseLocalePrefix(pathname: string): { lang: Lang; rest: string } | null {
@@ -51,7 +53,7 @@ export function langFromCookie(cookieHeader: string | null | undefined): Lang | 
   if (!cookieHeader) return null;
   for (const part of cookieHeader.split(";")) {
     const [name, ...rest] = part.trim().split("=");
-    if (name === LANG_COOKIE) {
+    if (name === LANG_COOKIE || name === LEGACY_LANG_COOKIE) {
       const value = decodeURIComponent(rest.join("="));
       if (value === "ar" || value === "en") return value;
     }

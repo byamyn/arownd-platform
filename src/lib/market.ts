@@ -6,7 +6,7 @@
  *
  * - `formatMoney` / `formatDate` / `formatNumber` — بديل موحّد لكل التنسيق.
  * - `zonedParts` — يقرأ تاريخ/وقت السوق الحقيقي (لا إزاحة ثابتة +1).
- * - السوق النشط محفوظ محليًا ويُبثّ عبر حدث `sooqy:market`.
+ * - السوق النشط محفوظ محليًا ويُبثّ عبر حدث `arownd:market`.
  */
 
 export type MarketLang = "ar" | "en";
@@ -60,14 +60,19 @@ export const MARKETS: Market[] = [
 
 export const DEFAULT_MARKET: Market = MARKETS[0]!;
 
-const STORAGE_KEY = "sooqy:market";
-const MARKET_EVENT = "sooqy:market";
+const STORAGE_KEY = "arownd:market";
+const LEGACY_STORAGE_KEY = "sooqy:market";
+const MARKET_EVENT = "arownd:market";
 
 let cached: Market | null = null;
 
 function readStoredId(): string | null {
   try {
-    return localStorage.getItem(STORAGE_KEY);
+    const current = localStorage.getItem(STORAGE_KEY);
+    if (current) return current;
+    const legacy = localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (legacy) localStorage.setItem(STORAGE_KEY, legacy);
+    return legacy;
   } catch {
     return null;
   }
