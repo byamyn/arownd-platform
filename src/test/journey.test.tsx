@@ -215,10 +215,12 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     });
     fireEvent.click(screen.getByRole("button", { name: "متابعة" }));
 
-    // الخطوة 2: التوصيل
+    // الخطوة 2: التوصيل المنزلي — Checkout يعتمد عنواناً تفصيلياً ولا يعرض خيار الاستلام من المكتب.
     await expectText("طريقة التوصيل");
-    // لا توجد شركة توصيل معتمدة في بيانات الاختبار؛ نختار الاستلام من المكتب.
-    fireEvent.click(screen.getByRole("button", { name: /استلام من المكتب/ }));
+    fireEvent.change(
+      screen.getByPlaceholderText("عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)"),
+      { target: { value: "شارع ديدوش مراد، الجزائر الوسطى" } },
+    );
     fireEvent.click(screen.getByRole("button", { name: "متابعة" }));
 
     // الخطوة 3: الدفع عند الاستلام (افتراضي)
