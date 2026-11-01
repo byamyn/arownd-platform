@@ -648,7 +648,7 @@ export async function fetchMyOrders() {
   const archivedIds = await fetchArchivedActivityIds(u.user.id, "order");
   const { data, error } = await supabase
     .from("orders")
-    .select("*, items:order_items(*), merchant_orders(id, status, subtotal, shipping_fee, quoted_at, store:stores(name)), wilaya:wilayas(name_ar)")
+    .select("*, items:order_items(*), merchant_orders(id, order_id, store_id, status, subtotal, shipping_fee, quoted_at, payment_status, paid_amount, paid_at, store:stores(name), items:order_items(*)), wilaya:wilayas(name_ar)")
     .eq("user_id", u.user.id)
     .order("created_at", { ascending: false });
   if (error) throw error;
