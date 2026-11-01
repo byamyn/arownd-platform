@@ -1324,7 +1324,7 @@ export async function fetchOrder(orderId: string) {
   const { data, error } = await supabase
     .from("orders")
     .select(
-      "*, items:order_items(*, store:stores(id, name, phone, whatsapp)), merchant_orders(id, store_id, status, subtotal, shipping_fee, quoted_at), wilaya:wilayas(name_ar)",
+      "*, items:order_items(*, store:stores(id, name, phone, whatsapp)), merchant_orders(id, store_id, status, subtotal, shipping_fee, quoted_at, payment_status, paid_amount, paid_at), wilaya:wilayas(name_ar)",
     )
     .eq("id", orderId)
     .maybeSingle();
