@@ -5,7 +5,7 @@
 `profiles.account_type` records one workspace identity:
 
 - `personal`: the default account.
-- `merchant`: set by the authenticated `become_merchant()` transaction.
+- `merchant`: set by the authenticated `create_my_store()` transaction together with the merchant capability and store record.
 - `delivery_company`: set when the authenticated user submits a delivery-company application.
 
 Authorization remains separate:
@@ -17,7 +17,7 @@ Authorization remains separate:
 
 ## Mutual exclusion
 
-Merchant onboarding and delivery-company registration lock the user's profile row and reject the opposite business identity. This avoids races where the same account creates both workspaces. Existing data containing both a delivery-company row and merchant role is not silently rewritten: the migration fails with `account_type_conflict` so an operator can reconcile the affected account first.
+Merchant onboarding and delivery-company registration lock the user's profile row and reject the opposite business identity. Merchant store creation is a single transaction: the account type, merchant capability and store row are committed or rolled back together. This avoids races where the same account creates both workspaces. Existing data containing both a delivery-company row and merchant role is not silently rewritten: the migration fails with `account_type_conflict` so an operator can reconcile the affected account first.
 
 Preflight query:
 
@@ -34,6 +34,10 @@ The query should return no rows before applying `20261101170000_account_type_mod
 ## Delivery identity
 
 The delivery identity lookup uses `delivery_companies.user_id -> auth.users.id`, matching the stabilization migration `20261030201916_stabilize_delivery_identity_and_tracking.sql`. The registration trigger only records the account type; it does not change approval state or grant the `delivery_company` role.
+
+## Personal and merchant onboarding
+
+New personal accounts receive `personal` from the database default and the existing signup trigger grants the `customer` capability. Merchant signup selection only chooses the onboarding route; `create_my_store()` is the only client-facing path that changes a personal account to `merchant`. It derives the owner from `auth.uid()`, locks the profile, rejects delivery identities and duplicate stores, and atomically writes the merchant role and store.
 
 ## Profile privacy
 
