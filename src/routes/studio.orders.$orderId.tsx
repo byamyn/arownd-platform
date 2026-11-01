@@ -9,6 +9,8 @@ import {
   fetchOrder,
   merchantUpdateOrderStatus,
   merchantUpdateOrderNote,
+  fetchMyAccountType,
+  fetchMyRoles,
   fetchMyStore,
 } from "@/lib/sooqy";
 import { Link, useRouter } from "@tanstack/react-router";
@@ -33,16 +35,19 @@ function StudioOrderDetailPage() {
   const qc = useQueryClient();
 
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
+  const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
+  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
+  const canManage = accountType.data === "merchant" && (roles.data?.includes("merchant") ?? false);
   const orderQuery = useQuery({
     queryKey: ["store-order", orderId],
     queryFn: () => fetchOrder(orderId),
-    enabled: !!orderId && !!user,
+    enabled: !!orderId && !!user && canManage,
   });
 
   useRealtimeSubscription({
     table: "orders",
     queryKeys: [["store-order", orderId], ["store-orders"]],
-    enabled: !!user && !!orderId,
+    enabled: !!user && !!orderId && canManage,
   });
 
   if (!ready) return null;
@@ -62,7 +67,7 @@ function StudioOrderDetailPage() {
     );
   }
 
-  if (store.isLoading || orderQuery.isLoading) {
+  if (store.isLoading || orderQuery.isLoading || roles.isLoading || accountType.isLoading) {
     return (
       <div
         className="flex min-h-[50vh] items-center justify-center"
@@ -70,6 +75,31 @@ function StudioOrderDetailPage() {
         aria-label={t("studio_order_details_loading")}
       >
         <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
+  }
+
+  if (roles.isError || accountType.isError) {
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title={t("studio_order_details")} back="/studio" />
+        <ErrorState
+          scope="studio:order:account"
+          error={roles.error ?? accountType.error}
+          onRetry={() => Promise.all([roles.refetch(), accountType.refetch()])}
+        />
+      </div>
+    );
+  }
+
+  if (!canManage) {
+    return (
+      <div className="space-y-4 px-4 pt-20 text-center">
+        <PageHeader title={t("studio_order_details")} back="/profile" />
+        <p className="text-sm text-muted-foreground">{t("studio_login_store_settings")}</p>
+        <Link to="/profile" className="btn-primary mx-auto inline-flex px-8">
+          {t("profile_hub_title")}
+        </Link>
       </div>
     );
   }
