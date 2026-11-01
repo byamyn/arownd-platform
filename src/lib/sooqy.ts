@@ -1336,9 +1336,13 @@ export type PublicProfile = {
 };
 
 export async function fetchPublicProfile(userId: string): Promise<PublicProfile | null> {
-  const { data, error } = await supabase.rpc("get_public_profile", { _user_id: userId });
-  if (error) throw error;
-  return data?.[0] ?? null;
+  const { data, error } = await supabase
+    .from("public_personal_profiles")
+    .select("full_name, avatar_url, wilaya_id, commune")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw new Error(friendlyError(error));
+  return data;
 }
 
 export async function setMyProfileVisibility(isPublic: boolean) {
