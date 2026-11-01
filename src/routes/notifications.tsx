@@ -190,7 +190,7 @@ function NotificationsPage() {
         keywords="الإشعارات, Arownd"
         ogType="website"
       />
-      <div className="px-4 pt-4">
+      <div className="px-4 pb-6 pt-4">
         <PageHeader
           title="الإشعارات"
           back="/profile"
