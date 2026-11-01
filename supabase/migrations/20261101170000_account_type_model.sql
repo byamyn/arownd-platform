@@ -46,6 +46,32 @@ begin
     raise exception
       'account_type_missing_profile: merchant role owners must have a profile before this migration';
   end if;
+
+  if exists (
+    select 1
+    from public.stores s
+    where s.owner_id is not null
+      and not exists (
+        select 1
+        from public.user_roles ur
+        where ur.user_id = s.owner_id
+          and ur.role = 'merchant'::public.app_role
+      )
+  ) then
+    raise exception
+      'account_type_store_owner_missing_merchant_role: existing store owners need role reconciliation before this migration';
+  end if;
+
+  if exists (
+    select s.owner_id
+    from public.stores s
+    where s.owner_id is not null
+    group by s.owner_id
+    having count(*) > 1
+  ) then
+    raise exception
+      'account_type_multiple_stores: existing multi-store owners need reconciliation before this migration';
+  end if;
 end
 $migration$;
 
