@@ -55,6 +55,21 @@ create policy merchant_order_cod_collections_read_participants
     )
   );
 
+drop policy if exists merchant_order_cod_collections_read_assigned_carrier
+  on public.merchant_order_cod_collections;
+create policy merchant_order_cod_collections_read_assigned_carrier
+  on public.merchant_order_cod_collections
+  for select to authenticated
+  using (
+    exists (
+      select 1
+      from public.shipments s
+      join public.delivery_companies dc on dc.id = s.company_id
+      where s.merchant_order_id = merchant_order_cod_collections.merchant_order_id
+        and dc.user_id = auth.uid()
+    )
+  );
+
 create or replace function public.collect_merchant_order_cod(
   _merchant_order_id uuid
 )
@@ -92,17 +107,6 @@ begin
   from public.merchant_orders
   where id = _merchant_order_id
   for update;
-
-  -- Idempotent retry: return the original immutable collection record.
-  if mo.payment_status = 'paid' then
-    select * into collection_row
-    from public.merchant_order_cod_collections
-    where merchant_order_id = mo.id;
-    if found then
-      return collection_row;
-    end if;
-    raise exception 'cod_payment_record_inconsistent';
-  end if;
 
   expected_amount := mo.subtotal + mo.shipping_fee;
   if expected_amount < 0 then
@@ -145,6 +149,18 @@ begin
     channel := 'store_pickup';
   else
     raise exception 'unsupported_delivery_type';
+  end if;
+
+  -- Authorize the assigned carrier/store owner before returning an existing
+  -- record. Otherwise an authenticated user could probe another order's COD row.
+  if mo.payment_status = 'paid' then
+    select * into collection_row
+    from public.merchant_order_cod_collections
+    where merchant_order_id = mo.id;
+    if found then
+      return collection_row;
+    end if;
+    raise exception 'cod_payment_record_inconsistent';
   end if;
 
   insert into public.merchant_order_cod_collections (
