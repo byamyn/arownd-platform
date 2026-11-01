@@ -13,7 +13,6 @@ import {
   Monitor,
   Moon,
   Shield,
-  Store,
   Sun,
   Trash2,
 } from "lucide-react";
@@ -22,7 +21,7 @@ import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { unregisterMyPushDevices } from "@/lib/push-notifications";
 import { useAuth } from "@/lib/auth";
-import { fetchMyStore, fetchMyProfile, fetchMyAccountType, setMyProfileVisibility } from "@/lib/sooqy";
+import { fetchMyProfile, fetchMyAccountType, setMyProfileVisibility } from "@/lib/sooqy";
 import { useTheme, type Theme } from "@/lib/theme";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
@@ -30,7 +29,6 @@ import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
-import { ErrorState } from "@/components/sooqy/error-state";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "الإعدادات — Arownd" }] }),
@@ -45,7 +43,6 @@ function SettingsPage() {
   const [signingOut, setSigningOut] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
-  const myStore = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
   const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
   const [visibilityBusy, setVisibilityBusy] = useState(false);
@@ -196,36 +193,6 @@ function SettingsPage() {
             hint="تغيير كلمة المرور"
             onClick={() => setShowSecurity(true)}
           />
-        </MenuCard>
-      </section>
-
-      {/* مجموعة: المتجر */}
-      <section className="space-y-2">
-        <SectionTitle>المتجر</SectionTitle>
-        <MenuCard>
-          {myStore.isLoading ? (
-            <div
-              className="m-3 h-14 animate-pulse rounded-xl bg-muted"
-              aria-label="جارٍ تحميل بيانات المتجر"
-            />
-          ) : myStore.isError ? (
-            <div className="p-3">
-              <ErrorState
-                scope="settings-store"
-                error={myStore.error}
-                onRetry={() => myStore.refetch()}
-              />
-            </div>
-          ) : myStore.data ? (
-            <MenuRow icon={Store} label="استوديو التاجر" hint="أدر منتجاتك وطلباتك" to="/studio" />
-          ) : (
-            <MenuRow
-              icon={Store}
-              label="أصبح تاجر"
-              hint="أنشئ متجرك وابدأ البيع على Arownd"
-              to="/create-store"
-            />
-          )}
         </MenuCard>
       </section>
 
