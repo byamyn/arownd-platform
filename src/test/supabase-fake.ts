@@ -267,6 +267,10 @@ async function rpc(name: string, _params?: Record<string, unknown>) {
       state.userRoles.push({ user_id: state.sessionUser?.id, role: "merchant" });
       return ok("store-created");
     }
+    case "get_my_account_type":
+      return ok(state.userRoles.some((role) => role["role"] === "merchant") ? "merchant" : "personal");
+    case "set_my_profile_visibility":
+      return ok();
     case "become_merchant":
     case "increment_product_view":
     case "cancel_reservation":
