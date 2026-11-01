@@ -16,7 +16,9 @@ export type DeliveryCompanyUpdate = Pick<
 export type DeliveryCoverageArea = Database["public"]["Tables"]["delivery_coverage_areas"]["Row"];
 export type DeliveryService = Database["public"]["Tables"]["delivery_services"]["Row"];
 
-export type Shipment = Database["public"]["Tables"]["shipments"]["Row"];
+export type Shipment = Database["public"]["Tables"]["shipments"]["Row"] & {
+  merchant_order?: Pick<Database["public"]["Tables"]["merchant_orders"]["Row"], "payment_status" | "paid_amount"> | null;
+};
 export type ShipmentInsert = Database["public"]["Tables"]["shipments"]["Insert"];
 export type ShipmentUpdate = Pick<Database["public"]["Tables"]["shipments"]["Update"], "status">;
 
@@ -207,7 +209,7 @@ export async function fetchShipmentsByCompany(
 ): Promise<(Shipment & { order_id: string })[]> {
   const { data, error } = await supabase
     .from("shipments")
-    .select("*, order:orders!inner(*)")
+    .select("*, order:orders!inner(*), merchant_order:merchant_orders(payment_status, paid_amount)")
     .eq("company_id", companyId)
     .order("created_at", { ascending: false });
   if (error) throw error;
