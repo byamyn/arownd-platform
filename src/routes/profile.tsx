@@ -3,7 +3,6 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import {
   BadgeCheck,
-  Bell,
   Camera,
   CalendarDays,
   Heart,
@@ -31,12 +30,11 @@ import {
   isValidDzPhone,
   normalizePhone,
   updateMyProfile,
-  setMyProfileVisibility,
   uploadImageToBucket,
 } from "@/lib/sooqy";
 import { WilayaSelect, wilayasQuery } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
-import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
+import { SectionTitle } from "@/components/sooqy/list-menu";
 import { AppShell } from "@/components/sooqy/app-shell";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { SeoHead } from "@/components/seo/SeoHead";
@@ -94,207 +92,6 @@ function ProfilePage() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-  const [visibilityBusy, setVisibilityBusy] = useState(false);
-  const [loaded, setLoaded] = useState(false);
-
-  // نوع الحساب يحدد مساحة العمل؛ لا يُستنتج من بيانات العميل أو metadata.
-  const [editing, setEditing] = useState(false);
-  const [setupOpened, setSetupOpened] = useState(false);
-  const avatarInputRef = useRef<HTMLInputElement>(null);
-
-  // تعبئة النموذج من بيانات الحساب والملف — مرة واحدة
-  useEffect(() => {
-    // لا نغلق التحميل قبل اكتمال استعلام الملف الشخصي؛ وإلا قد تبقى
-    // حقول الهاتف والولاية والبلدية فارغة إذا وصل الملف بعد أول render.
-    if (loaded || !user || !profile.isFetched) return;
-    setFullName(
-      profile.data?.full_name ?? (user.user_metadata?.["full_name"] as string | undefined) ?? "",
-    );
-    if (profile.data) {
-      setPhone(profile.data.phone ?? "");
-      setWilayaId(profile.data.wilaya_id);
-      setCommune(profile.data.commune ?? "");
-      setAvatarPreview(profile.data.avatar_url ?? null);
-    }
-    setLoaded(true);
-  }, [user, profile.data, profile.isFetched, loaded]);
-
-  // بعد تأكيد البريد نفتح نموذج استكمال الملف الشخصي مباشرةً، دون المرور بصفحة الحساب العامة.
-  useEffect(() => {
-    if (!setup || setupOpened || !user || !loaded || profile.isLoading) return;
-    setEditing(true);
-    setSetupOpened(true);
-  }, [setup, setupOpened, user, loaded, profile.isLoading]);
-
-  // شركة التوصيل تحتفظ بمسار لوحة التحكم؛ الملف الشخصي للتاجر يبقى مساحة مستقلة.
-  useEffect(() => {
-    if (
-      public_id ||
-      !user ||
-      !accountTypeQuery.isSuccess ||
-      !roleQuery.isSuccess ||
-      isAdmin
-    ) return;
-
-    if (accountTypeQuery.data === "delivery_company") {
-      navigate({ to: "/delivery-dashboard", replace: true });
-    }
-  }, [
-    public_id,
-    user,
-    accountTypeQuery.isFetched,
-    accountTypeQuery.data,
-    roleQuery.isSuccess,
-    roleQuery.data,
-    isAdmin,
-    navigate,
-  ]);
-
-  if (!ready) return null;
-  if (public_id) {
-    if (publicProfile.isLoading) {
-      return (
-        <AppShell className="space-y-4 pb-24 pt-6">
-          <PageHeader title={t("profile_public_title")} />
-          <div className="h-44 animate-pulse rounded-3xl bg-muted" />
-        </AppShell>
-      );
-    }
-    if (publicProfile.isError) {
-      return (
-        <AppShell className="space-y-4 pb-24 pt-6">
-          <PageHeader title={t("profile_public_title")} />
-          <ErrorState scope="profile:public" error={publicProfile.error} onRetry={() => publicProfile.refetch()} />
-        </AppShell>
-      );
-    }
-    if (!publicProfile.data) {
-      return (
-        <AppShell className="space-y-4 pb-24 pt-6">
-          <PageHeader title={t("profile_public_title")} />
-          <div className="rounded-2xl border border-border bg-card p-6 text-center">
-            <User className="mx-auto size-10 text-muted-foreground" />
-            <p className="mt-3 font-bold text-foreground">{t("profile_public_unavailable")}</p>
-          </div>
-        </AppShell>
-      );
-    }
-    const publicName = publicProfile.data.full_name?.trim() || t("profile_public_default_name");
-    const publicInitial = publicName.slice(0, 1).toUpperCase();
-    const publicWilaya = wilayas.data?.find((w) => w.id === publicProfile.data?.wilaya_id)?.name_ar;
-    return (
-      <>
-        <SeoHead title={publicName} description={t("profile_public_description")} noindex />
-        <AppShell className="space-y-5 pb-24 pt-6">
-          <PageHeader title={t("profile_public_title")} subtitle={t("profile_public_subtitle")} />
-          <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
-            <div className="h-24 bg-gradient-to-br from-primary via-primary/70 to-primary-soft" />
-            <div className="px-5 pb-6">
-              <div className="-mt-11 flex size-22 items-center justify-center overflow-hidden rounded-full bg-primary-soft ring-4 ring-card">
-                {publicProfile.data.avatar_url ? (
-                  <img src={publicProfile.data.avatar_url} alt="" className="size-full object-cover" />
-                ) : (
-                  <span className="text-3xl font-extrabold text-accent-ink">{publicInitial}</span>
-                )}
-              </div>
-              <h1 className="mt-4 text-xl font-extrabold text-foreground">{publicName}</h1>
-              {(publicProfile.data.commune || publicWilaya) && (
-                <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
-                  <MapPin className="size-4" />
-                  {[publicProfile.data.commune, publicWilaya].filter(Boolean).join(t("profile_location_separator"))}
-                </p>
-              )}
-              <p className="mt-4 text-xs text-muted-foreground">{t("profile_public_privacy_note")}</p>
-            </div>
-          </section>
-        </AppShell>
-      </>
-    );
-  }
-  if (!user) {
-    return (
-      <AppShell className="pb-24 pt-6">
-        <PageHeader title={t("profile_hub_title")} subtitle={t("profile_hub_subtitle")} />
-        <div className="rounded-2xl border border-border bg-card p-6 text-center">
-          <span className="mx-auto flex size-14 items-center justify-center rounded-full bg-primary-soft text-accent-ink">
-            <User className="size-7" />
-          </span>
-          <p className="mt-3 text-body font-bold text-foreground">{t("profile_signin_title")}</p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {t("profile_signin_hint")}
-          </p>
-          <Link to="/auth" className="btn-primary mt-4 w-full">
-            {t("profile_login_action")}
-          </Link>
-        </div>
-      </AppShell>
-    );
-  }
-
-  if (!isAdmin && (accountTypeQuery.isLoading || roleQuery.isLoading)) {
-    return (
-      <AppShell className="space-y-4 pb-24 pt-6">
-        <PageHeader title={t("profile_hub_title")} />
-        <div className="h-36 animate-pulse rounded-3xl bg-muted" />
-      </AppShell>
-    );
-  }
-
-  if (!isAdmin && (accountTypeQuery.isError || roleQuery.isError)) {
-    return (
-      <AppShell className="space-y-4 pb-24 pt-6">
-        <PageHeader title={t("profile_hub_title")} />
-        <ErrorState
-          scope="profile:account-identity"
-          error={accountTypeQuery.error ?? roleQuery.error}
-          onRetry={() => {
-            void accountTypeQuery.refetch();
-            void roleQuery.refetch();
-          }}
-        />
-      </AppShell>
-    );
-  }
-
-  if (
-    !isAdmin &&
-    accountTypeQuery.data === "merchant" &&
-    !roleQuery.data?.includes("merchant")
-  ) {
-    return (
-      <AppShell className="space-y-4 pb-24 pt-6">
-        <PageHeader title={t("profile_hub_title")} />
-        <ErrorState
-          scope="profile:account-identity"
-          error={new Error(t("profile_account_identity_error"))}
-          onRetry={() => {
-            void accountTypeQuery.refetch();
-            void roleQuery.refetch();
-          }}
-        />
-      </AppShell>
-    );
-  }
-
-  const name = (user.user_metadata?.["full_name"] as string | undefined) ?? "";
-  const displayName = name || t("profile_default_name");
-  const initial = displayName.slice(0, 1).toUpperCase();
-  const favCount = favorites.products.length + favorites.stores.length;
-
-  const changeVisibility = async () => {
-    setVisibilityBusy(true);
-    try {
-      await setMyProfileVisibility(!(profile.data?.is_public ?? false));
-      await qc.invalidateQueries({ queryKey: ["my-profile"] });
-      if (user) await qc.invalidateQueries({ queryKey: ["public-profile", user.id] });
-      showSuccess(t((profile.data?.is_public ?? false) ? "profile_visibility_private" : "profile_visibility_public"));
-    } catch (e) {
-      showError(e);
-    } finally {
-      setVisibilityBusy(false);
-    }
-  };
-
   const save = async () => {
     const cleanName = fullName.trim();
     if (!cleanName) {
