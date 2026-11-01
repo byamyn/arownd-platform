@@ -312,6 +312,7 @@ export type Database = {
           full_name: string | null;
           id: string;
           is_phone_verified: boolean;
+          is_public: boolean;
           phone: string | null;
           updated_at: string;
           user_id: string;
@@ -324,6 +325,7 @@ export type Database = {
           full_name?: string | null;
           id?: string;
           is_phone_verified?: boolean;
+          is_public?: boolean;
           phone?: string | null;
           updated_at?: string;
           user_id: string;
@@ -336,6 +338,7 @@ export type Database = {
           full_name?: string | null;
           id?: string;
           is_phone_verified?: boolean;
+          is_public?: boolean;
           phone?: string | null;
           updated_at?: string;
           user_id?: string;
@@ -977,6 +980,15 @@ export type Database = {
           isOneToOne: true;
           isSetofReturn: false;
         };
+      };
+      get_public_profile: {
+        Args: { _user_id: string };
+        Returns: {
+          avatar_url: string | null;
+          commune: string | null;
+          full_name: string | null;
+          wilaya_id: number | null;
+        }[];
       };
       has_role: {
         Args: {
