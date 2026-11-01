@@ -13,7 +13,7 @@ alter table public.profiles
 
 -- Do not silently merge two independent business identities into one account,
 -- and do not leave business records without a profile identity.
-do $
+do $migration$
 begin
   if exists (
     select 1
@@ -47,7 +47,7 @@ begin
       'account_type_missing_profile: merchant role owners must have a profile before this migration';
   end if;
 end
-$;
+$migration$;
 
 update public.profiles p
 set account_type = case
@@ -156,6 +156,108 @@ for each row
 execute function public.set_delivery_account_type_on_registration();
 
 revoke all on function public.set_delivery_account_type_on_registration() from public, anon, authenticated;
+
+-- Personal-to-merchant onboarding is one transaction: identity, capability and
+-- store creation either all succeed or all roll back together.
+create or replace function public.create_my_store(
+  _store_name text,
+  _slug text,
+  _phone text,
+  _whatsapp text,
+  _wilaya_id integer,
+  _commune text,
+  _address_line text,
+  _latitude double precision,
+  _longitude double precision,
+  _opening_hours jsonb,
+  _category text default null,
+  _subcategories text[] default '{}'
+)
+returns uuid
+language plpgsql
+security definer
+set search_path = ''
+as $function$
+declare
+  current_type public.account_type;
+  created_store_id uuid;
+begin
+  if auth.uid() is null then
+    raise exception 'not_authenticated';
+  end if;
+
+  if nullif(btrim(_store_name), '') is null
+     or nullif(btrim(_slug), '') is null
+     or _wilaya_id is null
+     or _opening_hours is null
+     or jsonb_typeof(_opening_hours) <> 'object' then
+    raise exception 'invalid_store_input';
+  end if;
+
+  select p.account_type
+    into current_type
+  from public.profiles p
+  where p.user_id = auth.uid()
+  for update;
+
+  if not found then
+    raise exception 'profile_not_found';
+  end if;
+
+  if current_type = 'delivery_company'::public.account_type
+     or exists (
+       select 1 from public.delivery_companies dc
+       where dc.user_id = auth.uid()
+     ) then
+    raise exception 'account_type_conflict';
+  end if;
+
+  if exists (
+    select 1 from public.stores s
+    where s.owner_id = auth.uid()
+  ) then
+    raise exception 'store_already_exists';
+  end if;
+
+  update public.profiles
+  set account_type = 'merchant'::public.account_type
+  where user_id = auth.uid();
+
+  insert into public.user_roles (user_id, role)
+  select auth.uid(), 'merchant'::public.app_role
+  where not exists (
+    select 1 from public.user_roles ur
+    where ur.user_id = auth.uid()
+      and ur.role = 'merchant'::public.app_role
+  );
+
+  insert into public.stores (
+    owner_id, name, slug, phone, whatsapp, wilaya_id, commune,
+    address_line, latitude, longitude, opening_hours, category, subcategories
+  )
+  values (
+    auth.uid(), btrim(_store_name), btrim(_slug), nullif(btrim(_phone), ''),
+    nullif(btrim(_whatsapp), ''), _wilaya_id, nullif(btrim(_commune), ''),
+    nullif(btrim(_address_line), ''), _latitude, _longitude, _opening_hours,
+    nullif(btrim(_category), ''), coalesce(_subcategories, '{}'::text[])
+  )
+  returning id into created_store_id;
+
+  return created_store_id;
+end;
+$function$;
+
+revoke all on function public.create_my_store(
+  text, text, text, text, integer, text, text, double precision,
+  double precision, jsonb, text, text[]
+) from public, anon;
+grant execute on function public.create_my_store(
+  text, text, text, text, integer, text, text, double precision,
+  double precision, jsonb, text, text[]
+) to authenticated;
+
+revoke all on function public.become_merchant() from public, anon;
+grant execute on function public.become_merchant() to authenticated;
 
 -- Read only the signed-in user's account identity; this is not an authorization check.
 create or replace function public.get_my_account_type()
