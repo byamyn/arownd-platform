@@ -315,6 +315,88 @@ revoke all on function public.customer_respond_to_merchant_order(uuid, boolean)
 grant execute on function public.customer_respond_to_merchant_order(uuid, boolean)
   to authenticated;
 
+-- Arownd assigns an approved carrier only after the buyer accepts the store quote.
+create or replace function public.admin_assign_shipment_company(
+  _shipment_id uuid,
+  _company_id uuid
+)
+returns public.shipments
+language plpgsql
+security definer
+set search_path = public
+as $function$
+declare
+  shipment_row public.shipments;
+  parent_order public.orders;
+  company_row public.delivery_companies;
+begin
+  if auth.uid() is null then raise exception 'not_authenticated'; end if;
+  if not public.has_role(auth.uid(), 'admin'::public.app_role) then
+    raise exception 'not_authorized';
+  end if;
+
+  select o.* into parent_order
+  from public.orders o
+  join public.shipments s on s.order_id = o.id
+  where s.id = _shipment_id
+  for update of o;
+  if not found then raise exception 'shipment_not_found'; end if;
+
+  select * into shipment_row
+  from public.shipments
+  where id = _shipment_id
+  for update;
+  if shipment_row.status not in ('pending', 'rejected') then
+    raise exception 'shipment_not_reassignable';
+  end if;
+
+  select * into company_row
+  from public.delivery_companies
+  where id = _company_id and is_approved is true;
+  if not found then raise exception 'delivery_company_unavailable'; end if;
+
+  if not exists (
+    select 1
+    from public.delivery_coverage_areas ca
+    where ca.company_id = _company_id
+      and ca.wilaya_id = parent_order.wilaya_id
+      and ca.is_active is true
+      and (
+        coalesce(cardinality(ca.communes), 0) = 0
+        or trim(parent_order.commune) = any(ca.communes)
+      )
+  ) then
+    raise exception 'delivery_area_not_covered';
+  end if;
+
+  update public.shipments
+  set company_id = _company_id,
+      status = 'pending',
+      updated_at = now()
+  where id = _shipment_id
+  returning * into shipment_row;
+
+  if company_row.user_id is not null then
+    insert into public.notifications (user_id, type, title, body, data)
+    values (
+      company_row.user_id, 'order', 'طلب توصيل جديد',
+      'تم إسناد شحنة جديدة إلى شركتكم. راجعوا بيانات المستلم والعنوان ورسوم التوصيل.',
+      jsonb_build_object(
+        'shipment_id', shipment_row.id,
+        'order_id', shipment_row.order_id,
+        'fee', shipment_row.fee
+      )
+    );
+  end if;
+
+  return shipment_row;
+end;
+$function$;
+revoke all on function public.admin_assign_shipment_company(uuid, uuid)
+  from public, anon;
+grant execute on function public.admin_assign_shipment_company(uuid, uuid)
+  to authenticated;
+
 -- Merchants can no longer confirm a purchase directly: they must send a quote,
 -- then the customer confirms it. Store-pickup completion remains merchant-owned.
 create or replace function public.merchant_update_merchant_order_status(
