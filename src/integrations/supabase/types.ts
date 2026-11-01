@@ -994,6 +994,23 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      create_my_store: {
+        Args: {
+          _store_name: string;
+          _slug: string;
+          _phone: string;
+          _whatsapp: string;
+          _wilaya_id: number;
+          _commune: string;
+          _address_line: string;
+          _latitude: number | null;
+          _longitude: number | null;
+          _opening_hours: Json;
+          _category?: string | null;
+          _subcategories?: string[];
+        };
+        Returns: string;
+      };
       get_my_account_type: {
         Args: Record<PropertyKey, never>;
         Returns: Database["public"]["Enums"]["account_type"];
