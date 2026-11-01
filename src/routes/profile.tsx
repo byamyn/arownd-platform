@@ -92,6 +92,25 @@ function ProfilePage() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+
+  // لا تعرض بيانات الحساب ولا تسمح بتحميلها قبل اكتمال التحقق من الجلسة.
+  if (!ready) return null;
+  if (!user && !public_id) {
+    return (
+      <AppShell className="flex min-h-[70vh] flex-col items-center justify-center gap-4 px-6 text-center">
+        <span className="flex size-20 items-center justify-center rounded-3xl bg-primary-soft">
+          <User className="size-9 text-accent-ink" strokeWidth={1.6} />
+        </span>
+        <h1 className="text-h1 text-foreground">سجّل الدخول لعرض ملفك الشخصي</h1>
+        <p className="max-w-xs text-sm leading-7 text-muted-foreground">
+          سجّل الدخول أو أنشئ حساباً للوصول إلى طلباتك وإعداداتك وبياناتك الشخصية.
+        </p>
+        <Link to="/auth" search={{ redirect: "/profile" }} className="btn-primary mt-2">
+          تسجيل الدخول
+        </Link>
+      </AppShell>
+    );
+  }
   const save = async () => {
     const cleanName = fullName.trim();
     if (!cleanName) {
