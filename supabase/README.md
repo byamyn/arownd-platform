@@ -1,46 +1,40 @@
-# SOOQY Supabase backend setup
+# Arownd — Supabase backend
 
-This folder contains the backend foundation for the SOOQY application.
+This directory contains the version-controlled Supabase configuration, Edge Functions, seed data, and database migrations for Arownd.
 
-## Local setup
+## Local development
 
-1. Install Supabase CLI.
-2. Run the project from the repo root:
+1. Install the Supabase CLI.
+2. Copy `.env.example` to `.env` and configure the local application environment.
+3. Start the local Supabase stack:
 
 ```bash
-supabase login
 supabase start
+```
+
+4. To recreate the **local** database from the repository migrations and seed data:
+
+```bash
 supabase db reset
 ```
 
-3. Apply the schema from the migration folder:
-
-```bash
-supabase db push
-```
-
-4. Start the local studio:
+5. Open the local Supabase Studio:
 
 ```bash
 supabase studio
 ```
 
-## Required environment variables
+## Database migrations
 
-Copy `.env.example` to a local `.env` and fill the values for your Supabase project.
+- Store schema changes as new, timestamped SQL files in `supabase/migrations/`.
+- Review every migration before applying it.
+- `supabase db reset` resets the local development database; it does not update the hosted project.
+- `supabase db push` applies pending migrations to the linked remote project. Run it only after explicit approval and a review of the migration plan.
 
-## Main objects
+Do not commit local Supabase CLI state from `supabase/.temp/`, credentials, or private environment files.
 
-- `profiles`
-- `user_roles`
-- `stores`
-- `products`
-- `store_offers`
-- `product_images`
-- `reviews`
-- `reservations`
-- `orders`
-- `order_items`
-- `wilayas`
+## Main areas
 
-The setup follows the current SOOQY app flow: customer, merchant, reservation, order, and review management.
+The schema supports Arownd's local-commerce workflows, including customer profiles and roles, stores and products, offers, orders and merchant suborders, shipping and delivery companies, notifications, reviews, reservations, and related audit/security records.
+
+The authoritative schema history is the ordered set of SQL files in `migrations/`.

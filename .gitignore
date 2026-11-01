@@ -34,6 +34,8 @@ api/_generated/*
 *.njsproj
 *.sln
 *.sw?
+
+# Environment files
 .env
 .env.*
 !.env.example
@@ -47,12 +49,13 @@ android/app/build/
 android/build/
 android/keystore/
 
-# Android APKs (نسخ إصدارات جاهزة للتثبيت)
+# Android APKs (release artifacts)
 *.apk
 *.aab
 
-# Firebase Android app configuration (download from Firebase Console)
+# Firebase Android app configuration (client config; keep local/CI-managed)
 android/app/google-services.json
 
-# Supabase CLI local metadata (may contain connection details)
+# Supabase CLI local metadata (never commit local project state)
 .temp/
+supabase/.temp/
