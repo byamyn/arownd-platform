@@ -68,7 +68,7 @@ create or replace function public.become_merchant()
 returns void
 language plpgsql
 security definer
-set search_path = public, pg_temp
+set search_path = ''
 as $$
 declare
   current_type public.account_type;
@@ -115,7 +115,7 @@ create or replace function public.set_delivery_account_type_on_registration()
 returns trigger
 language plpgsql
 security definer
-set search_path = public, pg_temp
+set search_path = ''
 set row_security = off
 as $$
 declare
@@ -163,7 +163,7 @@ returns public.account_type
 language sql
 stable
 security invoker
-set search_path = public, pg_temp
+set search_path = ''
 as $$
   select p.account_type
   from public.profiles p
