@@ -13,7 +13,6 @@ import {
   Share2,
   ShoppingBag,
   Truck,
-  Upload,
 } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
@@ -31,7 +30,6 @@ import {
   primaryImage,
 } from "@/lib/sooqy";
 import { type DeliveryType } from "@/lib/shipping";
-import { fetchApprovedDeliveryCompanies } from "@/lib/delivery";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { AppShell } from "@/components/sooqy/app-shell";
@@ -50,7 +48,7 @@ export const Route = createFileRoute("/checkout")({
   component: CheckoutPage,
 });
 
-type PaymentMethod = "cod" | "baridimob";
+type PaymentMethod = "cod";
 const STEP_KEYS = [
   "checkout_step_items",
   "checkout_step_address",
@@ -71,56 +69,6 @@ function CheckoutPage() {
   const [wilayaId, setWilayaId] = useState<number | null>(null);
   const [commune, setCommune] = useState("");
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
-  const [deliveryCompanyId, setDeliveryCompanyId] = useState<string | null>(null);
-  const deliveryCompanies = useQuery({
-    queryKey: ["delivery-companies"],
-    queryFn: fetchApprovedDeliveryCompanies,
-    enabled: deliveryType === "home",
-  });
-
-  // الأسعار المعروضة يجب أن تطابق أسعار الولاية المخزنة التي تستخدمها دالة create_order.
-  const wilayaPricing = useQuery({
-    queryKey: ["checkout-wilaya-pricing", wilayaId],
-    queryFn: async () => {
-      if (!wilayaId) return null;
-      const { data, error } = await supabase
-        .from("wilayas")
-        .select("home_price, desk_price")
-        .eq("id", wilayaId)
-        .maybeSingle();
-      if (error) throw error;
-      return data;
-    },
-    enabled: !!wilayaId,
-  });
-
-  // لا نعرض إلا الشركات المعتمدة التي لديها تغطية نشطة للولاية والبلدية المختارتين.
-  const deliveryCoverage = useQuery({
-    queryKey: ["checkout-delivery-coverage", wilayaId],
-    queryFn: async () => {
-      if (!wilayaId) return [];
-      const { data, error } = await supabase
-        .from("delivery_coverage_areas")
-        .select("company_id, base_fee, communes")
-        .eq("wilaya_id", wilayaId)
-        .eq("is_active", true);
-      if (error) throw error;
-      return data;
-    },
-    enabled: deliveryType === "home" && !!wilayaId,
-  });
-  const availableDeliveryCompanies = (deliveryCompanies.data ?? []).filter((company) =>
-    (deliveryCoverage.data ?? []).some(
-      (area) =>
-        area.company_id === company.id &&
-        (!area.communes?.length || area.communes.includes(commune.trim())),
-    ),
-  );
-  const selectedDeliveryCoverage = (deliveryCoverage.data ?? []).find(
-    (area) =>
-      area.company_id === deliveryCompanyId &&
-      (!area.communes?.length || area.communes.includes(commune.trim())),
-  );
   const [fullName, setFullName] = useState(user?.user_metadata?.["full_name"] ?? "");
   const [phone, setPhone] = useState(user?.phone ?? "");
   const [address, setAddress] = useState("");
@@ -142,12 +90,8 @@ function CheckoutPage() {
   // نفس التقييم المستخدَم في السلة — مصدر واحد للحقيقة.
   const evaluation = evaluateBag(bag.items, offers.data, lang);
   const subtotal = evaluation.subtotal;
-  const shippingFee = wilayaPricing.data
-    ? deliveryType === "home"
-      ? wilayaPricing.data.home_price
-      : wilayaPricing.data.desk_price
-    : null;
-  const total = subtotal + (shippingFee ?? 0);
+  // رسوم التوصيل لا تُفرض في Checkout؛ كل متجر يحددها بعد مراجعة طلبه.
+  const total = subtotal;
 
   // منتجات لم تعد متوفرة: محذوفة من المتجر، أو غير متاحة، أو كميتها غير كافية
   const problems = evaluation.rows.filter((r) => r.issue);
@@ -159,19 +103,8 @@ function CheckoutPage() {
   const stepValid: Record<number, boolean> = {
     0: bag.items.length > 0 && !!offers.data && problems.length === 0,
     1: !!wilayaId && !!commune.trim() && !!fullName.trim() && isValidDzPhone(phone.trim()),
-    2:
-      !!wilayaPricing.data &&
-      (deliveryType === "desk" ||
-        (!!deliveryCompanyId &&
-          !!selectedDeliveryCoverage &&
-          availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId))),
-    3:
-      !!wilayaPricing.data &&
-      (deliveryType === "desk" ||
-        (!!address.trim() &&
-          !!deliveryCompanyId &&
-          !!selectedDeliveryCoverage &&
-          availableDeliveryCompanies.some((c) => c.id === deliveryCompanyId))), // عنوان التوصيل والشركة مطلوبان للتوصيل للمنزل
+    2: true,
+    3: deliveryType === "desk" || !!address.trim(),
   };
 
   if (!ready) return null;
@@ -216,7 +149,6 @@ function CheckoutPage() {
         paymentMethod,
         null, // لا وصل دفع — الدفع عند الاستلام فقط حاليًا
         { fullName: fullName.trim(), phone: normalizePhone(phone.trim()), address: address.trim() },
-        deliveryCompanyId ?? undefined,
       );
       setOrderId(id);
       // لقطة الطلب تُلتقط قبل إفراغ السلة — تغذّي شاشة الإغلاق (إعادة الطلب، التقييم).
@@ -428,7 +360,6 @@ function CheckoutPage() {
             value={wilayaId}
             onChange={(value) => {
               setWilayaId(value);
-              setDeliveryCompanyId(null);
             }}
             required
             className="h-12 w-full"
@@ -437,7 +368,6 @@ function CheckoutPage() {
             value={commune}
             onChange={(e) => {
               setCommune(e.target.value);
-              setDeliveryCompanyId(null);
             }}
             placeholder={t("checkout_commune_placeholder")}
             required
@@ -477,13 +407,11 @@ function CheckoutPage() {
                   id: "home",
                   label: t("checkout_delivery_home"),
                   icon: <Home className="size-5" />,
-                  fee: wilayaPricing.data?.home_price ?? null,
                 },
                 {
                   id: "desk",
                   label: t("checkout_delivery_desk"),
                   icon: <MapPin className="size-5" />,
-                  fee: wilayaPricing.data?.desk_price ?? null,
                 },
               ] as const
             ).map((option) => (
@@ -501,75 +429,19 @@ function CheckoutPage() {
                 {option.icon}
                 {option.label}
                 <span className="mt-1 block text-[11px] font-medium opacity-70">
-                  {option.fee == null
-                    ? t("checkout_fee_by_wilaya")
-                    : option.fee === 0
-                      ? t("checkout_fee_free")
-                      : formatDA(option.fee)}
+                  {t("checkout_fee_pending")}
                 </span>
               </button>
             ))}
           </div>
           {deliveryType === "home" && (
-            <>
-              <div className="space-y-2">
-                <label className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                  {t("checkout_company_label")}
-                </label>
-                <select
-                  value={deliveryCompanyId ?? ""}
-                  onChange={(e) => setDeliveryCompanyId(e.target.value || null)}
-                  disabled={
-                    deliveryCompanies.isLoading ||
-                    deliveryCoverage.isLoading ||
-                    availableDeliveryCompanies.length === 0
-                  }
-                  className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-60"
-                >
-                  <option value="">{t("checkout_company_placeholder")}</option>
-                  {availableDeliveryCompanies.map((c) => (
-                    <option key={c.id} value={c.id}>
-                      {c.company_name}
-                    </option>
-                  ))}
-                </select>
-                {deliveryCompanies.isLoading && (
-                  <p className="text-xs text-muted-foreground">{t("checkout_companies_loading")}</p>
-                )}
-                {deliveryCompanies.isError && (
-                  <ErrorState
-                    scope="checkout:delivery-companies"
-                    error={deliveryCompanies.error}
-                    onRetry={() => deliveryCompanies.refetch()}
-                    className="py-5"
-                  />
-                )}
-                {deliveryCoverage.isError && (
-                  <ErrorState
-                    scope="checkout:delivery-coverage"
-                    error={deliveryCoverage.error}
-                    onRetry={() => deliveryCoverage.refetch()}
-                    className="py-5"
-                  />
-                )}
-                {!deliveryCompanies.isLoading &&
-                  !deliveryCoverage.isLoading &&
-                  !deliveryCompanies.isError &&
-                  !deliveryCoverage.isError &&
-                  availableDeliveryCompanies.length === 0 && (
-                    <p className="rounded-xl bg-warning-soft p-3 text-xs leading-relaxed text-warning">
-                      {t("checkout_companies_none")}
-                    </p>
-                  )}
-              </div>
-              <textarea
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder={t("checkout_address_detail_placeholder")}
-                rows={3}
-                className="w-full rounded-xl border bg-background px-3 py-2 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
-              />
-            </>
+            <textarea
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder={t("checkout_address_detail_placeholder")}
+              rows={3}
+              className="w-full rounded-xl border bg-background px-3 py-2 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
+            />
           )}
           <p className="flex items-start gap-2 rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             <Truck className="mt-0.5 size-4 shrink-0 text-accent-ink" />
@@ -584,54 +456,12 @@ function CheckoutPage() {
             <CreditCard className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_payment_heading")}</h2>
           </div>
-          {(
-            [
-              { id: "cod", label: t("checkout_payment_cod_label"), icon: CreditCard, soon: false },
-              { id: "baridimob", label: t("checkout_payment_baridimob"), icon: Upload, soon: true },
-            ] as const
-          ).map(({ id, label, icon: Icon, soon }) => (
-            <button
-              key={id}
-              type="button"
-              disabled={soon}
-              aria-disabled={soon}
-              onClick={() => {
-                if (soon) {
-                  toast.info(t("checkout_payment_soon_toast"));
-                  return;
-                }
-                setPaymentMethod(id);
-              }}
-              className={cn(
-                "flex w-full items-center justify-between rounded-2xl border p-3 text-start transition",
-                soon
-                  ? "cursor-not-allowed border-dashed border-border bg-neutral-200 opacity-70"
-                  : paymentMethod === id
-                    ? "border-accent-ink bg-primary-soft"
-                    : "border-border bg-card",
-              )}
-            >
-              <span className="flex items-center gap-2 font-bold">
-                <Icon className="size-4" />
-                {label}
-              </span>
-              {soon ? (
-                <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold text-muted-foreground">
-                  {t("checkout_soon")}
-                </span>
-              ) : paymentMethod === id ? (
-                <Check className="size-4 text-accent-ink" />
-              ) : null}
-            </button>
-          ))}
-          <div className="flex w-full items-center justify-between rounded-2xl border border-dashed p-3 text-start opacity-60">
+          <div className="flex w-full items-center justify-between rounded-2xl border border-accent-ink bg-primary-soft p-3 text-start">
             <span className="flex items-center gap-2 font-bold">
               <CreditCard className="size-4" />
-              {t("checkout_payment_card")}
+              {t("checkout_payment_cod_label")}
             </span>
-            <span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-bold">
-              {t("checkout_soon")}
-            </span>
+            <Check className="size-4 text-accent-ink" />
           </div>
           <p className="rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             {t("checkout_payment_only_cod_note")}
@@ -650,12 +480,7 @@ function CheckoutPage() {
               {step < 3 ? t("checkout_total_label") : t("checkout_final_total_label")}
             </p>
             <p className="text-price text-accent-ink">
-              {shippingFee === null ? t("checkout_fee_by_wilaya") : formatDA(total)}
-              {step >= 1 && wilayaId && shippingFee !== null && (
-                <span className="ms-1 text-[11px] font-medium text-muted-foreground">
-                  ({t("checkout_delivery_cost", { cost: formatDA(shippingFee) })})
-                </span>
-              )}
+              {formatDA(total)}
             </p>
           </div>
           <button
