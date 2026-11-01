@@ -8,6 +8,8 @@ import {
   CalendarDays,
   FileText,
   Heart,
+  Eye,
+  EyeOff,
   HelpCircle,
   MapPin,
   Package,
@@ -26,11 +28,13 @@ import {
   fetchMyOrders,
   fetchMyReservations,
   fetchMyProfile,
+  fetchPublicProfile,
   fetchMyRoles,
   fetchSchemaSupport,
   isValidDzPhone,
   normalizePhone,
   updateMyProfile,
+  setMyProfileVisibility,
   uploadImageToBucket,
 } from "@/lib/sooqy";
 import { WilayaButton, WilayaSelect, wilayasQuery } from "@/components/sooqy/WilayaSelect";
@@ -43,8 +47,9 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/profile")({
-  validateSearch: (s: Record<string, unknown>): { setup?: boolean } => ({
+  validateSearch: (s: Record<string, unknown>): { setup?: boolean; public_id?: string } => ({
     setup: s["setup"] === "1" || s["setup"] === true || s["setup"] === "true",
+    public_id: typeof s["public_id"] === "string" ? s["public_id"] : undefined,
   }),
   head: () => ({}),
   component: ProfilePage,
@@ -53,10 +58,15 @@ export const Route = createFileRoute("/profile")({
 function ProfilePage() {
   const { user, ready } = useAuth();
   const { t } = useTranslation();
-  const { setup } = Route.useSearch();
+  const { setup, public_id } = Route.useSearch();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
+  const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user && !public_id });
+  const publicProfile = useQuery({
+    queryKey: ["public-profile", public_id],
+    queryFn: () => fetchPublicProfile(public_id!),
+    enabled: !!public_id,
+  });
   const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user });
   const reservations = useQuery({
     queryKey: ["my-reservations"],
@@ -81,6 +91,7 @@ function ProfilePage() {
   const [avatar, setAvatar] = useState<File | null>(null);
   const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [visibilityBusy, setVisibilityBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
   // يبقى الملف الشخصي متاحًا للتاجر أيضًا؛ الانتقال إلى الاستوديو إجراء اختياري.
@@ -113,6 +124,66 @@ function ProfilePage() {
   }, [setup, setupOpened, user, loaded, profile.isLoading]);
 
   if (!ready) return null;
+  if (public_id) {
+    if (publicProfile.isLoading) {
+      return (
+        <AppShell className="space-y-4 pb-24 pt-6">
+          <PageHeader title={t("profile_public_title")} />
+          <div className="h-44 animate-pulse rounded-3xl bg-muted" />
+        </AppShell>
+      );
+    }
+    if (publicProfile.isError) {
+      return (
+        <AppShell className="space-y-4 pb-24 pt-6">
+          <PageHeader title={t("profile_public_title")} />
+          <ErrorState scope="profile:public" error={publicProfile.error} onRetry={() => publicProfile.refetch()} />
+        </AppShell>
+      );
+    }
+    if (!publicProfile.data) {
+      return (
+        <AppShell className="space-y-4 pb-24 pt-6">
+          <PageHeader title={t("profile_public_title")} />
+          <div className="rounded-2xl border border-border bg-card p-6 text-center">
+            <User className="mx-auto size-10 text-muted-foreground" />
+            <p className="mt-3 font-bold text-foreground">{t("profile_public_unavailable")}</p>
+          </div>
+        </AppShell>
+      );
+    }
+    const publicName = publicProfile.data.full_name?.trim() || t("profile_public_default_name");
+    const publicInitial = publicName.slice(0, 1).toUpperCase();
+    const publicWilaya = wilayas.data?.find((w) => w.id === publicProfile.data?.wilaya_id)?.name_ar;
+    return (
+      <>
+        <SeoHead title={publicName} description={t("profile_public_description")} noindex />
+        <AppShell className="space-y-5 pb-24 pt-6">
+          <PageHeader title={t("profile_public_title")} subtitle={t("profile_public_subtitle")} />
+          <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+            <div className="h-24 bg-gradient-to-br from-primary via-primary/70 to-primary-soft" />
+            <div className="px-5 pb-6">
+              <div className="-mt-11 flex size-22 items-center justify-center overflow-hidden rounded-full bg-primary-soft ring-4 ring-card">
+                {publicProfile.data.avatar_url ? (
+                  <img src={publicProfile.data.avatar_url} alt="" className="size-full object-cover" />
+                ) : (
+                  <span className="text-3xl font-extrabold text-accent-ink">{publicInitial}</span>
+                )}
+              </div>
+              <h1 className="mt-4 text-xl font-extrabold text-foreground">{publicName}</h1>
+              {(publicProfile.data.commune || publicWilaya) && (
+                <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
+                  <MapPin className="size-4" />
+                  {[publicProfile.data.commune, publicWilaya].filter(Boolean).join("، ")}
+                </p>
+              )}
+              <p className="mt-4 text-xs text-muted-foreground">{t("profile_public_privacy_note")}</p>
+            </div>
+          </section>
+        </AppShell>
+      </>
+    );
+  }
   if (!user) {
     return (
       <AppShell className="pb-24 pt-6">
@@ -137,6 +208,19 @@ function ProfilePage() {
   const displayName = name || (user.email ?? "مستخدم Arownd");
   const initial = (user.email ?? "؟").slice(0, 1).toUpperCase();
   const favCount = favorites.products.length + favorites.stores.length;
+
+  const changeVisibility = async () => {
+    setVisibilityBusy(true);
+    try {
+      await setMyProfileVisibility(!(profile.data?.is_public ?? false));
+      await qc.invalidateQueries({ queryKey: ["my-profile"] });
+      showSuccess(t((profile.data?.is_public ?? false) ? "profile_visibility_private" : "profile_visibility_public"));
+    } catch (e) {
+      showError(e);
+    } finally {
+      setVisibilityBusy(false);
+    }
+  };
 
   const save = async () => {
     const cleanName = fullName.trim();
@@ -307,6 +391,37 @@ function ProfilePage() {
               )}
             </div>
           </div>
+        </section>
+
+        <section className="rounded-2xl border border-border bg-card p-4">
+          <div className="flex flex-wrap items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h3 className="font-bold text-foreground">{t("profile_visibility_title")}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{t("profile_visibility_hint")}</p>
+              <p className="mt-2 text-xs font-semibold text-muted-foreground">
+                {t(profile.data?.is_public ? "profile_visibility_public" : "profile_visibility_private")}
+              </p>
+            </div>
+            <button
+              type="button"
+              onClick={changeVisibility}
+              disabled={visibilityBusy || profile.isLoading || !profile.data}
+              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-foreground transition hover:bg-muted disabled:opacity-50"
+            >
+              {profile.data?.is_public ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
+              {visibilityBusy ? t("profile_saving") : t(profile.data?.is_public ? "profile_make_private" : "profile_make_public")}
+            </button>
+          </div>
+          {profile.data?.is_public && (
+            <Link
+              to="/profile"
+              search={{ public_id: user.id }}
+              className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-primary-soft px-4 text-sm font-bold text-accent-ink"
+            >
+              <Eye className="size-4" />
+              {t("profile_preview_public")}
+            </Link>
+          )}
         </section>
 
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
