@@ -57,7 +57,7 @@ function StudioShipmentsPage() {
   if (!user) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <PageHeader title={t("studio_shipments")} back="/studio" />
         <div className="text-danger-foreground">{t("studio_login_shipments")}</div>
         <Link to="/auth" className="btn-primary mt-4 inline-block">
           تسجيل الدخول
@@ -69,7 +69,7 @@ function StudioShipmentsPage() {
   if (error) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <PageHeader title={t("studio_shipments")} back="/studio" />
         <ErrorState scope="studio:shipments" error={error} onRetry={() => void refetch()} />
       </div>
     );
@@ -78,7 +78,7 @@ function StudioShipmentsPage() {
   if (isLoading) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <PageHeader title={t("studio_shipments")} back="/studio" />
         <div className="animate-pulse text-muted-foreground">{t("studio_loading")}</div>
       </div>
     );
@@ -87,7 +87,7 @@ function StudioShipmentsPage() {
   if (!storeId) {
     return (
       <div className="p-6 text-center">
-        <PageHeader title={t("studio_shipments")} back="/studio/settings" />
+        <PageHeader title={t("studio_shipments")} back="/studio" />
         <div className="text-danger-foreground">{t("studio_no_store_linked")}</div>
       </div>
     );
