@@ -1342,16 +1342,17 @@ export async function fetchPublicProfile(userId: string): Promise<PublicProfile 
 }
 
 export async function setMyProfileVisibility(isPublic: boolean) {
-  const { data: u } = await supabase.auth.getUser();
-  if (!u.user) throw new Error(ERRORS["not_authenticated"]);
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({ is_public: isPublic })
-    .eq("user_id", u.user.id)
-    .select("user_id")
-    .maybeSingle();
-  if (error) throw error;
+  const { error } = await supabase.rpc("set_my_profile_visibility", {
+    _is_public: isPublic,
+  });
+  if (error) throw new Error(friendlyError(error));
+}
+
+export async function fetchMyAccountType() {
+  const { data, error } = await supabase.rpc("get_my_account_type");
+  if (error) throw new Error(friendlyError(error));
   if (!data) throw new Error("profile_not_found");
+  return data;
 }
 
 export async function updateMyProfile(patch: {
