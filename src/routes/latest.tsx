@@ -57,7 +57,7 @@ function LatestStoreProductsPage() {
 
   if (accountType.isError || roles.isError) {
     const error = accountType.error ?? roles.error;
-    return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-access" error={error} onRetry={() => Promise.all([accountType.refetch(), roles.refetch()])} /></div>;
+    return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-access" error={error} onRetry={async () => { await Promise.all([accountType.refetch(), roles.refetch()]); }} /></div>;
   }
 
   if (!user || accountType.data !== "merchant" || !roles.data?.includes("merchant")) {
@@ -71,7 +71,7 @@ function LatestStoreProductsPage() {
 
   const error = accountType.error ?? roles.error ?? store.error ?? offers.error;
   if (error) {
-    return <div className="mx-auto max-w-2xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-products" error={error} onRetry={() => Promise.all([accountType.refetch(), roles.refetch(), store.refetch(), offers.refetch()])} /></div>;
+    return <div className="mx-auto max-w-2xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-products" error={error} onRetry={async () => { await Promise.all([accountType.refetch(), roles.refetch(), store.refetch(), offers.refetch()]); }} /></div>;
   }
 
   const products = offers.data ?? [];
