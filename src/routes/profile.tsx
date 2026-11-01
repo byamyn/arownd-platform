@@ -129,7 +129,7 @@ function ProfilePage() {
     setSetupOpened(true);
   }, [setup, setupOpened, user, loaded, profile.isLoading]);
 
-  // توجيه كل نوع حساب إلى مساحة العمل الخاصة به؛ admin يظل صلاحية مستقلة.
+  // شركة التوصيل تحتفظ بمسار لوحة التحكم؛ الملف الشخصي للتاجر يبقى مساحة مستقلة.
   useEffect(() => {
     if (
       public_id ||
