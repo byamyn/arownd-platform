@@ -139,12 +139,7 @@ function ProfilePage() {
       isAdmin
     ) return;
 
-    if (
-      accountTypeQuery.data === "merchant" &&
-      roleQuery.data?.includes("merchant")
-    ) {
-      navigate({ to: "/studio", replace: true });
-    } else if (accountTypeQuery.data === "delivery_company") {
+    if (accountTypeQuery.data === "delivery_company") {
       navigate({ to: "/delivery-dashboard", replace: true });
     }
   }, [
