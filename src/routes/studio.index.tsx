@@ -149,6 +149,7 @@ function StudioPage() {
     queryFn: fetchMyAccountType,
     enabled: !!user,
   });
+  const canManage = accountType.data === "merchant" && (roles.data?.includes("merchant") ?? false);
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   const offers = useQuery({
     queryKey: ["my-store-offers", store.data?.id],
@@ -178,7 +179,6 @@ function StudioPage() {
     },
     enabled: !!store.data,
   });
-  const canManage = accountType.data === "merchant" && (roles.data?.includes("merchant") ?? false);
   const dashboardError = offers.error ?? reservations.error ?? orders.error;
 
   if (!ready) return null;
