@@ -176,6 +176,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
   it("تاجر لديه متجر يصل لصفحة تخصيص المتجر من اللوحة", async () => {
     setSession({ id: "user-1", email: "malik@test.dz" });
+    state.userRoles = [{ user_id: "user-1", role: "merchant" }];
     const router = renderApp();
     await go(router, "/studio");
 
