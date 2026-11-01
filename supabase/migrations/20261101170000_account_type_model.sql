@@ -11,8 +11,9 @@ $$;
 alter table public.profiles
   add column if not exists account_type public.account_type not null default 'personal';
 
--- Do not silently merge two independent business identities into one account.
-do $$
+-- Do not silently merge two independent business identities into one account,
+-- and do not leave business records without a profile identity.
+do $
 begin
   if exists (
     select 1
@@ -24,8 +25,29 @@ begin
     raise exception
       'account_type_conflict: users with both a delivery company and merchant role need manual reconciliation before this migration';
   end if;
+
+  if exists (
+    select 1
+    from public.delivery_companies dc
+    left join public.profiles p on p.user_id = dc.user_id
+    where p.user_id is null
+  ) then
+    raise exception
+      'account_type_missing_profile: delivery company owners must have a profile before this migration';
+  end if;
+
+  if exists (
+    select 1
+    from public.user_roles ur
+    left join public.profiles p on p.user_id = ur.user_id
+    where ur.role = 'merchant'::public.app_role
+      and p.user_id is null
+  ) then
+    raise exception
+      'account_type_missing_profile: merchant role owners must have a profile before this migration';
+  end if;
 end
-$$;
+$;
 
 update public.profiles p
 set account_type = case
