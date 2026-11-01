@@ -474,6 +474,7 @@ export async function getOffersByIds(ids: string[]): Promise<OfferFull[]> {
 const ERRORS: Record<string, string> = {
   not_authenticated: "يجب تسجيل الدخول أولاً",
   delivery_company_required: "اختر شركة توصيل قبل تأكيد الطلب",
+  invalid_payment_method: "طريقة الدفع غير مدعومة. الدفع عند الاستلام فقط.",
   delivery_company_unavailable: "شركة التوصيل المختارة غير متاحة أو لم تعد معتمدة",
   delivery_area_not_covered: "شركة التوصيل المختارة لا تغطي البلدية المحددة",
   out_of_stock: "المنتج غير متوفر أو الكمية غير كافية",
