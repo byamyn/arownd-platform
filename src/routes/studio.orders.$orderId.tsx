@@ -117,7 +117,7 @@ function StudioOrderDetailPage() {
     order.merchant_orders?.[0];
   const merchantOrderStatus = merchantOrder?.status ?? order.status;
 
-  const handleStatus = async (status: "confirmed" | "shipped" | "delivered") => {
+  const handleStatus = async (status: "delivered") => {
     try {
       await merchantUpdateOrderStatus(order.id, status);
       await qc.invalidateQueries({ queryKey: ["store-orders"] });
