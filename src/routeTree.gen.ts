@@ -292,6 +292,7 @@ export interface FileRoutesById {
   '/explore': typeof ExploreRoute
   '/favorites': typeof FavoritesRoute
   '/help': typeof HelpRoute
+  '/latest': typeof LatestRoute
   '/map': typeof MapRoute
   '/notifications': typeof NotificationsRoute
   '/privacy': typeof PrivacyRoute
@@ -398,6 +399,7 @@ export interface FileRouteTypes {
     | '/explore'
     | '/favorites'
     | '/help'
+    | '/latest'
     | '/map'
     | '/notifications'
     | '/privacy'
@@ -527,13 +529,6 @@ declare module '@tanstack/react-router' {
       path: '/favorites'
       fullPath: '/favorites'
       preLoaderRoute: typeof FavoritesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/latest': {
-      id: '/latest'
-      path: '/latest'
-      fullPath: '/latest'
-      preLoaderRoute: typeof LatestRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/latest': {
