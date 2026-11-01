@@ -14,7 +14,6 @@ import {
   Pencil,
   Phone,
   Shield,
-  Store,
   User,
   Wallet,
 } from "lucide-react";
@@ -28,7 +27,6 @@ import {
   fetchMyReservations,
   fetchMyProfile,
   fetchMyRoles,
-  fetchMyStore,
   fetchSchemaSupport,
   isValidDzPhone,
   normalizePhone,
@@ -65,7 +63,6 @@ function ProfilePage() {
     queryFn: fetchMyReservations,
     enabled: !!user,
   });
-  const myStore = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   // user_roles يقبل عدة صفوف لكل مستخدم (customer/merchant/admin) —
   // نقرأها كمصفوفة؛ الاستعلام بـ.single() كان يفشل بخطأ 406 عند أكثر من صف
   const roleQuery = useQuery({
@@ -205,15 +202,6 @@ function ProfilePage() {
           showLanguageToggle
           action={
             <div className="flex items-center gap-2">
-              {myStore.data && (
-                <Link
-                  to="/studio"
-                  aria-label={t("profile_merchant_studio")}
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-accent-ink-foreground shadow-soft transition hover:opacity-90 active:scale-95"
-                >
-                  <Store className="size-4.5" />
-                </Link>
-              )}
               {isAdmin && (
                 <Link
                   to="/admin"
@@ -312,11 +300,6 @@ function ProfilePage() {
                   <BadgeCheck className="size-3.5" /> {t("profile_phone_verified")}
                 </span>
               )}
-              {myStore.data && (
-                <span className="flex items-center gap-1.5 rounded-full bg-primary-soft px-3 py-1 text-xs font-bold text-accent-ink">
-                  <Store className="size-3.5" /> {t("profile_merchant_role")}
-                </span>
-              )}
               {isAdmin && (
                 <span className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
                   <Shield className="size-3.5" /> {t("profile_admin_role")}
@@ -376,14 +359,6 @@ function ProfilePage() {
               hint={t("profile_personal_data_hint")}
               onClick={() => setEditing(true)}
             />
-            {myStore.data && (
-              <MenuRow
-                icon={Store}
-                label="استوديو التاجر"
-                hint={t("profile_merchant_studio_hint")}
-                to="/studio"
-              />
-            )}
             <MenuRow
               icon={Bell}
               label={t("profile_notifications")}
