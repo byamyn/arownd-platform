@@ -134,12 +134,7 @@ export async function fetchDeliveryServices(companyId: string): Promise<Delivery
 
 // ---------- طلبات الشحن ----------
 
-/** إنشاء طلب شحن جديد من متجر. */
-export async function createShipment(payload: ShipmentInsert): Promise<Shipment> {
-  const { data, error } = await supabase.from("shipments").insert(payload).select().single();
-  if (error) throw error;
-  return data;
-}
+/** إنشاء الشحنات يتم عبر RPC موثوق بعد موافقة المشتري؛ لا إدراج مباشر من العميل. */
 
 /** جلب شحنة واحدة حسب المعرف. */
 export async function fetchShipmentById(id: string): Promise<Shipment | null> {
@@ -148,15 +143,21 @@ export async function fetchShipmentById(id: string): Promise<Shipment | null> {
   return data;
 }
 
-/** جلب شحنة مرتبطة بطلب. */
-export async function fetchShipmentByOrderId(orderId: string): Promise<Shipment | null> {
+/** جلب جميع شحنات الطلب؛ قد يحتوي الطلب الرئيسي على شحنة لكل متجر. */
+export async function fetchShipmentsByOrderId(orderId: string): Promise<Shipment[]> {
   const { data, error } = await supabase
     .from("shipments")
     .select("*")
     .eq("order_id", orderId)
-    .single();
+    .order("created_at", { ascending: true });
   if (error) throw error;
   return data;
+}
+
+/** توافق خلفي للواجهات القديمة؛ استخدم fetchShipmentsByOrderId في التدفقات متعددة المتاجر. */
+export async function fetchShipmentByOrderId(orderId: string): Promise<Shipment | null> {
+  const shipments = await fetchShipmentsByOrderId(orderId);
+  return shipments[0] ?? null;
 }
 
 /** جلب جميع شحنات شركة توصيل (لللوحة). */
