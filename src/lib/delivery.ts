@@ -160,6 +160,47 @@ export async function fetchShipmentByOrderId(orderId: string): Promise<Shipment 
   return shipments[0] ?? null;
 }
 
+/** شحنات التوصيل المنزلي التي تنتظر تعيين شركة من Arownd. */
+export async function fetchUnassignedShipments() {
+  const { data, error } = await supabase
+    .from("shipments")
+    .select("*, order:orders!inner(id, full_name, phone, commune, wilaya_id, delivery_type)")
+    .is("company_id", null)
+    .in("status", ["pending", "rejected"])
+    .eq("order.delivery_type", "home")
+    .order("created_at", { ascending: true });
+  if (error) throw error;
+  return data;
+}
+
+/** مناطق التغطية النشطة التي يراجعها المشرف قبل إسناد الشحنة. */
+export async function fetchDeliveryCoverageAreas(): Promise<DeliveryCoverageArea[]> {
+  const { data, error } = await supabase
+    .from("delivery_coverage_areas")
+    .select("*")
+    .eq("is_active", true);
+  if (error) throw error;
+  return data;
+}
+
+/** إسناد الشحنة أو إعادة إسنادها إلى شركة معتمدة عبر صلاحية Arownd فقط. */
+export async function assignShipmentCompany(
+  shipmentId: string,
+  companyId: string,
+): Promise<Shipment> {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _shipment_id: string; _company_id: string },
+  ) => Promise<{ data: unknown; error: unknown }>;
+  const { data, error } = await rpc("admin_assign_shipment_company", {
+    _shipment_id: shipmentId,
+    _company_id: companyId,
+  });
+  if (error) throw error;
+  if (!data) throw new Error("تعذر إسناد الشحنة.");
+  return data as Shipment;
+}
+
 /** جلب جميع شحنات شركة توصيل (لللوحة). */
 export async function fetchShipmentsByCompany(
   companyId: string,
