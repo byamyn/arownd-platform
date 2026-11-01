@@ -17,7 +17,10 @@ export type DeliveryCoverageArea = Database["public"]["Tables"]["delivery_covera
 export type DeliveryService = Database["public"]["Tables"]["delivery_services"]["Row"];
 
 export type Shipment = Database["public"]["Tables"]["shipments"]["Row"] & {
-  merchant_order?: Pick<Database["public"]["Tables"]["merchant_orders"]["Row"], "payment_status" | "paid_amount"> | null;
+  cod_collection?: Pick<
+    Database["public"]["Tables"]["merchant_order_cod_collections"]["Row"],
+    "merchant_order_id" | "amount" | "collected_at"
+  > | null;
 };
 export type ShipmentInsert = Database["public"]["Tables"]["shipments"]["Insert"];
 export type ShipmentUpdate = Pick<Database["public"]["Tables"]["shipments"]["Update"], "status">;
@@ -209,11 +212,32 @@ export async function fetchShipmentsByCompany(
 ): Promise<(Shipment & { order_id: string })[]> {
   const { data, error } = await supabase
     .from("shipments")
-    .select("*, order:orders!inner(*), merchant_order:merchant_orders(payment_status, paid_amount)")
+    .select("*, order:orders!inner(*)")
     .eq("company_id", companyId)
     .order("created_at", { ascending: false });
   if (error) throw error;
-  return data;
+
+  const merchantOrderIds = data
+    .map((shipment) => shipment.merchant_order_id)
+    .filter((id): id is string => Boolean(id));
+
+  const collections =
+    merchantOrderIds.length > 0
+      ? await supabase
+          .from("merchant_order_cod_collections")
+          .select("merchant_order_id, amount, collected_at")
+          .in("merchant_order_id", merchantOrderIds)
+      : { data: [], error: null };
+
+  if (collections.error) throw collections.error;
+
+  return data.map((shipment) => ({
+    ...shipment,
+    cod_collection:
+      collections.data?.find(
+        (collection) => collection.merchant_order_id === shipment.merchant_order_id,
+      ) ?? null,
+  }));
 }
 
 /** جلب الشحنات pending لشركة توصيل (طلبات جديدة تحتاج قرار). */
