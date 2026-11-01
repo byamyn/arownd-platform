@@ -123,7 +123,7 @@ function DeliveryDashboardPage() {
       toast.error("لا يمكن تسجيل التحصيل قبل اكتمال تسليم الشحنة.");
       return;
     }
-    if (shipment.merchant_order?.payment_status === "paid") {
+    if (Boolean(shipment.cod_collection)) {
       toast.info("تم تسجيل الدفع لهذا الطلب مسبقًا.");
       return;
     }
@@ -533,8 +533,8 @@ function AllShipmentsList({
                 {shipment.merchant_order?.payment_status === "paid" ? (
                   <p className="text-sm font-semibold text-green-soft-foreground">
                     تم تسجيل تحصيل الدفع عند الاستلام
-                    {shipment.merchant_order.paid_amount != null
-                      ? ` — ${shipment.merchant_order.paid_amount.toLocaleString("ar-DZ")} دج`
+                    {shipment.cod_collection.amount != null
+                      ? ` — ${shipment.cod_collection.amount.toLocaleString("ar-DZ")} دج`
                       : ""}
                   </p>
                 ) : (
