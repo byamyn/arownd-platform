@@ -1250,7 +1250,7 @@ export async function customerRespondToMerchantOrder(
 
 export async function merchantUpdateOrderStatus(
   orderId: string,
-  status: "confirmed" | "shipped" | "delivered",
+  status: "delivered",
 ) {
   const store = await fetchMyStore();
   if (!store) throw new Error("المتجر غير موجود");
