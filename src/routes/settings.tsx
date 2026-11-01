@@ -10,14 +10,12 @@ import {
   HelpCircle,
   Info,
   LogOut,
-  MapPin,
   Monitor,
   Moon,
   Shield,
   Store,
   Sun,
   Trash2,
-  User,
 } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
@@ -189,13 +187,6 @@ function SettingsPage() {
       <section className="space-y-2">
         <SectionTitle>الحساب</SectionTitle>
         <MenuCard>
-          <MenuRow icon={User} label="معلومات الحساب" hint="الاسم، الهاتف، العنوان" to="/profile" />
-          <MenuRow
-            icon={MapPin}
-            label="الولاية والبلدية"
-            hint="الموقع الافتراضي للتوصيل والعروض القريبة"
-            to="/profile"
-          />
           <MenuRow
             icon={Shield}
             label="الأمان وتسجيل الدخول"
