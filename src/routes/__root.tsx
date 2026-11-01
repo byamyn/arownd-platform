@@ -177,7 +177,7 @@ function RootComponent() {
   const isStudio =
     location.pathname === "/studio" || location.pathname.startsWith("/studio/");
   const isStudioHome = location.pathname === "/studio" || location.pathname === "/studio/";
-  const isPersonalSubpage = ["/settings", "/notifications", "/wallet"].includes(location.pathname);
+  const isAccountSubpage = ["/settings", "/notifications", "/wallet", "/create-store"].includes(location.pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
