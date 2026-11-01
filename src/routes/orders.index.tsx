@@ -80,7 +80,7 @@ function OrdersPage() {
   }
 
   const list = orders.data ?? [];
-  const filtered =
+  const parentFiltered =
     tab === "all"
       ? list
       : tab === "active"
@@ -88,6 +88,24 @@ function OrdersPage() {
         : tab === "delivered"
           ? list.filter((o) => o.status === "delivered")
           : list.filter((o) => o.status === "cancelled");
+
+  // Show each merchant suborder as its own card while retaining the parent
+  // order ID for tracking and parent-level history operations.
+  const filtered = parentFiltered.flatMap((order) => {
+    const suborders = order.merchant_orders ?? [];
+    if (suborders.length === 0) return [order];
+    return suborders.map((suborder) => ({
+      ...order,
+      id: order.id,
+      displayId: `${order.id}-${suborder.id}`,
+      parentOrderId: order.id,
+      isMerchantSuborder: true,
+      status: suborder.status,
+      total: suborder.subtotal + suborder.shipping_fee,
+      items: suborder.items ?? [],
+      merchant_orders: [suborder],
+    }));
+  });
 
   return (
     <>
@@ -175,7 +193,7 @@ function OrdersPage() {
                 <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
                   <div className="min-w-0">
                     <p className="text-sm font-extrabold text-foreground">
-                      {t("orders_code", { code: trackCode(o.id) })}
+                      {t("orders_code", { code: trackCode(o.parentOrderId ?? o.id) })}
                     </p>
                     <p className="mt-0.5 text-xs text-muted-foreground">
                       {date}
@@ -301,7 +319,7 @@ function OrdersPage() {
                 >
                   {t("orders_track")}
                 </Link>
-                {o.status === "pending" && !(o.merchant_orders ?? []).some((suborder) => suborder.status !== "pending") && (
+                {!o.isMerchantSuborder && o.status === "pending" && !(o.merchant_orders ?? []).some((suborder) => suborder.status !== "pending") && (
                   <button
                     type="button"
                     disabled={cancellingOrderId === o.id}
@@ -330,7 +348,7 @@ function OrdersPage() {
                     {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
                   </button>
                 )}
-                {(o.status === "delivered" || o.status === "cancelled") && (
+                {!o.isMerchantSuborder && (o.status === "delivered" || o.status === "cancelled") && (
                   <button
                     type="button"
                     onClick={async () => {
