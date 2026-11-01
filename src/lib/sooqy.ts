@@ -1249,6 +1249,17 @@ export async function customerRespondToMerchantOrder(
   if (error) throw new Error(friendlyError(error));
 }
 
+export async function collectMerchantOrderCod(merchantOrderId: string): Promise<void> {
+  const rpc = supabase.rpc as unknown as (
+    fn: string,
+    args: { _merchant_order_id: string },
+  ) => Promise<{ error: unknown }>;
+  const { error } = await rpc("collect_merchant_order_cod", {
+    _merchant_order_id: merchantOrderId,
+  });
+  if (error) throw new Error(friendlyError(error));
+}
+
 export async function merchantUpdateOrderStatus(
   orderId: string,
   status: "delivered",
