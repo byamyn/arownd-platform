@@ -116,7 +116,7 @@ export const commerce: DictGroup = {
     checkout_companies_none:
       "لا توجد شركة توصيل معتمدة تغطي الولاية والبلدية المحددتين حاليًا. يمكنك اختيار الاستلام من المكتب.",
     checkout_address_detail_placeholder: "عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)",
-    checkout_fee_note: "لا تختَر شركة التوصيل الآن؛ كل متجر يحدد رسوم توصيل طلبه بعد مراجعته، ثم يصلك العرض النهائي للموافقة.",
+    checkout_fee_note: "في التوصيل للمنزل، يحدد كل متجر رسوم توصيل طلبه بعد مراجعته ثم يرسل لك العرض النهائي للموافقة. الاستلام من المتجر دون رسوم توصيل.",
     checkout_no_commission_note:
       "لا تفرض Arownd أي عمولة. الإجمالي يشمل قيمة المنتجات ورسوم التوصيل فقط.",
     checkout_payment_cod_label: "الدفع عند الاستلام",
@@ -308,7 +308,7 @@ export const commerce: DictGroup = {
       "No approved delivery company currently covers the selected wilaya and commune. You can choose desk pickup instead.",
     checkout_address_detail_placeholder: "Detailed delivery address (required for home delivery)",
     checkout_fee_note:
-      "You do not need to choose a carrier now. Each store sets its delivery fee after reviewing its order, then sends you the final quote for approval.",
+      "For home delivery, each store sets its fee after reviewing the order and sends you the final quote for approval. Store pickup has no delivery fee.",
     checkout_no_commission_note:
       "Arownd does not charge any commission. The total includes products and delivery fees only.",
     checkout_payment_cod_label: "Cash on delivery",
