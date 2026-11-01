@@ -901,11 +901,6 @@ export async function fetchMyRoles() {
   return data.map((r) => r.role);
 }
 
-export async function becomeMerchant() {
-  const { error } = await supabase.rpc("become_merchant");
-  if (error) throw new Error(friendlyError(error));
-}
-
 export async function merchantCreateStore(input: {
   name: string;
   phone: string;
@@ -920,8 +915,6 @@ export async function merchantCreateStore(input: {
   category?: string | null;
   subcategories?: string[] | null;
 }) {
-  const { data: u } = await supabase.auth.getUser();
-  if (!u.user) throw new Error(ERRORS["not_authenticated"]);
   const slug =
     input.name
       .toLowerCase()
@@ -929,38 +922,26 @@ export async function merchantCreateStore(input: {
       .replace(/^-|-$/g, "") +
     "-" +
     Math.random().toString(36).slice(2, 6);
-  const payload: {
-    owner_id: string;
-    name: string;
-    slug: string;
-    phone: string;
-    whatsapp: string;
-    wilaya_id: number;
-    commune: string;
-    address_line: string;
-    latitude: number | null;
-    longitude: number | null;
-    opening_hours: { open: string; close: string; closed_days: string[] };
-    category?: string | null;
-    subcategories?: string[];
-  } = {
-    owner_id: u.user.id,
-    name: input.name,
-    slug,
-    phone: input.phone,
-    whatsapp: input.whatsapp,
-    wilaya_id: input.wilaya_id,
-    commune: input.commune,
-    address_line: input.address_line,
-    latitude: input.latitude,
-    longitude: input.longitude,
-    opening_hours: { open: input.open, close: input.close, closed_days: [] },
-    // is_verified is database-managed; the current default is applied by PostgreSQL.
-  };
-  if (input.category) payload.category = resolveCategoryId(input.category);
-  if (input.subcategories?.length) payload.subcategories = input.subcategories;
-  const { data, error } = await supabase.from("stores").insert(payload).select().single();
-  if (error) throw error;
+
+  const { data: storeId, error: createError } = await supabase.rpc("create_my_store", {
+    _store_name: input.name,
+    _slug: slug,
+    _phone: input.phone,
+    _whatsapp: input.whatsapp,
+    _wilaya_id: input.wilaya_id,
+    _commune: input.commune,
+    _address_line: input.address_line,
+    _latitude: input.latitude,
+    _longitude: input.longitude,
+    _opening_hours: { open: input.open, close: input.close, closed_days: [] },
+    _category: input.category ? resolveCategoryId(input.category) : null,
+    _subcategories: input.subcategories ?? [],
+  });
+  if (createError) throw new Error(friendlyError(createError));
+  if (!storeId) throw new Error("store_creation_failed");
+
+  const { data, error } = await supabase.from("stores").select("*").eq("id", storeId).single();
+  if (error) throw new Error(friendlyError(error));
   return data;
 }
 
