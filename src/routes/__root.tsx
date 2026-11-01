@@ -22,6 +22,7 @@ import { AppErrorBoundary, ErrorFallback } from "@/components/AppErrorBoundary";
 import { BagProvider } from "@/lib/bag";
 import { ThemeProvider } from "@/lib/theme";
 import { BottomNav } from "@/components/sooqy/BottomNav";
+import { StudioNav } from "@/components/sooqy/StudioNav";
 import { PwaPrompt, useServiceWorkerRegistration } from "@/components/sooqy/PwaPrompt";
 import { ConnectionBanner } from "@/components/sooqy/ConnectionBanner";
 import { DynamicIsland } from "@/components/sooqy/DynamicIsland";
@@ -175,6 +176,8 @@ function RootComponent() {
   // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
   const isStudio =
     location.pathname === "/studio" || location.pathname.startsWith("/studio/");
+  const isStudioHome = location.pathname === "/studio" || location.pathname === "/studio/";
+  const isPersonalSubpage = ["/settings", "/notifications", "/wallet"].includes(location.pathname);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -184,8 +187,8 @@ function RootComponent() {
             <div
               className={
                 isAuth || isStudio
-                  ? "min-h-screen w-full max-w-none pb-0"
-                  : "mx-auto min-h-screen max-w-xl pb-28"
+                  ? "min-h-screen w-full max-w-none " + (isStudioHome ? "pb-24" : "pb-0")
+                  : "mx-auto min-h-screen max-w-xl " + (isPersonalSubpage ? "pb-0" : "pb-28")
               }
             >
               <PageTransition>
@@ -196,7 +199,8 @@ function RootComponent() {
               <>
                 <ConnectionBanner />
                 <DynamicIsland />
-                {!isStudio && <BottomNav />}
+                {!isStudio && !isPersonalSubpage && <BottomNav />}
+                {isStudioHome && <StudioNav />}
                 <PwaPrompt />
               </>
             )}
