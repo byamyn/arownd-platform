@@ -19,6 +19,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+import { collectMerchantOrderCod } from "@/lib/sooqy";
 
 export const Route = createFileRoute("/delivery-dashboard")({
   head: () => ({
@@ -50,6 +51,7 @@ function DeliveryDashboardPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState<"pending" | "all">("pending");
+  const [collectingCodFor, setCollectingCodFor] = useState<string | null>(null);
   const [pendingDecision, setPendingDecision] = useState<{
     id: string;
     decision: "accept" | "reject";
@@ -113,6 +115,32 @@ function DeliveryDashboardPage() {
       qc.invalidateQueries({ queryKey: ["pending-shipments"] });
     } catch (error) {
       toast.error("تعذر تحديث الحالة. أعد المحاولة.");
+    }
+  };
+
+  const handleCollectCod = async (shipment: Shipment) => {
+    if (shipment.status !== "delivered" || !shipment.merchant_order_id) {
+      toast.error("لا يمكن تسجيل التحصيل قبل اكتمال تسليم الشحنة.");
+      return;
+    }
+    if (shipment.merchant_order?.payment_status === "paid") {
+      toast.info("تم تسجيل الدفع لهذا الطلب مسبقًا.");
+      return;
+    }
+
+    setCollectingCodFor(shipment.id);
+    try {
+      await collectMerchantOrderCod(shipment.merchant_order_id);
+      toast.success("تم تسجيل تحصيل المبلغ النقدي لهذا الطلب.");
+      await qc.invalidateQueries({ queryKey: ["all-shipments"] });
+    } catch (error) {
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "تعذر تسجيل التحصيل. تحقق من حالة التسليم وصلاحية الحساب.",
+      );
+    } finally {
+      setCollectingCodFor(null);
     }
   };
 
@@ -295,7 +323,7 @@ function DeliveryDashboardPage() {
         {activeTab === "pending" ? (
           <PendingShipmentsList shipments={shipments} onDecision={handleDecision} />
         ) : (
-          <AllShipmentsList shipments={shipments} onStatusUpdate={handleStatusUpdate} />
+          <AllShipmentsList shipments={shipments} onStatusUpdate={handleStatusUpdate} onCollectCod={handleCollectCod} collectingCodFor={collectingCodFor} />
         )}
       </section>
       <ConfirmDialog
@@ -431,9 +459,13 @@ function PendingShipmentsList({
 function AllShipmentsList({
   shipments,
   onStatusUpdate,
+  onCollectCod,
+  collectingCodFor,
 }: {
   shipments: Shipment[];
   onStatusUpdate: (id: string, status: ShipmentStatus) => void;
+  onCollectCod: (shipment: Shipment) => void;
+  collectingCodFor: string | null;
 }) {
   if (shipments.length === 0) {
     return (
@@ -495,6 +527,36 @@ function AllShipmentsList({
               </div>
               <BadgeStatus status={currentStatus} />
             </div>
+
+            {currentStatus === "delivered" && shipment.merchant_order_id && (
+              <div className="mt-4 rounded-xl border border-border bg-background p-3">
+                {shipment.merchant_order?.payment_status === "paid" ? (
+                  <p className="text-sm font-semibold text-green-soft-foreground">
+                    تم تسجيل تحصيل الدفع عند الاستلام
+                    {shipment.merchant_order.paid_amount != null
+                      ? ` — ${shipment.merchant_order.paid_amount.toLocaleString("ar-DZ")} دج`
+                      : ""}
+                  </p>
+                ) : (
+                  <>
+                    <p className="mb-2 text-sm font-semibold">الدفع النقدي عند الاستلام</p>
+                    <p className="mb-3 text-xs text-muted-foreground">
+                      سجّل التحصيل بعد استلام المبلغ من المستلم. يُسجّل المبلغ من بيانات الطلب على الخادم.
+                    </p>
+                    <button
+                      type="button"
+                      disabled={collectingCodFor === shipment.id}
+                      onClick={() => onCollectCod(shipment)}
+                      className="w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                    >
+                      {collectingCodFor === shipment.id
+                        ? "جارٍ تسجيل التحصيل..."
+                        : "تأكيد استلام المبلغ نقدًا"}
+                    </button>
+                  </>
+                )}
+              </div>
+            )}
 
             {canUpdate && (
               <div className="mt-4 flex flex-wrap gap-2">
