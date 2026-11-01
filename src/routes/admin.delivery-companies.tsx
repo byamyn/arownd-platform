@@ -182,7 +182,7 @@ function AdminDeliveryCompaniesPage() {
     );
   }
 
-  const companies = companiesQuery.data;
+  const companies = companiesQuery.data ?? [];
   const coverageAreas = coverageQuery.data ?? [];
   const unassignedShipments = unassignedShipmentsQuery.data ?? [];
 
