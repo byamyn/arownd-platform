@@ -1188,11 +1188,12 @@ export async function fetchStoreOrderItems(storeId: string) {
     .order("id", { ascending: false })
     .limit(100);
   if (error) throw error;
-  return data;
+  // لا نعرض الطلبات التي ألغى العميل طلبها؛ تبقى محفوظة في سجل العميل.
+  return data.filter((item) => item.order?.status !== "cancelled");
 }
 
 export async function merchantArchiveReservation(reservationId: string): Promise<void> {
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _reservation_id: string },
   ) => Promise<{ error: unknown }>;
@@ -1226,7 +1227,7 @@ export async function merchantSubmitOrderQuote(
   if (lookupError) throw lookupError;
   if (!merchantOrder) throw new Error("طلب المتجر غير موجود");
 
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _merchant_order_id: string; _shipping_fee: number },
   ) => Promise<{ error: unknown }>;
@@ -1241,7 +1242,7 @@ export async function customerRespondToMerchantOrder(
   merchantOrderId: string,
   accept: boolean,
 ): Promise<void> {
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _merchant_order_id: string; _accept: boolean },
   ) => Promise<{ error: unknown }>;
@@ -1253,7 +1254,7 @@ export async function customerRespondToMerchantOrder(
 }
 
 export async function collectMerchantOrderCod(merchantOrderId: string): Promise<void> {
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _merchant_order_id: string },
   ) => Promise<{ error: unknown }>;
@@ -1267,7 +1268,7 @@ export async function merchantRejectOrder(
   merchantOrderId: string,
   reason?: string,
 ): Promise<void> {
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _merchant_order_id: string; _reason: string | null },
   ) => Promise<{ error: unknown }>;
@@ -1302,7 +1303,7 @@ export async function merchantUpdateOrderStatus(
 }
 
 export async function merchantUpdateOrderNote(orderId: string, note: string) {
-  const rpc = supabase.rpc as unknown as (
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _order_id: string; _note: string },
   ) => Promise<{ error: unknown }>;
