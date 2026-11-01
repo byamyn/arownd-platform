@@ -306,6 +306,7 @@ export type Database = {
       };
       profiles: {
         Row: {
+          account_type: Database["public"]["Enums"]["account_type"];
           avatar_url: string | null;
           commune: string | null;
           created_at: string;
@@ -319,6 +320,7 @@ export type Database = {
           wilaya_id: number | null;
         };
         Insert: {
+          account_type?: Database["public"]["Enums"]["account_type"];
           avatar_url?: string | null;
           commune?: string | null;
           created_at?: string;
@@ -332,6 +334,7 @@ export type Database = {
           wilaya_id?: number | null;
         };
         Update: {
+          account_type?: Database["public"]["Enums"]["account_type"];
           avatar_url?: string | null;
           commune?: string | null;
           created_at?: string;
@@ -981,6 +984,10 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      get_my_account_type: {
+        Args: Record<PropertyKey, never>;
+        Returns: Database["public"]["Enums"]["account_type"];
+      };
       get_public_profile: {
         Args: { _user_id: string };
         Returns: {
@@ -989,6 +996,10 @@ export type Database = {
           full_name: string | null;
           wilaya_id: number | null;
         }[];
+      };
+      set_my_profile_visibility: {
+        Args: { _is_public: boolean };
+        Returns: undefined;
       };
       has_role: {
         Args: {
@@ -1104,6 +1115,7 @@ export type Database = {
       };
     };
     Enums: {
+      account_type: "personal" | "merchant" | "delivery_company";
       app_role: "customer" | "merchant" | "admin" | "delivery_company";
     };
     CompositeTypes: {
@@ -1226,7 +1238,8 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["customer", "merchant", "admin"],
+      account_type: ["personal", "merchant", "delivery_company"],
+      app_role: ["customer", "merchant", "admin", "delivery_company"],
     },
   },
 } as const;
