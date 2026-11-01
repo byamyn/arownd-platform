@@ -1328,6 +1328,32 @@ export async function fetchMyProfile() {
   return data;
 }
 
+export type PublicProfile = {
+  full_name: string | null;
+  avatar_url: string | null;
+  wilaya_id: number | null;
+  commune: string | null;
+};
+
+export async function fetchPublicProfile(userId: string): Promise<PublicProfile | null> {
+  const { data, error } = await supabase.rpc("get_public_profile", { _user_id: userId });
+  if (error) throw error;
+  return data?.[0] ?? null;
+}
+
+export async function setMyProfileVisibility(isPublic: boolean) {
+  const { data: u } = await supabase.auth.getUser();
+  if (!u.user) throw new Error(ERRORS["not_authenticated"]);
+  const { data, error } = await supabase
+    .from("profiles")
+    .update({ is_public: isPublic })
+    .eq("user_id", u.user.id)
+    .select("user_id")
+    .maybeSingle();
+  if (error) throw error;
+  if (!data) throw new Error("profile_not_found");
+}
+
 export async function updateMyProfile(patch: {
   full_name: string;
   phone: string;
