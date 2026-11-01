@@ -79,7 +79,7 @@ function AuthPage() {
 
   useEffect(() => {
     if (user && screen === "signin" && !reset) {
-      navigate({ to: (redirect ?? "/") as "/", replace: true });
+      navigate({ to: (redirect ?? "/profile") as "/", replace: true });
     }
   }, [user, screen, redirect, navigate, reset]);
 
