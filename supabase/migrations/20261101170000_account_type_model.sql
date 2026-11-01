@@ -77,8 +77,13 @@ begin
   where user_id = auth.uid();
 
   insert into public.user_roles (user_id, role)
-  values (auth.uid(), 'merchant'::public.app_role)
-  on conflict do nothing;
+  select auth.uid(), 'merchant'::public.app_role
+  where not exists (
+    select 1
+    from public.user_roles ur
+    where ur.user_id = auth.uid()
+      and ur.role = 'merchant'::public.app_role
+  );
 end;
 $$;
 
