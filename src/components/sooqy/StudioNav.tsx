@@ -7,7 +7,7 @@ const ITEMS = [
   { to: "/studio", key: "studio_nav_overview", Icon: LayoutDashboard },
   { to: "/studio/shipments", key: "studio_nav_shipments", Icon: Truck },
   { to: "/studio/settings", key: "studio_nav_settings", Icon: Settings2 },
-  { to: "/profile", key: "studio_nav_profile", Icon: UserRound },
+  { to: "/settings", key: "studio_nav_profile", Icon: UserRound },
 ] as const;
 
 export function StudioNav() {
