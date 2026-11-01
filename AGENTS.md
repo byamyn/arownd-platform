@@ -49,7 +49,7 @@ AGENTS.md
 ## اللغة والمسارات (عربي/إنجليزي)
 
 - `src/lib/locale.ts` — تحليل بادئة المسار (`/ar/...`, `/en/...`)، الكوكي، `Accept-Language`، وبناء المسارات.
-- `src/server.ts` — يزيل بادئة اللغة قبل معالجة الطلب، ويعيد توجيه `/` إلى لغة المتصفح/الكوكي (307)، ويحفظ `sooqy:lang` كوكي.
+- `src/server.ts` — يزيل بادئة اللغة قبل معالجة الطلب، ويعيد توجيه `/` إلى لغة المتصفح/الكوكي (307)، ويحفظ كوكي اللغة.
 - `src/lib/locale.server.ts` — `AsyncLocalStorage` لربط اللغة بالطلب (بلا تعارض بين الطلبات المتوازية).
 - `src/lib/i18n.ts` — `useTranslation()` للمكوّنات، `translate()` لوسوم الميتا (خارج React)، `t(key, lang, values)` للاستخدام المباشر.
 - `src/lib/dictionaries/` — القاموس مقسّمًا بالمجموعات (`shared`, `home`, `explore`, `product`, `commerce`, `ui`, `studio`); كل مجموعة تحتوي `ar` و`en` بنفس المفاتيح.
@@ -119,13 +119,13 @@ AGENTS.md
 ## تعديلات جلسة التطوير الحالية
 
 ### صفحة المصادقة (`src/routes/auth.tsx`)
-- إعادة تصميم كاملة ispirée من Apple و Telegram مع الحفاظ على هوية SOOQY البنفسجية.
-- شعار SOOQY بحجم `text-3xl` باللون البنفسجي (`text-primary`).
+- إعادة تصميم كاملة ispirée من Apple و Telegram مع الحفاظ على هوية Arownd المعتمدة.
+- شعار Arownd بحجم `text-3xl` باللون البنفسجي (`text-primary`).
 - نص الترحيب بلون `text-muted-foreground` (رمادي داكن).
 - أيقونات الحقول: `User` (الاسم)، `Mail` (البريد)، `Eye`/`EyeOff` (كلمة السر) جميعها `size-6`.
 - إخفاء شريط التنقل السفلي (`BottomNav`) في صفحة `/auth` عبر `src/routes/__root.tsx`.
 - أيقونات جميعها `size-6` لتتطابق مع نظام الأيقونات العام في المشروع.
-- عناوين مخصصة: "مرحبًا بعودتك إلى SOOQY" و "ابدأ رحلتك مع SOOQY".
+- عناوين مخصصة: "مرحبًا بعودتك إلى Arownd" و "ابدأ رحلتك مع Arownd".
 - رابط "نسيت كلمة السر" باللون البنفسجي (`text-primary`).
 - جميع الوظائف محفوظة: Supabase Auth، Google OAuth، إعادة تعيين كلمة المرور.
 
@@ -146,7 +146,7 @@ AGENTS.md
 
 ## Obsidian & Lime dual-theme (2026 redesign)
 - Design tokens في `src/styles.css` (`:root` فاتح + `.dark` داكن): accent `#C6F36B`، خلفية فاتحة `#F7F8F5`/سطح `#FFFFFF`، خلفية داكنة `#17191C`/سطح `#23262A`.
-- `src/lib/theme.tsx`: `ThemeProvider` (localStorage key `sooqy-theme`، fallback لتفضيل النظام، سكربت منع الوميض في `__root.tsx` + `suppressHydrationWarning` على `<html>`).
+- `src/lib/theme.tsx`: `ThemeProvider` (مفتاح المظهر المحلي السابق محفوظ للتوافق، fallback لتفضيل النظام، سكربت منع الوميض في `__root.tsx` + `suppressHydrationWarning` على `<html>`).
 - مبدّل المظهر في `/settings` → صف "المظهر" يفتح نافذة 3 خيارات (فاتح/داكن/نظام).
 - `map-style.ts` ألوان MapLibre صارت lime. `text-primary`/`bg-primary` = lime. btn-primary hover `#A8D955`, active `#8FC44A`.
 - بناء إنتاجي محالي يفشل حاليًا بسبب ملفات غير مكتملة من جلسة سابقة: `src/routes/wallet.tsx` و `src/routes/studio.orders.$orderId.tsx` يستدعيان دوال (`fetchWalletTransactions`, `walletTopup`, `walletWithdraw`, `deleteOrder`, `OrderStatusBadge`...) غير موجودة في `src/lib/sooqy.ts` — business logic خارج نطاق التصميم. خادم التطوير والمعاينة يعملان بشكل طبيعي.
