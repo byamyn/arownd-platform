@@ -533,7 +533,7 @@ function AllShipmentsList({
                 {shipment.cod_collection ? (
                   <p className="text-sm font-semibold text-green-soft-foreground">
                     تم تسجيل تحصيل الدفع عند الاستلام
-                    ` — ${shipment.cod_collection.amount.toLocaleString("ar-DZ")} دج`
+                    {" — " + shipment.cod_collection.amount.toLocaleString("ar-DZ") + " دج"}
                   </p>
                 ) : (
                   <>
