@@ -77,7 +77,7 @@ function FavoritesPage() {
         keywords={t("fav_keywords")}
         ogType="website"
       />
-      <div className="space-y-4 px-4 pt-4">
+      <div className="space-y-4 px-4 pb-6 pt-4">
         <header className="flex items-center gap-2 py-1">
           <button
             onClick={() => goBackOrTo(router, "/profile")}
