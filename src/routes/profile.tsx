@@ -331,15 +331,15 @@ function ProfilePage() {
           <SectionTitle>{t("profile_activity")}</SectionTitle>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-              { to: "/orders", Icon: Package, label: t("orders"), value: orders.data?.length ?? 0 },
+              { to: "/orders", Icon: Package, label: t("profile_orders"), value: orders.data?.length ?? 0 },
               {
                 to: "/reservations",
                 Icon: CalendarDays,
-                label: t("reservations"),
+                label: t("profile_reservations"),
                 value: reservations.data?.length ?? 0,
               },
-              { to: "/favorites", Icon: Heart, label: t("favorites"), value: favCount },
-              { to: "/wallet", Icon: Wallet, label: t("wallet"), value: null },
+              { to: "/favorites", Icon: Heart, label: t("profile_favorites"), value: favCount },
+              { to: "/wallet", Icon: Wallet, label: t("profile_wallet"), value: null },
             ].map(({ to, Icon, label, value }) => (
               <Link
                 key={to}
