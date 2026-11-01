@@ -2,7 +2,6 @@ import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-r
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
-  ArrowRight,
   Bell,
   Lock,
   Package,
@@ -26,6 +25,7 @@ import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { PageHeader } from "@/components/sooqy/page-header";
 import { useState } from "react";
 import { showError, showSuccess } from "@/lib/feedback";
 import { goBackOrTo } from "@/lib/nav";
@@ -194,24 +194,22 @@ function NotificationsPage() {
         ogType="website"
       />
       <div className="px-4 pt-4">
-        <header className="flex items-center justify-between py-1">
-          <div className="flex items-center gap-2">
-            <button onClick={() => goBackOrTo(router, "/")} aria-label="رجوع" className="icon-btn">
-              <ArrowRight className="size-5" />
-            </button>
-            <h1 className="text-h2 text-foreground">الإشعارات</h1>
-          </div>
-          {q.data && q.data.some((n) => !n.read) && (
-            <button
-              type="button"
-              onClick={() => void markAll()}
-              disabled={markingAll}
-              className="min-h-11 px-2 text-sm font-bold text-accent-ink disabled:opacity-50"
-            >
-              {markingAll ? "جارٍ التحديث..." : "قراءة الكل"}
-            </button>
-          )}
-        </header>
+        <PageHeader
+          title="الإشعارات"
+          back="/profile"
+          action={
+            q.data && q.data.some((n) => !n.read) ? (
+              <button
+                type="button"
+                onClick={() => void markAll()}
+                disabled={markingAll}
+                className="min-h-11 px-2 text-sm font-bold text-accent-ink disabled:opacity-50"
+              >
+                {markingAll ? "جارٍ التحديث..." : "قراءة الكل"}
+              </button>
+            ) : undefined
+          }
+        />
 
         {user && Capacitor.isNativePlatform() && (
           <section className="mt-3 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
