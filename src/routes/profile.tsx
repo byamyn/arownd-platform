@@ -359,6 +359,7 @@ function ProfilePage() {
         <PageHeader
           title={t("profile_hub_title")}
           subtitle={t("profile_hub_subtitle")}
+          back={accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant") ? "/studio" : undefined}
           showLanguageToggle
           action={
             <div className="flex items-center gap-2">
