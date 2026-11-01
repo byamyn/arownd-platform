@@ -50,7 +50,7 @@ function StudioShipmentsPage() {
   useRealtimeSubscription({
     table: "shipments",
     queryKeys: [["store-shipments"]],
-    enabled: ready && !!user && canManage && !!storeId,
+    enabled: ready && !!user && !!storeId,
   });
 
   if (!ready) return null;
