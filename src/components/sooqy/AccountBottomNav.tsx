@@ -19,10 +19,8 @@ export function AccountBottomNav({ pathname }: { pathname: string }) {
 
   if (!ready) return null;
   if (!user) return <BottomNav />;
-  if (accountType.isLoading || accountType.isError || !accountType.isSuccess) return null;
-  if (accountType.data === "merchant") {
-    return isMerchantArea ? <StudioNav /> : null;
-  }
+  if (accountType.data === "merchant") return <StudioNav />;
+  if (accountType.isLoading || accountType.isError || !accountType.isSuccess) return <BottomNav />;
   // أبقِ سلوك تنقل شركات التوصيل كما هو؛ لا يشمله تحديث تنقل الحسابات الشخصية والتجارية.
   if (accountType.data === "personal" || accountType.data === "delivery_company") {
     return <BottomNav />;
