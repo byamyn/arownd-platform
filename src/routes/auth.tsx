@@ -211,7 +211,7 @@ function AuthPage() {
         <div className="pointer-events-none absolute -end-40 top-1/4 size-[28rem] rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute -end-20 top-[31%] size-[22rem] rounded-full border border-primary/10" />
         <div className="relative z-10">
-          <img src="/2995.svg" alt="Arownd" className="h-12 w-auto" />
+          <img src="/2995.svg" alt="Arownd" loading="eager" decoding="async" className="h-12 w-auto" />
         </div>
         <div className="relative z-10 max-w-xl py-16">
           <p className="mb-6 text-xs font-semibold tracking-[0.22em] text-primary">
@@ -229,7 +229,7 @@ function AuthPage() {
           </div>
         </div>
         <div className="relative z-10 flex items-center justify-between border-t border-white/10 pt-5 text-xs text-ink-foreground/45">
-          <span>AROWND</span>
+          <span>Arownd</span>
           <span>{t("auth_brand_tagline")}</span>
         </div>
       </aside>
@@ -237,7 +237,7 @@ function AuthPage() {
       <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-12 lg:py-10 xl:px-20">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
           <div className="mb-8 overflow-hidden rounded-2xl bg-ink px-6 py-6 text-ink-foreground lg:hidden">
-            <img src="/2995.svg" alt="Arownd" className="h-9 w-auto" />
+            <img src="/2995.svg" alt="Arownd" loading="eager" decoding="async" className="h-9 w-auto" />
             <p className="mt-6 text-xs font-semibold tracking-[0.18em] text-primary">
               {t("auth_brand_eyebrow")}
             </p>
@@ -250,7 +250,7 @@ function AuthPage() {
           </div>
 
           <header className="mb-7 flex items-center justify-between">
-            <img src="/2994.svg" alt="Arownd" className="h-8 w-auto lg:h-9" />
+            <img src="/2994.svg" alt="Arownd" loading="eager" decoding="async" className="h-8 w-auto lg:h-9" />
             <Link
               to="/"
               aria-label={t("common_back")}
