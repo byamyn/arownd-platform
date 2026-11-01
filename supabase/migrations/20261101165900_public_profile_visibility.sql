@@ -104,7 +104,7 @@ create or replace function public.set_my_profile_visibility(_is_public boolean)
 returns void
 language plpgsql
 security definer
-set search_path = public, pg_temp
+set search_path = ''
 set row_security = off
 as $function$
 begin
