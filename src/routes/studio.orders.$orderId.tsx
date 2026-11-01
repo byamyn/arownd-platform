@@ -9,6 +9,8 @@ import {
   fetchOrder,
   merchantUpdateOrderStatus,
   merchantSubmitOrderQuote,
+  merchantRejectOrder,
+  collectMerchantOrderCod,
   merchantUpdateOrderNote,
   fetchMyStore,
 } from "@/lib/sooqy";
@@ -31,6 +33,7 @@ function StudioOrderDetailPage() {
   const [note, setNote] = useState("");
   const [shippingFee, setShippingFee] = useState("");
   const [savingQuote, setSavingQuote] = useState(false);
+  const [savingDecision, setSavingDecision] = useState(false);
   const router = useRouter();
   const qc = useQueryClient();
 
@@ -143,12 +146,44 @@ function StudioOrderDetailPage() {
   );
   const merchantOrderStatus = merchantOrder.status;
 
+  const refreshOrder = async () => {
+    await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
+    await qc.invalidateQueries({ queryKey: ["store-orders"] });
+  };
+
   const handleStatus = async (status: "delivered") => {
     try {
       await merchantUpdateOrderStatus(order.id, status);
-      await qc.invalidateQueries({ queryKey: ["store-orders"] });
+      showSuccess(t("studio_action_deliver"));
+      await refreshOrder();
     } catch (error) {
       showError(error);
+    }
+  };
+
+  const handleReject = async () => {
+    setSavingDecision(true);
+    try {
+      await merchantRejectOrder(merchantOrder.id);
+      showSuccess(t("studio_order_rejected"));
+      await refreshOrder();
+    } catch (error) {
+      showError(error);
+    } finally {
+      setSavingDecision(false);
+    }
+  };
+
+  const handleCollectCod = async () => {
+    setSavingDecision(true);
+    try {
+      await collectMerchantOrderCod(merchantOrder.id);
+      showSuccess(t("studio_cod_collected"));
+      await refreshOrder();
+    } catch (error) {
+      showError(error);
+    } finally {
+      setSavingDecision(false);
     }
   };
 
@@ -280,6 +315,16 @@ function StudioOrderDetailPage() {
                   </button>
                 </div>
               )}
+              {merchantOrderStatus === "pending" && !merchantOrder.quoted_at && (
+                <button
+                  type="button"
+                  disabled={savingDecision}
+                  onClick={handleReject}
+                  className="min-h-11 w-full rounded-xl border border-destructive/40 px-4 py-2 text-sm font-bold text-destructive disabled:opacity-50"
+                >
+                  {savingDecision ? t("studio_saving") : t("studio_reject_unavailable")}
+                </button>
+              )}
               {merchantOrderStatus === "quoted" && (
                 <p className="rounded-xl bg-warning-soft p-3 text-xs leading-relaxed text-warning">
                   {t("studio_quote_pending_customer")}
@@ -293,6 +338,27 @@ function StudioOrderDetailPage() {
                 >
                   {t("studio_action_deliver")}
                 </button>
+              )}
+              {merchantOrderStatus === "delivered" && order.delivery_type === "desk" && merchantOrder.payment_status !== "paid" && (
+                <div className="space-y-2 rounded-xl border border-border bg-background p-3">
+                  <p className="text-sm font-semibold">{t("studio_cod_due")}</p>
+                  <p className="text-price font-black">
+                    {formatDA((merchantOrder.subtotal ?? 0) + (merchantOrder.shipping_fee ?? 0))}
+                  </p>
+                  <button
+                    type="button"
+                    disabled={savingDecision}
+                    onClick={handleCollectCod}
+                    className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                  >
+                    {savingDecision ? t("studio_saving") : t("studio_cod_collect")}
+                  </button>
+                </div>
+              )}
+              {merchantOrder.payment_status === "paid" && (
+                <p className="rounded-xl bg-primary-soft p-3 text-sm font-semibold text-foreground">
+                  {t("studio_cod_paid", { amount: formatDA(merchantOrder.paid_amount ?? 0) })}
+                </p>
               )}
               {merchantOrderStatus === "confirmed" && order.delivery_type === "home" && (
                 <p className="rounded-xl bg-primary-soft p-3 text-xs leading-relaxed text-muted-foreground">
