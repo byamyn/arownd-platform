@@ -80,18 +80,10 @@ function OrdersPage() {
   }
 
   const list = orders.data ?? [];
-  const parentFiltered =
-    tab === "all"
-      ? list
-      : tab === "active"
-        ? list.filter((o) => ["pending", "confirmed", "shipped"].includes(o.status))
-        : tab === "delivered"
-          ? list.filter((o) => o.status === "delivered")
-          : list.filter((o) => o.status === "cancelled");
 
   // Show each merchant suborder as its own card while retaining the parent
   // order ID for tracking and parent-level history operations.
-  const filtered = parentFiltered.flatMap((order) => {
+  const orderRows = list.flatMap((order) => {
     const suborders = order.merchant_orders ?? [];
     if (suborders.length === 0) return [order];
     return suborders.map((suborder) => ({
@@ -106,6 +98,14 @@ function OrdersPage() {
       merchant_orders: [suborder],
     }));
   });
+  const filtered =
+    tab === "all"
+      ? orderRows
+      : tab === "active"
+        ? orderRows.filter((o) => ["pending", "quoted", "confirmed", "shipped"].includes(o.status))
+        : tab === "delivered"
+          ? orderRows.filter((o) => o.status === "delivered")
+          : orderRows.filter((o) => o.status === "cancelled");
 
   return (
     <>
