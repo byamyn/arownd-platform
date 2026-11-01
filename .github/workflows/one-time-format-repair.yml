@@ -1,0 +1,46 @@
+name: One-time formatting repair
+on:
+  push:
+    branches:
+      - arownd-premium
+permissions:
+  contents: write
+jobs:
+  repair:
+    if: contains(github.event.head_commit.message, '[run-format]')
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: arownd-premium
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Apply repository ESLint autofixes
+        run: npx eslint . --fix
+      - name: Commit formatting changes
+        run: |
+          rm -f .github/format-run.txt
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add -u
+          if ! git diff --cached --quiet; then
+            git commit -m 'style: apply ESLint autofixes across repository'
+            git push origin HEAD:arownd-premium
+          fi
+      - name: Dependency security audit
+        run: npm audit --audit-level=high
+      - name: TypeScript
+        run: npx tsc --noEmit
+      - name: ESLint
+        run: npm run lint
+      - name: Vitest
+        run: npm test
+      - name: Vercel production build
+        env:
+          VITE_SUPABASE_URL: https://ci-placeholder.supabase.co
+          VITE_SUPABASE_PUBLISHABLE_KEY: ci-placeholder-public-key
+        run: npm run build:vercel
