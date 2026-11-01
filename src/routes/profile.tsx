@@ -174,7 +174,7 @@ function ProfilePage() {
               {(publicProfile.data.commune || publicWilaya) && (
                 <p className="mt-2 flex items-center gap-1.5 text-sm text-muted-foreground">
                   <MapPin className="size-4" />
-                  {[publicProfile.data.commune, publicWilaya].filter(Boolean).join("، ")}
+                  {[publicProfile.data.commune, publicWilaya].filter(Boolean).join(t("profile_location_separator"))}
                 </p>
               )}
               <p className="mt-4 text-xs text-muted-foreground">{t("profile_public_privacy_note")}</p>
@@ -197,7 +197,7 @@ function ProfilePage() {
             {t("profile_signin_hint")}
           </p>
           <Link to="/auth" className="btn-primary mt-4 w-full">
-            تسجيل الدخول
+            {t("profile_login_action")}
           </Link>
         </div>
       </AppShell>
@@ -205,8 +205,8 @@ function ProfilePage() {
   }
 
   const name = (user.user_metadata?.["full_name"] as string | undefined) ?? "";
-  const displayName = name || (user.email ?? "مستخدم Arownd");
-  const initial = (user.email ?? "؟").slice(0, 1).toUpperCase();
+  const displayName = name || t("profile_default_name");
+  const initial = displayName.slice(0, 1).toUpperCase();
   const favCount = favorites.products.length + favorites.stores.length;
 
   const changeVisibility = async () => {
@@ -274,9 +274,9 @@ function ProfilePage() {
   return (
     <>
       <SeoHead
-        title="الملف الشخصي — Arownd"
-        description="عدّل اسمك ورقم هاتفك وولايتك في منصة Arownd."
-        keywords="الملف الشخصي, حساب, Arownd"
+        title={t("profile_seo_title")}
+        description={t("profile_seo_description")}
+        keywords={t("profile_seo_keywords")}
         ogType="website"
       />
       <AppShell className="space-y-5 pb-24 pt-6">
@@ -289,7 +289,7 @@ function ProfilePage() {
               {isAdmin && (
                 <Link
                   to="/admin"
-                  aria-label="لوحة الإدارة"
+                  aria-label={t("profile_admin_dashboard")}
                   className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white shadow-soft transition hover:bg-amber-600 active:scale-95"
                 >
                   <Shield className="size-4.5" />
@@ -313,7 +313,7 @@ function ProfilePage() {
                   {avatarPreview ? (
                     <img
                       src={avatarPreview}
-                      alt="صورتك الشخصية"
+                      alt={t("profile_avatar_alt")}
                       className="size-full rounded-full object-cover"
                     />
                   ) : (
@@ -326,7 +326,7 @@ function ProfilePage() {
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
                   className="absolute -bottom-1 -end-1 flex size-8 items-center justify-center rounded-full bg-primary text-accent-ink-foreground shadow-soft ring-2 ring-card transition active:scale-95"
-                  aria-label="تغيير الصورة الشخصية"
+                  aria-label={t("profile_change_avatar")}
                 >
                   <Camera className="size-4" />
                 </button>
@@ -350,7 +350,7 @@ function ProfilePage() {
                 onClick={() => setEditing(true)}
                 className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-accent-ink-foreground shadow-soft transition active:scale-95"
               >
-                <Pencil className="size-4" /> تعديل
+                <Pencil className="size-4" /> {t("profile_edit_button")}
               </button>
             </div>
 
@@ -371,7 +371,7 @@ function ProfilePage() {
                   <MapPin className="size-3.5 text-muted-foreground" />
                   <span className="truncate">
                     {profile.data.commune ?? ""}
-                    {profile.data.commune && profile.data.wilaya_id != null ? "، " : ""}
+                    {profile.data.commune && profile.data.wilaya_id != null ? t("profile_location_separator") : ""}
                     {wilayas.data?.find((w) => w.id === profile.data?.wilaya_id)?.name_ar ??
                       (profile.data.wilaya_id != null
                         ? String(profile.data.wilaya_id).padStart(2, "0")
@@ -425,7 +425,7 @@ function ProfilePage() {
         </section>
 
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
-        <section className="space-y-2" aria-label="نشاط الحساب">
+        <section className="space-y-2" aria-label={t("profile_activity")}>
           <SectionTitle>{t("profile_activity")}</SectionTitle>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
@@ -494,7 +494,7 @@ function ProfilePage() {
 
         <div className="pt-1">
           <p className="pt-3 text-center text-xs text-muted-foreground">
-            Arownd · الإصدار التجريبي
+            Arownd · {t("profile_beta_footer")}
           </p>
         </div>
 
@@ -521,13 +521,13 @@ function ProfilePage() {
                 htmlFor="profile-full-name"
                 className="mb-1 block text-xs font-bold text-muted-foreground"
               >
-                الاسم الكامل *
+                {t("profile_full_name_label")} *
               </label>
               <input
                 id="profile-full-name"
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
-                placeholder="مثال: أحمد بن يوسف"
+                placeholder={t("profile_full_name_placeholder")}
                 autoComplete="name"
                 className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
@@ -537,7 +537,7 @@ function ProfilePage() {
                 htmlFor="profile-phone"
                 className="mb-1 block text-xs font-bold text-muted-foreground"
               >
-                رقم الهاتف
+                {t("profile_phone_label")}
               </label>
               <input
                 id="profile-phone"
@@ -552,11 +552,11 @@ function ProfilePage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <span className="mb-1 block text-xs font-bold text-muted-foreground">الولاية</span>
+                <span className="mb-1 block text-xs font-bold text-muted-foreground">{t("profile_wilaya_label")}</span>
                 <WilayaButton
                   value={wilayaId}
                   onChange={setWilayaId}
-                  allLabel="اختر الولاية"
+                  allLabel={t("profile_select_wilaya")}
                   className="w-full"
                 />
               </div>
@@ -565,13 +565,13 @@ function ProfilePage() {
                   htmlFor="profile-commune"
                   className="mb-1 block text-xs font-bold text-muted-foreground"
                 >
-                  البلدية
+                  {t("profile_commune_label")}
                 </label>
                 <input
                   id="profile-commune"
                   value={commune}
                   onChange={(e) => setCommune(e.target.value)}
-                  placeholder="مثال: باب الزوار"
+                  placeholder={t("profile_commune_placeholder")}
                   autoComplete="address-level2"
                   className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
