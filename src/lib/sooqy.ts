@@ -597,7 +597,10 @@ export async function cancelMyOrder(orderId: string): Promise<void> {
   const { data: auth } = await supabase.auth.getUser();
   if (!auth.user) throw new Error("يجب تسجيل الدخول لإلغاء الطلب.");
 
-  const call = supabase.rpc as unknown as (
+  // Supabase client methods rely on their client instance as `this`.
+  // Calling rpc after extracting it loses that context and can throw
+  // "Cannot read properties of undefined (reading 'rest')".
+  const call = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     vars?: Record<string, unknown>,
   ) => Promise<{ data: unknown; error: { message?: string; code?: string } | null }>;
