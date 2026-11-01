@@ -73,6 +73,11 @@ function CallbackPage() {
         return;
       }
 
+      if (intent === "customer") {
+        navigate({ to: "/profile", search: { setup: true }, replace: true });
+        return;
+      }
+
       const storedRedirect =
         typeof window !== "undefined" ? sessionStorage.getItem("sooqy-redirect") : null;
       if (typeof window !== "undefined") sessionStorage.removeItem("sooqy-redirect");

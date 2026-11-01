@@ -96,7 +96,7 @@ function AuthPage() {
     } else if (type === "delivery") {
       navigate({ to: "/delivery-register", replace: true });
     } else {
-      navigate({ to: (redirect ?? "/") as "/", replace: true });
+      navigate({ to: "/profile", search: { setup: true }, replace: true });
     }
   };
 

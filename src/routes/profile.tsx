@@ -44,12 +44,16 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { ErrorState } from "@/components/sooqy/error-state";
 
 export const Route = createFileRoute("/profile")({
+  validateSearch: (s: Record<string, unknown>): { setup?: boolean } => ({
+    setup: s["setup"] === "1" || s["setup"] === true || s["setup"] === "true",
+  }),
   head: () => ({}),
   component: ProfilePage,
 });
 
 function ProfilePage() {
   const { user, ready } = useAuth();
+  const { setup } = Route.useSearch();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
@@ -89,6 +93,7 @@ function ProfilePage() {
     }
   }, [ready, user, myStore.data, myStore.isLoading, navigate]);
   const [editing, setEditing] = useState(false);
+  const [setupOpened, setSetupOpened] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
 
   // تعبئة النموذج من بيانات الحساب والملف — مرة واحدة
@@ -107,6 +112,13 @@ function ProfilePage() {
     }
     setLoaded(true);
   }, [user, profile.data, profile.isFetched, loaded]);
+
+  // بعد تأكيد البريد نفتح نموذج استكمال الملف الشخصي مباشرةً، دون المرور بصفحة الحساب العامة.
+  useEffect(() => {
+    if (!setup || setupOpened || !user || !loaded || profile.isLoading) return;
+    setEditing(true);
+    setSetupOpened(true);
+  }, [setup, setupOpened, user, loaded, profile.isLoading]);
 
   if (!ready) return null;
   if (!user) {
@@ -171,7 +183,11 @@ function ProfilePage() {
         showSuccess("تم حفظ الملف الشخصي ✅");
       }
       setEditing(false);
-      navigate({ to: "/settings" });
+      if (setup) {
+        navigate({ to: "/", replace: true });
+      } else {
+        navigate({ to: "/settings" });
+      }
     } catch (e) {
       showError(e);
     } finally {
