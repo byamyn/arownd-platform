@@ -24,7 +24,7 @@ export function StudioNav() {
   const isStoreActive = !!store.data?.id && currentPath === `/stores/${store.data.id}`;
 
   return (
-    <nav aria-label={t("studio_nav_aria")} className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_28px_rgba(0,0,0,0.06)] backdrop-blur">
+    <nav aria-label={t("studio_nav_aria")} className="fixed inset-x-0 bottom-0 z-40 border-t md:hidden border-border bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_28px_rgba(0,0,0,0.06)] backdrop-blur">
       <div className={cn("mx-auto flex w-full max-w-2xl items-stretch gap-1 px-1", isRTL ? "flex-row-reverse" : "")}>
         {items.map(({ to, key, Icon }) => {
           const active = currentPath === to;
