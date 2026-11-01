@@ -74,9 +74,9 @@ function AdminDeliveryCompaniesPage() {
       if (error) throw error;
       if (!shipments.length) return [];
 
-      const orderIds = [...new Set(shipments.map((shipment) => shipment.order_id).filter(Boolean))];
+      const orderIds = [...new Set(shipments.map((shipment) => shipment.order_id).filter((id): id is string => typeof id === "string"))];
       const merchantOrderIds = [
-        ...new Set(shipments.map((shipment) => shipment.merchant_order_id).filter(Boolean)),
+        ...new Set(shipments.map((shipment) => shipment.merchant_order_id).filter((id): id is string => typeof id === "string")),
       ];
       const [{ data: orders, error: ordersError }, { data: merchantOrders, error: merchantOrdersError }] =
         await Promise.all([
