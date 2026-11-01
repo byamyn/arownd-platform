@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
-import { becomeMerchant, fetchMyStore, merchantCreateStore } from "@/lib/sooqy";
+import { fetchMyStore, merchantCreateStore } from "@/lib/sooqy";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import {
@@ -76,10 +76,10 @@ function CreateStorePage() {
       <PageHeader title="أصبح تاجر" subtitle="أنشئ متجرك على Arownd" back="/settings" />
       <MerchantOnboarding
         onSubmit={async (input) => {
-          await becomeMerchant();
           await merchantCreateStore(input);
           await qc.invalidateQueries({ queryKey: ["my-store"] });
           await qc.invalidateQueries({ queryKey: ["my-roles"] });
+          await qc.invalidateQueries({ queryKey: ["my-account-type"] });
           navigate({ to: "/studio" });
         }}
         form={form}
