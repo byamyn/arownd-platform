@@ -11,7 +11,7 @@ let registeredDeviceToken: string | null = null;
 type Rpc = (name: string, args?: Record<string, string>) => Promise<{ error: Error | null }>;
 
 function callRpc(name: string, args?: Record<string, string>) {
-  return (supabase.rpc as unknown as Rpc)(name, args);
+  return (supabase.rpc.bind(supabase) as unknown as Rpc)(name, args);
 }
 
 function openNotificationTarget(action: ActionPerformed) {
