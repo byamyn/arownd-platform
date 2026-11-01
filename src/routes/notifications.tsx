@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -28,7 +28,6 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { useState } from "react";
 import { showError, showSuccess } from "@/lib/feedback";
-import { goBackOrTo } from "@/lib/nav";
 import { Capacitor } from "@capacitor/core";
 import { enableNativePush } from "@/lib/push-notifications";
 
@@ -90,7 +89,6 @@ function navigateForNotification(
 function NotificationsPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
-  const router = useRouter();
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
