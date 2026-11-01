@@ -256,8 +256,7 @@ grant execute on function public.create_my_store(
   double precision, jsonb, text, text[]
 ) to authenticated;
 
-revoke all on function public.become_merchant() from public, anon;
-grant execute on function public.become_merchant() to authenticated;
+revoke all on function public.become_merchant() from public, anon, authenticated;
 
 -- Read only the signed-in user's account identity; this is not an authorization check.
 create or replace function public.get_my_account_type()
