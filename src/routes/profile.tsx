@@ -84,14 +84,7 @@ function ProfilePage() {
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
 
-  // عندما يbecome Merchant، يتحول ملفه الشخصي مباشرة إلى استوديو التاجر
-  useEffect(() => {
-    if (!ready || !user) return;
-    if (myStore.isLoading) return;
-    if (myStore.data) {
-      navigate({ to: "/studio" });
-    }
-  }, [ready, user, myStore.data, myStore.isLoading, navigate]);
+  // يبقى الملف الشخصي متاحًا للتاجر أيضًا؛ الانتقال إلى الاستوديو إجراء اختياري.
   const [editing, setEditing] = useState(false);
   const [setupOpened, setSetupOpened] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
@@ -208,15 +201,26 @@ function ProfilePage() {
           title="الملف الشخصي"
           subtitle="حسابك وبياناتك في مكان واحد"
           action={
-            isAdmin ? (
-              <Link
-                to="/admin"
-                aria-label="لوحة الإدارة"
-                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white shadow-soft transition hover:bg-amber-600 active:scale-95"
-              >
-                <Shield className="size-4.5" />
-              </Link>
-            ) : undefined
+            <div className="flex items-center gap-2">
+              {myStore.data && (
+                <Link
+                  to="/studio"
+                  aria-label="استوديو التاجر"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-primary text-accent-ink-foreground shadow-soft transition hover:opacity-90 active:scale-95"
+                >
+                  <Store className="size-4.5" />
+                </Link>
+              )}
+              {isAdmin && (
+                <Link
+                  to="/admin"
+                  aria-label="لوحة الإدارة"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white shadow-soft transition hover:bg-amber-600 active:scale-95"
+                >
+                  <Shield className="size-4.5" />
+                </Link>
+              )}
+            </div>
           }
         />
 
@@ -369,6 +373,14 @@ function ProfilePage() {
               hint="الاسم، الهاتف، الولاية والبلدية"
               onClick={() => setEditing(true)}
             />
+            {myStore.data && (
+              <MenuRow
+                icon={Store}
+                label="استوديو التاجر"
+                hint="إدارة المنتجات والطلبات والمتجر"
+                to="/studio"
+              />
+            )}
             <MenuRow
               icon={Bell}
               label="الإشعارات"

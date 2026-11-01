@@ -172,13 +172,22 @@ function RootComponent() {
   useServiceWorkerRegistration();
   const location = useLocation();
   const isAuth = location.pathname === "/auth";
+  // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
+  const isStudio =
+    location.pathname === "/studio" || location.pathname.startsWith("/studio/");
 
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
           <BagProvider>
-            <div className={isAuth ? "min-h-screen w-full max-w-none pb-0" : "mx-auto min-h-screen max-w-xl pb-28"}>
+            <div
+              className={
+                isAuth || isStudio
+                  ? "min-h-screen w-full max-w-none pb-0"
+                  : "mx-auto min-h-screen max-w-xl pb-28"
+              }
+            >
               <PageTransition>
                 <Outlet />
               </PageTransition>
