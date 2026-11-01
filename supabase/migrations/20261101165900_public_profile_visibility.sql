@@ -98,3 +98,29 @@ from private.public_personal_profiles;
 
 revoke all on public.public_personal_profiles from public;
 grant select on public.public_personal_profiles to anon, authenticated;
+
+-- Keep the visibility toggle owner-scoped and separate from profile field updates.
+create or replace function public.set_my_profile_visibility(_is_public boolean)
+returns void
+language plpgsql
+security definer
+set search_path = public, pg_temp
+set row_security = off
+as $function$
+begin
+  if auth.uid() is null then
+    raise exception 'not_authenticated';
+  end if;
+
+  update public.profiles
+  set is_public = coalesce(_is_public, false)
+  where user_id = auth.uid();
+
+  if not found then
+    raise exception 'profile_not_found';
+  end if;
+end;
+$function$;
+
+revoke all on function public.set_my_profile_visibility(boolean) from public, anon;
+grant execute on function public.set_my_profile_visibility(boolean) to authenticated;
