@@ -175,17 +175,6 @@ function RootComponent() {
   // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
   const isStudio =
     location.pathname === "/studio" || location.pathname.startsWith("/studio/");
-  const accountSubpages = new Set([
-    "/settings",
-    "/notifications",
-    "/wallet",
-    "/create-store",
-    "/orders",
-    "/reservations",
-    "/favorites",
-  ]);
-  const currentPath = location.pathname.replace(/\/+$/, "") || "/";
-  const isAccountSubpage = accountSubpages.has(currentPath);
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -194,9 +183,11 @@ function RootComponent() {
           <BagProvider>
             <div
               className={
-                isAuth || isStudio
+                isAuth
                   ? "min-h-screen w-full max-w-none pb-0"
-                  : "mx-auto min-h-screen max-w-xl " + (isAccountSubpage || location.pathname === "/profile" ? "pb-0" : "pb-28")
+                  : isStudio
+                    ? "min-h-screen w-full max-w-none pb-28"
+                    : "mx-auto min-h-screen max-w-xl pb-28"
               }
             >
               <PageTransition>
@@ -207,7 +198,7 @@ function RootComponent() {
               <>
                 <ConnectionBanner />
                 <DynamicIsland />
-                {!isStudio && !isAccountSubpage && <AccountBottomNav pathname={location.pathname} />}
+                <AccountBottomNav pathname={location.pathname} />
                 <PwaPrompt />
               </>
             )}
