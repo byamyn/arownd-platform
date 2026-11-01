@@ -424,7 +424,7 @@ function CheckoutPage() {
                 {option.icon}
                 {option.label}
                 <span className="mt-1 block text-[11px] font-medium opacity-70">
-                  {t("checkout_fee_pending")}
+                  {option.id === "desk" ? t("checkout_fee_free") : t("checkout_fee_pending")}
                 </span>
               </button>
             ))}
