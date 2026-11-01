@@ -296,8 +296,34 @@ begin
      or nullif(btrim(_slug), '') is null
      or _wilaya_id is null
      or _opening_hours is null
-     or jsonb_typeof(_opening_hours) <> 'object' then
+     or jsonb_typeof(_opening_hours) <> 'object'
+     or nullif(_opening_hours ->> 'open', '') is null
+     or nullif(_opening_hours ->> 'close', '') is null then
     raise exception 'invalid_store_input';
+  end if;
+
+  if _category is not null and not exists (
+    select 1
+    from public.categories c
+    where c.id = _category
+      and c.parent_id is null
+      and c.is_active = true
+  ) then
+    raise exception 'invalid_store_category';
+  end if;
+
+  if exists (
+    select 1
+    from unnest(coalesce(_subcategories, '{}'::text[])) selected(id)
+    where not exists (
+      select 1
+      from public.categories c
+      where c.id = selected.id
+        and c.parent_id = _category
+        and c.is_active = true
+    )
+  ) then
+    raise exception 'invalid_store_subcategory';
   end if;
 
   select p.account_type
