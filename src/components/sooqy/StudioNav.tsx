@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Search, Sparkles, Store } from "lucide-react";
+import { Home, Search, Sparkles, Store, User } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyStore } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
@@ -20,6 +20,7 @@ export function StudioNav() {
     { to: "/", key: "home", Icon: Home },
     { to: "/explore", key: "explore", Icon: Search },
     { to: "/latest", key: "studio_nav_latest", Icon: Sparkles },
+    { to: "/profile", key: "profile", Icon: User },
   ] as const;
   const isStoreActive = !!store.data?.id && currentPath === `/stores/${store.data.id}`;
 
