@@ -41,7 +41,7 @@ export function StudioNav() {
             <span>{t("studio_nav_store")}</span>
           </Link>
         ) : (
-          <Link to="/studio/settings" aria-current={currentPath === "/studio/settings" ? "page" : undefined} className="group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold text-muted-foreground">
+          <Link to="/studio" aria-current={currentPath === "/studio" ? "page" : undefined} className="group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold text-muted-foreground">
             <span className="flex size-8 items-center justify-center rounded-xl"><Store className="size-5 shrink-0" aria-hidden="true" /></span>
             <span>{t("studio_nav_store")}</span>
           </Link>
