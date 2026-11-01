@@ -6,11 +6,7 @@ import {
   Bell,
   Camera,
   CalendarDays,
-  FileText,
   Heart,
-  Eye,
-  EyeOff,
-  HelpCircle,
   MapPin,
   Package,
   Pencil,
@@ -46,6 +42,7 @@ import { SideSheet } from "@/components/sooqy/side-sheet";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
+import { Settings } from "lucide-react";
 
 export const Route = createFileRoute("/profile")({
   validateSearch: (s: Record<string, unknown>): { setup?: boolean; public_id?: string } => ({
@@ -362,6 +359,7 @@ function ProfilePage() {
           back={accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant") ? "/studio" : undefined}
           action={
             <div className="flex items-center gap-2">
+              <Link to="/settings" aria-label="الإعدادات" title="الإعدادات" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-soft transition hover:bg-muted active:scale-95"><Settings className="size-5" /></Link>
               {isAdmin && (
                 <Link
                   to="/admin"
@@ -469,40 +467,6 @@ function ProfilePage() {
           </div>
         </section>
 
-        {/* visibility moved to settings */}
-        {false && accountTypeQuery.data === "personal" && (
-          <section className="rounded-2xl border border-border bg-card p-4">
-          <div className="flex flex-wrap items-start justify-between gap-3">
-            <div className="min-w-0">
-              <h3 className="font-bold text-foreground">{t("profile_visibility_title")}</h3>
-              <p className="mt-1 text-sm text-muted-foreground">{t("profile_visibility_hint")}</p>
-              <p className="mt-2 text-xs font-semibold text-muted-foreground">
-                {t(profile.data?.is_public ? "profile_visibility_public" : "profile_visibility_private")}
-              </p>
-            </div>
-            <button
-              type="button"
-              onClick={changeVisibility}
-              disabled={visibilityBusy || profile.isLoading || !profile.data}
-              className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-foreground transition hover:bg-muted disabled:opacity-50"
-            >
-              {profile.data?.is_public ? <EyeOff className="size-4" /> : <Eye className="size-4" />}
-              {visibilityBusy ? t("profile_saving") : t(profile.data?.is_public ? "profile_make_private" : "profile_make_public")}
-            </button>
-          </div>
-          {profile.data?.is_public && (
-            <Link
-              to="/profile"
-              search={{ public_id: user.id }}
-              className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-primary-soft px-4 text-sm font-bold text-accent-ink"
-            >
-              <Eye className="size-4" />
-              {t("profile_preview_public")}
-            </Link>
-          )}
-          </section>
-        )}
-
         {/* نشاط الحساب — وصول مباشر إلى أهم الوجهات */}
         <section className="space-y-2" aria-label={t("profile_activity")}>
           <SectionTitle>{t("profile_activity")}</SectionTitle>
@@ -541,34 +505,6 @@ function ProfilePage() {
               </Link>
             ))}
           </div>
-        </section>
-
-        {/* إدارة الحساب removed */}
-        <section className="space-y-2">
-          <SectionTitle>{t("profile_account_management")}</SectionTitle>
-          <MenuCard>
-            <MenuRow
-              icon={User}
-              label={t("profile_personal_data")}
-              hint={t("profile_personal_data_hint")}
-              onClick={() => setEditing(true)}
-            />
-            <MenuRow
-              icon={Bell}
-              label={t("profile_notifications")}
-              hint={t("profile_notifications_hint")}
-              to="/notifications"
-            />
-          </MenuCard>
-        </section>
-
-        {/* الدعم والمعلومات القانونية */}
-        <section className="space-y-2">
-          <SectionTitle>{t("profile_support_info")}</SectionTitle>
-          <MenuCard>
-            <MenuRow icon={HelpCircle} label={t("profile_help_support")} to="/help" />
-            <MenuRow icon={FileText} label={t("profile_terms_privacy")} to="/terms" />
-          </MenuCard>
         </section>
 
         <div className="pt-1">
@@ -632,11 +568,12 @@ function ProfilePage() {
             <div className="grid grid-cols-2 gap-3">
               <div>
                 <span className="mb-1 block text-xs font-bold text-muted-foreground">{t("profile_wilaya_label")}</span>
-                <WilayaButton
+                <WilayaSelect
                   value={wilayaId}
                   onChange={setWilayaId}
-                  allLabel={t("profile_select_wilaya")}
-                  className="w-full"
+                  allLabel={null}
+                  required
+                  className="h-12"
                 />
               </div>
               <div>
