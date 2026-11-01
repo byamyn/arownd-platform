@@ -29,6 +29,7 @@ import {
   fetchMyReservations,
   fetchMyProfile,
   fetchPublicProfile,
+  fetchMyAccountType,
   fetchMyRoles,
   fetchSchemaSupport,
   isValidDzPhone,
@@ -80,6 +81,11 @@ function ProfilePage() {
     queryFn: fetchMyRoles,
     enabled: !!user && !public_id,
   });
+  const accountTypeQuery = useQuery({
+    queryKey: ["my-account-type", user?.id],
+    queryFn: fetchMyAccountType,
+    enabled: !!user && !public_id,
+  });
   const isAdmin = roleQuery.data?.includes("admin") ?? false;
   const wilayas = useQuery(wilayasQuery);
   const favorites = useFavorites();
@@ -123,12 +129,34 @@ function ProfilePage() {
     setSetupOpened(true);
   }, [setup, setupOpened, user, loaded, profile.isLoading]);
 
-  // مساحة الحساب التجاري مستقلة عن الملف الشخصي؛ المدير يحتفظ بإمكانية الوصول إلى الملف.
+  // توجيه كل نوع حساب إلى مساحة العمل الخاصة به؛ admin يظل صلاحية مستقلة.
   useEffect(() => {
-    if (!public_id && user && roleQuery.isFetched && roleQuery.data?.includes("merchant") && !isAdmin) {
+    if (
+      public_id ||
+      !user ||
+      !accountTypeQuery.isFetched ||
+      !roleQuery.isFetched ||
+      isAdmin
+    ) return;
+
+    if (
+      accountTypeQuery.data === "merchant" &&
+      roleQuery.data?.includes("merchant")
+    ) {
       navigate({ to: "/studio", replace: true });
+    } else if (accountTypeQuery.data === "delivery_company") {
+      navigate({ to: "/delivery-dashboard", replace: true });
     }
-  }, [public_id, user, roleQuery.isFetched, roleQuery.data, isAdmin, navigate]);
+  }, [
+    public_id,
+    user,
+    accountTypeQuery.isFetched,
+    accountTypeQuery.data,
+    roleQuery.isFetched,
+    roleQuery.data,
+    isAdmin,
+    navigate,
+  ]);
 
   if (!ready) return null;
   if (public_id) {
