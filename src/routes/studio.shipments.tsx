@@ -8,7 +8,7 @@ import { useTranslation } from "@/lib/i18n";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { supabase } from "@/integrations/supabase/client";
 import { fetchShipmentsByStore, type Shipment } from "@/lib/delivery";
-import { fetchMyAccountType, fetchMyRoles, fetchMyStore } from "@/lib/sooqy";
+import { fetchMyStore } from "@/lib/sooqy";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { formatDate } from "@/lib/market";
 import { PageHeader } from "@/components/sooqy/page-header";
@@ -24,9 +24,6 @@ function StudioShipmentsPage() {
   const { t } = useTranslation();
   const { user, ready } = useAuth();
   const [statusFilter, setStatusFilter] = useState<string | null>(null);
-  const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: ready && !!user });
-  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: ready && !!user });
-  const canManage = accountType.data === "merchant" && (roles.data?.includes("merchant") ?? false);
 
   // رقم المتجر من سجل المتجر الفعلي (user_metadata.store_id لا يُضبط في أي مكان)
   const myStore = useQuery({
@@ -45,10 +42,10 @@ function StudioShipmentsPage() {
   } = useQuery({
     queryKey: ["store-shipments", storeId],
     queryFn: () => fetchShipmentsByStore(storeId as string),
-    enabled: ready && !!user && canManage && !!storeId,
+    enabled: ready && !!user && !!storeId,
   });
-  const isLoading = myStore.isLoading || shipmentsLoading || roles.isLoading || accountType.isLoading;
-  const error = myStore.error ?? shipmentsError ?? roles.error ?? accountType.error;
+  const isLoading = myStore.isLoading || shipmentsLoading;
+  const error = myStore.error ?? shipmentsError;
 
   // تحديثات حية: شحنات المتجر (Supabase Realtime)
   useRealtimeSubscription({
@@ -65,18 +62,6 @@ function StudioShipmentsPage() {
         <div className="text-danger-foreground">{t("studio_login_shipments")}</div>
         <Link to="/auth" className="btn-primary mt-4 inline-block">
           تسجيل الدخول
-        </Link>
-      </div>
-    );
-  }
-
-  if (!isLoading && !error && !canManage) {
-    return (
-      <div className="space-y-4 px-4 pt-20 text-center">
-        <PageHeader title={t("studio_shipments")} back="/profile" />
-        <p className="text-sm text-muted-foreground">{t("studio_login_store_settings")}</p>
-        <Link to="/profile" className="btn-primary mx-auto inline-flex px-8">
-          {t("profile_hub_title")}
         </Link>
       </div>
     );
