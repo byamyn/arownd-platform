@@ -8,6 +8,7 @@ import { formatDate } from "@/lib/market";
 import {
   fetchOrder,
   merchantUpdateOrderStatus,
+  merchantSubmitOrderQuote,
   merchantUpdateOrderNote,
   fetchMyStore,
 } from "@/lib/sooqy";
@@ -28,6 +29,8 @@ function StudioOrderDetailPage() {
   const { orderId } = Route.useParams();
   const { user, ready } = useAuth();
   const [note, setNote] = useState("");
+  const [shippingFee, setShippingFee] = useState("");
+  const [savingQuote, setSavingQuote] = useState(false);
   const router = useRouter();
   const qc = useQueryClient();
 
@@ -109,7 +112,10 @@ function StudioOrderDetailPage() {
     );
   }
 
-  const merchantOrderStatus = order.merchant_orders?.[0]?.status ?? order.status;
+  const merchantOrder =
+    order.merchant_orders?.find((item) => item.store_id === store.data?.id) ??
+    order.merchant_orders?.[0];
+  const merchantOrderStatus = merchantOrder?.status ?? order.status;
 
   const handleStatus = async (status: "confirmed" | "shipped" | "delivered") => {
     try {
@@ -145,7 +151,9 @@ function StudioOrderDetailPage() {
               <span className="flex items-center gap-1 font-semibold text-foreground">
                 {t("studio_total")}
               </span>
-              <b className="text-price text-accent-ink">{formatDA(order.total)}</b>
+              <b className="text-price text-accent-ink">
+                {formatDA((merchantOrder?.subtotal ?? order.total) + (merchantOrder?.shipping_fee ?? 0))}
+              </b>
             </div>
             <div className="mt-3 flex items-center gap-2">
               <span className="flex items-center gap-1 font-semibold text-foreground">
@@ -191,23 +199,71 @@ function StudioOrderDetailPage() {
                   حفظ
                 </button>
               </div>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                {(["confirmed", "shipped", "delivered"] as const).map((s) => (
+              {merchantOrderStatus === "pending" && (
+                <div className="space-y-2 rounded-2xl border border-border bg-background p-3">
+                  <label className="block text-sm font-bold" htmlFor="merchant-shipping-fee">
+                    {t("studio_quote_shipping_fee")}
+                  </label>
+                  <input
+                    id="merchant-shipping-fee"
+                    type="number"
+                    min="0"
+                    step="1"
+                    inputMode="numeric"
+                    value={shippingFee}
+                    onChange={(event) => setShippingFee(event.target.value)}
+                    placeholder="0"
+                    className="h-12 w-full rounded-xl border border-input bg-card px-3 outline-none focus:ring-2 focus:ring-primary/30"
+                  />
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    {t("studio_quote_shipping_fee_hint")}
+                  </p>
                   <button
-                    key={s}
-                    onClick={() => handleStatus(s)}
-                    disabled={
-                      (s === "confirmed" && merchantOrderStatus !== "pending") ||
-                      (s === "shipped" && merchantOrderStatus !== "confirmed") ||
-                      (s === "delivered" &&
-                        (merchantOrderStatus !== "shipped" || order.delivery_type === "home"))
-                    }
-                    className="min-h-11 rounded-xl border border-border bg-muted/60 px-3 py-2 text-xs font-extrabold transition hover:border-accent-ink/40 hover:bg-primary hover:text-primary-foreground active:scale-[.98]"
+                    type="button"
+                    disabled={savingQuote || shippingFee.trim() === "" || !Number.isFinite(Number(shippingFee)) || Number(shippingFee) < 0}
+                    onClick={async () => {
+                      const fee = Number(shippingFee);
+                      if (!Number.isFinite(fee) || fee < 0) {
+                        showError(new Error(t("studio_quote_invalid_fee")));
+                        return;
+                      }
+                      setSavingQuote(true);
+                      try {
+                        await merchantSubmitOrderQuote(order.id, fee);
+                        showSuccess(t("studio_quote_sent"));
+                        await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
+                        await qc.invalidateQueries({ queryKey: ["store-orders"] });
+                      } catch (error) {
+                        showError(error);
+                      } finally {
+                        setSavingQuote(false);
+                      }
+                    }}
+                    className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
                   >
-                    {t(`status_${s}`)}
+                    {savingQuote ? t("studio_saving") : t("studio_send_quote")}
                   </button>
-                ))}
-              </div>
+                </div>
+              )}
+              {merchantOrderStatus === "quoted" && (
+                <p className="rounded-xl bg-warning-soft p-3 text-xs leading-relaxed text-warning">
+                  {t("studio_quote_pending_customer")}
+                </p>
+              )}
+              {merchantOrderStatus === "confirmed" && order.delivery_type === "desk" && (
+                <button
+                  type="button"
+                  onClick={() => handleStatus("delivered")}
+                  className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+                >
+                  {t("studio_action_deliver")}
+                </button>
+              )}
+              {merchantOrderStatus === "confirmed" && order.delivery_type === "home" && (
+                <p className="rounded-xl bg-primary-soft p-3 text-xs leading-relaxed text-muted-foreground">
+                  {t("studio_order_approved_wait_delivery")}
+                </p>
+              )}
             </div>
           </div>
         </div>
