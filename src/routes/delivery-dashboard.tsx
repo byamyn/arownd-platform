@@ -123,7 +123,7 @@ function DeliveryDashboardPage() {
       toast.error("لا يمكن تسجيل التحصيل قبل اكتمال تسليم الشحنة.");
       return;
     }
-    if (Boolean(shipment.cod_collection)) {
+    if (shipment.cod_collection) {
       toast.info("تم تسجيل الدفع لهذا الطلب مسبقًا.");
       return;
     }
