@@ -203,11 +203,7 @@ function CheckoutPage() {
               ? t("checkout_address_required")
               : t("checkout_phone_invalid")
             : step === 2
-              ? deliveryCompanies.isLoading || deliveryCoverage.isLoading || wilayaPricing.isLoading
-                ? t("checkout_companies_loading")
-                : availableDeliveryCompanies.length === 0
-                  ? t("checkout_companies_none")
-                  : t("checkout_company_required")
+              ? t("checkout_fill_required_short")
               : deliveryType === "home"
                 ? t("checkout_address_detail_required")
                 : t("checkout_fill_required_short"),
