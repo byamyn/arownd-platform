@@ -89,7 +89,8 @@ export const commerce: DictGroup = {
     checkout_confirm_order: "إرسال طلب الشراء",
     checkout_next: "متابعة",
     checkout_success_title: "تم إرسال طلبك إلى المتاجر",
-    checkout_success_hint: "أرسلنا طلبك إلى كل متجر بشكل مستقل. ستصلك عروض الأسعار ورسوم التوصيل، ويمكنك قبول أو رفض عرض كل متجر على حدة.",
+    checkout_success_hint:
+      "أرسلنا طلبك إلى كل متجر بشكل مستقل. ستصلك عروض الأسعار ورسوم التوصيل، ويمكنك قبول أو رفض عرض كل متجر على حدة.",
     checkout_tracking_code: "رمز التتبع",
     checkout_track_order: "تتبع طلبي",
     checkout_continue_shopping: "متابعة التسوق",
@@ -116,7 +117,8 @@ export const commerce: DictGroup = {
     checkout_companies_none:
       "لا توجد شركة توصيل معتمدة تغطي الولاية والبلدية المحددتين حاليًا. يمكنك اختيار الاستلام من المكتب.",
     checkout_address_detail_placeholder: "عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)",
-    checkout_fee_note: "في التوصيل للمنزل، يحدد كل متجر رسوم توصيل طلبه بعد مراجعته ثم يرسل لك العرض النهائي للموافقة. الاستلام من المتجر دون رسوم توصيل.",
+    checkout_fee_note:
+      "في التوصيل للمنزل، يحدد كل متجر رسوم توصيل طلبه بعد مراجعته ثم يرسل لك العرض النهائي للموافقة. الاستلام من المتجر دون رسوم توصيل.",
     checkout_no_commission_note:
       "لا تفرض Arownd أي عمولة. الإجمالي يشمل قيمة المنتجات ورسوم التوصيل فقط.",
     checkout_payment_cod_label: "الدفع عند الاستلام",

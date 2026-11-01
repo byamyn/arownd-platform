@@ -323,7 +323,12 @@ function DeliveryDashboardPage() {
         {activeTab === "pending" ? (
           <PendingShipmentsList shipments={shipments} onDecision={handleDecision} />
         ) : (
-          <AllShipmentsList shipments={shipments} onStatusUpdate={handleStatusUpdate} onCollectCod={handleCollectCod} collectingCodFor={collectingCodFor} />
+          <AllShipmentsList
+            shipments={shipments}
+            onStatusUpdate={handleStatusUpdate}
+            onCollectCod={handleCollectCod}
+            collectingCodFor={collectingCodFor}
+          />
         )}
       </section>
       <ConfirmDialog
@@ -539,7 +544,8 @@ function AllShipmentsList({
                   <>
                     <p className="mb-2 text-sm font-semibold">الدفع النقدي عند الاستلام</p>
                     <p className="mb-3 text-xs text-muted-foreground">
-                      سجّل التحصيل بعد استلام المبلغ من المستلم. يُسجّل المبلغ من بيانات الطلب على الخادم.
+                      سجّل التحصيل بعد استلام المبلغ من المستلم. يُسجّل المبلغ من بيانات الطلب على
+                      الخادم.
                     </p>
                     <button
                       type="button"

@@ -648,7 +648,9 @@ export async function fetchMyOrders() {
   const archivedIds = await fetchArchivedActivityIds(u.user.id, "order");
   const { data, error } = await supabase
     .from("orders")
-    .select("*, items:order_items(*), merchant_orders(id, order_id, store_id, status, subtotal, shipping_fee, quoted_at, payment_status, paid_amount, paid_at, store:stores(name), items:order_items(*)), wilaya:wilayas(name_ar)")
+    .select(
+      "*, items:order_items(*), merchant_orders(id, order_id, store_id, status, subtotal, shipping_fee, quoted_at, payment_status, paid_amount, paid_at, store:stores(name), items:order_items(*)), wilaya:wilayas(name_ar)",
+    )
     .eq("user_id", u.user.id)
     .order("created_at", { ascending: false });
   if (error) throw error;
@@ -1264,10 +1266,7 @@ export async function collectMerchantOrderCod(merchantOrderId: string): Promise<
   if (error) throw new Error(friendlyError(error));
 }
 
-export async function merchantRejectOrder(
-  merchantOrderId: string,
-  reason?: string,
-): Promise<void> {
+export async function merchantRejectOrder(merchantOrderId: string, reason?: string): Promise<void> {
   const rpc = supabase.rpc.bind(supabase) as unknown as (
     fn: string,
     args: { _merchant_order_id: string; _reason: string | null },
@@ -1279,10 +1278,7 @@ export async function merchantRejectOrder(
   if (error) throw new Error(friendlyError(error));
 }
 
-export async function merchantUpdateOrderStatus(
-  orderId: string,
-  status: "delivered",
-) {
+export async function merchantUpdateOrderStatus(orderId: string, status: "delivered") {
   const store = await fetchMyStore();
   if (!store) throw new Error("المتجر غير موجود");
 

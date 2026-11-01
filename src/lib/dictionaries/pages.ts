@@ -79,7 +79,8 @@ export const pages: DictGroup = {
     profile_public_unavailable: "هذا الملف غير متاح أو اختار صاحبه إبقاءه خاصاً.",
     profile_public_default_name: "عضو في Arownd",
     profile_public_privacy_note: "لا تُعرض هنا معلومات الاتصال أو بيانات الحساب الخاصة.",
-    profile_account_identity_error: "تعذر التحقق من نوع الحساب وصلاحياته. أعد المحاولة أو تواصل مع الدعم.",
+    profile_account_identity_error:
+      "تعذر التحقق من نوع الحساب وصلاحياته. أعد المحاولة أو تواصل مع الدعم.",
     profile_login_action: "تسجيل الدخول",
     profile_default_name: "مستخدم Arownd",
     profile_seo_title: "الملف الشخصي — Arownd",
@@ -127,7 +128,8 @@ export const pages: DictGroup = {
     auth_choose_account_title: "اختر نوع حسابك",
     auth_choose_account_description: "ابدأ بتحديد الطريقة التي تريد استخدام Arownd بها.",
     auth_signup_details_title: "أنشئ حسابك",
-    auth_signup_details_description: "أدخل بياناتك الأساسية. سنرسل رابط تأكيد إلى بريدك الإلكتروني.",
+    auth_signup_details_description:
+      "أدخل بياناتك الأساسية. سنرسل رابط تأكيد إلى بريدك الإلكتروني.",
     auth_account_type_label: "نوع الحساب",
     auth_customer_title: "حساب شخصي",
     auth_customer_description: "اكتشف المتاجر والمنتجات وتسوق بسهولة.",
@@ -135,7 +137,8 @@ export const pages: DictGroup = {
     auth_merchant_description: "أنشئ متجرك واعرض منتجاتك للعملاء.",
     auth_delivery_title: "شركة توصيل",
     auth_delivery_description: "سجّل شركتك واستكمل متطلبات الانضمام.",
-    auth_account_type_note: "يمكنك تغيير اختيارك قبل إكمال التسجيل. اختيار النوع يحدد خطوة الاستكمال فقط، ولا يمنح صلاحيات بحد ذاته.",
+    auth_account_type_note:
+      "يمكنك تغيير اختيارك قبل إكمال التسجيل. اختيار النوع يحدد خطوة الاستكمال فقط، ولا يمنح صلاحيات بحد ذاته.",
     auth_selected_account: "نوع الحساب المختار",
     auth_change_account: "تغيير",
     auth_name_label: "الاسم الكامل",
@@ -144,16 +147,19 @@ export const pages: DictGroup = {
     auth_new_password_label: "كلمة المرور الجديدة",
     auth_confirm_password_label: "تأكيد كلمة المرور",
     auth_password_hint: "استخدم 8 أحرف على الأقل.",
-    auth_email_confirmation_note: "سنرسل رابط تأكيد إلى بريدك الإلكتروني. بعد التأكيد ستنتقل إلى الخطوة المناسبة لنوع حسابك.",
+    auth_email_confirmation_note:
+      "سنرسل رابط تأكيد إلى بريدك الإلكتروني. بعد التأكيد ستنتقل إلى الخطوة المناسبة لنوع حسابك.",
     auth_secure_note: "نحافظ على خصوصية بيانات الدخول ونستخدم اتصالًا آمنًا لإدارة جلستك.",
     auth_confirmation_title: "تحقق من بريدك الإلكتروني",
-    auth_confirmation_description: "أرسلنا رابط تأكيد. افتح الرسالة لإكمال إنشاء الحساب، ثم سنوجهك إلى الخطوة التالية.",
+    auth_confirmation_description:
+      "أرسلنا رابط تأكيد. افتح الرسالة لإكمال إنشاء الحساب، ثم سنوجهك إلى الخطوة التالية.",
     auth_back_to_signin: "العودة إلى تسجيل الدخول",
     auth_back_to_account_type: "العودة لاختيار نوع الحساب",
     auth_continue: "متابعة",
     auth_footer_note: "تجربة آمنة من Arownd",
     auth_forgot_title: "استعادة كلمة المرور",
-    auth_forgot_description: "أدخل بريدك الإلكتروني وسنرسل إليك رابطًا آمنًا لإعادة تعيين كلمة المرور.",
+    auth_forgot_description:
+      "أدخل بريدك الإلكتروني وسنرسل إليك رابطًا آمنًا لإعادة تعيين كلمة المرور.",
     auth_recovery_eyebrow: "استعادة الوصول",
     auth_send_reset: "إرسال رابط الاستعادة",
     auth_reset_title: "أنشئ كلمة مرور جديدة",
@@ -232,9 +238,11 @@ export const pages: DictGroup = {
     profile_name_required: "Enter your full name.",
     profile_phone_invalid: "Invalid phone number — it must start with 05, 06, or 07.",
     profile_saved: "Profile saved successfully",
-    profile_saved_schema_warning: "Your details were saved, but profile photos require a database update.",
+    profile_saved_schema_warning:
+      "Your details were saved, but profile photos require a database update.",
     profile_visibility_title: "Profile visibility",
-    profile_visibility_hint: "Choose whether others can see your name, photo, and general location.",
+    profile_visibility_hint:
+      "Choose whether others can see your name, photo, and general location.",
     profile_visibility_public: "Visible to others",
     profile_visibility_private: "Private profile",
     profile_make_public: "Make public",
@@ -243,10 +251,13 @@ export const pages: DictGroup = {
     profile_public_title: "Public profile",
     profile_public_subtitle: "Information this account owner chose to share.",
     profile_public_description: "A public personal profile on Arownd.",
-    profile_public_unavailable: "This profile is unavailable or its owner has chosen to keep it private.",
+    profile_public_unavailable:
+      "This profile is unavailable or its owner has chosen to keep it private.",
     profile_public_default_name: "Arownd member",
-    profile_public_privacy_note: "Contact details and private account information are never shown here.",
-    profile_account_identity_error: "We could not verify your account type and permissions. Retry or contact support.",
+    profile_public_privacy_note:
+      "Contact details and private account information are never shown here.",
+    profile_account_identity_error:
+      "We could not verify your account type and permissions. Retry or contact support.",
     profile_login_action: "Sign in",
     profile_default_name: "Arownd user",
     profile_seo_title: "Your profile — Arownd",
@@ -297,7 +308,8 @@ export const pages: DictGroup = {
     auth_choose_account_title: "Choose your account type",
     auth_choose_account_description: "First, tell us how you would like to use Arownd.",
     auth_signup_details_title: "Create your account",
-    auth_signup_details_description: "Enter your basic details. We’ll send a confirmation link to your email.",
+    auth_signup_details_description:
+      "Enter your basic details. We’ll send a confirmation link to your email.",
     auth_account_type_label: "ACCOUNT TYPE",
     auth_customer_title: "Personal account",
     auth_customer_description: "Discover stores and products, and shop with ease.",
@@ -305,7 +317,8 @@ export const pages: DictGroup = {
     auth_merchant_description: "Create your store and showcase products to customers.",
     auth_delivery_title: "Delivery company",
     auth_delivery_description: "Register your company and complete the joining requirements.",
-    auth_account_type_note: "You can change your selection before completing registration. This choice only guides onboarding and does not grant permissions.",
+    auth_account_type_note:
+      "You can change your selection before completing registration. This choice only guides onboarding and does not grant permissions.",
     auth_selected_account: "Selected account type",
     auth_change_account: "Change",
     auth_name_label: "Full name",
@@ -314,10 +327,12 @@ export const pages: DictGroup = {
     auth_new_password_label: "New password",
     auth_confirm_password_label: "Confirm password",
     auth_password_hint: "Use at least 8 characters.",
-    auth_email_confirmation_note: "We’ll email you a confirmation link. After confirmation, you’ll continue to the next step for your account type.",
+    auth_email_confirmation_note:
+      "We’ll email you a confirmation link. After confirmation, you’ll continue to the next step for your account type.",
     auth_secure_note: "Your sign-in details stay protected through a secure session.",
     auth_confirmation_title: "Check your email",
-    auth_confirmation_description: "We sent a confirmation link. Open the message to finish creating your account, then we’ll guide you to the next step.",
+    auth_confirmation_description:
+      "We sent a confirmation link. Open the message to finish creating your account, then we’ll guide you to the next step.",
     auth_back_to_signin: "Back to sign in",
     auth_back_to_account_type: "Back to account type",
     auth_continue: "Continue",

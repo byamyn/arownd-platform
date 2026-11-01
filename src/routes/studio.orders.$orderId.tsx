@@ -126,9 +126,7 @@ function StudioOrderDetailPage() {
     );
   }
 
-  const merchantOrder = order.merchant_orders?.find(
-    (item) => item.store_id === storeData.id,
-  );
+  const merchantOrder = order.merchant_orders?.find((item) => item.store_id === storeData.id);
 
   if (!merchantOrder) {
     return (
@@ -141,9 +139,7 @@ function StudioOrderDetailPage() {
     );
   }
 
-  const storeOrderItems = (order.items ?? []).filter(
-    (item) => item.store_id === storeData.id,
-  );
+  const storeOrderItems = (order.items ?? []).filter((item) => item.store_id === storeData.id);
   const merchantOrderStatus = merchantOrder.status;
 
   const refreshOrder = async () => {
@@ -213,7 +209,9 @@ function StudioOrderDetailPage() {
                 {t("studio_total")}
               </span>
               <b className="text-price text-accent-ink">
-                {formatDA((merchantOrder?.subtotal ?? order.total) + (merchantOrder?.shipping_fee ?? 0))}
+                {formatDA(
+                  (merchantOrder?.subtotal ?? order.total) + (merchantOrder?.shipping_fee ?? 0),
+                )}
               </b>
             </div>
             <div className="mt-3 flex items-center gap-2">
@@ -339,22 +337,24 @@ function StudioOrderDetailPage() {
                   {t("studio_action_deliver")}
                 </button>
               )}
-              {merchantOrderStatus === "delivered" && order.delivery_type === "desk" && merchantOrder.payment_status !== "paid" && (
-                <div className="space-y-2 rounded-xl border border-border bg-background p-3">
-                  <p className="text-sm font-semibold">{t("studio_cod_due")}</p>
-                  <p className="text-price font-black">
-                    {formatDA((merchantOrder.subtotal ?? 0) + (merchantOrder.shipping_fee ?? 0))}
-                  </p>
-                  <button
-                    type="button"
-                    disabled={savingDecision}
-                    onClick={handleCollectCod}
-                    className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
-                  >
-                    {savingDecision ? t("studio_saving") : t("studio_cod_collect")}
-                  </button>
-                </div>
-              )}
+              {merchantOrderStatus === "delivered" &&
+                order.delivery_type === "desk" &&
+                merchantOrder.payment_status !== "paid" && (
+                  <div className="space-y-2 rounded-xl border border-border bg-background p-3">
+                    <p className="text-sm font-semibold">{t("studio_cod_due")}</p>
+                    <p className="text-price font-black">
+                      {formatDA((merchantOrder.subtotal ?? 0) + (merchantOrder.shipping_fee ?? 0))}
+                    </p>
+                    <button
+                      type="button"
+                      disabled={savingDecision}
+                      onClick={handleCollectCod}
+                      className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                    >
+                      {savingDecision ? t("studio_saving") : t("studio_cod_collect")}
+                    </button>
+                  </div>
+                )}
               {merchantOrder.payment_status === "paid" && (
                 <p className="rounded-xl bg-primary-soft p-3 text-sm font-semibold text-foreground">
                   {t("studio_cod_paid", { amount: formatDA(merchantOrder.paid_amount ?? 0) })}

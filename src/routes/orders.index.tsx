@@ -6,7 +6,12 @@ import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
-import { archiveMyActivity, cancelMyOrder, customerRespondToMerchantOrder, fetchMyOrders } from "@/lib/sooqy";
+import {
+  archiveMyActivity,
+  cancelMyOrder,
+  customerRespondToMerchantOrder,
+  fetchMyOrders,
+} from "@/lib/sooqy";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { cn } from "@/lib/utils";
@@ -325,58 +330,61 @@ function OrdersPage() {
                 >
                   {t("orders_track")}
                 </Link>
-                {!o.isMerchantSuborder && o.status === "pending" && !(o.merchant_orders ?? []).some((suborder) => suborder.status !== "pending") && (
-                  <button
-                    type="button"
-                    disabled={cancellingOrderId === o.id}
-                    onClick={async () => {
-                      if (
-                        !window.confirm(
-                          "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
+                {!o.isMerchantSuborder &&
+                  o.status === "pending" &&
+                  !(o.merchant_orders ?? []).some((suborder) => suborder.status !== "pending") && (
+                    <button
+                      type="button"
+                      disabled={cancellingOrderId === o.id}
+                      onClick={async () => {
+                        if (
+                          !window.confirm(
+                            "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
+                          )
+                        ) {
+                          return;
+                        }
+                        setCancellingOrderId(o.id);
+                        try {
+                          await cancelMyOrder(o.id);
+                          await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                          showSuccess("تم إلغاء الطلب بنجاح.");
+                        } catch (error) {
+                          showError(error);
+                        } finally {
+                          setCancellingOrderId(null);
+                        }
+                      }}
+                      className="mx-4 mb-4 inline-flex min-h-11 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                    >
+                      <XCircle className="size-4" />
+                      {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
+                    </button>
+                  )}
+                {!o.isMerchantSuborder &&
+                  (o.status === "delivered" || o.status === "cancelled") && (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        if (
+                          !window.confirm(
+                            "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                          )
                         )
-                      ) {
-                        return;
-                      }
-                      setCancellingOrderId(o.id);
-                      try {
-                        await cancelMyOrder(o.id);
-                        await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                        showSuccess("تم إلغاء الطلب بنجاح.");
-                      } catch (error) {
-                        showError(error);
-                      } finally {
-                        setCancellingOrderId(null);
-                      }
-                    }}
-                    className="mx-4 mb-4 inline-flex min-h-11 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
-                  >
-                    <XCircle className="size-4" />
-                    {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
-                  </button>
-                )}
-                {!o.isMerchantSuborder && (o.status === "delivered" || o.status === "cancelled") && (
-                  <button
-                    type="button"
-                    onClick={async () => {
-                      if (
-                        !window.confirm(
-                          "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
-                        )
-                      )
-                        return;
-                      try {
-                        await archiveMyActivity("order", o.id);
-                        await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                        showSuccess("تم إخفاء الطلب من سجلك.");
-                      } catch (error) {
-                        showError(error);
-                      }
-                    }}
-                    className="mx-4 mb-4 mt-2 inline-flex min-h-10 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
-                  >
-                    <Archive className="size-4" /> إخفاء من السجل
-                  </button>
-                )}
+                          return;
+                        try {
+                          await archiveMyActivity("order", o.id);
+                          await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                          showSuccess("تم إخفاء الطلب من سجلك.");
+                        } catch (error) {
+                          showError(error);
+                        }
+                      }}
+                      className="mx-4 mb-4 mt-2 inline-flex min-h-10 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                    >
+                      <Archive className="size-4" /> إخفاء من السجل
+                    </button>
+                  )}
               </article>
             );
           })}

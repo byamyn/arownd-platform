@@ -211,7 +211,13 @@ function AuthPage() {
         <div className="pointer-events-none absolute -end-40 top-1/4 size-[28rem] rounded-full border border-primary/15" />
         <div className="pointer-events-none absolute -end-20 top-[31%] size-[22rem] rounded-full border border-primary/10" />
         <div className="relative z-10">
-          <img src="/2995.svg" alt="Arownd" loading="eager" decoding="async" className="h-12 w-auto" />
+          <img
+            src="/2995.svg"
+            alt="Arownd"
+            loading="eager"
+            decoding="async"
+            className="h-12 w-auto"
+          />
         </div>
         <div className="relative z-10 max-w-xl py-16">
           <p className="mb-6 text-xs font-semibold tracking-[0.22em] text-primary">
@@ -237,20 +243,30 @@ function AuthPage() {
       <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-12 lg:py-10 xl:px-20">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
           <div className="mb-8 overflow-hidden rounded-2xl bg-ink px-6 py-6 text-ink-foreground lg:hidden">
-            <img src="/2995.svg" alt="Arownd" loading="eager" decoding="async" className="h-9 w-auto" />
+            <img
+              src="/2995.svg"
+              alt="Arownd"
+              loading="eager"
+              decoding="async"
+              className="h-9 w-auto"
+            />
             <p className="mt-6 text-xs font-semibold tracking-[0.18em] text-primary">
               {t("auth_brand_eyebrow")}
             </p>
-            <h1 className="mt-3 text-2xl font-semibold leading-relaxed">
-              {t("auth_brand_title")}
-            </h1>
+            <h1 className="mt-3 text-2xl font-semibold leading-relaxed">{t("auth_brand_title")}</h1>
             <p className="mt-2 text-sm leading-7 text-ink-foreground/65">
               {t("auth_brand_description")}
             </p>
           </div>
 
           <header className="mb-7 flex items-center justify-between">
-            <img src="/2994.svg" alt="Arownd" loading="eager" decoding="async" className="h-8 w-auto lg:h-9" />
+            <img
+              src="/2994.svg"
+              alt="Arownd"
+              loading="eager"
+              decoding="async"
+              className="h-8 w-auto lg:h-9"
+            />
             <Link
               to="/"
               aria-label={t("common_back")}
@@ -299,9 +315,7 @@ function AuthPage() {
                 <p className="mb-2 text-xs font-semibold tracking-[0.16em] text-accent-ink">
                   {t("auth_recovery_eyebrow")}
                 </p>
-                <h2 className="text-3xl font-semibold tracking-tight">
-                  {t("auth_forgot_title")}
-                </h2>
+                <h2 className="text-3xl font-semibold tracking-tight">{t("auth_forgot_title")}</h2>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
                   {t("auth_forgot_description")}
                 </p>
@@ -311,9 +325,7 @@ function AuthPage() {
                 <p className="mb-2 text-xs font-semibold tracking-[0.16em] text-accent-ink">
                   {t("auth_recovery_eyebrow")}
                 </p>
-                <h2 className="text-3xl font-semibold tracking-tight">
-                  {t("auth_reset_title")}
-                </h2>
+                <h2 className="text-3xl font-semibold tracking-tight">{t("auth_reset_title")}</h2>
                 <p className="mt-3 text-sm leading-7 text-muted-foreground">
                   {t("auth_reset_description")}
                 </p>
@@ -423,9 +435,7 @@ function AuthPage() {
                 <>
                   <div className="flex items-center justify-between rounded-xl bg-muted/60 px-4 py-3">
                     <div>
-                      <p className="text-xs text-muted-foreground">
-                        {t("auth_selected_account")}
-                      </p>
+                      <p className="text-xs text-muted-foreground">{t("auth_selected_account")}</p>
                       <p className="mt-1 text-sm font-semibold">
                         {accountTypes.find((item) => item.id === accountType)?.title}
                       </p>

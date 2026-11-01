@@ -67,27 +67,41 @@ function AdminDeliveryCompaniesPage() {
     queryFn: async () => {
       const { data: shipments, error } = await supabase
         .from("shipments")
-        .select("id, order_id, merchant_order_id, fee, created_at, recipient_name, recipient_phone, delivery_address")
+        .select(
+          "id, order_id, merchant_order_id, fee, created_at, recipient_name, recipient_phone, delivery_address",
+        )
         .is("company_id", null)
         .eq("status", "pending")
         .order("created_at", { ascending: true });
       if (error) throw error;
       if (!shipments.length) return [];
 
-      const orderIds = [...new Set(shipments.map((shipment) => shipment.order_id).filter((id): id is string => typeof id === "string"))];
-      const merchantOrderIds = [
-        ...new Set(shipments.map((shipment) => shipment.merchant_order_id).filter((id): id is string => typeof id === "string")),
+      const orderIds = [
+        ...new Set(
+          shipments
+            .map((shipment) => shipment.order_id)
+            .filter((id): id is string => typeof id === "string"),
+        ),
       ];
-      const [{ data: orders, error: ordersError }, { data: merchantOrders, error: merchantOrdersError }] =
-        await Promise.all([
-          supabase
-            .from("orders")
-            .select("id, full_name, phone, wilaya_id, commune, address_line")
-            .in("id", orderIds),
-          merchantOrderIds.length
-            ? supabase.from("merchant_orders").select("id, store_id").in("id", merchantOrderIds)
-            : Promise.resolve({ data: [], error: null }),
-        ]);
+      const merchantOrderIds = [
+        ...new Set(
+          shipments
+            .map((shipment) => shipment.merchant_order_id)
+            .filter((id): id is string => typeof id === "string"),
+        ),
+      ];
+      const [
+        { data: orders, error: ordersError },
+        { data: merchantOrders, error: merchantOrdersError },
+      ] = await Promise.all([
+        supabase
+          .from("orders")
+          .select("id, full_name, phone, wilaya_id, commune, address_line")
+          .in("id", orderIds),
+        merchantOrderIds.length
+          ? supabase.from("merchant_orders").select("id, store_id").in("id", merchantOrderIds)
+          : Promise.resolve({ data: [], error: null }),
+      ]);
       if (ordersError) throw ordersError;
       if (merchantOrdersError) throw merchantOrdersError;
 
@@ -195,8 +209,9 @@ function AdminDeliveryCompaniesPage() {
       return coverageAreas.some((area) => {
         if (area.company_id !== company.id || area.wilaya_id !== wilayaId) return false;
         const communes = area.communes ?? [];
-        return communes.length === 0 || communes.some(
-          (areaCommune) => areaCommune.trim().toLocaleLowerCase() === commune,
+        return (
+          communes.length === 0 ||
+          communes.some((areaCommune) => areaCommune.trim().toLocaleLowerCase() === commune)
         );
       });
     });
@@ -291,10 +306,12 @@ function AdminDeliveryCompaniesPage() {
                         {shipment.store?.name ?? t("orders_store_quote_heading")}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {t("admin_shipment_recipient")}: {shipment.recipient_name ?? shipment.order?.full_name ?? "—"}
+                        {t("admin_shipment_recipient")}:{" "}
+                        {shipment.recipient_name ?? shipment.order?.full_name ?? "—"}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {t("admin_shipment_location")}: {shipment.order?.commune ?? "—"} · {shipment.order?.wilaya_id ?? "—"}
+                        {t("admin_shipment_location")}: {shipment.order?.commune ?? "—"} ·{" "}
+                        {shipment.order?.wilaya_id ?? "—"}
                       </p>
                     </div>
                     <p className="shrink-0 text-sm font-bold text-accent-ink">
@@ -322,7 +339,9 @@ function AdminDeliveryCompaniesPage() {
                       </select>
                       <button
                         type="button"
-                        disabled={!assignmentSelection[shipment.id] || assigningShipmentId === shipment.id}
+                        disabled={
+                          !assignmentSelection[shipment.id] || assigningShipmentId === shipment.id
+                        }
                         onClick={() => void assignShipment(shipment.id)}
                         className="min-h-11 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
                       >

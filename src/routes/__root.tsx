@@ -173,8 +173,7 @@ function RootComponent() {
   const location = useLocation();
   const isAuth = location.pathname === "/auth";
   // Merchant Studio needs the full desktop canvas; consumer pages stay phone-first.
-  const isStudio =
-    location.pathname === "/studio" || location.pathname.startsWith("/studio/");
+  const isStudio = location.pathname === "/studio" || location.pathname.startsWith("/studio/");
 
   return (
     <QueryClientProvider client={queryClient}>

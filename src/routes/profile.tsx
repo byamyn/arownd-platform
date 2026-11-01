@@ -57,13 +57,21 @@ function ProfilePage() {
   const { setup, public_id } = Route.useSearch();
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user && !public_id });
+  const profile = useQuery({
+    queryKey: ["my-profile"],
+    queryFn: fetchMyProfile,
+    enabled: !!user && !public_id,
+  });
   const publicProfile = useQuery({
     queryKey: ["public-profile", public_id],
     queryFn: () => fetchPublicProfile(public_id!),
     enabled: !!public_id,
   });
-  const orders = useQuery({ queryKey: ["my-orders"], queryFn: fetchMyOrders, enabled: !!user && !public_id });
+  const orders = useQuery({
+    queryKey: ["my-orders"],
+    queryFn: fetchMyOrders,
+    enabled: !!user && !public_id,
+  });
   const reservations = useQuery({
     queryKey: ["my-reservations"],
     queryFn: fetchMyReservations,
@@ -95,10 +103,13 @@ function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const displayName = public_id
-    ? publicProfile.data?.full_name ?? "مستخدم Arownd"
-    : profile.data?.full_name ??
-      (typeof user?.user_metadata?.["full_name"] === "string" ? user.user_metadata["full_name"] : null) ??
-      user?.email ?? "مستخدم Arownd";
+    ? (publicProfile.data?.full_name ?? "مستخدم Arownd")
+    : (profile.data?.full_name ??
+      (typeof user?.user_metadata?.["full_name"] === "string"
+        ? user.user_metadata["full_name"]
+        : null) ??
+      user?.email ??
+      "مستخدم Arownd");
   const initial = displayName.trim().charAt(0) || "A";
   const favCount = favorites.products.length + favorites.stores.length;
 
@@ -190,10 +201,21 @@ function ProfilePage() {
         <PageHeader
           title={t("profile_hub_title")}
           subtitle={t("profile_hub_subtitle")}
-          back={accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant") ? "/studio" : undefined}
+          back={
+            accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant")
+              ? "/studio"
+              : undefined
+          }
           action={
             <div className="flex items-center gap-2">
-              <Link to="/settings" aria-label="الإعدادات" title="الإعدادات" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-soft transition hover:bg-muted active:scale-95"><Settings className="size-5" /></Link>
+              <Link
+                to="/settings"
+                aria-label="الإعدادات"
+                title="الإعدادات"
+                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-soft transition hover:bg-muted active:scale-95"
+              >
+                <Settings className="size-5" />
+              </Link>
               {isAdmin && (
                 <Link
                   to="/admin"
@@ -279,7 +301,9 @@ function ProfilePage() {
                   <MapPin className="size-3.5 text-muted-foreground" />
                   <span className="truncate">
                     {profile.data.commune ?? ""}
-                    {profile.data.commune && profile.data.wilaya_id != null ? t("profile_location_separator") : ""}
+                    {profile.data.commune && profile.data.wilaya_id != null
+                      ? t("profile_location_separator")
+                      : ""}
                     {wilayas.data?.find((w) => w.id === profile.data?.wilaya_id)?.name_ar ??
                       (profile.data.wilaya_id != null
                         ? String(profile.data.wilaya_id).padStart(2, "0")
@@ -306,7 +330,12 @@ function ProfilePage() {
           <SectionTitle>{t("profile_activity")}</SectionTitle>
           <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
             {[
-              { to: "/orders", Icon: Package, label: t("profile_orders"), value: orders.data?.length ?? 0 },
+              {
+                to: "/orders",
+                Icon: Package,
+                label: t("profile_orders"),
+                value: orders.data?.length ?? 0,
+              },
               {
                 to: "/reservations",
                 Icon: CalendarDays,
@@ -401,7 +430,9 @@ function ProfilePage() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <span className="mb-1 block text-xs font-bold text-muted-foreground">{t("profile_wilaya_label")}</span>
+                <span className="mb-1 block text-xs font-bold text-muted-foreground">
+                  {t("profile_wilaya_label")}
+                </span>
                 <WilayaSelect
                   value={wilayaId}
                   onChange={setWilayaId}

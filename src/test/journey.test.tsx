@@ -167,7 +167,9 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     await waitFor(() =>
       expect(state.calls.some((c) => c.startsWith("rpc.create_my_store"))).toBe(true),
     );
-    await waitFor(() => expect(state.stores.some((store) => store["id"] === "store-created")).toBe(true));
+    await waitFor(() =>
+      expect(state.stores.some((store) => store["id"] === "store-created")).toBe(true),
+    );
 
     // بعد التحديث تظهر لوحة التاجر مع اسم المتجر الجديد
     await expectText("مساحة عمل متجرك");
@@ -217,10 +219,9 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
     // الخطوة 2: التوصيل المنزلي — Checkout يعتمد عنواناً تفصيلياً ولا يعرض خيار الاستلام من المكتب.
     await expectText("طريقة التوصيل");
-    fireEvent.change(
-      screen.getByPlaceholderText("عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)"),
-      { target: { value: "شارع ديدوش مراد، الجزائر الوسطى" } },
-    );
+    fireEvent.change(screen.getByPlaceholderText("عنوان التوصيل التفصيلي (مطلوب للتوصيل للمنزل)"), {
+      target: { value: "شارع ديدوش مراد، الجزائر الوسطى" },
+    });
     fireEvent.click(screen.getByRole("button", { name: "متابعة" }));
 
     // الخطوة 3: الدفع عند الاستلام (افتراضي)

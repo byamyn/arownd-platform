@@ -6,7 +6,13 @@ import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
 import { useTranslation } from "@/lib/i18n";
-import { fetchMyAccountType, fetchMyRoles, fetchMyStore, merchantUpdateStore, uploadImageToBucket } from "@/lib/sooqy";
+import {
+  fetchMyAccountType,
+  fetchMyRoles,
+  fetchMyStore,
+  merchantUpdateStore,
+  uploadImageToBucket,
+} from "@/lib/sooqy";
 import { childrenOf } from "@/lib/taxonomy";
 import { MainCategoryPicker, SubcategoryMultiSelect } from "@/components/sooqy/category-tiles";
 import { geoErrorMessage, useGeo } from "@/lib/geo";

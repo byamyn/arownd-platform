@@ -156,11 +156,13 @@ export const studio: DictGroup = {
     studio_cod_collect: "تأكيد استلام المبلغ نقدًا",
     studio_cod_collected: "تم تسجيل تحصيل المبلغ",
     studio_cod_paid: "تم تسجيل الدفع النقدي لهذا الطلب بمبلغ {amount}.",
-    studio_quote_shipping_fee_hint: "حدد رسوم توصيل هذا الطلب فقط. لن يبدأ التجهيز قبل موافقة المشتري على السعر النهائي.",
+    studio_quote_shipping_fee_hint:
+      "حدد رسوم توصيل هذا الطلب فقط. لن يبدأ التجهيز قبل موافقة المشتري على السعر النهائي.",
     studio_send_quote: "إرسال العرض للمشتري",
     studio_quote_sent: "تم إرسال عرض السعر للمشتري",
     studio_quote_pending_customer: "أرسلت السعر النهائي. انتظر موافقة المشتري قبل تجهيز الطلب.",
-    studio_order_approved_wait_delivery: "وافق المشتري على السعر. انتظر تعيين شركة التوصيل من Arownd قبل التسليم.",
+    studio_order_approved_wait_delivery:
+      "وافق المشتري على السعر. انتظر تعيين شركة التوصيل من Arownd قبل التسليم.",
     studio_quote_fee_required: "أدخل رسوم التوصيل، ويمكن إدخال صفر للاستلام من المتجر.",
     studio_quote_invalid_fee: "أدخل رسوم توصيل صحيحة غير سالبة.",
     studio_order_details_loading: "جارٍ تحميل تفاصيل الطلب",
@@ -284,7 +286,8 @@ export const studio: DictGroup = {
     studio_latest_title: "Your latest products",
     studio_latest_description: "See the newest products added to your store.",
     studio_latest_empty: "No products yet",
-    studio_latest_empty_hint: "New products will appear here as soon as you add them to your store.",
+    studio_latest_empty_hint:
+      "New products will appear here as soon as you add them to your store.",
     studio_nav_aria: "Merchant Studio navigation",
     studio_title: "Arownd Merchant Studio",
     studio_subtitle: "Manage your store, products, and orders professionally",
@@ -409,11 +412,14 @@ export const studio: DictGroup = {
     studio_cod_collect: "Confirm cash received",
     studio_cod_collected: "Cash collection recorded",
     studio_cod_paid: "Cash payment of {amount} has been recorded for this order.",
-    studio_quote_shipping_fee_hint: "Set the delivery fee for this store order only. Do not prepare the order until the customer approves the final price.",
+    studio_quote_shipping_fee_hint:
+      "Set the delivery fee for this store order only. Do not prepare the order until the customer approves the final price.",
     studio_send_quote: "Send offer to customer",
     studio_quote_sent: "Price offer sent to the customer",
-    studio_quote_pending_customer: "Your final price has been sent. Wait for the customer’s approval before preparing the order.",
-    studio_order_approved_wait_delivery: "The customer approved the price. Wait for Arownd to assign a delivery company before handoff.",
+    studio_quote_pending_customer:
+      "Your final price has been sent. Wait for the customer’s approval before preparing the order.",
+    studio_order_approved_wait_delivery:
+      "The customer approved the price. Wait for Arownd to assign a delivery company before handoff.",
     studio_quote_fee_required: "Enter a delivery fee. Use zero for store pickup.",
     studio_quote_invalid_fee: "Enter a valid non-negative delivery fee.",
     studio_order_details_loading: "Loading order details",

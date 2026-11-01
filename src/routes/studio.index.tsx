@@ -556,7 +556,6 @@ function StudioPage() {
         </div>
       </header>
 
-
       {/* بطاقة المتجر الرئيسية */}
       <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-accent-ink/20 bg-[#111813] p-4 text-white shadow-lg sm:p-6">
         <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-[#D4F56A]/10 blur-3xl" />
@@ -1448,34 +1447,36 @@ function StudioPage() {
                         {t("studio_quote_pending_customer")}
                       </p>
                     )}
-                    {item.merchant_order.status === "confirmed" && item.order.delivery_type === "home" && (
-                      <p className="w-full rounded-xl bg-primary-soft p-2 text-xs leading-relaxed text-muted-foreground">
-                        {t("studio_order_approved_wait_delivery")}
-                      </p>
-                    )}
-                    {item.merchant_order.status === "confirmed" && item.order.delivery_type === "desk" && (
-                      <button
-                        type="button"
-                        disabled={busyOrder === item.merchant_order.id}
-                        onClick={async () => {
-                          setBusyOrder(item.merchant_order.id);
-                          try {
-                            await merchantUpdateOrderStatus(item.order.id, "delivered");
-                            await qc.invalidateQueries({
-                              queryKey: ["store-orders", store.data?.id],
-                            });
-                          } catch (err) {
-                            toast.error(t("studio_status_update_failed"));
-                            logNetError("studio:order-status", err);
-                          } finally {
-                            setBusyOrder(null);
-                          }
-                        }}
-                        className="min-h-10 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
-                      >
-                        {t("studio_action_deliver")}
-                      </button>
-                    )}
+                    {item.merchant_order.status === "confirmed" &&
+                      item.order.delivery_type === "home" && (
+                        <p className="w-full rounded-xl bg-primary-soft p-2 text-xs leading-relaxed text-muted-foreground">
+                          {t("studio_order_approved_wait_delivery")}
+                        </p>
+                      )}
+                    {item.merchant_order.status === "confirmed" &&
+                      item.order.delivery_type === "desk" && (
+                        <button
+                          type="button"
+                          disabled={busyOrder === item.merchant_order.id}
+                          onClick={async () => {
+                            setBusyOrder(item.merchant_order.id);
+                            try {
+                              await merchantUpdateOrderStatus(item.order.id, "delivered");
+                              await qc.invalidateQueries({
+                                queryKey: ["store-orders", store.data?.id],
+                              });
+                            } catch (err) {
+                              toast.error(t("studio_status_update_failed"));
+                              logNetError("studio:order-status", err);
+                            } finally {
+                              setBusyOrder(null);
+                            }
+                          }}
+                          className="min-h-10 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
+                        >
+                          {t("studio_action_deliver")}
+                        </button>
+                      )}
                   </div>
                   {item.merchant_order.status === "delivered" && (
                     <button

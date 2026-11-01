@@ -48,30 +48,76 @@ function LatestStoreProductsPage() {
   const offers = useQuery({
     queryKey: ["my-store-offers", store.data?.id],
     queryFn: () => getStoreOffers(store.data!.id),
-    enabled: !!store.data?.id && accountType.data === "merchant" && !!roles.data?.includes("merchant"),
+    enabled:
+      !!store.data?.id && accountType.data === "merchant" && !!roles.data?.includes("merchant"),
   });
 
-  if (!ready || accountType.isLoading || roles.isLoading || (accountType.data === "merchant" && store.isLoading)) {
-    return <div className="flex min-h-[50vh] items-center justify-center" role="status"><span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" /></div>;
+  if (
+    !ready ||
+    accountType.isLoading ||
+    roles.isLoading ||
+    (accountType.data === "merchant" && store.isLoading)
+  ) {
+    return (
+      <div className="flex min-h-[50vh] items-center justify-center" role="status">
+        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
+      </div>
+    );
   }
 
   if (accountType.isError || roles.isError) {
     const error = accountType.error ?? roles.error;
-    return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-access" error={error} onRetry={async () => { await Promise.all([accountType.refetch(), roles.refetch()]); }} /></div>;
+    return (
+      <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
+        <PageHeader title={t("studio_latest_title")} back="/" />
+        <ErrorState
+          scope="merchant:latest-access"
+          error={error}
+          onRetry={async () => {
+            await Promise.all([accountType.refetch(), roles.refetch()]);
+          }}
+        />
+      </div>
+    );
   }
 
   if (!user || accountType.data !== "merchant" || !roles.data?.includes("merchant")) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_latest_title")} back="/" />
-        <EmptyState Icon={PackageSearch} title={t("studio_latest_empty")} hint={t("studio_latest_empty_hint")} action={<Link to="/explore" className="btn-primary inline-flex px-5">{t("explore_title")}</Link>} />
+        <EmptyState
+          Icon={PackageSearch}
+          title={t("studio_latest_empty")}
+          hint={t("studio_latest_empty_hint")}
+          action={
+            <Link to="/explore" className="btn-primary inline-flex px-5">
+              {t("explore_title")}
+            </Link>
+          }
+        />
       </div>
     );
   }
 
   const error = accountType.error ?? roles.error ?? store.error ?? offers.error;
   if (error) {
-    return <div className="mx-auto max-w-2xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_latest_title")} back="/" /><ErrorState scope="merchant:latest-products" error={error} onRetry={async () => { await Promise.all([accountType.refetch(), roles.refetch(), store.refetch(), offers.refetch()]); }} /></div>;
+    return (
+      <div className="mx-auto max-w-2xl space-y-4 px-4 pt-6">
+        <PageHeader title={t("studio_latest_title")} back="/" />
+        <ErrorState
+          scope="merchant:latest-products"
+          error={error}
+          onRetry={async () => {
+            await Promise.all([
+              accountType.refetch(),
+              roles.refetch(),
+              store.refetch(),
+              offers.refetch(),
+            ]);
+          }}
+        />
+      </div>
+    );
   }
 
   const products = offers.data ?? [];
@@ -80,24 +126,63 @@ function LatestStoreProductsPage() {
       <PageHeader title={t("studio_latest_title")} back="/" />
       <p className="text-sm text-muted-foreground">{t("studio_latest_description")}</p>
       {offers.isLoading ? (
-        <div className="grid grid-cols-2 gap-3" role="status" aria-label={t("studio_dashboard_loading")}>{[0,1,2,3].map((i) => <div key={i} className="h-56 animate-pulse rounded-2xl bg-muted" />)}</div>
+        <div
+          className="grid grid-cols-2 gap-3"
+          role="status"
+          aria-label={t("studio_dashboard_loading")}
+        >
+          {[0, 1, 2, 3].map((i) => (
+            <div key={i} className="h-56 animate-pulse rounded-2xl bg-muted" />
+          ))}
+        </div>
       ) : products.length ? (
         <div className="grid grid-cols-2 gap-3">
           {products.map((offer) => (
-            <Link key={offer.id} to="/products/$productId" params={{ productId: offer.product_id }} className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-0.5 hover:shadow-md">
+            <Link
+              key={offer.id}
+              to="/products/$productId"
+              params={{ productId: offer.product_id }}
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-0.5 hover:shadow-md"
+            >
               <div className="relative aspect-square bg-muted">
-                {primaryImage(offer.images) ? <img src={primaryImage(offer.images)!} alt={offer.product.name} loading="lazy" className="size-full object-cover transition duration-300 group-hover:scale-105" /> : <div className="flex size-full items-center justify-center"><PackageSearch className="size-9 text-muted-foreground" /></div>}
-                <StockBadge level={stockLevel(offer)} className="absolute start-2 top-2 bg-card/95" />
+                {primaryImage(offer.images) ? (
+                  <img
+                    src={primaryImage(offer.images)!}
+                    alt={offer.product.name}
+                    loading="lazy"
+                    className="size-full object-cover transition duration-300 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="flex size-full items-center justify-center">
+                    <PackageSearch className="size-9 text-muted-foreground" />
+                  </div>
+                )}
+                <StockBadge
+                  level={stockLevel(offer)}
+                  className="absolute start-2 top-2 bg-card/95"
+                />
               </div>
               <div className="space-y-1 p-3">
-                <p className="line-clamp-1 text-sm font-semibold text-foreground">{offer.product.name}</p>
+                <p className="line-clamp-1 text-sm font-semibold text-foreground">
+                  {offer.product.name}
+                </p>
                 <p className="text-sm font-bold text-accent-ink">{formatDA(offer.price)}</p>
               </div>
             </Link>
           ))}
         </div>
       ) : (
-        <EmptyState Icon={PackageSearch} title={t("studio_latest_empty")} hint={t("studio_latest_empty_hint")} action={<Link to="/studio" className="btn-primary inline-flex items-center gap-2 px-5"><Plus className="size-4" />{t("studio_add_product_fast")}</Link>} />
+        <EmptyState
+          Icon={PackageSearch}
+          title={t("studio_latest_empty")}
+          hint={t("studio_latest_empty_hint")}
+          action={
+            <Link to="/studio" className="btn-primary inline-flex items-center gap-2 px-5">
+              <Plus className="size-4" />
+              {t("studio_add_product_fast")}
+            </Link>
+          }
+        />
       )}
     </main>
   );

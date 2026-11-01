@@ -404,10 +404,30 @@ function CheckoutPage() {
             <h2 className="text-section text-foreground">{t("checkout_delivery_heading")}</h2>
           </div>
           <div className="rounded-2xl border border-border bg-background p-3 text-sm">
-            <p className="mb-2 text-xs font-bold text-muted-foreground">بيانات التوصيل من ملفك الشخصي</p>
-            <div className="flex justify-between gap-3"><span className="text-muted-foreground">الاسم</span><strong>{fullName || "—"}</strong></div>
-            <div className="mt-1 flex justify-between gap-3"><span className="text-muted-foreground">رقم الهاتف</span><strong dir="ltr">{phone || "—"}</strong></div>
-            <div className="mt-1 flex justify-between gap-3"><span className="text-muted-foreground">الولاية والبلدية</span><strong>{[profile.data?.commune, profile.data?.wilaya_id != null ? String(profile.data.wilaya_id).padStart(2, "0") : ""].filter(Boolean).join("، ") || "—"}</strong></div>
+            <p className="mb-2 text-xs font-bold text-muted-foreground">
+              بيانات التوصيل من ملفك الشخصي
+            </p>
+            <div className="flex justify-between gap-3">
+              <span className="text-muted-foreground">الاسم</span>
+              <strong>{fullName || "—"}</strong>
+            </div>
+            <div className="mt-1 flex justify-between gap-3">
+              <span className="text-muted-foreground">رقم الهاتف</span>
+              <strong dir="ltr">{phone || "—"}</strong>
+            </div>
+            <div className="mt-1 flex justify-between gap-3">
+              <span className="text-muted-foreground">الولاية والبلدية</span>
+              <strong>
+                {[
+                  profile.data?.commune,
+                  profile.data?.wilaya_id != null
+                    ? String(profile.data.wilaya_id).padStart(2, "0")
+                    : "",
+                ]
+                  .filter(Boolean)
+                  .join("، ") || "—"}
+              </strong>
+            </div>
           </div>
           <textarea
             value={address}
@@ -452,9 +472,7 @@ function CheckoutPage() {
             <p className="text-[11px] text-muted-foreground">
               {step < 3 ? t("checkout_total_label") : t("checkout_final_total_label")}
             </p>
-            <p className="text-price text-accent-ink">
-              {formatDA(total)}
-            </p>
+            <p className="text-price text-accent-ink">{formatDA(total)}</p>
           </div>
           <button
             disabled={submitting}
