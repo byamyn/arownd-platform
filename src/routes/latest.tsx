@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { PackageSearch, Plus } from "lucide-react";
 import { useAuth } from "@/lib/auth";
-import { useTranslation } from "@/lib/i18n";
+import { translate, useTranslation } from "@/lib/i18n";
 import {
   fetchMyAccountType,
   fetchMyRoles,
@@ -20,8 +20,8 @@ import { PageHeader } from "@/components/sooqy/page-header";
 export const Route = createFileRoute("/latest")({
   head: () => ({
     meta: [
-      { title: "أحدث منتجات متجرك — Arownd" },
-      { name: "description", content: "تابع أحدث المنتجات التي أضفتها إلى متجرك." },
+      { title: `${translate("studio_latest_title")} — Arownd` },
+      { name: "description", content: translate("studio_latest_description") },
     ],
   }),
   component: LatestStoreProductsPage,
