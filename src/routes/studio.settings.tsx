@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Camera, ImagePlus, MapPin, Save, Store } from "lucide-react";
+import { Camera, Eye, ImagePlus, MapPin, Save, Store } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
@@ -250,6 +250,14 @@ function StoreSettingsPage() {
         back="/studio"
       />
       <StudioNav />
+      <Link
+        to="/stores/$storeId"
+        params={{ storeId: store.data.id }}
+        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-bold text-foreground transition hover:bg-muted"
+      >
+        <Eye className="size-4" />
+        {t("studio_preview_store")}
+      </Link>
       <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-5 text-white shadow-lg sm:p-6">
         <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
           AROWND · STORE PROFILE
