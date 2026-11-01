@@ -1,21 +1,41 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Eye, EyeOff, Mail, User } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
+import {
+  ArrowLeft,
+  Check,
+  Eye,
+  EyeOff,
+  LockKeyhole,
+  Mail,
+  MailCheck,
+  ShieldCheck,
+  Store,
+  Truck,
+  UserRound,
+} from "lucide-react";
 import { toast } from "sonner";
-import { Browser } from "@capacitor/browser";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { translate, useTranslation } from "@/lib/i18n";
-import { ArowndBrand } from "@/components/sooqy/logo";
 
-// رابط عودة OAuth: في التطبيق الأصلي deep link مخصص يعيد فتح التطبيق،
-// وفي الويب مسار /auth/callback العادي (مع حماية من بيئة SSR بلا window).
-const AUTH_REDIRECT_URL = Capacitor.isNativePlatform()
+type AuthScreen = "signin" | "signup" | "forgot" | "reset";
+type AccountType = "customer" | "merchant" | "delivery";
+
+const AUTH_CALLBACK_BASE = Capacitor.isNativePlatform()
   ? "com.sooqy.app://auth/callback"
   : typeof window !== "undefined"
-    ? `${window.location.origin}/auth/callback`
+    ? window.location.origin + "/auth/callback"
     : "http://localhost/auth/callback";
+
+function buildAuthRedirect(params: Record<string, string | undefined>) {
+  const query = new URLSearchParams();
+  for (const [key, value] of Object.entries(params)) {
+    if (value) query.set(key, value);
+  }
+  const suffix = query.toString();
+  return suffix ? AUTH_CALLBACK_BASE + "?" + suffix : AUTH_CALLBACK_BASE;
+}
 
 export const Route = createFileRoute("/auth")({
   validateSearch: (
@@ -46,311 +66,557 @@ function AuthPage() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const { t, isRTL } = useTranslation();
-  const [mode, setMode] = useState<"in" | "up">("in");
-  const [forgot, setForgot] = useState(false);
+  const [screen, setScreen] = useState<AuthScreen>(reset ? "reset" : "signin");
+  const [accountType, setAccountType] = useState<AccountType>("customer");
+  const [signupStep, setSignupStep] = useState<1 | 2>(1);
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirm, setConfirm] = useState("");
-  const [name, setName] = useState("");
-  const [busy, setBusy] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [verificationSent, setVerificationSent] = useState(false);
 
   useEffect(() => {
-    if (user && !reset) navigate({ to: (redirect ?? "/") as "/", replace: true });
-  }, [user, redirect, navigate, reset]);
+    if (user && screen === "signin" && !reset) {
+      navigate({ to: (redirect ?? "/") as "/", replace: true });
+    }
+  }, [user, screen, redirect, navigate, reset]);
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (reset && password !== confirm) {
+  const changeScreen = (next: AuthScreen) => {
+    setScreen(next);
+    setSignupStep(1);
+    setVerificationSent(false);
+    setShowPassword(false);
+  };
+
+  const continueAfterSignup = (type: AccountType) => {
+    if (type === "merchant") {
+      navigate({ to: "/create-store", replace: true });
+    } else if (type === "delivery") {
+      navigate({ to: "/delivery-register", replace: true });
+    } else {
+      navigate({ to: (redirect ?? "/") as "/", replace: true });
+    }
+  };
+
+  const submit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    if (busy) return;
+
+    if (screen === "signup" && signupStep === 1) {
+      setSignupStep(2);
+      return;
+    }
+
+    if ((screen === "signup" || screen === "reset") && password !== confirmPassword) {
       toast.error(t("passwords_do_not_match"));
       return;
     }
+
     setBusy(true);
     try {
-      if (forgot) {
+      if (screen === "forgot") {
         const { error } = await supabase.auth.resetPasswordForEmail(email, {
-          redirectTo: `${AUTH_REDIRECT_URL}?reset=1`,
+          redirectTo: buildAuthRedirect({ reset: "1" }),
         });
         if (error) throw error;
-        toast.success(t("reset_link_sent"));
-        setForgot(false);
-      } else if (reset) {
+        toast.success(t("email_registered"));
+        changeScreen("signin");
+      } else if (screen === "reset") {
         const { error } = await supabase.auth.updateUser({ password });
         if (error) throw error;
         toast.success(t("password_updated"));
         navigate({ to: "/", replace: true });
-      } else if (mode === "in") {
+      } else if (screen === "signin") {
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
       } else {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email,
           password,
-          options: { emailRedirectTo: AUTH_REDIRECT_URL, data: { full_name: name } },
+          options: {
+            emailRedirectTo: buildAuthRedirect({
+              intent: accountType,
+              redirect,
+            }),
+            data: { full_name: name.trim() },
+          },
         });
         if (error) throw error;
-        toast.success(t("account_created"));
+
+        if (data.session) {
+          continueAfterSignup(accountType);
+        } else {
+          setVerificationSent(true);
+          toast.success(t("account_created"));
+        }
       }
-    } catch (err) {
-      const msg = (err as Error).message;
-      // رسائل عامة لمنع كشف وجود الحسابات (account enumeration)
-      if (forgot) {
+    } catch (error) {
+      const authError = error as { message?: string; code?: string };
+      if (screen === "forgot") {
+        // Keep the response generic to avoid revealing whether an email exists.
         toast.success(t("email_registered"));
-        setForgot(false);
+        changeScreen("signin");
       } else if (typeof navigator !== "undefined" && !navigator.onLine) {
-        // لا نُظهر "بيانات غير صحيحة" عندما تكون المشكلة انقطاع الشبكة
-        toast.error(t("error"));
-      } else if (mode === "up") {
+        toast.error(t("feedback_network_error"));
+      } else if (screen === "signup") {
         toast.error(t("account_creation_failed"));
+      } else if (screen === "signin" && authError.code === "email_not_confirmed") {
+        toast.error(t("auth_email_not_confirmed"));
       } else {
         toast.error(t("invalid_credentials"));
       }
-      console.debug("[auth]", msg);
+      console.debug("[auth]", authError.message ?? "Authentication request failed");
     } finally {
       setBusy(false);
     }
   };
 
-  const google = async () => {
-    if (busy) return;
-    setBusy(true);
-    try {
-      if (redirect) sessionStorage.setItem("sooqy-redirect", redirect);
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: "google",
-        options: {
-          redirectTo: AUTH_REDIRECT_URL,
-          skipBrowserRedirect: Capacitor.isNativePlatform(),
-        },
-      });
-      if (error) throw error;
-      if (!data.url) throw new Error("OAuth provider did not return a redirect URL");
-      if (Capacitor.isNativePlatform()) {
-        await Browser.open({ url: data.url });
-      }
-    } catch (error) {
-      console.error("[auth:google]", error);
-      toast.error(t("error"));
-      setBusy(false);
-    }
-  };
+  const accountTypes = [
+    {
+      id: "customer" as const,
+      number: "01",
+      title: t("auth_customer_title"),
+      description: t("auth_customer_description"),
+      Icon: UserRound,
+    },
+    {
+      id: "merchant" as const,
+      number: "02",
+      title: t("auth_merchant_title"),
+      description: t("auth_merchant_description"),
+      Icon: Store,
+    },
+    {
+      id: "delivery" as const,
+      number: "03",
+      title: t("auth_delivery_title"),
+      description: t("auth_delivery_description"),
+      Icon: Truck,
+    },
+  ];
+
+  const isSignup = screen === "signup";
+  const isReset = screen === "reset";
+  const isForgot = screen === "forgot";
 
   return (
-    <div className="flex min-h-screen flex-col bg-background">
-      <header className="flex size-full items-center justify-between px-4 py-4">
-        <Link
-          to="/"
-          aria-label={t("common_back")}
-          className="flex size-10 items-center justify-center rounded-full bg-card"
-        >
-          <ArrowLeft className="size-6 rtl:rotate-180" />
-        </Link>
-        <div className="flex size-10 items-center justify-center rounded-full bg-card" />
-      </header>
+    <div
+      dir={isRTL ? "rtl" : "ltr"}
+      className="min-h-dvh w-full bg-background text-foreground lg:grid lg:grid-cols-2"
+    >
+      <aside className="relative hidden min-h-dvh overflow-hidden bg-ink text-ink-foreground lg:flex lg:flex-col lg:justify-between lg:px-12 lg:py-10 xl:px-16 xl:py-12">
+        <div className="pointer-events-none absolute -end-40 top-1/4 size-[28rem] rounded-full border border-primary/15" />
+        <div className="pointer-events-none absolute -end-20 top-[31%] size-[22rem] rounded-full border border-primary/10" />
+        <div className="relative z-10">
+          <img src="/2995.svg" alt="Arownd" className="h-12 w-auto" />
+        </div>
+        <div className="relative z-10 max-w-xl py-16">
+          <p className="mb-6 text-xs font-semibold tracking-[0.22em] text-primary">
+            {t("auth_brand_eyebrow")}
+          </p>
+          <h1 className="max-w-lg text-5xl font-semibold leading-[1.35] tracking-tight xl:text-6xl">
+            {t("auth_brand_title")}
+          </h1>
+          <p className="mt-6 max-w-md text-base leading-8 text-ink-foreground/65">
+            {t("auth_brand_description")}
+          </p>
+          <div className="mt-12 flex items-center gap-3 text-sm text-ink-foreground/70">
+            <span className="size-2 rounded-full bg-primary" />
+            {t("auth_brand_footer")}
+          </div>
+        </div>
+        <div className="relative z-10 flex items-center justify-between border-t border-white/10 pt-5 text-xs text-ink-foreground/45">
+          <span>AROWND</span>
+          <span>{t("auth_brand_tagline")}</span>
+        </div>
+      </aside>
 
-      <main className="flex-1 px-4 pt-12">
-        <div className="flex flex-col items-center text-center pt-12">
-          <ArowndBrand className="mx-auto h-20 w-auto shrink-0" />
-          <p className="mt-3 text-sm text-muted-foreground leading-relaxed">
-            {mode === "in" ? t("auth_welcome_back") : t("auth_welcome_new")}
+      <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-12 lg:py-10 xl:px-20">
+        <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
+          <div className="mb-8 overflow-hidden rounded-2xl bg-ink px-6 py-6 text-ink-foreground lg:hidden">
+            <img src="/2995.svg" alt="Arownd" className="h-9 w-auto" />
+            <p className="mt-6 text-xs font-semibold tracking-[0.18em] text-primary">
+              {t("auth_brand_eyebrow")}
+            </p>
+            <h1 className="mt-3 text-2xl font-semibold leading-relaxed">
+              {t("auth_brand_title")}
+            </h1>
+            <p className="mt-2 text-sm leading-7 text-ink-foreground/65">
+              {t("auth_brand_description")}
+            </p>
+          </div>
+
+          <header className="mb-7 flex items-center justify-between">
+            <img src="/2994.svg" alt="Arownd" className="h-8 w-auto lg:h-9" />
+            <Link
+              to="/"
+              aria-label={t("common_back")}
+              className="inline-flex size-11 items-center justify-center rounded-full border border-border text-muted-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink"
+            >
+              <ArrowLeft className="size-5 rtl:rotate-180" />
+            </Link>
+          </header>
+
+          {!isForgot && !isReset && (
+            <div className="mb-8 border-b border-border">
+              <div className="flex gap-8">
+                <button
+                  type="button"
+                  onClick={() => changeScreen("signin")}
+                  aria-current={screen === "signin" ? "page" : undefined}
+                  className={
+                    "border-b-2 pb-3 text-sm font-semibold transition-colors " +
+                    (screen === "signin"
+                      ? "border-accent-ink text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground")
+                  }
+                >
+                  {t("sign_in")}
+                </button>
+                <button
+                  type="button"
+                  onClick={() => changeScreen("signup")}
+                  aria-current={screen === "signup" ? "page" : undefined}
+                  className={
+                    "border-b-2 pb-3 text-sm font-semibold transition-colors " +
+                    (screen === "signup"
+                      ? "border-accent-ink text-foreground"
+                      : "border-transparent text-muted-foreground hover:text-foreground")
+                  }
+                >
+                  {t("sign_up")}
+                </button>
+              </div>
+            </div>
+          )}
+
+          <section aria-live="polite">
+            {isForgot ? (
+              <>
+                <p className="mb-2 text-xs font-semibold tracking-[0.16em] text-accent-ink">
+                  {t("auth_recovery_eyebrow")}
+                </p>
+                <h2 className="text-3xl font-semibold tracking-tight">
+                  {t("auth_forgot_title")}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {t("auth_forgot_description")}
+                </p>
+              </>
+            ) : isReset ? (
+              <>
+                <p className="mb-2 text-xs font-semibold tracking-[0.16em] text-accent-ink">
+                  {t("auth_recovery_eyebrow")}
+                </p>
+                <h2 className="text-3xl font-semibold tracking-tight">
+                  {t("auth_reset_title")}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {t("auth_reset_description")}
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="mb-2 text-xs font-semibold tracking-[0.16em] text-accent-ink">
+                  {isSignup ? t("auth_signup_eyebrow") : t("auth_signin_eyebrow")}
+                </p>
+                <h2 className="text-3xl font-semibold tracking-tight">
+                  {isSignup
+                    ? signupStep === 1
+                      ? t("auth_choose_account_title")
+                      : t("auth_signup_details_title")
+                    : t("auth_signin_title")}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                  {isSignup
+                    ? signupStep === 1
+                      ? t("auth_choose_account_description")
+                      : t("auth_signup_details_description")
+                    : t("auth_signin_description")}
+                </p>
+              </>
+            )}
+          </section>
+
+          {verificationSent ? (
+            <div className="mt-8 rounded-2xl border border-primary/50 bg-primary/10 p-5">
+              <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <MailCheck className="size-6" />
+              </div>
+              <h3 className="text-lg font-semibold">{t("auth_confirmation_title")}</h3>
+              <p className="mt-2 break-all text-sm font-medium">{email}</p>
+              <p className="mt-3 text-sm leading-7 text-muted-foreground">
+                {t("auth_confirmation_description")}
+              </p>
+              <button
+                type="button"
+                onClick={() => changeScreen("signin")}
+                className="mt-5 min-h-11 text-sm font-semibold text-accent-ink underline underline-offset-4"
+              >
+                {t("auth_back_to_signin")}
+              </button>
+            </div>
+          ) : (
+            <form onSubmit={submit} className="mt-8 space-y-5">
+              {isSignup && signupStep === 1 && (
+                <div className="space-y-3">
+                  <p className="text-xs font-semibold text-muted-foreground">
+                    {t("auth_account_type_label")}
+                  </p>
+                  {accountTypes.map(({ id, number, title, description, Icon }) => {
+                    const selected = accountType === id;
+                    return (
+                      <button
+                        key={id}
+                        type="button"
+                        aria-pressed={selected}
+                        onClick={() => setAccountType(id)}
+                        className={
+                          "group flex min-h-[88px] w-full items-center gap-4 rounded-2xl border p-4 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink " +
+                          (selected
+                            ? "border-accent-ink bg-primary/10"
+                            : "border-border bg-card hover:border-accent-ink/50")
+                        }
+                      >
+                        <span className="w-8 shrink-0 text-sm font-semibold tabular-nums text-accent-ink">
+                          {number}
+                        </span>
+                        <span className="flex min-w-0 flex-1 flex-col gap-1">
+                          <span className="font-semibold text-foreground">{title}</span>
+                          <span className="text-xs leading-5 text-muted-foreground">
+                            {description}
+                          </span>
+                        </span>
+                        <span
+                          className={
+                            "flex size-11 shrink-0 items-center justify-center rounded-xl transition-colors " +
+                            (selected
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground")
+                          }
+                        >
+                          <Icon className="size-5" />
+                        </span>
+                        <span
+                          className={
+                            "flex size-5 shrink-0 items-center justify-center rounded-full border " +
+                            (selected
+                              ? "border-accent-ink bg-accent-ink text-white"
+                              : "border-border text-transparent")
+                          }
+                        >
+                          <Check className="size-3" />
+                        </span>
+                      </button>
+                    );
+                  })}
+                  <p className="pt-1 text-xs leading-6 text-muted-foreground">
+                    {t("auth_account_type_note")}
+                  </p>
+                </div>
+              )}
+
+              {isSignup && signupStep === 2 && (
+                <>
+                  <div className="flex items-center justify-between rounded-xl bg-muted/60 px-4 py-3">
+                    <div>
+                      <p className="text-xs text-muted-foreground">
+                        {t("auth_selected_account")}
+                      </p>
+                      <p className="mt-1 text-sm font-semibold">
+                        {accountTypes.find((item) => item.id === accountType)?.title}
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setSignupStep(1)}
+                      className="text-xs font-semibold text-accent-ink underline underline-offset-4"
+                    >
+                      {t("auth_change_account")}
+                    </button>
+                  </div>
+                  <label className="block space-y-2">
+                    <span className="text-sm font-medium">{t("auth_name_label")}</span>
+                    <span className="relative block">
+                      <UserRound className="pointer-events-none absolute end-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                      <input
+                        required
+                        autoComplete="name"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        placeholder={t("enter_name")}
+                        className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                      />
+                    </span>
+                  </label>
+                </>
+              )}
+
+              {!isReset && (
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium">{t("auth_email_label")}</span>
+                  <span className="relative block">
+                    <Mail className="pointer-events-none absolute end-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      required
+                      type="email"
+                      autoComplete="email"
+                      value={email}
+                      onChange={(event) => setEmail(event.target.value)}
+                      placeholder={t("enter_email")}
+                      className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                    />
+                  </span>
+                </label>
+              )}
+
+              {!isForgot && (
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium">
+                    {isReset ? t("auth_new_password_label") : t("auth_password_label")}
+                  </span>
+                  <span className="relative block">
+                    <LockKeyhole className="pointer-events-none absolute end-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      required
+                      type={showPassword ? "text" : "password"}
+                      autoComplete={isReset || isSignup ? "new-password" : "current-password"}
+                      minLength={8}
+                      value={password}
+                      onChange={(event) => setPassword(event.target.value)}
+                      placeholder={t("enter_password")}
+                      className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 ps-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((visible) => !visible)}
+                      aria-label={showPassword ? t("hide_password") : t("show_password")}
+                      className="absolute start-3 top-1/2 flex size-10 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground hover:bg-muted"
+                    >
+                      {showPassword ? <EyeOff className="size-5" /> : <Eye className="size-5" />}
+                    </button>
+                  </span>
+                  {(isSignup || isReset) && (
+                    <span className="block text-xs text-muted-foreground">
+                      {t("auth_password_hint")}
+                    </span>
+                  )}
+                </label>
+              )}
+
+              {(isSignup || isReset) && (
+                <label className="block space-y-2">
+                  <span className="text-sm font-medium">{t("auth_confirm_password_label")}</span>
+                  <span className="relative block">
+                    <LockKeyhole className="pointer-events-none absolute end-4 top-1/2 size-5 -translate-y-1/2 text-muted-foreground" />
+                    <input
+                      required
+                      type={showPassword ? "text" : "password"}
+                      autoComplete="new-password"
+                      minLength={8}
+                      value={confirmPassword}
+                      onChange={(event) => setConfirmPassword(event.target.value)}
+                      placeholder={t("confirm_password")}
+                      className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                    />
+                  </span>
+                </label>
+              )}
+
+              {screen === "signin" && (
+                <div className="flex justify-end">
+                  <button
+                    type="button"
+                    onClick={() => changeScreen("forgot")}
+                    className="min-h-10 text-sm font-semibold text-accent-ink underline underline-offset-4"
+                  >
+                    {t("forgot_password")}
+                  </button>
+                </div>
+              )}
+
+              {isForgot && (
+                <p className="text-xs leading-6 text-muted-foreground">
+                  {t("auth_forgot_description")}
+                </p>
+              )}
+
+              <div className="space-y-3 pt-1">
+                <button
+                  type="submit"
+                  disabled={busy}
+                  className="btn-primary flex min-h-13 w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  {busy ? (
+                    <span>{t("loading")}</span>
+                  ) : (
+                    <>
+                      <span>
+                        {isForgot
+                          ? t("auth_send_reset")
+                          : isReset
+                            ? t("auth_save_password")
+                            : isSignup
+                              ? signupStep === 1
+                                ? t("auth_continue")
+                                : t("sign_up")
+                              : t("sign_in")}
+                      </span>
+                      <ArrowLeft className="size-4 rtl:rotate-180" />
+                    </>
+                  )}
+                </button>
+                {isSignup && signupStep === 2 && (
+                  <button
+                    type="button"
+                    onClick={() => setSignupStep(1)}
+                    className="min-h-11 w-full text-sm font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    {t("auth_back_to_account_type")}
+                  </button>
+                )}
+              </div>
+            </form>
+          )}
+
+          {!verificationSent && !isForgot && !isReset && (
+            <div className="mt-7 flex items-start gap-3 rounded-xl bg-muted/50 p-4">
+              <ShieldCheck className="mt-0.5 size-5 shrink-0 text-accent-ink" />
+              <p className="text-xs leading-6 text-muted-foreground">
+                {isSignup ? t("auth_email_confirmation_note") : t("auth_secure_note")}
+              </p>
+            </div>
+          )}
+
+          {isForgot && (
+            <button
+              type="button"
+              onClick={() => changeScreen("signin")}
+              className="mt-6 min-h-11 text-sm font-semibold text-accent-ink underline underline-offset-4"
+            >
+              {t("auth_back_to_signin")}
+            </button>
+          )}
+
+          <p className="mt-8 text-center text-xs leading-6 text-muted-foreground">
+            {t("terms_agreement")}{" "}
+            <Link to="/terms" className="font-semibold text-accent-ink underline">
+              {t("terms")}
+            </Link>{" "}
+            {t("and")}{" "}
+            <Link to="/privacy" className="font-semibold text-accent-ink underline">
+              {t("privacy")}
+            </Link>
           </p>
         </div>
 
-        <form onSubmit={submit} className="space-y-3 mt-4">
-          {!reset && !forgot && mode === "up" && (
-            <div className="relative">
-              <User className="absolute end-3 top-1/2 -translate-y-1/2 size-6 text-muted-foreground" />
-              <input
-                required
-                autoComplete="name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder={t("enter_name")}
-                className="h-12 w-full rounded-xl border border-border bg-card pe-10 ps-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent outline-none transition-colors"
-              />
-            </div>
-          )}
-          {!reset && (
-            <div className="relative">
-              <Mail className="absolute end-3 top-1/2 -translate-y-1/2 size-6 text-muted-foreground" />
-              <input
-                required
-                type="email"
-                autoComplete={mode === "up" ? "email" : "username"}
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder={t("enter_email")}
-                className="h-12 w-full rounded-xl border border-border bg-card pe-10 ps-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent outline-none transition-colors"
-              />
-            </div>
-          )}
-          {forgot ? (
-            <p className="text-center text-xs leading-relaxed text-muted-foreground">
-              {t("verify_email")}
-            </p>
-          ) : reset ? (
-            <>
-              <div className="relative">
-                <input
-                  required
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  minLength={6}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  placeholder={t("enter_password")}
-                  className="h-12 w-full rounded-xl border border-border bg-card px-4 ps-12 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent outline-none transition-colors"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? t("hide_password") : t("show_password")}
-                >
-                  {showPassword ? <EyeOff className="size-6" /> : <Eye className="size-6" />}
-                </button>
-              </div>
-              <div className="relative">
-                <input
-                  required
-                  type={showPassword ? "text" : "password"}
-                  autoComplete="new-password"
-                  minLength={6}
-                  value={confirm}
-                  onChange={(e) => setConfirm(e.target.value)}
-                  placeholder={t("confirm_password")}
-                  className="h-12 w-full rounded-xl border border-border bg-card pe-10 ps-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent outline-none transition-colors"
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                  aria-label={showPassword ? t("hide_password") : t("show_password")}
-                >
-                  {showPassword ? <EyeOff className="size-6" /> : <Eye className="size-6" />}
-                </button>
-              </div>
-            </>
-          ) : (
-            <div className="relative">
-              <input
-                required
-                type={showPassword ? "text" : "password"}
-                autoComplete="current-password"
-                minLength={6}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder={t("enter_password")}
-                className="h-12 w-full rounded-xl border border-border bg-card pe-10 ps-4 text-sm focus:ring-2 focus:ring-primary/30 focus:border-transparent outline-none transition-colors"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute end-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                aria-label={showPassword ? t("hide_password") : t("show_password")}
-              >
-                {showPassword ? <EyeOff className="size-6" /> : <Eye className="size-6" />}
-              </button>
-            </div>
-          )}
-          {!reset && !forgot && mode === "in" && (
-            <button
-              type="button"
-              onClick={() => setForgot(true)}
-              className={
-                isRTL
-                  ? "text-left ml-1 mt-2 text-accent-ink"
-                  : "text-right mr-1 mt-2 text-accent-ink"
-              }
-              aria-label={t("forgot_password")}
-            >
-              {t("forgot_password")}
-            </button>
-          )}
-          <button type="submit" disabled={busy} className="btn-primary w-full py-2">
-            {busy
-              ? t("loading")
-              : reset
-                ? t("save")
-                : forgot
-                  ? t("send")
-                  : mode === "in"
-                    ? t("sign_in")
-                    : t("sign_up")}
-          </button>
-        </form>
-
-        {!reset && !forgot && (
-          <>
-            {mode === "in" && (
-              <button
-                type="button"
-                onClick={() => setForgot(true)}
-                className="w-full text-center text-xs font-semibold text-accent-ink underline mt-3"
-              >
-                {t("forgot_password")}
-              </button>
-            )}
-            <div className="relative flex items-center justify-center gap-2 mt-2">
-              <span className="h-px flex-1 bg-border" />
-              <span className="text-xs font-semibold text-muted-foreground">{t("or")}</span>
-              <span className="h-px flex-1 bg-border" />
-            </div>
-            <button
-              type="button"
-              onClick={google}
-              disabled={busy}
-              className="w-full rounded-xl border border-border bg-card py-3 font-semibold text-foreground disabled:opacity-50 flex items-center justify-center gap-2"
-            >
-              <svg viewBox="0 0 24 24" className="size-6" aria-hidden="true">
-                <path
-                  fill="#4285F4"
-                  d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                />
-                <path
-                  fill="#34A853"
-                  d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                />
-                <path
-                  fill="#FBBC05"
-                  d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                />
-                <path
-                  fill="#EA4335"
-                  d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                />
-              </svg>
-              {busy ? t("loading") : "Google"}
-            </button>
-            <button
-              type="button"
-              onClick={() => setMode(mode === "in" ? "up" : "in")}
-              className="w-full text-sm font-semibold text-accent-ink mt-3"
-            >
-              {mode === "in" ? t("create_account_prompt") : t("already_have_account")}
-            </button>
-          </>
-        )}
-        {forgot && (
-          <button
-            type="button"
-            onClick={() => setForgot(false)}
-            className="w-full text-sm font-semibold text-accent-ink mt-3"
-          >
-            {t("sign_in")}
-          </button>
-        )}
-
-        <p className="mt-6 text-center text-[11px] leading-relaxed text-muted-foreground">
-          {t("terms_agreement")}{" "}
-          <Link to="/terms" className="underline text-accent-ink">
-            {t("terms")}
-          </Link>{" "}
-          {t("and")}
-          <Link to="/privacy" className="underline text-accent-ink">
-            {t("privacy")}
-          </Link>
-        </p>
+        <footer className="mx-auto mt-8 flex w-full max-w-lg items-center justify-center gap-2 text-[11px] text-muted-foreground lg:mt-4">
+          <LockKeyhole className="size-3.5" />
+          <span>{t("auth_footer_note")}</span>
+        </footer>
       </main>
     </div>
   );

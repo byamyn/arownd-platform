@@ -3,11 +3,32 @@ import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
+import { useTranslation } from "@/lib/i18n";
+
+type RegistrationIntent = "customer" | "merchant" | "delivery";
 
 export const Route = createFileRoute("/auth_/callback")({
-  validateSearch: (s: Record<string, unknown>): { reset: boolean; code?: string | undefined } => ({
+  validateSearch: (
+    s: Record<string, unknown>,
+  ): {
+    reset: boolean;
+    code?: string;
+    intent?: RegistrationIntent;
+    redirect?: string;
+  } => ({
     reset: s["reset"] === "1" || s["reset"] === true || s["reset"] === "true",
     code: typeof s["code"] === "string" ? s["code"] : undefined,
+    intent:
+      s["intent"] === "merchant" || s["intent"] === "delivery" || s["intent"] === "customer"
+        ? s["intent"]
+        : undefined,
+    redirect:
+      typeof s["redirect"] === "string" &&
+      s["redirect"].startsWith("/") &&
+      !s["redirect"].startsWith("//") &&
+      !s["redirect"].includes("\\")
+        ? s["redirect"]
+        : undefined,
   }),
   head: () => ({
     meta: [
@@ -21,33 +42,50 @@ export const Route = createFileRoute("/auth_/callback")({
   component: CallbackPage,
 });
 
-function safePath(p: string | null) {
-  // يمنع إعادة التوجيه لمواقع خارجية: يرفض البروتوكول النسبي // و /\ (بعض المتصفحات تفسر \ كـ /)
-  return p && p.startsWith("/") && !p.startsWith("//") && !p.startsWith("/\\") && !p.includes("\\")
-    ? p
+function safePath(path: string | null | undefined) {
+  return path &&
+    path.startsWith("/") &&
+    !path.startsWith("//") &&
+    !path.startsWith("/\\") &&
+    !path.includes("\\")
+    ? path
     : "/";
 }
 
 function CallbackPage() {
   const navigate = useNavigate();
-  const { reset, code } = Route.useSearch();
+  const { t } = useTranslation();
+  const { reset, code, intent, redirect } = Route.useSearch();
+
   useEffect(() => {
     let done = false;
+
     const go = () => {
       if (done) return;
       done = true;
-      const target = safePath(sessionStorage.getItem("sooqy-redirect"));
-      sessionStorage.removeItem("sooqy-redirect");
+
+      if (intent === "merchant") {
+        navigate({ to: "/create-store", replace: true });
+        return;
+      }
+      if (intent === "delivery") {
+        navigate({ to: "/delivery-register", replace: true });
+        return;
+      }
+
+      const storedRedirect =
+        typeof window !== "undefined" ? sessionStorage.getItem("sooqy-redirect") : null;
+      if (typeof window !== "undefined") sessionStorage.removeItem("sooqy-redirect");
+      const target = safePath(redirect ?? storedRedirect);
       navigate({ to: target as "/", replace: true });
     };
+
     if (reset) {
-      // رابط استعادة كلمة المرور — نوجه المستخدم لتعيين كلمة مرور جديدة
       navigate({ to: "/auth", search: { reset: true }, replace: true });
       return;
     }
+
     const run = async () => {
-      // في التطبيق الأصلي لا يعيد الـ deep link تحميل الصفحة، لذا لا يلتقطه
-      // supabase-js تلقائيًا (detectSessionInUrl) — نتبادل الكود يدويًا.
       if (code && Capacitor.isNativePlatform()) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (error) {
@@ -58,29 +96,36 @@ function CallbackPage() {
         }
         return;
       }
-      // الويب: supabase-js يكتشف الكود في الرابط ويتبادله تلقائيًا.
-      supabase.auth.getSession().then(({ data }) => data.session && go());
+
+      const { data, error } = await supabase.auth.getSession();
+      if (error) throw error;
+      if (data.session) go();
     };
+
     void run().catch((error) => {
       if (done) return;
       console.debug("[auth/callback] session recovery failed", error);
       navigate({ to: "/auth", replace: true });
     });
-    const { data: sub } = supabase.auth.onAuthStateChange((_e, session) => session && go());
-    const t = setTimeout(() => {
+
+    const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) go();
+    });
+    const timeout = window.setTimeout(() => {
       if (!done) navigate({ to: "/auth", replace: true });
     }, 8000);
+
     return () => {
-      sub.subscription.unsubscribe();
-      clearTimeout(t);
+      subscription.subscription.unsubscribe();
+      window.clearTimeout(timeout);
     };
-  }, [navigate, reset, code]);
+  }, [navigate, reset, code, intent, redirect]);
 
   return (
-    <div className="flex min-h-[70dvh] flex-col items-center justify-center gap-3 text-center">
+    <div className="flex min-h-[70dvh] flex-col items-center justify-center gap-3 px-4 text-center">
       <Loader2 className="size-8 animate-spin text-accent-ink" />
-      <p className="font-bold">جارٍ التحقق من حسابك...</p>
-      <p className="text-xs text-muted-foreground">سيتم تحويلك تلقائياً خلال لحظات.</p>
+      <p className="font-bold">{t("auth_callback_title")}</p>
+      <p className="text-xs text-muted-foreground">{t("auth_callback_description")}</p>
     </div>
   );
 }

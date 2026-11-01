@@ -178,7 +178,7 @@ function RootComponent() {
       <ThemeProvider>
         <AuthProvider>
           <BagProvider>
-            <div className={`mx-auto min-h-screen max-w-xl ${isAuth ? "pb-0" : "pb-28"}`}>
+            <div className={isAuth ? "min-h-screen w-full max-w-none pb-0" : "mx-auto min-h-screen max-w-xl pb-28"}>
               <PageTransition>
                 <Outlet />
               </PageTransition>
