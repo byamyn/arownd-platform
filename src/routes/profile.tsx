@@ -135,7 +135,7 @@ function ProfilePage() {
       public_id ||
       !user ||
       !accountTypeQuery.isFetched ||
-      !roleQuery.isFetched ||
+      !roleQuery.isSuccess ||
       isAdmin
     ) return;
 
@@ -152,7 +152,7 @@ function ProfilePage() {
     user,
     accountTypeQuery.isFetched,
     accountTypeQuery.data,
-    roleQuery.isFetched,
+    roleQuery.isSuccess,
     roleQuery.data,
     isAdmin,
     navigate,
