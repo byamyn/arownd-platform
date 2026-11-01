@@ -75,6 +75,11 @@ begin
 end
 $migration$;
 
+-- The current merchant workspace model supports one store per account.
+create unique index if not exists stores_one_per_owner_idx
+  on public.stores (owner_id)
+  where owner_id is not null;
+
 update public.profiles p
 set account_type = case
   when exists (
