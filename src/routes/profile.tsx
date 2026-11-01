@@ -249,7 +249,7 @@ function ProfilePage() {
     try {
       await setMyProfileVisibility(!(profile.data?.is_public ?? false));
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
-      await qc.invalidateQueries({ queryKey: ["public-profile", user.id] });
+      if (user) await qc.invalidateQueries({ queryKey: ["public-profile", user.id] });
       showSuccess(t((profile.data?.is_public ?? false) ? "profile_visibility_private" : "profile_visibility_public"));
     } catch (e) {
       showError(e);
