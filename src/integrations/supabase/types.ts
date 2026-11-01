@@ -965,7 +965,7 @@ export type Database = {
         Args: {
           _address_line: string;
           _commune: string;
-          _delivery_company_id: string;
+          _delivery_company_id?: string | null;
           _delivery_type: string;
           _full_name: string;
           _items: Json;
