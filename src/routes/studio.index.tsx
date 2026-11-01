@@ -42,6 +42,7 @@ import {
   merchantUpdateOrderStatus,
   merchantUpdateProduct,
   fetchMyRoles,
+  fetchMyAccountType,
   stockLevel,
   type OfferFull,
 } from "@/lib/sooqy";
@@ -139,6 +140,7 @@ function StudioPage() {
   const [managingImages, setManagingImages] = useState<ImageUploaderItem[]>([]);
 
   const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
+  const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
   const offers = useQuery({
     queryKey: ["my-store-offers", store.data?.id],
@@ -168,14 +170,14 @@ function StudioPage() {
     },
     enabled: !!store.data,
   });
-  const canManage = roles.data?.includes("merchant") ?? false;
+  const canManage = accountType.data === "merchant" && (roles.data?.includes("merchant") ?? false);
   const dashboardError = offers.error ?? reservations.error ?? orders.error;
 
   if (!ready) return null;
   if (!user) {
     return <AuthGate onLogin={() => navigate({ to: "/auth", search: { redirect: "/studio" } })} />;
   }
-  if (store.isLoading || roles.isLoading) {
+  if (store.isLoading || roles.isLoading || accountType.isLoading) {
     return (
       <div
         className="flex min-h-[60vh] items-center justify-center"
@@ -186,8 +188,8 @@ function StudioPage() {
       </div>
     );
   }
-  if (store.isError || roles.isError) {
-    const error = store.error ?? roles.error;
+  if (store.isError || roles.isError || accountType.isError) {
+    const error = store.error ?? roles.error ?? accountType.error;
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_title")} back="/" />
@@ -195,7 +197,7 @@ function StudioPage() {
           scope="studio:account"
           error={error}
           onRetry={async () => {
-            await Promise.all([store.refetch(), roles.refetch()]);
+            await Promise.all([store.refetch(), roles.refetch(), accountType.refetch()]);
           }}
         />
       </div>
