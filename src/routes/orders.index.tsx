@@ -22,6 +22,12 @@ export const Route = createFileRoute("/orders/")({
 });
 
 type Tab = "all" | "active" | "delivered" | "cancelled";
+type OrderRecord = Awaited<ReturnType<typeof fetchMyOrders>>[number];
+type OrderRow = OrderRecord & {
+  displayId?: string;
+  parentOrderId?: string;
+  isMerchantSuborder?: boolean;
+};
 
 const TABS: { id: Tab; labelKey: string }[] = [
   { id: "all", labelKey: "orders_tab_all" },
@@ -83,7 +89,7 @@ function OrdersPage() {
 
   // Show each merchant suborder as its own card while retaining the parent
   // order ID for tracking and parent-level history operations.
-  const orderRows = list.flatMap((order) => {
+  const orderRows: OrderRow[] = list.flatMap<OrderRow>((order) => {
     const suborders = order.merchant_orders ?? [];
     if (suborders.length === 0) return [order];
     return suborders.map((suborder) => ({
@@ -187,7 +193,7 @@ function OrdersPage() {
             });
             return (
               <article
-                key={o.id}
+                key={o.displayId ?? o.id}
                 className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
               >
                 <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
