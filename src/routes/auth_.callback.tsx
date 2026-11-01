@@ -81,7 +81,7 @@ function CallbackPage() {
       const storedRedirect =
         typeof window !== "undefined" ? sessionStorage.getItem("sooqy-redirect") : null;
       if (typeof window !== "undefined") sessionStorage.removeItem("sooqy-redirect");
-      const target = safePath(redirect ?? storedRedirect);
+      const target = safePath(redirect ?? storedRedirect ?? "/profile");
       navigate({ to: target as "/", replace: true });
     };
 
