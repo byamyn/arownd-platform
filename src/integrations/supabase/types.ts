@@ -87,6 +87,9 @@ export type Database = {
           shipping_fee: number;
           quoted_at: string | null;
           responded_at: string | null;
+          payment_status: string;
+          paid_amount: number | null;
+          paid_at: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -100,6 +103,9 @@ export type Database = {
           shipping_fee?: number;
           quoted_at?: string | null;
           responded_at?: string | null;
+          payment_status?: string;
+          paid_amount?: number | null;
+          paid_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -113,6 +119,9 @@ export type Database = {
           shipping_fee?: number;
           quoted_at?: string | null;
           responded_at?: string | null;
+          payment_status?: string;
+          paid_amount?: number | null;
+          paid_at?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -129,6 +138,54 @@ export type Database = {
             columns: ["store_id"];
             isOneToOne: false;
             referencedRelation: "stores";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
+      merchant_order_cod_collections: {
+        Row: {
+          id: string;
+          merchant_order_id: string;
+          order_id: string;
+          amount: number;
+          collection_channel: string;
+          collected_by: string;
+          collected_at: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          merchant_order_id: string;
+          order_id: string;
+          amount: number;
+          collection_channel: string;
+          collected_by: string;
+          collected_at?: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          merchant_order_id?: string;
+          order_id?: string;
+          amount?: number;
+          collection_channel?: string;
+          collected_by?: string;
+          collected_at?: string;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "merchant_order_cod_collections_merchant_order_id_fkey";
+            columns: ["merchant_order_id"];
+            isOneToOne: true;
+            referencedRelation: "merchant_orders";
+            referencedColumns: ["id"];
+          },
+          {
+            foreignKeyName: "merchant_order_cod_collections_order_id_fkey";
+            columns: ["order_id"];
+            isOneToOne: false;
+            referencedRelation: "orders";
             referencedColumns: ["id"];
           },
         ];
