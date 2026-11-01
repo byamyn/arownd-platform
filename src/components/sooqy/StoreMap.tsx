@@ -54,7 +54,7 @@ function createMarkerElement(): HTMLElement {
     "display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;";
 
   const pill = document.createElement("div");
-  pill.className = "sooqy-pin-pill";
+  pill.className = "arownd-pin-pill";
   pill.style.cssText = [
     "max-width:150px",
     "padding:4px 10px",
@@ -76,7 +76,7 @@ function createMarkerElement(): HTMLElement {
   ].join(";");
 
   const pin = document.createElement("div");
-  pin.className = "sooqy-pin-dot";
+  pin.className = "arownd-pin-dot";
   pin.style.cssText =
     "display:flex;align-items:center;justify-content:center;border-radius:9999px;border-style:solid;border-color:#fff;color:#fff;transition:transform .18s ease, box-shadow .18s ease, border-width .18s ease;";
 
@@ -85,8 +85,8 @@ function createMarkerElement(): HTMLElement {
 }
 
 function applyMarkerStyle(el: HTMLElement, active: boolean, label = ""): HTMLElement {
-  const pill = el.querySelector(".sooqy-pin-pill") as HTMLElement | null;
-  const pin = el.querySelector(".sooqy-pin-dot") as HTMLElement | null;
+  const pill = el.querySelector(".arownd-pin-pill") as HTMLElement | null;
+  const pin = el.querySelector(".arownd-pin-dot") as HTMLElement | null;
   if (!pill || !pin) return el;
 
   if (!pin.dataset["icon"]) {
@@ -363,7 +363,7 @@ const StoreMapComponent = React.memo(
       if (!user) return;
       const el = document.createElement("div");
       el.style.cssText =
-        "width:14px;height:14px;border-radius:9999px;background:#2563EB;border:2px solid #fff;box-shadow:0 0 0 4px rgba(37,99,235,.22),0 6px 16px rgba(37,99,235,.3);animation:sooqy-pulse 1.8s ease-in-out infinite;";
+        "width:14px;height:14px;border-radius:9999px;background:#2563EB;border:2px solid #fff;box-shadow:0 0 0 4px rgba(37,99,235,.22),0 6px 16px rgba(37,99,235,.3);animation:arownd-pulse 1.8s ease-in-out infinite;";
       userMarkerRef.current = new maplibregl.Marker({ element: el, anchor: "center" })
         .setLngLat([user.lng, user.lat])
         .addTo(map);
@@ -445,7 +445,7 @@ const StoreMapComponent = React.memo(
           </button>
         </div>
         <style>{`
-        @keyframes sooqy-pulse {
+        @keyframes arownd-pulse {
           0% { box-shadow: 0 0 0 0 rgba(37,99,235,.45), 0 6px 16px rgba(37,99,235,.3); }
           70% { box-shadow: 0 0 0 10px rgba(37,99,235,0), 0 6px 16px rgba(37,99,235,.3); }
           100% { box-shadow: 0 0 0 0 rgba(37,99,235,0), 0 6px 16px rgba(37,99,235,.3); }

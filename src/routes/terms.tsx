@@ -43,7 +43,7 @@ function TermsPage() {
             rel="noopener noreferrer"
             className="font-semibold text-accent-ink underline"
           >
-            sooqy-app.vercel.app
+            arownd.vercel.app
           </a>
         </p>
       </div>
