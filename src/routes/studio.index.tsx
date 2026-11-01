@@ -223,7 +223,7 @@ function StudioPage() {
     );
   }
 
-  if (!store.data) {
+  if (store.isSuccess && store.data === null) {
     return (
       <MerchantOnboarding
         onSubmit={async (input) => {
@@ -541,13 +541,15 @@ function StudioPage() {
           </p>
         </div>
         <div className="flex shrink-0 items-center gap-2">
-          <Link
-            to="/studio/settings"
+          <button
+            type="button"
+            onClick={() => navigate({ to: "/studio/settings" })}
             className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground shadow-sm transition hover:border-accent-ink/40 active:scale-95"
             aria-label={t("studio_settings")}
+            title={t("studio_settings")}
           >
             <Settings className="size-5" />
-          </Link>
+          </button>
           <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
             <Store className="size-5" />
           </div>
