@@ -1,7 +1,7 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Archive, PackageCheck, Package, Trash2, Truck, XCircle } from "lucide-react";
+import { Archive, ArrowLeft, PackageCheck, Package, Trash2, Truck, XCircle } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
@@ -14,6 +14,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { goBackOrTo } from "@/lib/nav";
 
 export const Route = createFileRoute("/orders/")({
   head: () => ({}),
@@ -34,6 +35,7 @@ function trackCode(id: string) {
 }
 
 function OrdersPage() {
+  const router = useRouter();
   const { t } = useTranslation();
   const { user, ready } = useAuth();
   const queryClient = useQueryClient();
@@ -89,6 +91,14 @@ function OrdersPage() {
       />
       <div className="space-y-4 px-4 pt-5">
         <header className="flex items-center gap-2 py-1">
+          <button
+            type="button"
+            onClick={() => goBackOrTo(router, "/profile")}
+            aria-label={t("common_back")}
+            className="icon-btn"
+          >
+            <ArrowLeft className="size-5 rtl:rotate-180" />
+          </button>
           <h1 className="text-h1 text-foreground">{t("orders_heading")}</h1>
         </header>
 
