@@ -41,7 +41,11 @@ begin
 
   -- A quote already sent must be decided by the buyer; do not silently
   -- withdraw or mutate the buyer-facing final price.
-  if mo.status <> 'pending' then
+  if parent_order.status = 'cancelled' then
+    raise exception 'parent_order_cancelled';
+  end if;
+
+  if mo.status <> 'pending' or mo.quoted_at is not null then
     raise exception 'merchant_rejection_not_available';
   end if;
 
