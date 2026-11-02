@@ -78,7 +78,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       params={{ productId: g.product.id }}
       preload="intent"
       className={cn(
-        "group flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-colors duration-200",
+        "group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         level === "out" ? "opacity-70 cursor-not-allowed pointer-events-none" : "hover:border-ring",
       )}
     >
@@ -140,7 +140,7 @@ export function StoreCard({ s, distance }: { s: Store; distance?: number | null 
     <Link
       to="/stores/$storeId"
       params={{ storeId: s.id }}
-      className="card-premium flex items-center gap-3 p-3"
+      className="card-premium flex items-center gap-3 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <img
         src={logoUrl}
@@ -194,7 +194,7 @@ export function StoreRailCard({ s, distance }: { s: Store; distance?: number | n
     <Link
       to="/stores/$storeId"
       params={{ storeId: s.id }}
-      className="card-premium group block w-56 shrink-0 overflow-hidden"
+      className="card-premium group block w-56 shrink-0 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <div className="relative h-24 bg-muted">
         <img
