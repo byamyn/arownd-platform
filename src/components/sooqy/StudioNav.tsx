@@ -26,7 +26,7 @@ export function StudioNav() {
 
   const navClass = (active: boolean) =>
     cn(
-      "flex min-h-16 min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-medium transition-colors duration-200",
+      "flex min-h-[var(--nav-height)] min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-medium transition-colors duration-200",
       active ? "text-[var(--color-action-ink)]" : "text-muted-foreground active:bg-muted",
     );
 
@@ -38,7 +38,7 @@ export function StudioNav() {
       aria-label={t("studio_nav_aria")}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-muted md:hidden"
     >
-      <div className="mx-auto flex h-16 w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-auto flex h-[var(--nav-height)] w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
         {items.map(({ to, key, Icon }) => {
           const active = currentPath === to;
           return (
