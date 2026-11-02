@@ -133,6 +133,16 @@ function AdminDashboardPage() {
     enabled: !!user,
   });
 
+  const mfaQuery = useQuery({
+    queryKey: ["admin-mfa-assurance", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user,
+  });
+
   const stats = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
@@ -151,7 +161,7 @@ function AdminDashboardPage() {
         companies: companies.count ?? 0,
       };
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true,
+    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2",
   });
 
   const usersList = useQuery({
@@ -187,7 +197,7 @@ function AdminDashboardPage() {
         role: roleMap.get(p.user_id) ?? "customer",
       }));
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && activeTab === "users",
+    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2" && activeTab === "users",
   });
 
   const storesList = useQuery({
@@ -201,7 +211,7 @@ function AdminDashboardPage() {
       if (error) throw error;
       return data as unknown as StoreRow[];
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && activeTab === "stores",
+    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2" && activeTab === "stores",
   });
 
   const companiesList = useQuery({
@@ -214,7 +224,7 @@ function AdminDashboardPage() {
       if (error) throw error;
       return data as CompanyRow[];
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && activeTab === "companies",
+    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2" && activeTab === "companies",
   });
 
   const handleToggleCompany = async (id: string, current: boolean) => {
@@ -267,6 +277,31 @@ function AdminDashboardPage() {
         <p className="mt-8 text-danger">ليس لديك صلاحية الوصول إلى لوحة الإدارة</p>
         <Link to="/" className="btn-secondary mt-4 inline-block">
           العودة للرئيسية
+        </Link>
+      </div>
+    );
+  }
+
+  if (mfaQuery.isLoading) {
+    return <div className="p-6 text-center text-muted-foreground">جارٍ التحقق من المصادقة الثنائية...</div>;
+  }
+
+  if (mfaQuery.isError) {
+    return (
+      <div className="p-6 text-center">
+        <PageHeader title="لوحة الإدارة" back="/" />
+        <p className="mt-8 text-danger">تعذر التحقق من مستوى أمان الجلسة.</p>
+      </div>
+    );
+  }
+
+  if (mfaQuery.data?.currentLevel !== "aal2") {
+    return (
+      <div className="mx-auto max-w-xl space-y-3 p-6 text-center">
+        <PageHeader title="حماية حساب الإدارة" back="/" />
+        <p className="text-foreground">تتطلب لوحة الإدارة تفعيل المصادقة الثنائية والتحقق منها قبل المتابعة.</p>
+        <Link to="/settings" className="btn-primary inline-flex min-h-11 items-center justify-center px-5">
+          إعداد المصادقة الثنائية
         </Link>
       </div>
     );
