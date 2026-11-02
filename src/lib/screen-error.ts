@@ -65,7 +65,6 @@ function describeArgs(args: unknown[]): string {
   return args.map(describe).join(" ");
 }
 
-
 function pushLog(level: LogEntry["level"], args: unknown[]) {
   const text = describeArgs(args).slice(0, 600);
   logs.push({ level, at: Date.now(), text });
