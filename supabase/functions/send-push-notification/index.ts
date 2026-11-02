@@ -81,6 +81,47 @@ function toFcmData(record: Record<string, unknown>): Record<string, string> {
   return data;
 }
 
+const MAX_WEBHOOK_BODY_BYTES = 64 * 1024;
+
+function constantTimeEqual(left: string, right: string): boolean {
+  const a = new TextEncoder().encode(left);
+  const b = new TextEncoder().encode(right);
+  let difference = a.length ^ b.length;
+  const length = Math.max(a.length, b.length);
+  for (let i = 0; i < length; i += 1) {
+    difference |= (a[i] ?? 0) ^ (b[i] ?? 0);
+  }
+  return difference === 0;
+}
+
+async function readBoundedBody(req: Request): Promise<string> {
+  const declaredLength = Number(req.headers.get("content-length") ?? "0");
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_WEBHOOK_BODY_BYTES) {
+    throw new Error("Webhook payload too large");
+  }
+  const reader = req.body?.getReader();
+  if (!reader) return "";
+  const chunks: Uint8Array[] = [];
+  let total = 0;
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    total += value.byteLength;
+    if (total > MAX_WEBHOOK_BODY_BYTES) {
+      await reader.cancel();
+      throw new Error("Webhook payload too large");
+    }
+    chunks.push(value);
+  }
+  const body = new Uint8Array(total);
+  let offset = 0;
+  for (const chunk of chunks) {
+    body.set(chunk, offset);
+    offset += chunk.byteLength;
+  }
+  return new TextDecoder().decode(body);
+}
+
 Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: corsHeaders });
@@ -90,14 +131,31 @@ Deno.serve(async (req: Request) => {
   }
 
   const webhookSecret = Deno.env.get("PUSH_WEBHOOK_SECRET");
-  if (!webhookSecret || req.headers.get("x-push-webhook-secret") !== webhookSecret) {
+  const providedSecret = req.headers.get("x-push-webhook-secret") ?? "";
+  if (!webhookSecret || !constantTimeEqual(providedSecret, webhookSecret)) {
     return new Response("Unauthorized", { status: 401 });
   }
 
   try {
-    const payload = await req.json();
-    const record = payload?.record as Record<string, unknown> | undefined;
-    const userId = typeof record?.user_id === "string" ? record.user_id : null;
+    if (!(req.headers.get("content-type") ?? "").toLowerCase().includes("application/json")) {
+      return new Response("Unsupported media type", { status: 415 });
+    }
+    const rawBody = await readBoundedBody(req);
+    let payload: { record?: unknown };
+    try {
+      payload = JSON.parse(rawBody) as { record?: unknown };
+    } catch {
+      return new Response("Invalid JSON", { status: 400 });
+    }
+    const record =
+      payload.record && typeof payload.record === "object" && !Array.isArray(payload.record)
+        ? (payload.record as Record<string, unknown>)
+        : undefined;
+    const userId =
+      typeof record?.user_id === "string" &&
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(record.user_id)
+        ? record.user_id
+        : null;
     if (!record || !userId) {
       return new Response(JSON.stringify({ skipped: true }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
