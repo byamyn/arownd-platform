@@ -150,7 +150,9 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (roleQuery.isLoading)
-    return <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />;
+    return (
+      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+    );
 
   if (roleQuery.isError) {
     return (
@@ -261,7 +263,12 @@ function AdminDeliveryCompaniesPage() {
   return (
     <div className="space-y-4 px-4 pt-4">
       <header className="flex items-center gap-2 py-1">
-        <button type="button" onClick={() => goBackOrTo(router, "/admin")} aria-label="رجوع" className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
+        <button
+          type="button"
+          onClick={() => goBackOrTo(router, "/admin")}
+          aria-label="رجوع"
+          className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
           <ArrowRight className="size-5" />
         </button>
         <h1 className="text-h1 text-foreground">إدارة شركات التوصيل</h1>
@@ -431,9 +438,7 @@ function BadgeStatus({ isApproved }: { isApproved: boolean }) {
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        isApproved
-          ? "bg-success-soft text-success"
-          : "bg-warning-soft text-warning",
+        isApproved ? "bg-success-soft text-success" : "bg-warning-soft text-warning",
       )}
     >
       {isApproved ? "معتمد" : "قيد المراجعة"}
