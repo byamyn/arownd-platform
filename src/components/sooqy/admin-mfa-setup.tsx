@@ -14,6 +14,7 @@ export function AdminMfaSetup() {
   const [busy, setBusy] = useState(false);
   const [verified, setVerified] = useState(false);
   const [factorId, setFactorId] = useState<string | null>(null);
+  const [verifiedFactorId, setVerifiedFactorId] = useState<string | null>(null);
   const [qrCode, setQrCode] = useState<string | null>(null);
   const [secret, setSecret] = useState<string | null>(null);
   const [code, setCode] = useState("");
@@ -24,6 +25,7 @@ export function AdminMfaSetup() {
     if (error) throw error;
     const active = data.totp.find((factor) => factor.status === "verified");
     setVerified(Boolean(active));
+    setVerifiedFactorId(active?.id ?? null);
   };
 
   useEffect(() => {
@@ -33,7 +35,9 @@ export function AdminMfaSetup() {
       if (error) {
         setMessage("تعذر التحقق من حالة المصادقة الثنائية.");
       } else {
-        setVerified(data.totp.some((factor) => factor.status === "verified"));
+        const verifiedFactor = data.totp.find((factor) => factor.status === "verified");
+        setVerified(Boolean(verifiedFactor));
+        setVerifiedFactorId(verifiedFactor?.id ?? null);
       }
       setLoading(false);
     });
@@ -58,6 +62,25 @@ export function AdminMfaSetup() {
       setSecret(enrollment.totp.secret);
     } catch {
       setMessage("تعذر بدء إعداد المصادقة الثنائية. حاول مرة أخرى.");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const verifyExistingFactor = async () => {
+    if (!verifiedFactorId || code.replace(/\\s/g, "").length !== 6 || busy) return;
+    setBusy(true);
+    setMessage(null);
+    try {
+      const { error } = await supabase.auth.mfa.challengeAndVerify({
+        factorId: verifiedFactorId,
+        code: code.replace(/\\s/g, ""),
+      });
+      if (error) throw error;
+      setCode("");
+      setMessage("تم تأكيد المصادقة الثنائية لهذه الجلسة.");
+    } catch {
+      setMessage("رمز التحقق غير صحيح أو انتهت صلاحيته. حاول مرة أخرى.");
     } finally {
       setBusy(false);
     }
@@ -109,6 +132,32 @@ export function AdminMfaSetup() {
         >
           {busy ? "جارٍ التجهيز..." : "إعداد المصادقة الثنائية"}
         </button>
+      )}
+
+      {!loading && verified && verifiedFactorId && (
+        <div className="space-y-2">
+          <label className="block space-y-1">
+            <span className="text-sm font-semibold text-foreground">رمز المصادقة لتأكيد هذه الجلسة</span>
+            <input
+              value={code}
+              onChange={(event) => setCode(event.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={6}
+              dir="ltr"
+              className="min-h-12 w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-center text-lg tracking-[0.4em]"
+              aria-label="رمز المصادقة المكون من ستة أرقام"
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => void verifyExistingFactor()}
+            disabled={busy || code.length !== 6}
+            className="btn-primary w-full disabled:opacity-50"
+          >
+            {busy ? "جارٍ التحقق..." : "تأكيد الدخول الآمن"}
+          </button>
+        </div>
       )}
 
       {qrCode && factorId && (
