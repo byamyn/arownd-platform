@@ -20,7 +20,7 @@ export interface SeoHeadProps {
 const SITE_NAME = "Arownd";
 const DEFAULT_DESC = "Arownd — اكتشف ما حولك. منتجات، متاجر، تصنيفات، طلب وتتبع.";
 const DEFAULT_OG = "/seo/og.svg";
-const BASE = "https://sooqy.app";
+const BASE = "https://arownd.vercel.app";
 
 /** لغة Open Graph حسب اللغة النشطة. */
 const OG_LOCALE: Record<"ar" | "en", string> = { ar: "ar_DZ", en: "en_DZ" };
@@ -51,7 +51,8 @@ export function SeoHead({
   const { lang } = useTranslation();
   // المسار من الراوتر — متاح أثناء SSR أيضًا (مهم للـ canonical و hreflang).
   const location = useLocation();
-  const path = `${location.pathname}${location.searchStr ?? ""}`;
+  // Canonical URLs must not vary with tracking, filter, or pagination query strings.
+  const path = location.pathname;
 
   const fullTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
   // الرابط المعياري يتضمّن بادئة اللغة — عنوان مستقل لكل لغة في فهرس البحث.

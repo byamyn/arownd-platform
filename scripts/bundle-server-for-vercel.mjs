@@ -29,12 +29,12 @@ const clientRequired = [
 const missingClient = clientRequired.filter((item) => !item.sources.some((key) => env[key]));
 if (missingClient.length) {
   console.error(
-    `\n[vercel] ❌ متغيرات مطلوبة وقت البناء ناقصة: ${missingClient.map((item) => item.label).join(", ")}\n` +
-      `[vercel]    بلاها تصل حزمة المتصفح برابط Supabase فارغ ويرمي createClient\n` +
-      `[vercel]    الخطأ "Invalid supabaseUrl" فيظهر خطأ في المتصفح مع أن SSR يعمل.\n` +
-      `[vercel]    الحل: Vercel → Settings → Environment Variables → أضف SUPABASE_URL\n` +
-      `[vercel]    و SUPABASE_PUBLISHABLE_KEY لكل البيئات ثم أعد النشر (Redeploy).\n` +
-      `[vercel]    راجع DEPLOY-VERCEL.md\n`,
+    `\\n[vercel] ❌ متغيرات مطلوبة وقت البناء ناقصة: ${missingClient.map((item) => item.label).join(", ")}\\n` +
+      `[vercel]    بلاها تصل حزمة المتصفح برابط Supabase فارغ ويرمي createClient\\n` +
+      `[vercel]    الخطأ "Invalid supabaseUrl" فيظهر خطأ في المتصفح مع أن SSR يعمل.\\n` +
+      `[vercel]    الحل: Vercel → Settings → Environment Variables → أضف SUPABASE_URL\\n` +
+      `[vercel]    و SUPABASE_PUBLISHABLE_KEY لكل البيئات ثم أعد النشر (Redeploy).\\n` +
+      `[vercel]    راجع DEPLOY-VERCEL.md\\n`,
   );
   process.exit(1);
 }
@@ -44,23 +44,36 @@ const serverRequired = ["SUPABASE_URL", "SUPABASE_PUBLISHABLE_KEY"];
 const missingServer = serverRequired.filter((key) => !env[key]);
 if (missingServer.length) {
   console.warn(
-    `\n[vercel] ⚠️  متغيرات الخادم ناقصة: ${missingServer.join(", ")}\n` +
-      `[vercel]    أضفها في Vercel → Settings → Environment Variables ثم أعد النشر.\n`,
+    `\\n[vercel] ⚠️  متغيرات الخادم ناقصة: ${missingServer.join(", ")}\\n` +
+      `[vercel]    أضفها في Vercel → Settings → Environment Variables ثم أعد النشر.\\n`,
   );
 }
 
 mkdirSync(dirname(outfile), { recursive: true });
 
-await build({
+const result = await build({
   entryPoints: [join(root, "dist", "server", "server.js")],
   outfile,
   bundle: true,
   format: "cjs",
   platform: "node",
-  target: "node20",
+  // Match the configured Vercel Node runtime to avoid unnecessary downlevel transforms.
+  target: "node26",
   external: ["node:*"],
   conditions: ["import", "module", "default"],
   logLevel: "info",
+  metafile: true,
 });
 
-console.log(`[vercel] server bundle -> ${outfile}`);
+const output =
+  result.metafile.outputs[
+    Object.keys(result.metafile.outputs).find((key) => key.endsWith("server.cjs"))
+  ];
+const largestInputs = Object.entries(output?.inputs ?? {})
+  .sort((a, b) => b[1].bytesInOutput - a[1].bytesInOutput)
+  .slice(0, 12);
+console.log(`[vercel] server bundle -> ${outfile} (${output?.bytes ?? 0} bytes)`);
+console.log("[vercel] largest bundled inputs:");
+for (const [input, stats] of largestInputs) {
+  console.log(`  ${(stats.bytesInOutput / 1024).toFixed(1)} KiB  ${input}`);
+}

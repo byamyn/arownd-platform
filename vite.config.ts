@@ -32,15 +32,15 @@ export default defineConfig(async (): Promise<import("vite").UserConfig> => {
     build: {
       // maplibre-gl وحدها ~1MB وتُحمَّل عند فتح الخريطة فقط، فلا داعي لتحذير الحجم
       chunkSizeWarningLimit: 1200,
-      minify: "terser",
-      terserOptions: {
-        compress: {
-          drop_console: true,
-          drop_debugger: true,
-        },
-      },
-      rollupOptions: {
+      // Vite 8 uses Rolldown/Oxc minification natively; avoid the slower Terser plugin.
+      rolldownOptions: {
         output: {
+          minify: {
+            compress: {
+              dropConsole: true,
+              dropDebugger: true,
+            },
+          },
           manualChunks: (id: string) => {
             if (id.includes("maplibre-gl")) return "vendor-maplibre";
             if (id.includes("@tanstack/react-query")) return "vendor-query";

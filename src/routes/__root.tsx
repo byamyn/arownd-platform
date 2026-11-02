@@ -97,14 +97,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       ...(ENGLISH_ENABLED
         ? [{ property: "og:locale:alternate", content: ogLocale() === "ar_DZ" ? "en_DZ" : "ar_DZ" }]
         : []),
-      { property: "og:image", content: "https://arownd.app/seo/og.svg" },
+      { property: "og:image", content: "https://arownd.vercel.app/seo/og.svg" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:title", content: translate("root_title") },
       {
         name: "twitter:description",
         content: translate("root_twitter_description"),
       },
-      { name: "twitter:image", content: "https://arownd.app/seo/og.svg" },
+      { name: "twitter:image", content: "https://arownd.vercel.app/seo/og.svg" },
     ],
     links: [
       // appCss يreference "" في بيئة الاختبار فقط — تجاهله حتى لا يُرسم <link> بـhref فارغ
