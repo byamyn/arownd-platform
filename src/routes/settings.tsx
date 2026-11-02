@@ -116,7 +116,7 @@ function SettingsPage() {
     const body = encodeURIComponent(
       `أرغب في حذف حسابي وبياناتي نهائيًا.\nالبريد المسجّل: ${user?.email ?? ""}`,
     );
-    window.location.href = `mailto:arounddz@gmail.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:arownddz@gmail.com?subject=${subject}&body=${body}`;
     setConfirmDelete(false);
   };
 
