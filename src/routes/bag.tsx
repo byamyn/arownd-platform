@@ -164,12 +164,12 @@ function BagPage() {
                         {formatDA((r.offer?.price ?? 0) * r.item.quantity)}
                       </p>
                       {priceChanged && (
-                        <p className="text-[11px] font-medium text-warning">
+                        <p className="text-caption font-medium text-warning">
                           {priceChanged.message}
                         </p>
                       )}
                       {r.issue && (
-                        <p className="text-[11px] font-semibold text-danger">{r.issue.message}</p>
+                        <p className="text-caption font-semibold text-danger">{r.issue.message}</p>
                       )}
                     </div>
                     <div className="flex flex-col items-end justify-between">
