@@ -137,7 +137,7 @@ function Home() {
               {!!unreadNotifications.data && unreadNotifications.data > 0 && (
                 <span
                   aria-hidden="true"
-                  className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full border-2 border-background bg-primary text-[9px] font-extrabold leading-none text-primary-foreground shadow-sm"
+                  className="absolute -end-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full border-2 border-background bg-primary text-caption font-extrabold leading-none text-primary-foreground "
                 >
                   {unreadNotifications.data > 9 ? "9+" : unreadNotifications.data}
                 </span>
