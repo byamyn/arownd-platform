@@ -186,7 +186,7 @@ function RootComponent() {
                   ? "min-h-screen w-full max-w-none pb-0"
                   : isStudio
                     ? "min-h-screen w-full max-w-none pb-28"
-                    : "mx-auto min-h-screen max-w-xl pb-28"
+                    : "mx-auto min-h-screen w-full max-w-7xl pb-28"
               }
             >
               <PageTransition>
