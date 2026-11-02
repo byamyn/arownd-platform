@@ -31,6 +31,7 @@
   --line-height-body: 1.5;
   --line-height-body-ar: 1.7;
   --line-height-caption: 1.6;
+  --line-height-body-small: 1.65;
   --font-weight-regular: 400;
   --font-weight-medium: 500;
   --font-weight-semibold: 600;
@@ -113,7 +114,7 @@
   --radius-small: 8px;
   --radius-medium: 12px;
   --radius-large: 20px;
-  --radius-xl: 24px;
+  --radius-extra-large: 24px;
   --touch-target-size: 44px;
   --focus-width: 2px;
   --focus-offset: 2px;
@@ -242,7 +243,7 @@
   --radius-md: var(--radius-medium);
   --radius-lg: var(--radius-control);
   --radius-xl: var(--radius-large);
-  --radius-2xl: var(--radius-xl);
+  --radius-2xl: var(--radius-extra-large);
   --radius-3xl: var(--radius-card);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -364,7 +365,7 @@
 }
 @utility text-h3 {
   font-size: var(--font-size-small-heading);
-  line-height: 1.5;
+  line-height: var(--line-height-heading);
   font-weight: var(--font-weight-semibold);
 }
 @utility text-h4 {
@@ -384,7 +385,7 @@
 }
 @utility text-body {
   font-size: var(--font-size-body-small);
-  line-height: 1.6;
+  line-height: var(--line-height-body-small);
   font-weight: var(--font-weight-regular);
 }
 @utility text-caption {
@@ -394,7 +395,7 @@
 }
 @utility text-caption-sm {
   font-size: var(--font-size-caption);
-  line-height: 1.5;
+  line-height: var(--line-height-caption);
   font-weight: var(--font-weight-regular);
 }
 
