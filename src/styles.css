@@ -245,6 +245,13 @@
   --radius-xl: var(--radius-control);
   --radius-2xl: var(--radius-card);
   --radius-3xl: var(--radius-card);
+  --shadow-2xs: none;
+  --shadow-xs: none;
+  --shadow-sm: none;
+  --shadow-md: none;
+  --shadow-lg: none;
+  --shadow-xl: none;
+  --shadow-2xl: none;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
