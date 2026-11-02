@@ -82,7 +82,7 @@ function FavoritesPage() {
           <button
             onClick={() => goBackOrTo(router, "/profile")}
             aria-label={t("common_back")}
-            className="icon-btn"
+            className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowLeft className="size-5 rtl:rotate-180" />
           </button>
