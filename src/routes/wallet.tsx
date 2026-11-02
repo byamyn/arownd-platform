@@ -411,7 +411,9 @@ function WalletPage() {
             <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-danger">
                 <ArrowUpRight className="size-4" />
-                <span className="text-caption font-bold text-muted-foreground">إجمالي السحوبات</span>
+                <span className="text-caption font-bold text-muted-foreground">
+                  إجمالي السحوبات
+                </span>
               </div>
               <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">
                 {formatDA(summary.totalWithdraw)}
@@ -428,7 +430,9 @@ function WalletPage() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-extrabold text-foreground">سجل المعاملات</h2>
-            <p className="mt-0.5 text-caption text-muted-foreground">كل الحركات المسجلة في محفظتك</p>
+            <p className="mt-0.5 text-caption text-muted-foreground">
+              كل الحركات المسجلة في محفظتك
+            </p>
           </div>
           {!txs.isLoading && !txs.isError && (
             <span className="rounded-full bg-muted px-2.5 py-1 text-caption font-bold text-muted-foreground">
@@ -506,7 +510,10 @@ function WalletPage() {
             const time = formatTime(t.created_at);
             const methodLabel = METHODS.find((m) => m.id === t.method)?.label ?? t.method;
             return (
-              <div key={t.id} className="rounded-[var(--radius-card)] border border-border bg-card p-4">
+              <div
+                key={t.id}
+                className="rounded-[var(--radius-card)] border border-border bg-card p-4"
+              >
                 <div className="flex items-center gap-3">
                   <span
                     className={cn(
