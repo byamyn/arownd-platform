@@ -544,24 +544,24 @@ function StudioPage() {
           <button
             type="button"
             onClick={() => navigate({ to: "/studio/settings" })}
-            className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground  transition hover:border-accent-ink/40 active:scale-95"
+            className="flex size-11 items-center justify-center rounded-[var(--radius-card)] border border-border bg-card text-foreground  transition hover:border-accent-ink/40 active:scale-95"
             aria-label={t("studio_settings")}
             title={t("studio_settings")}
           >
             <Settings className="size-5" />
           </button>
-          <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground ">
+          <div className="flex size-11 items-center justify-center rounded-[var(--radius-card)] bg-primary text-primary-foreground ">
             <Store className="size-5" />
           </div>
         </div>
       </header>
 
       {/* بطاقة المتجر الرئيسية */}
-      <section className="relative isolate overflow-hidden rounded-3xl border border-border bg-muted p-4 text-foreground  sm:p-6">
+      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-border bg-muted p-4 text-foreground  sm:p-6">
         <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-            <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:size-[4.5rem]">
+            <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-card)] border border-border bg-card sm:size-[4.5rem]">
               {store.data?.logo_url ? (
                 <img
                   src={store.data.logo_url}
@@ -607,14 +607,14 @@ function StudioPage() {
           <div className="grid grid-cols-2 gap-2 sm:min-w-[var(--layout-studio-grid-min)]">
             <Link
               to="/studio/settings"
-              className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-xs font-extrabold text-primary-foreground transition hover:brightness-95 active:scale-[var(--scale-pressed)]"
+              className="flex min-h-[var(--control-height-compact)] items-center justify-center gap-2 rounded-[var(--radius-control)] bg-primary px-3 text-xs font-extrabold text-primary-foreground transition hover:brightness-95 active:scale-[var(--scale-pressed)]"
             >
               <Settings className="size-4" /> تخصيص المتجر
             </Link>
             <Link
               to="/stores/$storeId"
               params={{ storeId: store.data?.id ?? "" }}
-              className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-xs font-bold text-foreground transition hover:bg-muted active:scale-[var(--scale-pressed)]"
+              className="flex min-h-[var(--control-height-compact)] items-center justify-center gap-2 rounded-[var(--radius-control)] border border-border bg-card px-3 text-xs font-bold text-foreground transition hover:bg-muted active:scale-[var(--scale-pressed)]"
             >
               <Eye className="size-4" /> معاينة المتجر
             </Link>
@@ -623,7 +623,7 @@ function StudioPage() {
                 lat={store.data.latitude}
                 lng={store.data.longitude}
                 label={store.data?.name ?? ""}
-                className="col-span-2 flex min-h-10 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-xs font-bold text-foreground/80"
+                className="col-span-2 flex min-h-[var(--control-height-compact)] items-center justify-center gap-2 rounded-[var(--radius-control)] border border-border bg-card px-3 text-xs font-bold text-foreground/80"
               >
                 <MapPin className="size-4" /> عرض الموقع والاتجاهات
               </DirectionsButton>
@@ -640,7 +640,7 @@ function StudioPage() {
             setMode("offers");
             setProductFilter(outCount > 0 ? "out" : "low");
           }}
-          className="flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border border-warning/30 bg-warning-soft px-4 py-3 text-start text-sm font-bold text-warning"
+          className="flex min-h-[var(--control-height-compact)] w-full items-center justify-between gap-3 rounded-[var(--radius-card)] border border-warning/30 bg-warning-soft px-4 py-3 text-start text-sm font-bold text-warning"
         >
           <span>{t("studio_low_stock_alert", { count: lowCount + outCount })}</span>
           <span className="shrink-0 rounded-full bg-warning px-3 py-1 text-xs text-foreground">
@@ -661,9 +661,9 @@ function StudioPage() {
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+              <span className="flex size-9 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
                 <Package className="size-4.5" />
               </span>
               <span className="text-caption font-semibold text-muted-foreground">
@@ -675,9 +675,9 @@ function StudioPage() {
               {t("studio_total_products")}
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-warning-soft text-warning">
+              <span className="flex size-9 items-center justify-center rounded-[var(--radius-control)] bg-warning-soft text-warning">
                 <ShoppingBag className="size-4.5" />
               </span>
               <span className="text-caption font-semibold text-muted-foreground">
@@ -689,9 +689,9 @@ function StudioPage() {
               {t("studio_pending_orders_reservations")}
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+              <span className="flex size-9 items-center justify-center rounded-[var(--radius-control)] bg-muted text-muted-foreground">
                 <Eye className="size-4.5" />
               </span>
               <span className="text-caption font-semibold text-muted-foreground">
@@ -707,9 +707,9 @@ function StudioPage() {
               {t("studio_product_views")}
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-success-soft text-success">
+              <span className="flex size-9 items-center justify-center rounded-[var(--radius-control)] bg-success-soft text-success">
                 <Star className="size-4.5" />
               </span>
               <span className="text-caption font-semibold text-muted-foreground">
@@ -739,7 +739,7 @@ function StudioPage() {
         const pct = Math.round((done / items.length) * 100);
         if (pct === 100) return null;
         return (
-          <section className="rounded-2xl border border-accent-ink/25 bg-primary-soft/40 p-4">
+          <section className="rounded-[var(--radius-card)] border border-accent-ink/25 bg-primary-soft/40 p-4">
             <div className="flex items-center justify-between gap-2">
               <h2 className="text-sm font-extrabold text-foreground">
                 {t("studio_setup_heading")}
@@ -776,14 +776,14 @@ function StudioPage() {
             <div className="mt-3 flex gap-2">
               <Link
                 to="/studio/settings"
-                className="flex-1 rounded-xl bg-primary py-2 text-center text-xs font-bold text-primary-foreground transition active:scale-95"
+                className="flex-1 rounded-[var(--radius-control)] bg-primary py-2 text-center text-xs font-bold text-primary-foreground transition active:scale-95"
               >
                 استكمال الإعداد
               </Link>
               <Link
                 to="/stores/$storeId"
                 params={{ storeId: s?.id ?? "" }}
-                className="flex-1 rounded-xl border border-accent-ink/30 bg-card py-2 text-center text-xs font-bold text-accent-ink transition active:scale-95"
+                className="flex-1 rounded-[var(--radius-control)] border border-accent-ink/30 bg-card py-2 text-center text-xs font-bold text-accent-ink transition active:scale-95"
               >
                 معاينة متجري
               </Link>
@@ -798,7 +798,7 @@ function StudioPage() {
           <h2 className="px-1 text-section text-muted-foreground">
             {t("studio_action_needed_now")}
           </h2>
-          <div className="divide-y divide-border overflow-hidden rounded-2xl border border-danger/25 bg-card">
+          <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-danger/25 bg-card">
             {actionOrders.map((o) => (
               <Link
                 key={o.order.id}
@@ -806,7 +806,7 @@ function StudioPage() {
                 params={{ orderId: o.order.id }}
                 className="flex items-center gap-3 p-3.5 text-start transition active:bg-muted/40"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-danger-soft text-danger">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-danger-soft text-danger">
                   <ShoppingBag className="size-5" />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -827,7 +827,7 @@ function StudioPage() {
                 onClick={() => setMode("orders")}
                 className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted/40"
               >
-                <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-warning-soft text-warning">
+                <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-warning-soft text-warning">
                   <Clock className="size-5" />
                 </span>
                 <span className="min-w-0 flex-1">
@@ -848,7 +848,7 @@ function StudioPage() {
       {/* زر الإجراء الأساسي */}
       <button
         onClick={() => setMode("offers")}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-bold text-primary-foreground  transition active:scale-[var(--scale-pressed)]"
+        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-card)] bg-primary py-3.5 font-bold text-primary-foreground  transition active:scale-[var(--scale-pressed)]"
       >
         <PackagePlus className="size-5" /> إضافة منتج
       </button>
@@ -856,13 +856,13 @@ function StudioPage() {
       {/* قائمة إدارة المتجر */}
       <section className="space-y-2">
         <h2 className="px-1 text-section text-muted-foreground">{t("studio_manage_store")}</h2>
-        <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card">
+        <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-border bg-card">
           <button
             type="button"
             onClick={() => setMode("offers")}
             className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
               <Package className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
@@ -880,7 +880,7 @@ function StudioPage() {
             onClick={() => setMode("orders")}
             className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
               <ShoppingBag className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
@@ -900,7 +900,7 @@ function StudioPage() {
             to="/studio/settings"
             className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
               <Store className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
@@ -917,7 +917,7 @@ function StudioPage() {
             to="/studio/settings"
             className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
               <Clock className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
@@ -935,7 +935,7 @@ function StudioPage() {
             params={{ storeId: store.data?.id ?? "" }}
             className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
               <Eye className="size-5" />
             </span>
             <span className="min-w-0 flex-1">
@@ -954,22 +954,22 @@ function StudioPage() {
       {/* تبويب المنتجات */}
       {mode === "offers" && (
         <section className="space-y-5">
-          <div className="rounded-3xl border border-border bg-muted p-4 text-foreground  sm:p-5">
+          <div className="rounded-[var(--radius-card)] border border-border bg-muted p-4 text-foreground  sm:p-5">
             <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
               AROWND · CATALOG
             </p>
             <h2 className="mt-1 text-xl font-black">{t("studio_catalog_heading")}</h2>
             <p className="mt-1 text-xs text-muted-foreground">{t("studio_catalog_intro")}</p>
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <div className="rounded-xl bg-card p-2.5">
+              <div className="rounded-[var(--radius-control)] bg-card p-2.5">
                 <p className="text-lg font-black">{allOffers.length}</p>
                 <p className="text-caption text-muted-foreground">{t("studio_products_total")}</p>
               </div>
-              <div className="rounded-xl bg-card p-2.5">
+              <div className="rounded-[var(--radius-control)] bg-card p-2.5">
                 <p className="text-lg font-black text-accent-ink">{lowCount}</p>
                 <p className="text-caption text-muted-foreground">{t("studio_stock_low")}</p>
               </div>
-              <div className="rounded-xl bg-card p-2.5">
+              <div className="rounded-[var(--radius-control)] bg-card p-2.5">
                 <p className="text-lg font-black">{outCount}</p>
                 <p className="text-caption text-muted-foreground">{t("studio_stock_out")}</p>
               </div>
@@ -979,13 +979,13 @@ function StudioPage() {
             <button
               onClick={refreshStock}
               disabled={busy}
-              className="flex-1 rounded-2xl bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50"
+              className="flex-1 rounded-[var(--radius-card)] bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50"
             >
               تحديث كل المنتجات اليوم
             </button>
           </div>
 
-          <div className="rounded-3xl border border-border bg-card p-4  sm:p-5">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4  sm:p-5">
             <h2 className="mb-3 flex items-center gap-2 font-bold">
               <PackagePlus className="size-5 text-accent-ink" /> إضافة منتج في 30 ثانية
             </h2>
@@ -994,7 +994,7 @@ function StudioPage() {
                 value={productForm.name}
                 onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                 placeholder={t("studio_product_name_ph")}
-                className="h-12 rounded-xl border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                className="h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
               />
               <div className="grid grid-cols-2 gap-2">
                 <input
@@ -1003,7 +1003,7 @@ function StudioPage() {
                   placeholder={t("studio_price_dzd_ph")}
                   type="number"
                   min="0"
-                  className="h-12 rounded-xl border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                  className="h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
                 />
                 <input
                   value={productForm.stock}
@@ -1011,7 +1011,7 @@ function StudioPage() {
                   placeholder={t("studio_quantity_ph")}
                   type="number"
                   min="0"
-                  className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
               </div>
               <CategorySelect
@@ -1022,26 +1022,26 @@ function StudioPage() {
                 value={productForm.brand}
                 onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
                 placeholder={t("studio_brand_ph")}
-                className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <input
                 value={productForm.sizes}
                 onChange={(e) => setProductForm({ ...productForm, sizes: e.target.value })}
                 placeholder={t("studio_sizes_ph")}
-                className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <input
                 value={productForm.colors}
                 onChange={(e) => setProductForm({ ...productForm, colors: e.target.value })}
                 placeholder={t("studio_colors_ph")}
-                className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <textarea
                 value={productForm.description}
                 onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                 placeholder={t("studio_description_ph")}
                 rows={2}
-                className="min-h-24 rounded-xl border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                className="min-h-24 rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
               />
               <ImageUploader
                 initialItems={[]}
@@ -1051,14 +1051,14 @@ function StudioPage() {
               <button
                 onClick={addProduct}
                 disabled={busy}
-                className="min-h-12 rounded-xl bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
+                className="min-h-12 rounded-[var(--radius-control)] bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
               >
                 {busy ? "جارٍ الحفظ..." : "حفظ المنتج"}
               </button>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <h2 className="font-extrabold">{t("studio_current_products")}</h2>
@@ -1094,7 +1094,7 @@ function StudioPage() {
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   placeholder={t("studio_product_name_ph")}
-                  className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
                 <div className="grid grid-cols-2 gap-2">
                   <input
@@ -1103,7 +1103,7 @@ function StudioPage() {
                     placeholder={t("studio_price_dzd_ph")}
                     type="number"
                     min="0"
-                    className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                    className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                   />
                   <input
                     value={editForm.stock}
@@ -1111,7 +1111,7 @@ function StudioPage() {
                     placeholder={t("studio_quantity_ph")}
                     type="number"
                     min="0"
-                    className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                    className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
                 <CategorySelect
@@ -1122,14 +1122,14 @@ function StudioPage() {
                   value={editForm.brand}
                   onChange={(e) => setEditForm({ ...editForm, brand: e.target.value })}
                   placeholder={t("studio_brand_ph")}
-                  className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
                 <textarea
                   value={editForm.description}
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                   placeholder={t("studio_description_ph")}
                   rows={2}
-                  className="min-h-24 rounded-xl border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                  className="min-h-24 rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
                 />
                 <ImageUploader
                   initialItems={editExistingImages}
@@ -1180,14 +1180,14 @@ function StudioPage() {
               />
             </SideSheet>
 
-            <div className="mb-4 space-y-3 rounded-xl bg-muted/30 p-3">
+            <div className="mb-4 space-y-3 rounded-[var(--radius-control)] bg-muted/30 p-3">
               <input
                 type="search"
                 value={productQuery}
                 onChange={(e) => setProductQuery(e.target.value)}
                 placeholder={t("studio_products_search_ph")}
                 aria-label={t("studio_products_search_ph")}
-                className="h-11 w-full rounded-xl border border-input bg-background px-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-sm outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <div className="no-scrollbar flex gap-2 overflow-x-auto" role="tablist">
                 {(
@@ -1204,7 +1204,7 @@ function StudioPage() {
                     aria-selected={productFilter === f.id}
                     onClick={() => setProductFilter(f.id)}
                     className={cn(
-                      "min-h-11 shrink-0 rounded-full border px-4 text-xs font-bold transition",
+                      "min-h-[var(--control-height-compact)] shrink-0 rounded-full border px-4 text-xs font-bold transition",
                       productFilter === f.id
                         ? "border-primary bg-primary text-accent-ink-foreground"
                         : "border-border bg-card text-muted-foreground",
@@ -1327,29 +1327,29 @@ function StudioPage() {
 
       {mode === "orders" && (
         <section className="space-y-4">
-          <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <h2 className="mb-3 font-bold">{t("studio_confirm_reservation")}</h2>
             <div className="flex gap-2">
               <input
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 placeholder="SQ-XXXX"
-                className="h-11 flex-1 rounded-xl border bg-background px-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] flex-1 rounded-[var(--radius-control)] border bg-background px-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
               />
               <button
                 onClick={confirmReservation}
-                className="rounded-xl bg-primary px-4 font-bold text-primary-foreground  transition hover:brightness-95"
+                className="rounded-[var(--radius-control)] bg-primary px-4 font-bold text-primary-foreground  transition hover:brightness-95"
               >
                 تأكيد
               </button>
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <h2 className="mb-3 font-bold">{t("studio_reservations")}</h2>
             <div className="space-y-2">
               {reservations.data?.map((r) => (
-                <div key={r.id} className="rounded-2xl bg-background p-3">
+                <div key={r.id} className="rounded-[var(--radius-card)] bg-background p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="font-mono text-sm font-bold text-accent-ink">{r.code}</p>
@@ -1389,7 +1389,7 @@ function StudioPage() {
                           showError(error);
                         }
                       }}
-                      className="mt-2 w-full rounded-xl bg-success-soft py-2 text-xs font-bold text-success transition hover:bg-success/25"
+                      className="mt-2 w-full rounded-[var(--radius-control)] bg-success-soft py-2 text-xs font-bold text-success transition hover:bg-success/25"
                     >
                       تأكيد الاستلام
                     </button>
@@ -1398,7 +1398,7 @@ function StudioPage() {
                     <button
                       type="button"
                       onClick={() => setPendingHistoryDelete({ kind: "reservation", id: r.id })}
-                      className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-danger/20 bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15"
+                      className="mt-2 inline-flex min-h-[var(--control-height-compact)] w-full items-center justify-center gap-2 rounded-[var(--radius-control)] border border-danger/20 bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15"
                     >
                       <Trash2 className="size-3.5" /> {t("studio_delete_history")}
                     </button>
@@ -1411,11 +1411,11 @@ function StudioPage() {
             </div>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <h2 className="mb-3 font-bold">{t("studio_delivery_orders")}</h2>
             <div className="space-y-2">
               {orders.data?.map((item) => (
-                <div key={item.id} className="rounded-2xl bg-background p-3">
+                <div key={item.id} className="rounded-[var(--radius-card)] bg-background p-3">
                   <div className="flex items-center justify-between gap-3">
                     <div>
                       <p className="font-bold">{item.order.full_name}</p>
@@ -1437,19 +1437,19 @@ function StudioPage() {
                       <Link
                         to="/studio/orders/$orderId"
                         params={{ orderId: item.order.id }}
-                        className="inline-flex min-h-10 items-center justify-center rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground"
+                        className="inline-flex min-h-[var(--control-height-compact)] items-center justify-center rounded-[var(--radius-control)] bg-primary px-4 py-2 text-xs font-bold text-primary-foreground"
                       >
                         {t("studio_order_details")}
                       </Link>
                     )}
                     {item.merchant_order.status === "quoted" && (
-                      <p className="w-full rounded-xl bg-warning-soft p-2 text-xs leading-relaxed text-warning">
+                      <p className="w-full rounded-[var(--radius-control)] bg-warning-soft p-2 text-xs leading-relaxed text-warning">
                         {t("studio_quote_pending_customer")}
                       </p>
                     )}
                     {item.merchant_order.status === "confirmed" &&
                       item.order.delivery_type === "home" && (
-                        <p className="w-full rounded-xl bg-primary-soft p-2 text-xs leading-relaxed text-muted-foreground">
+                        <p className="w-full rounded-[var(--radius-control)] bg-primary-soft p-2 text-xs leading-relaxed text-muted-foreground">
                           {t("studio_order_approved_wait_delivery")}
                         </p>
                       )}
@@ -1472,7 +1472,7 @@ function StudioPage() {
                               setBusyOrder(null);
                             }
                           }}
-                          className="min-h-10 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
+                          className="min-h-[var(--control-height-compact)] rounded-[var(--radius-control)] bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
                         >
                           {t("studio_action_deliver")}
                         </button>
@@ -1482,7 +1482,7 @@ function StudioPage() {
                     <button
                       type="button"
                       onClick={() => setPendingHistoryDelete({ kind: "order", id: item.order.id })}
-                      className="mt-2 inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-xl border border-danger/20 bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15"
+                      className="mt-2 inline-flex min-h-[var(--control-height-compact)] w-full items-center justify-center gap-2 rounded-[var(--radius-control)] border border-danger/20 bg-danger-soft px-3 py-2 text-xs font-bold text-danger transition hover:bg-danger/15"
                     >
                       <Trash2 className="size-3.5" /> {t("studio_delete_history")}
                     </button>
@@ -1515,7 +1515,7 @@ function AuthGate({ onLogin }: { onLogin: () => void }) {
       <p className="text-sm text-muted-foreground">{t("studio_login_inventory")}</p>
       <button
         onClick={onLogin}
-        className="rounded-2xl bg-primary px-8 py-3 font-bold text-primary-foreground"
+        className="rounded-[var(--radius-card)] bg-primary px-8 py-3 font-bold text-primary-foreground"
       >
         دخول
       </button>
@@ -1524,7 +1524,7 @@ function AuthGate({ onLogin }: { onLogin: () => void }) {
 }
 
 const CATEGORY_FIELD_CLS =
-  "h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30";
+  "h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30";
 
 /**
  * منتقي تصنيف ثنائي المستوى: تصنيف رئيسي (أو تصنيف من «تصنيفات أخرى») ثم الفئة الفرعية.
