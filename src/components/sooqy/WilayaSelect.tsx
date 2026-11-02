@@ -54,7 +54,10 @@ export function WilayaButton({
   useEffect(() => {
     if (isOpen && listRef.current) {
       const selected = listRef.current.querySelector("[data-selected]");
-      if (selected) selected.scrollIntoView({ block: "nearest", behavior: "auto" });
+      if (selected) {
+        selected.scrollIntoView({ block: "nearest", behavior: "auto" });
+        (selected as HTMLElement).focus();
+      }
     }
   }, [isOpen]);
 
@@ -131,12 +134,34 @@ export function WilayaButton({
       id={dropdownId}
       role="listbox"
       aria-label="قائمة الولايات"
+      onKeyDown={(event) => {
+        const options = Array.from(
+          listRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]') ?? [],
+        );
+        const currentIndex = options.indexOf(document.activeElement as HTMLButtonElement);
+        if (event.key === "Escape") {
+          event.preventDefault();
+          setIsOpen(false);
+          buttonRef.current?.querySelector("button")?.focus();
+          return;
+        }
+        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        event.preventDefault();
+        const direction = event.key === "ArrowDown" ? 1 : -1;
+        const nextIndex =
+          currentIndex < 0
+            ? 0
+            : (currentIndex + direction + options.length) % options.length;
+        options[nextIndex]?.focus();
+      }}
       style={dropdownStyle}
       className="min-w-[18rem] max-h-60 overflow-auto rounded-[var(--radius-control)] border border-border bg-card text-sm animate-fade-up"
     >
       <button
         type="button"
-        aria-pressed={value == null}
+        role="option"
+        aria-selected={value == null}
+        tabIndex={value == null ? 0 : -1}
         data-selected={value == null}
         onClick={() => handleSelect(null)}
         className={cn(
@@ -151,7 +176,9 @@ export function WilayaButton({
         <button
           type="button"
           key={w.id}
-          aria-pressed={value === w.id}
+          role="option"
+          aria-selected={value === w.id}
+          tabIndex={value === w.id ? 0 : -1}
           data-selected={value === w.id}
           onClick={() => handleSelect(w.id)}
           className={cn(
