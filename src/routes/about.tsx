@@ -45,9 +45,7 @@ function AboutPage() {
       <div className="mb-8 rounded-[var(--radius-card)] bg-primary p-6 text-center text-primary-foreground ">
         <Store className="mx-auto mb-3 size-12" />
         <h1 className="text-2xl font-extrabold">Arownd — اكتشف ما حولك</h1>
-        <p className="mt-2 text-sm opacity-85">
-          منصة جزائرية قيد التطوير والتوسع التدريجي
-        </p>
+        <p className="mt-2 text-sm opacity-85">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
       </div>
 
       <Section title="من نحن؟">
@@ -132,7 +130,9 @@ function AboutPage() {
       <div className="mt-10 rounded-[var(--radius-card)] border border-border/60 bg-card p-6 text-center ">
         <Heart className="mx-auto mb-3 size-8 text-accent-ink" />
         <p className="text-lg font-extrabold">Arownd — اكتشف ما حولك</p>
-        <p className="mt-1 text-xs text-muted-foreground">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
+        <p className="mt-1 text-xs text-muted-foreground">
+          منصة جزائرية قيد التطوير والتوسع التدريجي
+        </p>
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
