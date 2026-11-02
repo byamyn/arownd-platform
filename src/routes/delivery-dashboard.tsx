@@ -155,7 +155,7 @@ function DeliveryDashboardPage() {
         <Link
           to="/auth"
           search={{ redirect: "/delivery-dashboard" }}
-          className="inline-block rounded-[var(--radius-control)] bg-primary min-h-[var(--control-height)] rounded-full px-6 py-3 font-bold text-primary-foreground"
+          className="inline-flex min-h-[var(--control-height)] items-center justify-center rounded-[var(--radius-pill)] bg-primary px-6 py-3 font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           دخول
         </Link>
@@ -198,7 +198,7 @@ function DeliveryDashboardPage() {
         </p>
         <Link
           to="/delivery-register"
-          className="inline-block rounded-[var(--radius-control)] bg-primary px-8 py-3 font-bold text-primary-foreground"
+          className="inline-flex min-h-[var(--control-height)] items-center justify-center rounded-[var(--radius-pill)] bg-primary px-8 py-3 font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           تسجيل شركة توصيل جديدة
         </Link>
