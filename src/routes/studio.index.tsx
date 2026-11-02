@@ -550,7 +550,7 @@ function StudioPage() {
           >
             <Settings className="size-5" />
           </button>
-          <div className="flex size-11 items-center justify-center rounded-[var(--radius-card)] bg-primary text-primary-foreground ">
+          <div className="flex size-11 items-center justify-center rounded-[var(--radius-control)] bg-primary text-primary-foreground">
             <Store className="size-5" />
           </div>
         </div>
