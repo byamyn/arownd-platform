@@ -257,7 +257,7 @@ function StoreSettingsPage() {
   };
 
   const inputCls =
-    "w-full rounded-xl border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30 disabled:opacity-50";
+    "w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30 disabled:opacity-50";
   const labelCls = "mb-1 block text-xs font-bold text-muted-foreground";
 
   return (
@@ -270,12 +270,12 @@ function StoreSettingsPage() {
       <Link
         to="/stores/$storeId"
         params={{ storeId: store.data.id }}
-        className="inline-flex min-h-11 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-bold text-foreground transition hover:bg-muted"
+        className="inline-flex min-h-[var(--control-height-compact)] items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-bold text-foreground transition hover:bg-muted"
       >
         <Eye className="size-4" />
         {t("studio_preview_store")}
       </Link>
-      <section className="rounded-3xl border border-border bg-muted p-5 text-foreground  sm:p-6">
+      <section className="rounded-[var(--radius-card)] border border-border bg-muted p-5 text-foreground  sm:p-6">
         <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
           AROWND · STORE PROFILE
         </p>
@@ -283,7 +283,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة الهوية: الغلاف + الشعار + الاسم */}
-      <section className="overflow-hidden rounded-2xl border border-border bg-card ">
+      <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
         <div className="relative h-40 bg-muted/40">
           {coverPreview ? (
             <img src={coverPreview} alt="غلاف المتجر" className="size-full object-cover" />
@@ -306,7 +306,7 @@ function StoreSettingsPage() {
           <button
             type="button"
             onClick={() => logoInputRef.current?.click()}
-            className="relative -mt-9 size-20 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-primary-soft  transition active:scale-95"
+            className="relative -mt-9 size-20 shrink-0 overflow-hidden rounded-[var(--radius-card)] border-4 border-card bg-primary-soft  transition active:scale-95"
             aria-label={t("studio_change_store_logo")}
           >
             {logoPreview ? (
@@ -344,7 +344,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: معلومات المتجر */}
-      <section className="space-y-3 rounded-3xl border border-border bg-card p-4  sm:p-5">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4  sm:p-5">
         <h2 className="text-section text-foreground">{t("studio_store_info")}</h2>
         <div>
           <label className={labelCls}>{t("studio_store_name_required")}</label>
@@ -392,7 +392,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: تصنيف المتجر */}
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <div>
           <h2 className="text-section text-foreground">{t("studio_store_category")}</h2>
           <p className="text-xs text-muted-foreground">
@@ -429,14 +429,14 @@ function StoreSettingsPage() {
           </div>
         )}
         {!form.category && (
-          <p className="rounded-xl bg-warning-soft px-3 py-2 text-caption font-bold text-warning-foreground">
+          <p className="rounded-[var(--radius-control)] bg-warning-soft px-3 py-2 text-caption font-bold text-warning-foreground">
             ⚠️ لم يُحدَّد تصنيف المتجر بعد — اختر تصنيفًا رئيسيًا ليظهر متجرك في الأقسام المناسبة.
           </p>
         )}
       </section>
 
       {/* بطاقة: الموقع */}
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <h2 className="text-sm font-extrabold text-foreground">{t("studio_location")}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -481,7 +481,7 @@ function StoreSettingsPage() {
           type="button"
           onClick={locate}
           disabled={locating}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-soft py-2.5 text-sm font-bold text-accent-ink transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-control)] bg-primary-soft py-2.5 text-sm font-bold text-accent-ink transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
         >
           <MapPin className="size-4" />
           {locating ? t("studio_locating") : t("studio_locate_on_map")}
@@ -495,7 +495,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: ساعات العمل */}
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <h2 className="text-sm font-extrabold text-foreground">{t("studio_working_hours")}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -541,7 +541,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: التواصل الاجتماعي */}
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <h2 className="text-sm font-extrabold text-foreground">{t("studio_social")}</h2>
         <div className="grid grid-cols-2 gap-3">
           <div>
@@ -569,7 +569,7 @@ function StoreSettingsPage() {
       <button
         onClick={save}
         disabled={busy}
-        className="sticky bottom-3 z-20 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
+        className="sticky bottom-3 z-20 flex min-h-[var(--control-height)] w-full items-center justify-center gap-2 rounded-[var(--radius-card)] bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
       >
         <Save className="size-4.5" />
         {busy ? "جارٍ الحفظ..." : "حفظ التغييرات"}
