@@ -686,7 +686,7 @@ function ProductPage() {
       />
 
       <Dialog open={!!zoomSrc} onOpenChange={(o) => !o && setZoomSrc(null)}>
-        <DialogContent className="max-w-full border-0 bg-background/95 p-0 sm:max-w-lg">
+        <DialogContent hideCloseButton className="max-w-full border-0 bg-background/95 p-0 sm:max-w-lg">
           {zoomSrc && (
             <img src={zoomSrc} alt={p.name} className="max-h-[85vh] w-full object-contain" />
           )}
