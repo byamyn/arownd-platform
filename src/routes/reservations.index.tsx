@@ -9,6 +9,7 @@ import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
+import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 
 export const Route = createFileRoute("/reservations/")({
   head: () => ({}),
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/reservations/")({
 });
 
 type ReservationTab = "all" | "active" | "ended" | "cancelled";
+type PendingConfirmation = { title: string; message: string; action: () => Promise<void> };
 
 function isExpired(reservation: { status: string; expires_at: string }) {
   return (
@@ -43,11 +45,26 @@ function ReservationsPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<ReservationTab>("all");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation | null>(null);
+  const [confirmationBusy, setConfirmationBusy] = useState(false);
   const reservations = useQuery({
     queryKey: ["my-reservations"],
     queryFn: fetchMyReservations,
     enabled: !!user,
   });
+
+  const runPendingConfirmation = async () => {
+    if (!pendingConfirmation || confirmationBusy) return;
+    setConfirmationBusy(true);
+    try {
+      await pendingConfirmation.action();
+      setPendingConfirmation(null);
+    } catch (error) {
+      showError(error);
+    } finally {
+      setConfirmationBusy(false);
+    }
+  };
 
   if (!ready) return null;
   if (!user) {
@@ -217,22 +234,22 @@ function ReservationsPage() {
                   <button
                     type="button"
                     disabled={cancellingId === reservation.id}
-                    onClick={async () => {
-                      if (
-                        !window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")
-                      )
-                        return;
-                      setCancellingId(reservation.id);
-                      try {
-                        await cancelMyReservation(reservation.id);
-                        await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                        showSuccess("تم إلغاء الحجز بنجاح.");
-                      } catch (error) {
-                        showError(error);
-                      } finally {
-                        setCancellingId(null);
-                      }
-                    }}
+                    onClick={() =>
+                      setPendingConfirmation({
+                        title: "إلغاء الحجز",
+                        message: "هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.",
+                        action: async () => {
+                          setCancellingId(reservation.id);
+                          try {
+                            await cancelMyReservation(reservation.id);
+                            await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                            showSuccess("تم إلغاء الحجز بنجاح.");
+                          } finally {
+                            setCancellingId(null);
+                          }
+                        },
+                      })
+                    }
                     className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                   >
                     <XCircle className="size-4" />
@@ -242,21 +259,17 @@ function ReservationsPage() {
                 {archivable && (
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (
-                        !window.confirm(
-                          "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
-                        )
-                      )
-                        return;
-                      try {
-                        await archiveMyActivity("reservation", reservation.id);
-                        await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                        showSuccess("تم إخفاء الحجز من سجلك.");
-                      } catch (error) {
-                        showError(error);
-                      }
-                    }}
+                    onClick={() =>
+                      setPendingConfirmation({
+                        title: "إخفاء الحجز من السجل",
+                        message: "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                        action: async () => {
+                          await archiveMyActivity("reservation", reservation.id);
+                          await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                          showSuccess("تم إخفاء الحجز من سجلك.");
+                        },
+                      })
+                    }
                     className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                   >
                     <Archive className="size-4" /> إخفاء من السجل
@@ -267,6 +280,16 @@ function ReservationsPage() {
           );
         })}
       </div>
+      <ConfirmDialog
+        open={pendingConfirmation !== null}
+        title={pendingConfirmation?.title ?? ""}
+        message={pendingConfirmation?.message ?? ""}
+        confirmLabel="تأكيد"
+        cancelLabel="إلغاء"
+        busy={confirmationBusy}
+        onConfirm={runPendingConfirmation}
+        onCancel={() => setPendingConfirmation(null)}
+      />
     </main>
   );
 }
