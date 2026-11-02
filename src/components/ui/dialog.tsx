@@ -34,29 +34,34 @@ type DialogContentProps = React.ComponentPropsWithoutRef<typeof DialogPrimitive.
 const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   DialogContentProps
->(({ className, children, hideCloseButton = false, closeLabel = "Close dialog", ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed inset-x-0 top-1/2 z-50 mx-[var(--margin)] max-h-[calc(100dvh-2*var(--margin))] w-auto max-w-lg -translate-y-1/2 overflow-y-auto rounded-[var(--radius-sheet)] border border-border bg-card p-6 text-foreground outline-none duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:mx-auto",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-      {!hideCloseButton && (
-        <DialogPrimitive.Close
-          aria-label={closeLabel}
-          className="absolute end-3 top-3 flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-        >
-          <X className="size-5" aria-hidden="true" />
-        </DialogPrimitive.Close>
-      )}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
+>(
+  (
+    { className, children, hideCloseButton = false, closeLabel = "Close dialog", ...props },
+    ref,
+  ) => (
+    <DialogPortal>
+      <DialogOverlay />
+      <DialogPrimitive.Content
+        ref={ref}
+        className={cn(
+          "fixed inset-x-0 top-1/2 z-50 mx-[var(--margin)] max-h-[calc(100dvh-2*var(--margin))] w-auto max-w-lg -translate-y-1/2 overflow-y-auto rounded-[var(--radius-sheet)] border border-border bg-card p-6 text-foreground outline-none duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 sm:mx-auto",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {!hideCloseButton && (
+          <DialogPrimitive.Close
+            aria-label={closeLabel}
+            className="absolute end-3 top-3 flex size-11 items-center justify-center rounded-full bg-muted text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <X className="size-5" aria-hidden="true" />
+          </DialogPrimitive.Close>
+        )}
+      </DialogPrimitive.Content>
+    </DialogPortal>
+  ),
+);
 DialogContent.displayName = DialogPrimitive.Content.displayName;
 
 const DialogHeader = ({ className, ...props }: React.HTMLAttributes<HTMLDivElement>) => (
