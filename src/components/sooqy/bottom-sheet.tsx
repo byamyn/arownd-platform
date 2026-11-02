@@ -57,7 +57,7 @@ export function BottomSheet({
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[1200] flex items-end justify-center bg-black/45",
+        "fixed inset-0 z-[1200] flex items-end justify-center bg-[var(--color-overlay-scrim)]",
         modal && "items-center",
       )}
       onClick={onClose}
