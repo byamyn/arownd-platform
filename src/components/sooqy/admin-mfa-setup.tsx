@@ -68,13 +68,13 @@ export function AdminMfaSetup() {
   };
 
   const verifyExistingFactor = async () => {
-    if (!verifiedFactorId || code.replace(/\\s/g, "").length !== 6 || busy) return;
+    if (!verifiedFactorId || code.replace(/\s/g, "").length !== 6 || busy) return;
     setBusy(true);
     setMessage(null);
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({
         factorId: verifiedFactorId,
-        code: code.replace(/\\s/g, ""),
+        code: code.replace(/\s/g, ""),
       });
       if (error) throw error;
       setCode("");
@@ -87,13 +87,13 @@ export function AdminMfaSetup() {
   };
 
   const verifyEnrollment = async () => {
-    if (!factorId || code.replace(/\\s/g, "").length !== 6 || busy) return;
+    if (!factorId || code.replace(/\s/g, "").length !== 6 || busy) return;
     setBusy(true);
     setMessage(null);
     try {
       const { error } = await supabase.auth.mfa.challengeAndVerify({
         factorId,
-        code: code.replace(/\\s/g, ""),
+        code: code.replace(/\s/g, ""),
       });
       if (error) throw error;
       await refreshFactors();
