@@ -94,9 +94,9 @@ export function ArowndBrand({ className }: { className?: string }) {
   return (
     <div className={cn("flex items-center gap-3", className)}>
       <img
-        src="/2994.svg"
+        src={isDark ? "/2995.svg" : "/2994.svg"}
         alt="Arownd"
-        className={cn("h-16 w-auto shrink-0", isDark ? "invert" : "")}
+        className="h-16 w-auto shrink-0"
         width={260}
         height={115}
       />
