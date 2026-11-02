@@ -86,7 +86,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#0A0A0A" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { title: translate("root_title") },
       {
@@ -148,14 +147,13 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
         <HeadContent />
-        <meta name="theme-color" content="#0A0A0A" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Arownd" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('arownd-theme')||localStorage.getItem('sooqy-theme');var explicit=t==='light'||t==='dark';var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=explicit?t==='dark':mq;var r=document.documentElement;r.classList.toggle('dark',d);if(explicit){r.setAttribute('data-theme',t);}else{r.removeAttribute('data-theme');}var m=document.querySelector('meta[name=theme-color]');if(m){var v=getComputedStyle(r).getPropertyValue('--color-bg-canvas').trim();if(v)m.setAttribute('content',v);}}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('arownd-theme')||localStorage.getItem('sooqy-theme');var explicit=t==='light'||t==='dark';var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=explicit?t==='dark':mq;var r=document.documentElement;r.classList.toggle('dark',d);if(explicit){r.setAttribute('data-theme',t);}else{r.removeAttribute('data-theme');}var m=document.querySelector('meta[name=theme-color]');if(!m){m=document.createElement('meta');m.setAttribute('name','theme-color');document.head.appendChild(m);}var v=getComputedStyle(r).getPropertyValue('--color-bg-canvas').trim();if(v)m.setAttribute('content',v);}catch(e){}})();`,
           }}
         />
       </head>
