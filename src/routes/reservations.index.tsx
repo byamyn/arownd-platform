@@ -163,14 +163,14 @@ function ReservationsPage() {
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${statusStyle}`}
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-caption font-bold ${statusStyle}`}
                   >
                     {status}
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 text-center">
-                  <p className="text-[11px] font-semibold text-muted-foreground">رمز الحجز</p>
+                <div className="rounded-2xl border border-dashed border-primary/40 bg-primary-soft p-4 text-center">
+                  <p className="text-caption font-semibold text-muted-foreground">رمز الحجز</p>
                   <p
                     className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground"
                     dir="ltr"
@@ -181,11 +181,11 @@ function ReservationsPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-2xl bg-background p-3">
-                    <p className="text-[11px] text-muted-foreground">الكمية</p>
+                    <p className="text-caption text-muted-foreground">الكمية</p>
                     <p className="mt-1 text-sm font-bold text-foreground">{reservation.quantity}</p>
                   </div>
                   <div className="rounded-2xl bg-background p-3">
-                    <p className="text-[11px] text-muted-foreground">سعر الوحدة</p>
+                    <p className="text-caption text-muted-foreground">سعر الوحدة</p>
                     <p className="mt-1 text-sm font-extrabold text-accent-ink">
                       {reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}
                     </p>
@@ -193,7 +193,7 @@ function ReservationsPage() {
                   <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
                     <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-[11px] text-muted-foreground">تاريخ الحجز</p>
+                      <p className="text-caption text-muted-foreground">تاريخ الحجز</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
                         {formatDate(reservation.created_at)}
                       </p>
@@ -202,7 +202,7 @@ function ReservationsPage() {
                   <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
                     <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-[11px] text-muted-foreground">انتهاء الصلاحية</p>
+                      <p className="text-caption text-muted-foreground">انتهاء الصلاحية</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
                         {expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}
                       </p>
