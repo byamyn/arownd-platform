@@ -212,7 +212,7 @@ function ProfilePage() {
                 to="/settings"
                 aria-label="الإعدادات"
                 title="الإعدادات"
-                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground shadow-soft transition hover:bg-muted active:scale-95"
+                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground  transition hover:bg-muted active:scale-95"
               >
                 <Settings className="size-5" />
               </Link>
@@ -220,7 +220,7 @@ function ProfilePage() {
                 <Link
                   to="/admin"
                   aria-label={t("profile_admin_dashboard")}
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-amber-500 text-white shadow-soft transition hover:bg-amber-600 active:scale-95"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-warning text-warning-foreground transition hover:brightness-95 active:scale-95"
                 >
                   <Shield className="size-4.5" />
                 </Link>
@@ -234,7 +234,7 @@ function ProfilePage() {
         )}
 
         {/* بطاقة الهوية: غلاف + صورة متداخلة + بيانات + إحصاءات سريعة */}
-        <section className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft">
+        <section className="overflow-hidden rounded-3xl border border-border bg-card ">
           <div className="h-20 bg-gradient-to-br from-primary via-primary/70 to-primary-soft" />
           <div className="px-5 pb-5">
             <div className="-mt-10 flex items-end justify-between gap-3">
@@ -255,7 +255,7 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
-                  className="absolute -bottom-1 -end-1 flex size-8 items-center justify-center rounded-full bg-primary text-accent-ink-foreground shadow-soft ring-2 ring-card transition active:scale-95"
+                  className="absolute -bottom-1 -end-1 flex size-8 items-center justify-center rounded-full bg-primary text-accent-ink-foreground  ring-2 ring-card transition active:scale-95"
                   aria-label={t("profile_change_avatar")}
                 >
                   <Camera className="size-4" />
@@ -278,7 +278,7 @@ function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setEditing(true)}
-                className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-accent-ink-foreground shadow-soft transition active:scale-95"
+                className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-accent-ink-foreground  transition active:scale-95"
               >
                 <Pencil className="size-4" /> {t("profile_edit_button")}
               </button>
@@ -317,7 +317,7 @@ function ProfilePage() {
                 </span>
               )}
               {isAdmin && (
-                <span className="flex items-center gap-1.5 rounded-full bg-amber-100 px-3 py-1 text-xs font-bold text-amber-700">
+                <span className="flex items-center gap-1.5 rounded-full bg-warning-soft px-3 py-1 text-xs font-bold text-warning">
                   <Shield className="size-3.5" /> {t("profile_admin_role")}
                 </span>
               )}
