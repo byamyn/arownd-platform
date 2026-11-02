@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { translate, useTranslation } from "@/lib/i18n";
+import { isNativePlatform } from "@/lib/platform";
 
 type RegistrationIntent = "customer" | "merchant" | "delivery";
 
@@ -15,6 +16,7 @@ export const Route = createFileRoute("/auth_/callback")({
     intent?: RegistrationIntent;
     redirect?: string;
   } => ({
+    code: typeof s["code"] === "string" && s["code"].length <= 2048 ? s["code"] : undefined,
     reset: s["reset"] === "1" || s["reset"] === true || s["reset"] === "true",
     intent:
       s["intent"] === "merchant" || s["intent"] === "delivery" || s["intent"] === "customer"
@@ -53,7 +55,7 @@ function safePath(path: string | null | undefined) {
 function CallbackPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { reset, intent, redirect } = Route.useSearch();
+  const { reset, intent, redirect, code } = Route.useSearch();
 
   useEffect(() => {
     let done = false;
@@ -61,6 +63,11 @@ function CallbackPage() {
     const go = () => {
       if (done) return;
       done = true;
+
+      if (reset) {
+        navigate({ to: "/auth", search: { reset: true }, replace: true });
+        return;
+      }
 
       if (intent === "merchant") {
         navigate({ to: "/create-store", replace: true });
@@ -83,12 +90,16 @@ function CallbackPage() {
       navigate({ to: target as "/", replace: true });
     };
 
-    if (reset) {
-      navigate({ to: "/auth", search: { reset: true }, replace: true });
-      return;
-    }
-
     const run = async () => {
+      // Web callbacks are exchanged by Supabase's URL detector. Native callbacks
+      // arrive through App.appUrlOpen and must explicitly exchange the PKCE code.
+      if (isNativePlatform() && code) {
+        const { error } = await supabase.auth.exchangeCodeForSession(code);
+        if (error) throw error;
+        go();
+        return;
+      }
+
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
       if (data.session) go();
@@ -111,7 +122,7 @@ function CallbackPage() {
       subscription.subscription.unsubscribe();
       window.clearTimeout(timeout);
     };
-  }, [navigate, reset, intent, redirect]);
+  }, [navigate, reset, intent, redirect, code]);
 
   return (
     <div className="flex min-h-[70dvh] flex-col items-center justify-center gap-3 px-4 text-center">

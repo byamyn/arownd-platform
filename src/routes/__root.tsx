@@ -4,12 +4,13 @@ import {
   Link,
   createRootRouteWithContext,
   useLocation,
+  useNavigate,
   useRouter,
   HeadContent,
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { type ReactNode } from "react";
+import { useEffect, type ReactNode } from "react";
 
 // صائد أخطاء الشاشة — يجب أن يُستورد أولًا ليعتمد قبل أي طبقة أخرى (يتجاهل SSR)
 import "@/lib/screen-error";
@@ -27,6 +28,8 @@ import { ConnectionBanner } from "@/components/sooqy/ConnectionBanner";
 import { DynamicIsland } from "@/components/sooqy/DynamicIsland";
 import { PageTransition } from "@/components/sooqy/page-transition";
 import { Toaster } from "@/components/ui/sonner";
+import { isNativePlatform } from "@/lib/platform";
+import { parseNativeAuthCallback } from "@/lib/native-deep-links";
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -159,6 +162,61 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function NativeDeepLinkListener() {
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    let disposed = false;
+    let lastHandledUrl: string | undefined;
+    let removeListener: (() => void) | undefined;
+
+    const handleUrl = async (rawUrl: string) => {
+      if (disposed || rawUrl === lastHandledUrl) return;
+      const callback = parseNativeAuthCallback(rawUrl);
+      if (!callback) return;
+
+      // The launch URL and appUrlOpen event can both report the same URL.
+      // Exchange the one-time PKCE code only once.
+      lastHandledUrl = rawUrl;
+      try {
+        await navigate({
+          to: "/auth/callback",
+          search: callback,
+          replace: true,
+        });
+      } catch (error) {
+        console.error("[native] Could not open authentication callback", error);
+      }
+    };
+
+    void import("@capacitor/app")
+      .then(async ({ App }) => {
+        if (disposed) return;
+        const listener = await App.addListener("appUrlOpen", ({ url }) => {
+          void handleUrl(url);
+        });
+        removeListener = () => {
+          void listener.remove();
+        };
+
+        const launch = await App.getLaunchUrl();
+        if (launch?.url) await handleUrl(launch.url);
+      })
+      .catch((error: unknown) => {
+        console.error("[native] Capacitor App plugin failed to initialize", error);
+      });
+
+    return () => {
+      disposed = true;
+      removeListener?.();
+    };
+  }, [navigate]);
+
+  return null;
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   useServiceWorkerRegistration();
@@ -171,6 +229,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
+          <NativeDeepLinkListener />
           <BagProvider>
             <div
               className={

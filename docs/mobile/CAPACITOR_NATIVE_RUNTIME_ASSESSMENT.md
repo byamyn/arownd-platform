@@ -1,6 +1,6 @@
 # Capacitor Native Runtime Assessment
 
-Status: first native setup slice. The app identity and Capacitor web asset configuration are now recorded; native runtime packages, platform projects, and authentication handling are not yet enabled.
+Status: native integration is implemented on `feat/capacitor-native`. Capacitor packages are pinned, PKCE callback handling is implemented, and native platform project generation/build validation is handled by the branch bootstrap workflow.
 
 ## Confirmed repository architecture
 
@@ -32,9 +32,9 @@ The existing native runtime detection and PWA suppression can remain isolated fr
 
 ## Next implementation slice
 
-- Add pinned Capacitor core, CLI, App, Android, and iOS packages with a regenerated npm lockfile.
-- Verify the SPA build produces `dist/client/index.html` before running `cap sync`.
+- The branch bootstrap workflow installs pinned Capacitor core, CLI, App, Android, and iOS packages and regenerates the npm lockfile.
+- The workflow verifies `dist/client/index.html`, generates both native projects, and compiles Android/iOS targets.
 - Implement deep-link handling using the official Capacitor App URL-open event and Supabase PKCE exchange.
-- Configure and test the Supabase redirect allow-list entry `com.arownd.app://auth/callback` without changing the production Site URL.
+- Add and verify the Supabase redirect allow-list entry `com.arownd.app://auth/callback` without changing the production Site URL. This dashboard setting is not editable through the connected Supabase tools.
 - Add native push, geolocation, and lifecycle adapters behind platform-specific modules.
 - Generate Android/iOS projects and validate release builds on their respective toolchains.

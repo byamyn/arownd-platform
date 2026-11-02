@@ -18,22 +18,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { translate, useTranslation } from "@/lib/i18n";
 import { ArowndLogo } from "@/components/sooqy/logo";
+import { isNativePlatform } from "@/lib/platform";
 
 type AuthScreen = "signin" | "signup" | "forgot" | "reset";
 type AccountType = "customer" | "merchant" | "delivery";
 
-const AUTH_CALLBACK_BASE =
-  typeof window !== "undefined"
-    ? window.location.origin + "/auth/callback"
-    : "http://localhost/auth/callback";
-
 function buildAuthRedirect(params: Record<string, string | undefined>) {
+  const callbackBase =
+    typeof window !== "undefined" && isNativePlatform()
+      ? "com.arownd.app://auth/callback"
+      : typeof window !== "undefined"
+        ? window.location.origin + "/auth/callback"
+        : "http://localhost/auth/callback";
   const query = new URLSearchParams();
   for (const [key, value] of Object.entries(params)) {
     if (value) query.set(key, value);
   }
   const suffix = query.toString();
-  return suffix ? AUTH_CALLBACK_BASE + "?" + suffix : AUTH_CALLBACK_BASE;
+  return suffix ? callbackBase + "?" + suffix : callbackBase;
 }
 
 export const Route = createFileRoute("/auth")({

@@ -10,9 +10,15 @@
 
 The same reverse-domain identifier is used on both platforms so that Android and iOS builds share one stable application identity.
 
+## Implemented native callback flow
+
+The app now listens for Capacitor's launch URL and `appUrlOpen` event, accepts only `com.arownd.app://auth/callback`, and exchanges the one-time PKCE code on-device. Web callbacks continue to use Supabase's normal URL detection. Password recovery and account-type redirects are preserved, and external redirect destinations are rejected.
+
+The Android activity is configured for warm-start deep links (`singleTask`), and the native bootstrap step registers the custom URL scheme in Android's manifest and iOS `Info.plist`.
+
 ## Supabase Auth redirect configuration
 
-Before enabling native email confirmation or password recovery, add this exact URI to the Supabase Auth URL Configuration redirect allow-list:
+Before native email confirmation or password recovery can complete, add this exact URI to the Supabase Auth URL Configuration redirect allow-list:
 
 `com.arownd.app://auth/callback`
 
