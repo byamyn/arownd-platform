@@ -2,10 +2,7 @@ import { useEffect, useId, useRef } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
-/**
- * نافذة تأكيد موحّدة للعمليات الحساسة.
- * تدير التركيز وتمنع الإغلاق العرضي أثناء تنفيذ العملية.
- */
+/** نافذة تأكيد موحّدة مع إدارة التركيز ومنع الإغلاق أثناء تنفيذ العملية. */
 export function ConfirmDialog({
   open,
   title,
@@ -33,10 +30,13 @@ export function ConfirmDialog({
   const dialogRef = useRef<HTMLDivElement>(null);
   const confirmRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
+  const cancelRef = useRef(onCancel);
+  const busyRef = useRef(busy);
+  cancelRef.current = onCancel;
+  busyRef.current = busy;
 
   useEffect(() => {
     if (!open) return;
-
     previousFocusRef.current =
       document.activeElement instanceof HTMLElement ? document.activeElement : null;
     confirmRef.current?.focus();
@@ -44,21 +44,19 @@ export function ConfirmDialog({
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        if (!busy) onCancel();
+        if (!busyRef.current) cancelRef.current();
         return;
       }
-
       if (event.key !== "Tab" || !dialogRef.current) return;
-      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+      const items = dialogRef.current.querySelectorAll<HTMLElement>(
         'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
       );
-      if (focusable.length === 0) {
+      if (!items.length) {
         event.preventDefault();
         return;
       }
-
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
+      const first = items[0];
+      const last = items[items.length - 1];
       if (event.shiftKey && document.activeElement === first) {
         event.preventDefault();
         last.focus();
@@ -73,10 +71,9 @@ export function ConfirmDialog({
       window.removeEventListener("keydown", onKey);
       previousFocusRef.current?.focus();
     };
-  }, [open, busy, onCancel]);
+  }, [open]);
 
   if (!open) return null;
-
   const cancel = () => {
     if (!busy) onCancel();
   };
