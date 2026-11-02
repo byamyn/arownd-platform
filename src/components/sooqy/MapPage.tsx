@@ -26,7 +26,10 @@ export function MapPage() {
   const [onlyVerified, setOnlyVerified] = useState(false);
   const [sort, setSort] = useState<Sort>("near");
   const [showFilters, setShowFilters] = useState(false);
-  const [navigationOrigin, setNavigationOrigin] = useState<{ lat: number; lng: number } | null>(null);
+  const [navigationOrigin, setNavigationOrigin] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const [navigationTarget, setNavigationTarget] = useState<{
     lat: number;
     lng: number;

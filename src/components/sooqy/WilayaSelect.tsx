@@ -148,7 +148,8 @@ export function WilayaButton({
         if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
         event.preventDefault();
         const direction = event.key === "ArrowDown" ? 1 : -1;
-        const nextIndex = currentIndex < 0 ? 0 : (currentIndex + direction + options.length) % options.length;
+        const nextIndex =
+          currentIndex < 0 ? 0 : (currentIndex + direction + options.length) % options.length;
         options[nextIndex]?.focus();
       }}
       style={dropdownStyle}
