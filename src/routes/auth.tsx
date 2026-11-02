@@ -203,60 +203,10 @@ function AuthPage() {
   return (
     <div
       dir={isRTL ? "rtl" : "ltr"}
-      className="min-h-dvh w-full bg-background text-foreground lg:grid lg:grid-cols-2"
+      className="min-h-dvh w-full bg-background text-foreground"
     >
-      <aside className="relative hidden min-h-dvh overflow-hidden bg-ink text-ink-foreground lg:flex lg:flex-col lg:justify-between lg:px-12 lg:py-10 xl:px-16 xl:py-12">
-        <div className="pointer-events-none absolute -end-40 top-1/4 size-[28rem] rounded-full border border-primary/15" />
-        <div className="pointer-events-none absolute -end-20 top-[31%] size-[22rem] rounded-full border border-primary/10" />
-        <div className="relative z-10">
-          <img
-            src="/2995.svg"
-            alt="Arownd"
-            loading="eager"
-            decoding="async"
-            className="h-12 w-auto"
-          />
-        </div>
-        <div className="relative z-10 max-w-xl py-16">
-          <p className="mb-6 text-xs font-semibold tracking-[0.22em] text-primary">
-            {t("auth_brand_eyebrow")}
-          </p>
-          <h1 className="max-w-lg text-5xl font-semibold leading-[1.35] tracking-tight xl:text-6xl">
-            {t("auth_brand_title")}
-          </h1>
-          <p className="mt-6 max-w-md text-base leading-8 text-ink-foreground/65">
-            {t("auth_brand_description")}
-          </p>
-          <div className="mt-12 flex items-center gap-3 text-sm text-ink-foreground/70">
-            <span className="size-2 rounded-full bg-primary" />
-            {t("auth_brand_footer")}
-          </div>
-        </div>
-        <div className="relative z-10 flex items-center justify-between border-t border-border pt-5 text-xs text-ink-foreground/45">
-          <span>Arownd</span>
-          <span>{t("auth_brand_tagline")}</span>
-        </div>
-      </aside>
-
-      <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-12 lg:py-10 xl:px-20">
+      <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-6 lg:py-10 xl:px-8">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
-          <div className="mb-8 overflow-hidden rounded-[var(--radius-card)] bg-ink px-6 py-6 text-ink-foreground lg:hidden">
-            <img
-              src="/2995.svg"
-              alt="Arownd"
-              loading="eager"
-              decoding="async"
-              className="h-9 w-auto"
-            />
-            <p className="mt-6 text-xs font-semibold tracking-[0.18em] text-primary">
-              {t("auth_brand_eyebrow")}
-            </p>
-            <h1 className="mt-3 text-2xl font-semibold leading-relaxed">{t("auth_brand_title")}</h1>
-            <p className="mt-2 text-sm leading-7 text-ink-foreground/65">
-              {t("auth_brand_description")}
-            </p>
-          </div>
-
           <header className="mb-7 flex items-center justify-between">
             <img
               src="/2994.svg"
