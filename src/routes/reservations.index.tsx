@@ -98,7 +98,7 @@ function ReservationsPage() {
             key={item.id}
             type="button"
             onClick={() => setTab(item.id)}
-            className={`min-h-10 shrink-0 rounded-full border px-4 text-sm font-semibold transition ${tab === item.id ? "border-accent-ink bg-primary text-accent-ink-foreground" : "border-border bg-card text-muted-foreground"}`}
+            className={`min-h-[var(--control-height-compact)] shrink-0 rounded-full border px-4 text-sm font-semibold transition ${tab === item.id ? "border-accent-ink bg-primary text-accent-ink-foreground" : "border-border bg-card text-muted-foreground"}`}
           >
             {item.label}
           </button>
@@ -108,7 +108,7 @@ function ReservationsPage() {
       {reservations.isLoading && (
         <div className="space-y-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-36 animate-pulse rounded-2xl border border-border bg-card" />
+            <div key={i} className="h-36 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
           ))}
         </div>
       )}
@@ -148,7 +148,7 @@ function ReservationsPage() {
           return (
             <article
               key={reservation.id}
-              className="relative overflow-hidden rounded-3xl border border-border bg-card "
+              className="relative overflow-hidden rounded-[var(--radius-card)] border border-border bg-card "
             >
               <div className="absolute inset-y-0 start-0 w-1 bg-primary" />
               <div className="space-y-4 p-4">
@@ -169,7 +169,7 @@ function ReservationsPage() {
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-dashed border-primary/40 bg-primary-soft p-4 text-center">
+                <div className="rounded-[var(--radius-card)] border border-dashed border-primary/40 bg-primary-soft p-4 text-center">
                   <p className="text-caption font-semibold text-muted-foreground">رمز الحجز</p>
                   <p
                     className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground"
@@ -180,17 +180,17 @@ function ReservationsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-background p-3">
+                  <div className="rounded-[var(--radius-card)] bg-background p-3">
                     <p className="text-caption text-muted-foreground">الكمية</p>
                     <p className="mt-1 text-sm font-bold text-foreground">{reservation.quantity}</p>
                   </div>
-                  <div className="rounded-2xl bg-background p-3">
+                  <div className="rounded-[var(--radius-card)] bg-background p-3">
                     <p className="text-caption text-muted-foreground">سعر الوحدة</p>
                     <p className="mt-1 text-sm font-extrabold text-accent-ink">
                       {reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}
                     </p>
                   </div>
-                  <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
+                  <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-background p-3">
                     <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
                       <p className="text-caption text-muted-foreground">تاريخ الحجز</p>
@@ -199,7 +199,7 @@ function ReservationsPage() {
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
+                  <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-background p-3">
                     <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
                       <p className="text-caption text-muted-foreground">انتهاء الصلاحية</p>
@@ -230,7 +230,7 @@ function ReservationsPage() {
                         setCancellingId(null);
                       }
                     }}
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                   >
                     <XCircle className="size-4" />
                     {cancellingId === reservation.id ? "جارٍ الإلغاء..." : "إلغاء الحجز"}
@@ -254,7 +254,7 @@ function ReservationsPage() {
                         showError(error);
                       }
                     }}
-                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                   >
                     <Archive className="size-4" /> إخفاء من السجل
                   </button>
