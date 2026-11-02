@@ -429,7 +429,7 @@ function StoreSettingsPage() {
           </div>
         )}
         {!form.category && (
-          <p className="rounded-xl bg-warning-soft px-3 py-2 text-[11px] font-bold text-warning-foreground">
+          <p className="rounded-xl bg-warning-soft px-3 py-2 text-caption font-bold text-warning-foreground">
             ⚠️ لم يُحدَّد تصنيف المتجر بعد — اختر تصنيفًا رئيسيًا ليظهر متجرك في الأقسام المناسبة.
           </p>
         )}
