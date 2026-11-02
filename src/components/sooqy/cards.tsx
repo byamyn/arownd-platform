@@ -116,7 +116,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
           {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
         </p>
         {discount && (
-          <span className="rounded-full bg-danger-soft px-1.5 py-0.5 text-[11px] font-bold text-danger">
+          <span className="rounded-full bg-danger-soft px-1.5 py-0.5 text-caption font-bold text-danger">
             -{discountPct}%
           </span>
         )}
@@ -169,7 +169,7 @@ export function StoreCard({ s, distance }: { s: Store; distance?: number | null 
           <OpenBadge detailed status={status} />
           {s.rating > 0 && <RatingStars rating={s.rating} showValue />}
           {distance != null && (
-            <span className="text-[11px] font-semibold text-muted-foreground">
+            <span className="text-caption font-semibold text-muted-foreground">
               {formatKm(distance)}
             </span>
           )}
@@ -209,7 +209,7 @@ export function StoreRailCard({ s, distance }: { s: Store; distance?: number | n
           alt=""
           loading="lazy"
           decoding="async"
-          className="absolute -bottom-5 start-3 size-11 rounded-xl border-2 border-card bg-card object-cover shadow-soft"
+          className="absolute -bottom-5 start-3 size-11 rounded-xl border-2 border-card bg-card object-cover "
         />
       </div>
       <div className="space-y-1.5 px-3 pb-3 pt-7">
@@ -225,7 +225,7 @@ export function StoreRailCard({ s, distance }: { s: Store; distance?: number | n
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <OpenBadge open={status.isOpen} />
           {distance != null && (
-            <span className="text-[11px] font-semibold text-muted-foreground">
+            <span className="text-caption font-semibold text-muted-foreground">
               {formatKm(distance)}
             </span>
           )}
@@ -244,7 +244,7 @@ export function StoreMiniCard({ s, distance }: { s: Store; distance?: number | n
       <img src={logoUrl} alt={s.name} loading="lazy" className="w-5 h-5 rounded-md object-cover" />
       <span className="me-2 text-xs text-text truncate">{s.name}</span>
       {distance != null && (
-        <span className="me-auto text-[9px] text-muted-foreground">
+        <span className="me-auto text-caption text-muted-foreground">
           {t("unit_km", { distance })}
         </span>
       )}
@@ -265,7 +265,7 @@ export function OfferCard({ offer }: { offer: OfferFull }) {
       />
       <div className="me-3 flex-1 min-w-0">
         <p className="text-sm line-clamp-1 text-text truncate">{offer.product.name}</p>
-        <p className="text-[10px] font-bold text-accent">
+        <p className="text-caption font-bold text-accent">
           {offer.price !== undefined ? formatMoney(offer.price) : formatMoney(0)}
         </p>
       </div>
