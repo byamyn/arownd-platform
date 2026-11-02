@@ -81,7 +81,7 @@ function TrackPage() {
     );
   }
   if (orders.isLoading && !order) {
-    return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
+    return <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />;
   }
   if (!order) {
     return (
@@ -108,7 +108,7 @@ function TrackPage() {
         <button
           onClick={() => goBackOrTo(router, "/orders")}
           aria-label={t("common_back")}
-          className="icon-btn"
+          className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <ArrowRight className="size-5 ltr:rotate-180" />
         </button>
@@ -116,7 +116,7 @@ function TrackPage() {
       </header>
 
       {/* رمز التتبع */}
-      <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
         <p className="text-xs text-muted-foreground">
           {t("orders_code", { code: trackCode(order.id) })}
         </p>
@@ -139,7 +139,7 @@ function TrackPage() {
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
           <ol className="space-y-0">
             {STEPS.map((step, i) => {
               const done = i <= statusIdx;
@@ -192,7 +192,7 @@ function TrackPage() {
       )}
 
       {/* التفاصيل */}
-      <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <h2 className="text-section text-foreground">{t("track_details")}</h2>
         <div className="space-y-1.5">
           {(order.items ?? []).map((it) => (
@@ -225,7 +225,7 @@ function TrackPage() {
       </div>
 
       {/* العنوان */}
-      <div className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-start gap-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <MapPin className="mt-0.5 size-5 shrink-0 text-accent-ink" />
         <div className="text-sm">
           <p className="font-bold text-foreground">{order.full_name}</p>
@@ -246,7 +246,7 @@ function TrackPage() {
         />
       )}
       {orderShipments.length > 0 && (
-        <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
+        <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
           <h2 className="text-section text-foreground flex items-center gap-2">
             <TruckIcon className="size-5" /> {t("track_shipment_heading")}
           </h2>
