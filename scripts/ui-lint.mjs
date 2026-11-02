@@ -4,26 +4,21 @@
  * التشغيل: node scripts/ui-lint.mjs   (يخرج بكود 1 عند وجود أخطاء error)
  * القواعد error تكسر الفحص؛ warn دَين تقني يُعرض فقط.
  */
-import { readFileSync, readdirSync, statSync } from "node:fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { join, relative } from "node:path";
+import { fileURLToPath } from "node:url";
 
-const ROOT = new URL("..", import.meta.url).pathname;
-const SCAN = ["src/routes", "src/components/sooqy"];
+const ROOT = fileURLToPath(new URL("..", import.meta.url));
+const SCAN = ["src"];
 const files = [];
 (function walk(dir) {
+  if (!existsSync(dir)) return;
   for (const n of readdirSync(dir)) {
     const p = join(dir, n);
     if (statSync(p).isDirectory()) walk(p);
     else if (p.endsWith(".tsx")) files.push(p);
   }
 })(join(ROOT, SCAN[0]));
-(function walk(dir) {
-  for (const n of readdirSync(dir)) {
-    const p = join(dir, n);
-    if (statSync(p).isDirectory()) walk(p);
-    else if (p.endsWith(".tsx")) files.push(p);
-  }
-})(join(ROOT, SCAN[1]));
 
 const findings = [];
 const add = (level, rule, file, line, msg) =>
@@ -33,7 +28,6 @@ const isComment = (l) => /^\s*(\/\/|\*|\/\*|\{\/\*)/.test(l);
 const PHYS =
   /(?<![\w-])(?:[a-z0-9\[\]&:>*_-]+:)*-?(ml|mr|pl|pr|left|right)-(?=[\[0-9a]|px)|(?<![\w-])text-(left|right)\b/;
 const BRAND = /\b(SooQy|SOOQY|AROWND)\b/;
-const AR = /[\u0600-\u06FF]/;
 
 for (const f of files) {
   const src = readFileSync(f, "utf8");
@@ -91,6 +85,33 @@ for (const f of files) {
     if (/type="(tel|email)"/.test(tag) && !/autoComplete=/.test(tag))
       add("warn", "input-autocomplete", f, line, "أضف autoComplete (+ inputMode للهاتف)");
   }
+}
+
+// 9) ثوابت نظام التصميم: يمنع حذف الرموز الأساسية أو ضوابط الوصول دون ملاحظة.
+const stylesFile = join(ROOT, "src/styles.css");
+if (existsSync(stylesFile)) {
+  const css = readFileSync(stylesFile, "utf8");
+  const required = [
+    ["--color-bg-canvas", "رمز خلفية التطبيق"],
+    ["--color-action-primary", "رمز الإجراء الرئيسي"],
+    ["--color-action-ink", "رمز نص/أيقونة الإجراء"],
+    ["--space-1", "سلم المسافات"],
+    ["--radius-pill", "نصف قطر الأزرار والحقول"],
+    ["--radius-card", "نصف قطر البطاقات"],
+    ["--control-height", "ارتفاع عناصر التحكم"],
+    ["--touch-target-size", "الحد الأدنى لمساحة اللمس"],
+    [':root[data-theme="light"]', "المظهر الفاتح"],
+    [':root[data-theme="dark"]', "المظهر الداكن"],
+    [":focus-visible", "مؤشر التركيز المرئي"],
+    ["prefers-reduced-motion: reduce", "احترام تقليل الحركة"],
+  ];
+  for (const [needle, label] of required) {
+    if (!css.includes(needle)) {
+      add("error", "design-system-contract", stylesFile, 1, `مفقود من src/styles.css: ${label} (${needle})`);
+    }
+  }
+} else {
+  add("error", "design-system-contract", stylesFile, 1, "ملف src/styles.css غير موجود");
 }
 
 const errors = findings.filter((x) => x.level === "error");
