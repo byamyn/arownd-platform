@@ -55,33 +55,6 @@ const COMPRESSIBLE_TYPES = [
 /** حد حجم جسم الطلب (1 ميغابايت) */
 const MAX_BODY_SIZE = 1024 * 1024;
 
-/** نافذة تحديد المعدل: 60 طلباً في الدقيقة لكل IP */
-const RATE_LIMIT_WINDOW_MS = 60 * 1000;
-const RATE_LIMIT_MAX = 60;
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function getClientIp(req: IncomingMessage): string {
-  const forwarded = req.headers["x-forwarded-for"];
-  if (typeof forwarded === "string" && forwarded.length > 0) {
-    return forwarded.split(",")[0].trim();
-  }
-  return req.socket?.remoteAddress ?? "unknown";
-}
-
-function checkRateLimit(ip: string): { allowed: boolean; retryAfter?: number } {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
-    return { allowed: true };
-  }
-  entry.count++;
-  if (entry.count > RATE_LIMIT_MAX) {
-    return { allowed: false, retryAfter: Math.ceil((entry.resetAt - now) / 1000) };
-  }
-  return { allowed: true };
-}
-
 /** يضغط المحتوى إذا قبل العميل gzip والنوع قابل للضغط */
 function compressIfAccepted(
   body: Uint8Array,
@@ -217,26 +190,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
   const socket = req.socket as typeof req.socket & { encrypted?: boolean };
   const isHttps = isForwardedHttps || Boolean(socket.encrypted);
   try {
-    // تحديد المعدل لكل عنوان IP
-    const ip = getClientIp(req);
-    const rateLimit = checkRateLimit(ip);
-    if (!rateLimit.allowed) {
-      res.statusCode = 429;
-      res.setHeader("content-type", "text/html; charset=utf-8");
-      res.setHeader("retry-after", String(rateLimit.retryAfter ?? 60));
-      setSecurityHeaders(res, isHttps);
-      res.end(
-        `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">` +
-          `<meta name="viewport" content="width=device-width, initial-scale=1">` +
-          `<title>تم تجاوز الحد المسموح</title></head>` +
-          `<body style="font-family:system-ui,sans-serif;padding:24px;line-height:1.7;background:#F8FAFC;color:#111827">` +
-          `<h1 style="color:#4F46E5">تم تجاوز الحد المسموح للطلبات</h1>` +
-          `<p>يُرجى المحاولة مرة أخرى بعد <strong>${rateLimit.retryAfter ?? 60}</strong> ثانية.</p>` +
-          `</body></html>`,
-      );
-      return;
-    }
-
+    // Rate limiting is enforced at the Vercel Firewall edge (shared across instances).
     const host =
       (req.headers["x-forwarded-host"] as string) || (req.headers.host as string) || "localhost";
     const proto = (req.headers["x-forwarded-proto"] as string) || "https";
