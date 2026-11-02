@@ -288,15 +288,17 @@ npm run build:vercel
 
 | العنصر | القيمة |
 |---|---|
-| اللون البارز | Lime `#C6F36B` |
-| الخلفية الداكنة | `#0B0F0C` |
-| الاتجاه | العربية وRTL أولًا |
+| اللون البارز | Lime Signal `#C6F135` |
+| الخلفية الداكنة | `#0A0A0A` |
+| الخلفية الفاتحة | `#F5F5F5` (والبطاقات بيضاء) |
+| الخطوط | Inter وIBM Plex Sans Arabic |
+| الاتجاه | العربية وRTL أولًا مع دعم LTR |
 | النهج البصري | Hybrid Premium؛ واجهة هادئة وواضحة ومتناسقة |
 
 المراجع:
 
-- [BRAND.md](./BRAND.md) — دليل الهوية.
-- [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — نظام التصميم وقواعد الواجهة.
+- [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — دليل الهوية ونظام التصميم.
+- [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — دليل الهوية ونظام التصميم وقواعد الواجهة.
 
 ### قواعد عند تطوير الواجهة
 
@@ -353,7 +355,7 @@ npm run build:vercel
 ### وثائق المشروع
 
 - [AGENTS.md](./AGENTS.md) — قواعد المشروع واتفاقيات التطوير.
-- [BRAND.md](./BRAND.md) — دليل الهوية التجارية.
+- [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — دليل الهوية التجارية ونظام التصميم.
 - [docs/UI_SYSTEM.md](./docs/UI_SYSTEM.md) — نظام التصميم.
 - [DEPLOY-VERCEL.md](./DEPLOY-VERCEL.md) — دليل النشر على Vercel.
 - [docs/LAUNCH_1000_USERS.md](./docs/LAUNCH_1000_USERS.md) — جاهزية الإطلاق وخطة التوسع.
