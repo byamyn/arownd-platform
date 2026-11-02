@@ -142,7 +142,7 @@ function LatestStoreProductsPage() {
               key={offer.id}
               to="/products/$productId"
               params={{ productId: offer.product_id }}
-              className="group overflow-hidden rounded-2xl border border-border bg-card transition hover:-translate-y-0.5 hover:shadow-md"
+              className="group overflow-hidden rounded-2xl border border-border bg-card transition "
             >
               <div className="relative aspect-square bg-muted">
                 {primaryImage(offer.images) ? (
