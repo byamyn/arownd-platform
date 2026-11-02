@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useId, useRef } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 /**
- * نافذة تأكيد موحّدة للعمليات الحساسة (مثل الحذف).
- * تعمل باللمس على الهاتف: طبقة معتمة + بطاقة سفلية، مع إغلاق بمفتاح Escape.
+ * نافذة تأكيد موحّدة للعمليات الحساسة.
+ * تدير التركيز وتمنع الإغلاق العرضي أثناء تنفيذ العملية.
  */
 export function ConfirmDialog({
   open,
@@ -28,42 +28,87 @@ export function ConfirmDialog({
   onCancel: () => void;
 }) {
   const { t } = useTranslation();
+  const titleId = useId();
+  const messageId = useId();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const confirmRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onCancel();
+
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    confirmRef.current?.focus();
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        if (!busy) onCancel();
+        return;
+      }
+
+      if (event.key !== "Tab" || !dialogRef.current) return;
+      const focusable = dialogRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (focusable.length === 0) {
+        event.preventDefault();
+        return;
+      }
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
+
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onCancel]);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      previousFocusRef.current?.focus();
+    };
+  }, [open, busy, onCancel]);
 
   if (!open) return null;
+
+  const cancel = () => {
+    if (!busy) onCancel();
+  };
 
   return (
     <div
       className="fixed inset-0 z-[1200] flex items-end justify-center bg-[var(--color-overlay-scrim)] p-4 pb-8 sm:items-center"
-      onClick={onCancel}
+      onClick={cancel}
       role="presentation"
     >
       <div
+        ref={dialogRef}
         className="animate-scale-in w-full max-w-sm rounded-[var(--radius-card)] border border-border bg-card p-5"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(event) => event.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-labelledby={titleId}
+        aria-describedby={messageId}
       >
-        <h2 className="text-lg font-bold">{title}</h2>
-        <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{message}</p>
+        <h2 id={titleId} className="text-lg font-bold">{title}</h2>
+        <p id={messageId} className="mt-2 text-sm leading-relaxed text-muted-foreground">{message}</p>
         <div className="mt-5 grid grid-cols-2 gap-2">
           <button
             type="button"
-            onClick={onCancel}
+            onClick={cancel}
             disabled={busy}
             className="min-h-[var(--control-height)] rounded-[var(--radius-pill)] border border-border bg-background px-4 py-3 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
           >
             {cancelLabel ?? t("cancel")}
           </button>
           <button
+            ref={confirmRef}
             type="button"
             onClick={onConfirm}
             disabled={busy}
