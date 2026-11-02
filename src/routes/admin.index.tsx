@@ -57,10 +57,10 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  admin: "bg-red-100 text-red-700",
+  admin: "bg-danger-soft text-danger",
   merchant: "bg-indigo-100 text-indigo-700",
-  customer: "bg-green-100 text-green-700",
-  delivery_company: "bg-amber-100 text-amber-700",
+  customer: "bg-success-soft text-success",
+  delivery_company: "bg-warning-soft text-warning",
 };
 
 function BadgeRole({ role }: { role: string }) {
@@ -81,7 +81,7 @@ function BadgeApproved({ approved }: { approved: boolean }) {
     <span
       className={cn(
         "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold",
-        approved ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700",
+        approved ? "bg-success-soft text-success" : "bg-warning-soft text-warning",
       )}
     >
       {approved ? <Check className="size-3" /> : <Clock className="size-3" />}
@@ -259,7 +259,7 @@ function AdminDashboardPage() {
     return (
       <div className="p-6 text-center">
         <PageHeader title="لوحة الإدارة" back="/" />
-        <p className="mt-8 text-red-600">ليس لديك صلاحية الوصول إلى لوحة الإدارة</p>
+        <p className="mt-8 text-danger">ليس لديك صلاحية الوصول إلى لوحة الإدارة</p>
         <Link to="/" className="btn-secondary mt-4 inline-block">
           العودة للرئيسية
         </Link>
@@ -310,19 +310,19 @@ function AdminDashboardPage() {
             icon={StoreIcon}
             title="المتاجر"
             value={stats.data?.stores ?? "..."}
-            color="bg-green-50 text-green-600"
+            color="bg-success-soft text-success"
           />
           <StatCard
             icon={Package}
             title="الطلبات"
             value={stats.data?.orders ?? "..."}
-            color="bg-blue-50 text-blue-600"
+            color="bg-info-soft text-info"
           />
           <StatCard
             icon={Truck}
             title="شركات التوصيل"
             value={stats.data?.companies ?? "..."}
-            color="bg-amber-50 text-amber-600"
+            color="bg-warning-soft text-warning"
           />
 
           <Link
@@ -408,8 +408,8 @@ function AdminDashboardPage() {
               className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-green-50">
-                  <StoreIcon className="size-5 text-green-600" />
+                <div className="flex size-10 items-center justify-center rounded-full bg-success-soft">
+                  <StoreIcon className="size-5 text-success" />
                 </div>
                 <div>
                   <p className="font-bold">{s.name}</p>
@@ -419,7 +419,7 @@ function AdminDashboardPage() {
               <span
                 className={cn(
                   "rounded-full px-2 py-0.5 text-xs font-bold",
-                  s.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700",
+                  s.is_active ? "bg-success-soft text-success" : "bg-danger-soft text-danger",
                 )}
               >
                 {s.is_active ? "نشط" : "موقوف"}
@@ -459,8 +459,8 @@ function AdminDashboardPage() {
               className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-amber-50">
-                  <Truck className="size-5 text-amber-600" />
+                <div className="flex size-10 items-center justify-center rounded-full bg-warning-soft">
+                  <Truck className="size-5 text-warning" />
                 </div>
                 <div>
                   <p className="font-bold">{c.company_name}</p>
@@ -474,8 +474,8 @@ function AdminDashboardPage() {
                   className={cn(
                     "rounded-lg px-2 py-1 text-xs font-bold transition",
                     c.is_approved
-                      ? "bg-red-50 text-red-600 hover:bg-red-100"
-                      : "bg-green-50 text-green-600 hover:bg-green-100",
+                      ? "bg-red-50 text-danger hover:bg-red-100"
+                      : "bg-success-soft text-success hover:bg-green-100",
                   )}
                 >
                   {c.is_approved ? <X className="size-4" /> : <Check className="size-4" />}
