@@ -197,7 +197,7 @@ function ProfilePage() {
         keywords={t("profile_seo_keywords")}
         ogType="website"
       />
-      <AppShell className="space-y-5 pb-24 pt-6">
+      <AppShell className="mx-auto max-w-xl space-y-5 pb-24 pt-6">
         <PageHeader
           title={t("profile_hub_title")}
           subtitle={t("profile_hub_subtitle")}
