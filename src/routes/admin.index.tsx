@@ -286,8 +286,6 @@ function AdminDashboardPage() {
             role="tab"
             id={`admin-tab-${t.key}`}
             aria-selected={activeTab === t.key}
-            aria-controls={`admin-panel-${t.key}`}
-            tabIndex={activeTab === t.key ? 0 : -1}
             onClick={() => setActiveTab(t.key)}
             className={cn(
               "min-h-[var(--control-height)] flex-1 whitespace-nowrap rounded-[var(--radius-medium)] px-3 py-2 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
