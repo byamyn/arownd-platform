@@ -23,8 +23,8 @@ export function WilayaButton({
   const label = value == null ? allLabel : (current?.name_ar ?? String(value).padStart(2, "0"));
   const [isOpen, setIsOpen] = useState(false);
   const buttonRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const dropdownRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   useEffect(() => {
@@ -103,7 +103,7 @@ export function WilayaButton({
   if (!isOpen) return button;
 
   const dropdown = (
-    <ul
+    <div
       ref={(el) => {
         listRef.current = el;
         dropdownRef.current = el;
@@ -112,13 +112,13 @@ export function WilayaButton({
       aria-label="قائمة الولايات"
       style={dropdownStyle}
       className="min-w-[18rem] max-h-60 overflow-auto rounded-[var(--radius-control)] border border-border bg-card text-sm animate-fade-up"
-      onMouseDown={(e) => e.stopPropagation()} // Prevent click-outside from closing when clicking inside dropdown
     >
-      <li
+      <button
+        type="button"
         role="option"
         aria-selected={value == null}
         data-selected={value == null}
-        onMouseDown={() => handleSelect(null)} // Use onMouseDown to fire before document mousedown
+        onClick={() => handleSelect(null)}
         className={cn(
           "flex min-h-[var(--touch-target-size)] items-center gap-2 px-3 py-2.5 transition cursor-pointer",
           value == null ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-muted",
@@ -126,14 +126,15 @@ export function WilayaButton({
       >
         {value == null && <Check className="size-4 shrink-0 text-accent-ink" />}
         <span>{allLabel}</span>
-      </li>
+      </button>
       {data.map((w) => (
-        <li
+        <button
+          type="button"
           key={w.id}
           role="option"
           aria-selected={value === w.id}
           data-selected={value === w.id}
-          onMouseDown={() => handleSelect(w.id)} // Use onMouseDown to fire before document mousedown
+          onClick={() => handleSelect(w.id)}
           className={cn(
             "flex min-h-[var(--touch-target-size)] items-center gap-2 px-3 py-2.5 transition cursor-pointer",
             value === w.id
@@ -146,9 +147,9 @@ export function WilayaButton({
             {String(w.id).padStart(2, "0")}
           </span>
           <span>{w.name_ar}</span>
-        </li>
+        </button>
       ))}
-    </ul>
+    </div>
   );
   return (
     <>
