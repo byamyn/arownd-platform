@@ -27,7 +27,6 @@ self.addEventListener("install", (event) => {
       const cache = await caches.open(SHELL_CACHE);
       // نتجاهل فشل أي أصل منفرد حتى لا يفشل التثبيت كله.
       await Promise.allSettled(SHELL_ASSETS.map((url) => cache.add(url)));
-      await self.skipWaiting();
     })(),
   );
 });
