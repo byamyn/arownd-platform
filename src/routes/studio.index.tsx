@@ -848,7 +848,7 @@ function StudioPage() {
       {/* زر الإجراء الأساسي */}
       <button
         onClick={() => setMode("offers")}
-        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-bold text-primary-foreground shadow-soft transition active:scale-[0.98]"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 font-bold text-primary-foreground  transition active:scale-[var(--scale-pressed)]"
       >
         <PackagePlus className="size-5" /> إضافة منتج
       </button>
@@ -860,7 +860,7 @@ function StudioPage() {
           <button
             type="button"
             onClick={() => setMode("offers")}
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-neutral-100"
+            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
               <Package className="size-5" />
@@ -878,7 +878,7 @@ function StudioPage() {
           <button
             type="button"
             onClick={() => setMode("orders")}
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-neutral-100"
+            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
               <ShoppingBag className="size-5" />
@@ -898,7 +898,7 @@ function StudioPage() {
           </button>
           <Link
             to="/studio/settings"
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-neutral-100"
+            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
               <Store className="size-5" />
@@ -915,7 +915,7 @@ function StudioPage() {
           </Link>
           <Link
             to="/studio/settings"
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-neutral-100"
+            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
               <Clock className="size-5" />
@@ -933,7 +933,7 @@ function StudioPage() {
           <Link
             to="/stores/$storeId"
             params={{ storeId: store.data?.id ?? "" }}
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-neutral-100"
+            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
               <Eye className="size-5" />
