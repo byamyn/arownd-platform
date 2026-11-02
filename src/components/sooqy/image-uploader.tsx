@@ -56,14 +56,24 @@ export function ImageUploader({
   const handleFiles = useCallback(
     (fileList: FileList | null) => {
       if (!fileList) return;
-      const files = Array.from(fileList).filter((f) => ACCEPTED_TYPES.includes(f.type));
-      if (files.length === 0) return;
+      const selectedFiles = Array.from(fileList);
+      const files = selectedFiles.filter((file) => ACCEPTED_TYPES.includes(file.type));
+      const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+      const validFiles = files.filter((file) => file.size <= MAX_FILE_SIZE);
 
-      const availableSlots = maxFiles - items.length;
-      const toAdd = files.slice(0, availableSlots);
-      if (toAdd.length === 0) {
-        return;
+      if (selectedFiles.length !== files.length) {
+        toast.error("بعض الملفات ليست بصيغ صور مدعومة.");
       }
+      if (oversizedFiles.length > 0) {
+        toast.error("يجب ألا يتجاوز حجم الصورة الواحدة 10 ميغابايت.");
+      }
+
+      const availableSlots = Math.max(0, maxFiles - items.length);
+      const toAdd = validFiles.slice(0, availableSlots);
+      if (validFiles.length > availableSlots) {
+        toast.error(`يمكنك إضافة ${availableSlots} صورة إضافية فقط.`);
+      }
+      if (toAdd.length === 0) return;
 
       const hasPrimary = items.some((i) => i.isPrimary);
       const newItems = toAdd.map((f, idx) => ({
