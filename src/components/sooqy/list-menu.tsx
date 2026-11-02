@@ -25,7 +25,7 @@ export const MenuCard = React.memo(function MenuCard({
   return (
     <div
       className={cn(
-        "divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card",
+        "divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-border bg-card",
         className,
       )}
     >
@@ -80,16 +80,16 @@ export const MenuRow = React.memo(function MenuRow({
         {hint && <span className="block truncate text-xs text-muted-foreground">{hint}</span>}
       </span>
       {soon && (
-        <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+        <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-caption font-bold text-muted-foreground">
           {t("action_soon")}
         </span>
       )}
-      <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
+      <ChevronLeft className="size-4 shrink-0 text-muted-foreground" aria-hidden="true" />
     </>
   );
 
   const cls =
-    "flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted/40 disabled:opacity-50";
+    "flex min-h-[var(--touch-target-size)] w-full items-center gap-3 p-3.5 text-start transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-inset active:bg-muted/40 disabled:opacity-50";
 
   if (to) {
     return (
