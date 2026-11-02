@@ -604,7 +604,7 @@ function StudioPage() {
               </div>
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-2 sm:min-w-[250px]">
+          <div className="grid grid-cols-2 gap-2 sm:min-w-[var(--layout-studio-grid-min)]">
             <Link
               to="/studio/settings"
               className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-xs font-extrabold text-primary-foreground transition hover:brightness-95 active:scale-[var(--scale-pressed)]"
