@@ -42,7 +42,9 @@ function apply(resolved: Resolved, theme: Theme) {
 function readStoredTheme(): Theme {
   if (typeof window === "undefined") return "system";
   try {
-    const stored = window.localStorage.getItem(STORAGE_KEY) ?? window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    const stored =
+      window.localStorage.getItem(STORAGE_KEY) ??
+      window.localStorage.getItem(LEGACY_STORAGE_KEY);
     if (stored === "light" || stored === "dark" || stored === "system") return stored;
   } catch {
     // Storage may be unavailable in private browsing or restricted contexts.
