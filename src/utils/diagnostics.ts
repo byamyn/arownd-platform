@@ -286,5 +286,4 @@ export function initDiagnostics() {
     },
     true,
   );
-
 }
