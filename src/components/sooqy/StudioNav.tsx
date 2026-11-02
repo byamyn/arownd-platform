@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 export function StudioNav() {
   const { pathname } = useLocation();
   const { user } = useAuth();
-  const { t, isRTL } = useTranslation();
+  const { t } = useTranslation();
   const store = useQuery({
     queryKey: ["my-store"],
     queryFn: fetchMyStore,
@@ -24,40 +24,29 @@ export function StudioNav() {
   ] as const;
   const isStoreActive = !!store.data?.id && currentPath === `/stores/${store.data.id}`;
 
+  const navClass = (active: boolean) =>
+    cn(
+      "flex min-h-16 min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-medium transition-colors duration-200",
+      active ? "text-[var(--color-action-ink)]" : "text-muted-foreground active:bg-muted",
+    );
+
+  const iconClass = (active: boolean) =>
+    cn("flex size-9 items-center justify-center rounded-full", active ? "bg-muted" : "");
+
   return (
     <nav
       aria-label={t("studio_nav_aria")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t md:hidden border-border bg-card/90 pb-[env(safe-area-inset-bottom)] shadow-[0_-8px_28px_rgba(0,0,0,0.06)] backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
     >
-      <div
-        className={cn(
-          "mx-auto flex w-full max-w-2xl items-stretch gap-1 px-1",
-          isRTL ? "flex-row-reverse" : "",
-        )}
-      >
+      <div className="mx-auto flex h-16 w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
         {items.map(({ to, key, Icon }) => {
           const active = currentPath === to;
           return (
-            <Link
-              key={to}
-              to={to}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold transition-colors",
-                active
-                  ? "text-accent-ink"
-                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
-              )}
-            >
-              <span
-                className={cn(
-                  "flex size-8 items-center justify-center rounded-xl transition-colors",
-                  active ? "bg-primary/15" : "group-active:bg-muted",
-                )}
-              >
-                <Icon className="size-5 shrink-0" aria-hidden="true" />
+            <Link key={to} to={to} aria-current={active ? "page" : undefined} className={navClass(active)}>
+              <span className={iconClass(active)} aria-hidden="true">
+                <Icon className="size-5 shrink-0" />
               </span>
-              <span>{t(key)}</span>
+              <span className="w-full truncate text-center">{t(key)}</span>
             </Link>
           );
         })}
@@ -66,33 +55,23 @@ export function StudioNav() {
             to="/stores/$storeId"
             params={{ storeId: store.data.id }}
             aria-current={isStoreActive ? "page" : undefined}
-            className={cn(
-              "group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold transition-colors",
-              isStoreActive
-                ? "text-accent-ink"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground",
-            )}
+            className={navClass(isStoreActive)}
           >
-            <span
-              className={cn(
-                "flex size-8 items-center justify-center rounded-xl",
-                isStoreActive ? "bg-primary/15" : "group-active:bg-muted",
-              )}
-            >
-              <Store className="size-5 shrink-0" aria-hidden="true" />
+            <span className={iconClass(isStoreActive)} aria-hidden="true">
+              <Store className="size-5 shrink-0" />
             </span>
-            <span>{t("studio_nav_store")}</span>
+            <span className="w-full truncate text-center">{t("studio_nav_store")}</span>
           </Link>
         ) : (
           <Link
             to="/studio"
             aria-current={currentPath === "/studio" ? "page" : undefined}
-            className="group flex min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 py-2 text-[10px] font-bold text-muted-foreground"
+            className={navClass(currentPath === "/studio")}
           >
-            <span className="flex size-8 items-center justify-center rounded-xl">
-              <Store className="size-5 shrink-0" aria-hidden="true" />
+            <span className={iconClass(currentPath === "/studio")} aria-hidden="true">
+              <Store className="size-5 shrink-0" />
             </span>
-            <span>{t("studio_nav_store")}</span>
+            <span className="w-full truncate text-center">{t("studio_nav_store")}</span>
           </Link>
         )}
       </div>
