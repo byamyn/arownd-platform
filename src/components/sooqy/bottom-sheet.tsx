@@ -69,7 +69,8 @@ export function BottomSheet({
           "animate-fade-up flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden",
           "rounded-t-[var(--radius-sheet)] border-t border-border bg-card",
           "pb-[env(safe-area-inset-bottom)]",
-          modal && "animate-scale-in items-center rounded-[var(--radius-sheet)] border-t-0 max-w-[calc(100vw-2rem)]",
+          modal &&
+            "animate-scale-in items-center rounded-[var(--radius-sheet)] border-t-0 max-w-[calc(100vw-2rem)]",
           className,
         )}
         style={modal ? { width } : undefined}
