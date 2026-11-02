@@ -65,13 +65,6 @@ function describeArgs(args: unknown[]): string {
   return args.map(describe).join(" ");
 }
 
-function escapeHtml(text: string): string {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
 
 function pushLog(level: LogEntry["level"], args: unknown[]) {
   const text = describeArgs(args).slice(0, 600);
@@ -173,56 +166,120 @@ function buildContextText(): string {
 }
 
 function render(options: ShowOptions) {
-  const suppressedHtml =
-    suppressedCount > 0
-      ? `<p style="margin:6px 0 0;font-size:12px;color:#FCD34D;">+ ${suppressedCount} أخطاء أخرى في هذه الجلسة (تفاصيلها في سجل console)</p>`
-      : "";
-  const hintHtml = options.hint
-    ? `<p style="margin:10px 0 0;font-size:13px;line-height:1.7;color:#FCD34D;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:8px 10px;">${escapeHtml(options.hint)}</p>`
-    : "";
-
-  const html = `
-  <div style="max-width:640px;margin:0 auto;padding:18px 4px 32px;">
-    <div style="display:flex;align-items:center;gap:8px;">
-      <span style="font-size:22px;line-height:1;">⚠️</span>
-      <h1 style="margin:0;font-size:16px;font-weight:800;color:#FCA5A5;">${escapeHtml(options.title)}</h1>
-    </div>
-    <p style="margin:6px 0 0;font-size:12px;color:#94A3B8;" dir="ltr">${escapeHtml(
-      new Date().toISOString(),
-    )}</p>
-    ${suppressedHtml}
-    ${hintHtml}
-    <pre dir="ltr" style="white-space:pre-wrap;word-break:break-word;background:#0F172A;border:1px solid #1E293B;border-radius:12px;padding:12px;margin:12px 0 0;font-size:12px;line-height:1.6;max-height:38vh;overflow:auto;color:#F8FAFC;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">${escapeHtml(
-      options.detail.slice(0, 8_000),
-    )}</pre>
-    <details style="margin-top:10px;">
-      <summary style="cursor:pointer;font-size:12px;color:#94A3B8;">سياق التشغيل وسجل console</summary>
-      <pre dir="ltr" style="white-space:pre-wrap;word-break:break-word;background:#0F172A;border:1px solid #1E293B;border-radius:12px;padding:12px;margin:8px 0 0;font-size:11px;line-height:1.6;max-height:26vh;overflow:auto;color:#CBD5E1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;">${escapeHtml(
-        buildContextText().slice(0, 6_000),
-      )}</pre>
-    </details>
-    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;">
-      <button id="sse-reload" style="flex:1;min-width:130px;background:#6366F1;color:#fff;border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">إعادة المحاولة</button>
-      <button id="sse-copy" style="flex:1;min-width:130px;background:#1E293B;color:#E2E8F0;border:1px solid #334155;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">نسخ التفاصيل</button>
-      <button id="sse-close" style="flex:1;min-width:130px;background:transparent;color:#94A3B8;border:1px solid #334155;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;">إغلاق</button>
-    </div>
-  </div>`;
-
   whenBody(() => {
     let overlay = document.getElementById(OVERLAY_ID);
     if (!overlay) {
       overlay = document.createElement("div");
       overlay.id = OVERLAY_ID;
       overlay.setAttribute("dir", "rtl");
-      // أرقام z-index عالية عمدًا لتقاوم مكتبات الإشعارات
       overlay.style.cssText =
         "position:fixed;inset:0;z-index:2147483646;background:rgba(2,6,23,.95);color:#E2E8F0;overflow:auto;-webkit-overflow-scrolling:touch;font-family:Tajawal,system-ui,sans-serif;";
       document.body.appendChild(overlay);
     }
-    overlay.innerHTML = html;
+
+    const makeText = <K extends keyof HTMLElementTagNameMap>(
+      tag: K,
+      text: string,
+      style?: string,
+    ): HTMLElementTagNameMap[K] => {
+      const element = document.createElement(tag);
+      element.textContent = text;
+      if (style) element.style.cssText = style;
+      return element;
+    };
+
+    const wrapper = document.createElement("div");
+    wrapper.style.cssText = "max-width:640px;margin:0 auto;padding:18px 4px 32px;";
+
+    const heading = document.createElement("div");
+    heading.style.cssText = "display:flex;align-items:center;gap:8px;";
+    heading.append(
+      makeText("span", "⚠️", "font-size:22px;line-height:1;"),
+      makeText("h1", options.title, "margin:0;font-size:16px;font-weight:800;color:#FCA5A5;"),
+    );
+    wrapper.append(
+      heading,
+      makeText(
+        "p",
+        new Date().toISOString(),
+        "margin:6px 0 0;font-size:12px;color:#94A3B8;direction:ltr;",
+      ),
+    );
+
+    if (suppressedCount > 0) {
+      wrapper.append(
+        makeText(
+          "p",
+          `+ ${suppressedCount} أخطاء أخرى في هذه الجلسة (تفاصيلها في سجل console)`,
+          "margin:6px 0 0;font-size:12px;color:#FCD34D;",
+        ),
+      );
+    }
+
+    if (options.hint) {
+      wrapper.append(
+        makeText(
+          "p",
+          options.hint,
+          "margin:10px 0 0;font-size:13px;line-height:1.7;color:#FCD34D;background:rgba(251,191,36,.08);border:1px solid rgba(251,191,36,.25);border-radius:10px;padding:8px 10px;",
+        ),
+      );
+    }
+
+    wrapper.append(
+      makeText(
+        "pre",
+        options.detail.slice(0, 8_000),
+        "direction:ltr;white-space:pre-wrap;word-break:break-word;background:#0F172A;border:1px solid #1E293B;border-radius:12px;padding:12px;margin:12px 0 0;font-size:12px;line-height:1.6;max-height:38vh;overflow:auto;color:#F8FAFC;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;",
+      ),
+    );
+
+    const details = document.createElement("details");
+    details.style.marginTop = "10px";
+    details.append(
+      makeText(
+        "summary",
+        "سياق التشغيل وسجل console",
+        "cursor:pointer;font-size:12px;color:#94A3B8;",
+      ),
+      makeText(
+        "pre",
+        buildContextText().slice(0, 6_000),
+        "direction:ltr;white-space:pre-wrap;word-break:break-word;background:#0F172A;border:1px solid #1E293B;border-radius:12px;padding:12px;margin:8px 0 0;font-size:11px;line-height:1.6;max-height:26vh;overflow:auto;color:#CBD5E1;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;",
+      ),
+    );
+    wrapper.append(details);
+
+    const actions = document.createElement("div");
+    actions.style.cssText = "display:flex;flex-wrap:wrap;gap:8px;margin-top:14px;";
+    const makeButton = (id: string, label: string, style: string) => {
+      const button = makeText("button", label, style);
+      button.id = id;
+      button.type = "button";
+      return button;
+    };
+    actions.append(
+      makeButton(
+        "sse-reload",
+        "إعادة المحاولة",
+        "flex:1;min-width:130px;background:#6366F1;color:#fff;border:0;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;",
+      ),
+      makeButton(
+        "sse-copy",
+        "نسخ التفاصيل",
+        "flex:1;min-width:130px;background:#1E293B;color:#E2E8F0;border:1px solid #334155;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;",
+      ),
+      makeButton(
+        "sse-close",
+        "إغلاق",
+        "flex:1;min-width:130px;background:transparent;color:#94A3B8;border:1px solid #334155;border-radius:12px;padding:11px 14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;",
+      ),
+    );
+    wrapper.append(actions);
+    overlay.replaceChildren(wrapper);
     overlayOpen = true;
 
-    lastCopyText = `${options.title}\n\n${options.detail}\n\n---\n${buildContextText()}`;
+    lastCopyText = `${options.title}\\n\\n${options.detail}\\n\\n---\\n${buildContextText()}`;
 
     const reload = overlay.querySelector<HTMLButtonElement>("#sse-reload");
     const copy = overlay.querySelector<HTMLButtonElement>("#sse-copy");
