@@ -1051,7 +1051,7 @@ function StudioPage() {
               <button
                 onClick={addProduct}
                 disabled={busy}
-                className="min-h-12 rounded-[var(--radius-control)] bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
+                className="min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
               >
                 {busy ? "جارٍ الحفظ..." : "حفظ المنتج"}
               </button>
@@ -1206,7 +1206,7 @@ function StudioPage() {
                     className={cn(
                       "min-h-[var(--control-height-compact)] shrink-0 rounded-full border px-4 text-xs font-bold transition",
                       productFilter === f.id
-                        ? "border-primary bg-primary text-accent-ink-foreground"
+                        ? "border-primary bg-primary text-primary-foreground"
                         : "border-border bg-card text-muted-foreground",
                     )}
                   >
