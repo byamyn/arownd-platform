@@ -200,8 +200,7 @@ export function ImageUploader({
                 {item.isPrimary && (
                   <div
                     className={cn(
-                      "absolute top-2 left-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm",
-                      isRTL && "left-auto right-2",
+                      "absolute start-2 top-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm",
                     )}
                   >
                     <Pin className="size-3" /> أساسي
@@ -213,8 +212,7 @@ export function ImageUploader({
                   onClick={() => removeItem(index)}
                   aria-label="حذف الصورة"
                   className={cn(
-                    "absolute top-2 right-2 size-7 shrink-0 rounded-full bg-black/60 p-1 text-white transition hover:bg-black/80",
-                    isRTL && "right-auto left-2",
+                    "absolute end-2 top-2 size-7 shrink-0 rounded-full bg-black/60 p-1 text-white transition hover:bg-black/80",
                   )}
                 >
                   <Trash2 className="size-4" />
@@ -226,8 +224,7 @@ export function ImageUploader({
                     onClick={() => setPrimary(index)}
                     aria-label="تحديد كأساسية"
                     className={cn(
-                      "absolute bottom-2 left-2 size-7 shrink-0 rounded-full bg-white/90 p-1 text-foreground transition hover:bg-white",
-                      isRTL && "left-auto right-2",
+                      "absolute bottom-2 start-2 size-7 shrink-0 rounded-full bg-white/90 p-1 text-foreground transition hover:bg-white",
                     )}
                   >
                     <Pin className="size-4 text-accent-ink" />
