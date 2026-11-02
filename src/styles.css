@@ -242,8 +242,8 @@
   --radius-sm: var(--radius-small);
   --radius-md: var(--radius-medium);
   --radius-lg: var(--radius-control);
-  --radius-xl: var(--radius-large);
-  --radius-2xl: var(--radius-extra-large);
+  --radius-xl: var(--radius-control);
+  --radius-2xl: var(--radius-card);
   --radius-3xl: var(--radius-card);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -321,8 +321,10 @@
     letter-spacing: normal;
   }
   html[lang="ar"] body { line-height: var(--line-height-body-ar); }
-  html[lang="ar"] .text-body { font-size: 15px; }
-  html[lang="ar"] .text-caption { font-size: 13px; }
+  html[lang="ar"] .text-body,
+  html[lang="ar"] .text-sm { font-size: 15px; line-height: var(--line-height-body-small); }
+  html[lang="ar"] .text-caption,
+  html[lang="ar"] .text-xs { font-size: 13px; line-height: var(--line-height-caption); }
   body {
     margin: 0;
     background: var(--color-bg-canvas);
