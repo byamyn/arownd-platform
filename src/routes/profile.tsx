@@ -127,7 +127,7 @@ function ProfilePage() {
   if (!user && !public_id) {
     return (
       <AppShell className="flex min-h-[70vh] flex-col items-center justify-center gap-4 px-6 text-center">
-        <span className="flex size-20 items-center justify-center rounded-3xl bg-primary-soft">
+        <span className="flex size-20 items-center justify-center rounded-[var(--radius-card)] bg-primary-soft">
           <User className="size-9 text-accent-ink" strokeWidth={1.6} />
         </span>
         <h1 className="text-h1 text-foreground">سجّل الدخول لعرض ملفك الشخصي</h1>
@@ -234,7 +234,7 @@ function ProfilePage() {
         )}
 
         {/* بطاقة الهوية: غلاف + صورة متداخلة + بيانات + إحصاءات سريعة */}
-        <section className="overflow-hidden rounded-3xl border border-border bg-card ">
+        <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
           <div className="h-20 bg-gradient-to-br from-primary via-primary/70 to-primary-soft" />
           <div className="px-5 pb-5">
             <div className="-mt-10 flex items-end justify-between gap-3">
@@ -255,7 +255,7 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => avatarInputRef.current?.click()}
-                  className="absolute -bottom-1 -end-1 flex size-8 items-center justify-center rounded-full bg-primary text-accent-ink-foreground  ring-2 ring-card transition active:scale-95"
+                  className="absolute -bottom-1 -end-1 flex size-8 items-center justify-center rounded-full bg-primary text-accent-ink-foreground ring-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ring-card transition active:scale-95"
                   aria-label={t("profile_change_avatar")}
                 >
                   <Camera className="size-4" />
@@ -278,7 +278,7 @@ function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setEditing(true)}
-                className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-accent-ink-foreground  transition active:scale-95"
+                className="flex min-h-11 shrink-0 items-center gap-1.5 rounded-full bg-primary px-5 text-sm font-bold text-accent-ink-foreground transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <Pencil className="size-4" /> {t("profile_edit_button")}
               </button>
@@ -350,7 +350,7 @@ function ProfilePage() {
                 to={to}
                 className="card-premium flex min-h-24 flex-col items-center justify-center gap-1 p-3 text-center"
               >
-                <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+                <span className="flex size-9 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
                   <Icon className="size-4.5" aria-hidden="true" />
                 </span>
                 <span className="text-xs font-bold text-foreground">{label}</span>
@@ -407,7 +407,7 @@ function ProfilePage() {
                 onChange={(e) => setFullName(e.target.value)}
                 placeholder={t("profile_full_name_placeholder")}
                 autoComplete="name"
-                className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               />
             </div>
             <div>
@@ -425,7 +425,7 @@ function ProfilePage() {
                 inputMode="tel"
                 autoComplete="tel"
                 dir="ltr"
-                className="h-12 w-full rounded-xl border border-input bg-background px-3 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
               />
             </div>
             <div className="grid grid-cols-2 gap-3">
@@ -454,7 +454,7 @@ function ProfilePage() {
                   onChange={(e) => setCommune(e.target.value)}
                   placeholder={t("profile_commune_placeholder")}
                   autoComplete="address-level2"
-                  className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
                 />
               </div>
             </div>
