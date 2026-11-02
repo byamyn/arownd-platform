@@ -28,7 +28,7 @@ function PrivacyPage() {
 
       <PageHeader title="سياسة الخصوصية" subtitle="آخر تحديث: 16 أكتوبر 2026" />
 
-      <div className="space-y-3 text-[11px] leading-relaxed text-muted-foreground">
+      <div className="space-y-3 text-caption leading-relaxed text-muted-foreground">
         <p>
           البريد الرسمي:{" "}
           <a href="mailto:arownddz@gmail.com" className="font-semibold text-accent-ink underline">
