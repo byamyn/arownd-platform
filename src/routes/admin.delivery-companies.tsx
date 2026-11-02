@@ -36,6 +36,16 @@ function AdminDeliveryCompaniesPage() {
     enabled: !!user && ready,
   });
 
+  const mfaQuery = useQuery({
+    queryKey: ["admin-mfa-assurance", user?.id],
+    queryFn: async () => {
+      const { data, error } = await supabase.auth.mfa.getAuthenticatorAssuranceLevel();
+      if (error) throw error;
+      return data;
+    },
+    enabled: !!user && ready,
+  });
+
   const companiesQuery = useQuery({
     queryKey: ["admin-delivery-companies"],
     queryFn: async () => {
@@ -46,7 +56,7 @@ function AdminDeliveryCompaniesPage() {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
   });
 
   const coverageQuery = useQuery({
@@ -59,7 +69,7 @@ function AdminDeliveryCompaniesPage() {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
   });
 
   const unassignedShipmentsQuery = useQuery({
@@ -122,19 +132,19 @@ function AdminDeliveryCompaniesPage() {
         };
       });
     },
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
   });
 
   // تحديثات حية: شركات التوصيل والشحنات التي تنتظر الإسناد.
   useRealtimeSubscription({
     table: "delivery_companies",
     queryKeys: [["admin-delivery-companies"]],
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
   });
   useRealtimeSubscription({
     table: "shipments",
     queryKeys: [["admin-unassigned-shipments"]],
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
   });
 
   if (!ready) return null;
@@ -176,6 +186,27 @@ function AdminDeliveryCompaniesPage() {
         <p className="text-body text-muted-foreground">هذه الصفحة مخصصة لمديري المنصة فقط.</p>
         <Link to="/" className="btn-primary mt-4">
           العودة للرئيسية
+        </Link>
+      </div>
+    );
+  }
+
+  if (mfaQuery.isLoading) {
+    return <div className="p-6 text-center text-muted-foreground">جارٍ التحقق من المصادقة الثنائية...</div>;
+  }
+
+  if (mfaQuery.isError) {
+    return <div className="p-6 text-center text-danger">تعذر التحقق من مستوى أمان الجلسة.</div>;
+  }
+
+  if (mfaQuery.data?.currentLevel !== "aal2") {
+    return (
+      <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 px-6 text-center">
+        <ShieldCheck className="size-12 text-muted-foreground" />
+        <h1 className="text-h1 text-foreground">يلزم تفعيل المصادقة الثنائية</h1>
+        <p className="text-body text-muted-foreground">يجب تأكيد عامل مصادقة ثانٍ قبل الوصول إلى بيانات الإدارة.</p>
+        <Link to="/settings" className="btn-primary mt-4">
+          إعداد المصادقة الثنائية
         </Link>
       </div>
     );
