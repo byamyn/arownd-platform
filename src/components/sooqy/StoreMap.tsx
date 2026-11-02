@@ -409,7 +409,6 @@ const StoreMapComponent = React.memo(
           filter: ["has", "point_count"],
           layout: {
             "text-field": ["to-string", ["get", "point_count_abbreviated"]],
-            "text-font": ["Noto Sans Regular"],
             "text-size": 13,
             "text-font": ["Noto Sans Bold"],
             "text-allow-overlap": true,
@@ -545,7 +544,9 @@ const StoreMapComponent = React.memo(
               marker.setLngLat([item.longitude, item.latitude]);
               const glyph = marker.getElement().querySelector(".arownd-pin-dot span");
               if (glyph) glyph.textContent = categoryEmoji(item.category);
-              marker.getElement().setAttribute("aria-label", store.name ? `فتح متجر ${store.name}` : "فتح المتجر");
+              marker
+                .getElement()
+                .setAttribute("aria-label", store.name ? `فتح متجر ${store.name}` : "فتح المتجر");
               marker.getElement().title = store.name ?? "متجر";
             }
             applyMarkerStyle(marker.getElement(), activeId === id, String(store.name ?? ""));

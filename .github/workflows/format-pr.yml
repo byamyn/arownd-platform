@@ -9,15 +9,21 @@ permissions:
   contents: write
   actions: write
 
+concurrency:
+  group: format-pr-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   format:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           ref: ${{ github.ref_name }}
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
         with:
           node-version: 22
           cache: npm
@@ -49,8 +55,26 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           if ! git diff --quiet; then
-            git add src
+            git add \
+              src/components/sooqy/CommuneSelect.tsx \
+              src/components/sooqy/DynamicIsland.tsx \
+              src/components/sooqy/PwaPrompt.tsx \
+              src/components/sooqy/StoreMap.tsx \
+              src/components/sooqy/WilayaSelect.tsx \
+              src/components/sooqy/badges.tsx \
+              src/components/sooqy/merchant-onboarding.tsx \
+              src/diagnostics.tsx \
+              src/lib/auth.tsx \
+              src/lib/bag.tsx \
+              src/lib/dictionaries/studio.ts \
+              src/lib/theme.tsx \
+              'src/routes/category.$catId.tsx' \
+              src/routes/studio.index.tsx \
+              'src/routes/studio.orders.$orderId.tsx' \
+              src/routes/studio.settings.tsx \
+              src/routes/studio.shipments.tsx
             git commit -m "style: apply Prettier to existing lint violations"
-            git push origin "HEAD:${GITHUB_REF_NAME}"
+            auth="$(printf 'x-access-token:%s' "$GH_TOKEN" | base64 -w0)"
+            git -c http.extraheader="AUTHORIZATION: basic $auth" push origin "HEAD:${GITHUB_REF_NAME}"
           fi
           gh workflow run main-checks.yml --ref "${GITHUB_REF_NAME}"

@@ -2,8 +2,9 @@
 /**
  * تنظيف البيانات التجريبية (seed) من قاعدة بيانات SOOQY الحيوية.
  * الاستخدام:
- *   node scripts/cleanup-demo-data.mjs --dry-run   # يعرض الأعداد فقط دون حذف
- *   node scripts/cleanup-demo-data.mjs             # يحذف فعليًا
+ *   node scripts/cleanup-demo-data.mjs             # يعرض الأعداد فقط (آمن افتراضياً)
+ *   node scripts/cleanup-demo-data.mjs --execute --confirm-project=<project-ref>
+ *                                                  # حذف صريح بعد تأكيد مشروع Supabase
  * يحتاج SUPABASE_URL و SUPABASE_SERVICE_ROLE_KEY في /workspace/.env
  *
  * يحذف فقط الصفوف المعروفة من supabase/seed.sql (المتاجر بمعرّفات slug الثابتة
@@ -15,7 +16,11 @@ import path from "node:path";
 import { createClient } from "@supabase/supabase-js";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
-const DRY_RUN = process.argv.includes("--dry-run");
+const EXECUTE = process.argv.includes("--execute");
+const DRY_RUN = !EXECUTE;
+const confirmedProject = process.argv
+  .find((arg) => arg.startsWith("--confirm-project="))
+  ?.slice("--confirm-project=".length);
 
 function loadEnv() {
   try {
@@ -34,6 +39,21 @@ const url = process.env.SUPABASE_URL;
 const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
 if (!url || !key) {
   console.error("❌ SUPABASE_URL و SUPABASE_SERVICE_ROLE_KEY مطلوبان في /workspace/.env");
+  process.exit(1);
+}
+
+let projectRef;
+try {
+  projectRef = new URL(url).hostname.split(".")[0];
+} catch {
+  console.error("❌ SUPABASE_URL غير صالح");
+  process.exit(1);
+}
+
+if (EXECUTE && (!confirmedProject || confirmedProject !== projectRef)) {
+  console.error(
+    "❌ الحذف معطّل افتراضياً. للتنفيذ، مرّر --execute --confirm-project=" + projectRef,
+  );
   process.exit(1);
 }
 
@@ -89,7 +109,7 @@ async function countAndDeleteIn(table, column, ids) {
 
 async function main() {
   console.log(
-    DRY_RUN ? "🔍 وضع الاستعراض (--dry-run) — لن يُحذف شيء" : "🧹 تنظيف فعلي للبيانات التجريبية",
+    DRY_RUN ? "🔍 وضع الاستعراض الآمن — لن يُحذف شيء" : "🧹 تنفيذ حذف صريح للبيانات التجريبية",
   );
   console.log("🔌 الاتصال بـ Supabase ...");
 
@@ -144,7 +164,10 @@ async function main() {
   for (const [label, n] of report) console.log(`  ${label}: ${n}`);
   console.log(`\n${DRY_RUN ? "سَيُحذف" : "حُذف"} ${total} صفًا إجمالًا.`);
   if (DRY_RUN) {
-    console.log("\nلتنفيذ الحذف فعليًا: node scripts/cleanup-demo-data.mjs");
+    console.log(
+      "\nللتنفيذ الفعلي بعد مراجعة النتائج: node scripts/cleanup-demo-data.mjs --execute --confirm-project=" +
+        projectRef,
+    );
   } else {
     console.log("\n✅ اكتمل تنظيف البيانات التجريبية — لم يبقَ أي صف seed.");
   }
