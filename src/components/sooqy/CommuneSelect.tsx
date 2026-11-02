@@ -24,13 +24,15 @@ export function CommuneSelect({
   className?: string;
   required?: boolean;
 }) {
-  const { data = [] } = useQuery(communesQuery(wilayaId));
+  const { data = [], isLoading, isError, refetch } = useQuery(communesQuery(wilayaId));
   return (
+    <div className="w-full space-y-1">
     <select
       value={value ?? ""}
       required={required}
       aria-label="اختيار البلدية"
-      disabled={!wilayaId}
+      disabled={!wilayaId || isLoading || isError}
+      aria-busy={isLoading}
       onChange={(e) => onChange(e.target.value || null)}
       className={cn(
         "min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer disabled:opacity-50 focus:border-primary focus:ring-2 focus:ring-primary/10",
@@ -41,7 +43,13 @@ export function CommuneSelect({
         <option value="">{allLabel}</option>
       ) : (
         <option value="" disabled>
-          اختر البلدية
+          {!wilayaId
+            ? "اختر الولاية أولاً"
+            : isLoading
+              ? "جارٍ تحميل البلديات..."
+              : isError
+                ? "تعذر تحميل البلديات"
+                : "اختر البلدية"}
         </option>
       )}
       {data.map((c) => (
@@ -50,5 +58,15 @@ export function CommuneSelect({
         </option>
       ))}
     </select>
+    {isError && wilayaId != null && (
+      <button
+        type="button"
+        onClick={() => void refetch()}
+        className="text-xs font-semibold text-primary underline"
+      >
+        إعادة تحميل البلديات
+      </button>
+    )}
+    </div>
   );
 }
