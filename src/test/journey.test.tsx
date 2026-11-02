@@ -111,7 +111,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     fireEvent.click(follow);
 
     await waitFor(() => {
-      const favs = JSON.parse(localStorage.getItem("sooqy:favorites") ?? "{}") as {
+      const favs = JSON.parse(localStorage.getItem("arownd:favorites") ?? "{}") as {
         stores?: string[];
       };
       expect(favs.stores).toContain("store-1");
