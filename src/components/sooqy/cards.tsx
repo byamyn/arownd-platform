@@ -33,13 +33,13 @@ export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: 
         e.stopPropagation();
         toggleFavorite(kind, id);
       }}
-      className="flex size-8 items-center justify-center transition-transform duration-200 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+      className="absolute end-3 top-3 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 text-foreground transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <svg
         viewBox="0 0 24 24"
         className={cn(
           "size-5 transition-colors duration-200",
-          active ? "fill-rose-500 text-rose-500" : "fill-transparent text-muted-foreground",
+          active ? "fill-current text-accent-ink" : "fill-transparent text-muted-foreground",
         )}
         stroke="currentColor"
         strokeWidth="2"
@@ -78,14 +78,11 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       params={{ productId: g.product.id }}
       preload="intent"
       className={cn(
-        "group flex flex-col overflow-hidden rounded-2xl bg-card transition-all duration-200",
-        "border border-transparent",
-        level === "out"
-          ? "opacity-70 cursor-not-allowed pointer-events-none"
-          : "border-border hover:border-primary/20 hover:shadow-lift",
+        "group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+        level === "out" ? "opacity-70 cursor-not-allowed pointer-events-none" : "hover:border-ring",
       )}
     >
-      <div className="relative aspect-square overflow-hidden bg-neutral-100">
+      <div className="relative aspect-square overflow-hidden bg-muted">
         {g.image ? (
           <img
             src={g.image}
@@ -109,7 +106,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       </div>
 
       <div className="p-4 flex flex-col flex-1 gap-2">
-        <p className="text-sm line-clamp-2 text-text truncate">{g.product.name}</p>
+        <p className="text-body line-clamp-2 text-foreground truncate">{g.product.name}</p>
         {rating > 0 && (
           <div className="flex items-center gap-1">
             <RatingStars rating={rating} size="size-3" showValue />
@@ -119,12 +116,12 @@ export function ProductCard({ g }: { g: ProductGroup }) {
           {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
         </p>
         {discount && (
-          <span className="rounded-full bg-danger-soft px-1.5 py-0.5 text-[11px] font-bold text-danger">
+          <span className="rounded-full bg-danger-soft px-1.5 py-0.5 text-caption font-bold text-danger">
             -{discountPct}%
           </span>
         )}
         {level === "out" && (
-          <span className="rounded-lg bg-black/60 text-[10px] font-bold text-white px-2 py-0.5 backdrop-blur-sm">
+          <span className="rounded-full bg-danger px-3 py-1 text-caption font-semibold text-danger-foreground">
             {t("badge_stock_out")}
           </span>
         )}
@@ -143,7 +140,7 @@ export function StoreCard({ s, distance }: { s: Store; distance?: number | null 
     <Link
       to="/stores/$storeId"
       params={{ storeId: s.id }}
-      className="card-premium flex items-center gap-3 p-3"
+      className="card-premium flex items-center gap-3 p-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <img
         src={logoUrl}
@@ -172,7 +169,7 @@ export function StoreCard({ s, distance }: { s: Store; distance?: number | null 
           <OpenBadge detailed status={status} />
           {s.rating > 0 && <RatingStars rating={s.rating} showValue />}
           {distance != null && (
-            <span className="text-[11px] font-semibold text-muted-foreground">
+            <span className="text-caption font-semibold text-muted-foreground">
               {formatKm(distance)}
             </span>
           )}
@@ -197,7 +194,7 @@ export function StoreRailCard({ s, distance }: { s: Store; distance?: number | n
     <Link
       to="/stores/$storeId"
       params={{ storeId: s.id }}
-      className="card-premium group block w-56 shrink-0 overflow-hidden"
+      className="card-premium group block w-56 shrink-0 overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <div className="relative h-24 bg-muted">
         <img
@@ -212,7 +209,7 @@ export function StoreRailCard({ s, distance }: { s: Store; distance?: number | n
           alt=""
           loading="lazy"
           decoding="async"
-          className="absolute -bottom-5 start-3 size-11 rounded-xl border-2 border-card bg-card object-cover shadow-soft"
+          className="absolute -bottom-5 start-3 size-11 rounded-xl border-2 border-card bg-card object-cover "
         />
       </div>
       <div className="space-y-1.5 px-3 pb-3 pt-7">
@@ -228,7 +225,7 @@ export function StoreRailCard({ s, distance }: { s: Store; distance?: number | n
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
           <OpenBadge open={status.isOpen} />
           {distance != null && (
-            <span className="text-[11px] font-semibold text-muted-foreground">
+            <span className="text-caption font-semibold text-muted-foreground">
               {formatKm(distance)}
             </span>
           )}
@@ -247,7 +244,7 @@ export function StoreMiniCard({ s, distance }: { s: Store; distance?: number | n
       <img src={logoUrl} alt={s.name} loading="lazy" className="w-5 h-5 rounded-md object-cover" />
       <span className="me-2 text-xs text-text truncate">{s.name}</span>
       {distance != null && (
-        <span className="me-auto text-[9px] text-muted-foreground">
+        <span className="me-auto text-caption text-muted-foreground">
           {t("unit_km", { distance })}
         </span>
       )}
@@ -268,7 +265,7 @@ export function OfferCard({ offer }: { offer: OfferFull }) {
       />
       <div className="me-3 flex-1 min-w-0">
         <p className="text-sm line-clamp-1 text-text truncate">{offer.product.name}</p>
-        <p className="text-[10px] font-bold text-accent">
+        <p className="text-caption font-bold text-accent">
           {offer.price !== undefined ? formatMoney(offer.price) : formatMoney(0)}
         </p>
       </div>

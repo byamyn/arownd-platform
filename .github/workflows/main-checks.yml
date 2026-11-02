@@ -52,6 +52,9 @@ jobs:
       - name: ESLint
         run: npm run lint
 
+      - name: Arownd UI design-system lint
+        run: npm run ui:check
+
       - name: Vitest
         run: npm test
 

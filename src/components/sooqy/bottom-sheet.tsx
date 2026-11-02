@@ -1,4 +1,4 @@
-import { useEffect, useRef, type ReactNode } from "react";
+import { useEffect, useId, useRef, type ReactNode } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -36,28 +36,64 @@ export function BottomSheet({
 }: BottomSheetProps) {
   const { t } = useTranslation();
   const panelRef = useRef<HTMLDivElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+  const onCloseRef = useRef(onClose);
+  const titleId = useId();
+  onCloseRef.current = onClose;
 
   useEffect(() => {
     if (!open) return;
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+
+    previousFocusRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null;
+    closeButtonRef.current?.focus();
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onCloseRef.current();
+        return;
+      }
+      if (event.key !== "Tab" || !panelRef.current) return;
+
+      const focusable = panelRef.current.querySelectorAll<HTMLElement>(
+        'button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])',
+      );
+      if (!focusable.length) {
+        event.preventDefault();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (!panelRef.current.contains(document.activeElement)) {
+        event.preventDefault();
+        first.focus();
+      } else if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
     };
+
     window.addEventListener("keydown", onKey);
-    // منع تمرير الخلفية أثناء فتح الورقة
-    const prev = document.body.style.overflow;
+    const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = prev;
+      document.body.style.overflow = previousOverflow;
+      previousFocusRef.current?.focus();
     };
-  }, [open, onClose]);
+  }, [open]);
 
   if (!open) return null;
 
   return (
     <div
       className={cn(
-        "fixed inset-0 z-[1200] flex items-end justify-center bg-black/45",
+        "fixed inset-0 z-[1200] flex items-end justify-center bg-[var(--color-overlay-scrim)]",
         modal && "items-center",
       )}
       onClick={onClose}
@@ -67,16 +103,17 @@ export function BottomSheet({
         ref={panelRef}
         className={cn(
           "animate-fade-up flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden",
-          "rounded-t-3xl border-t border-border bg-card shadow-float",
+          "rounded-t-[var(--radius-sheet)] border-t border-border bg-card",
           "pb-[env(safe-area-inset-bottom)]",
-          modal && "animate-scale-in items-center rounded-3xl border-t-0 max-w-[calc(100vw-2rem)]",
+          modal &&
+            "animate-scale-in items-center rounded-[var(--radius-sheet)] border-t-0 max-w-[calc(100vw-2rem)]",
           className,
         )}
         style={modal ? { width } : undefined}
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
-        aria-label={title}
+        aria-labelledby={titleId}
       >
         {/* مقبض + رأس — في النمط المركّز لا نحتاج المقبض */}
         <div className="shrink-0 px-5 pt-3">
@@ -85,16 +122,19 @@ export function BottomSheet({
           )}
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
-              <h2 className="text-h3 text-foreground">{title}</h2>
+              <h2 id={titleId} className="text-h3 text-foreground">
+                {title}
+              </h2>
               {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
             </div>
             <button
+              ref={closeButtonRef}
               type="button"
               onClick={onClose}
               aria-label={t("aria_close")}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition active:scale-95"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
             >
-              <X className="size-4.5" />
+              <X className="size-4.5" aria-hidden="true" />
             </button>
           </div>
         </div>

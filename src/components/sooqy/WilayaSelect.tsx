@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, MapPin, Check } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { fetchWilayas } from "@/lib/sooqy";
 import { cn } from "@/lib/utils";
 
@@ -22,9 +22,10 @@ export function WilayaButton({
   const current = data.find((w) => w.id === value);
   const label = value == null ? allLabel : (current?.name_ar ?? String(value).padStart(2, "0"));
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownId = useId();
   const buttonRef = useRef<HTMLDivElement>(null);
-  const listRef = useRef<HTMLUListElement>(null);
-  const dropdownRef = useRef<HTMLUListElement>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
   const [dropdownStyle, setDropdownStyle] = useState<React.CSSProperties>({});
 
   useEffect(() => {
@@ -53,28 +54,50 @@ export function WilayaButton({
   useEffect(() => {
     if (isOpen && listRef.current) {
       const selected = listRef.current.querySelector("[data-selected]");
-      if (selected) selected.scrollIntoView({ block: "nearest", behavior: "auto" });
+      if (selected) {
+        selected.scrollIntoView({ block: "nearest", behavior: "auto" });
+        (selected as HTMLElement).focus();
+      }
     }
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen || !buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const left = Math.max(0, Math.min(rect.left, vw - 288 - 16));
-    setDropdownStyle({ position: "absolute", top: "100%", marginTop: 6, left, zIndex: 50 });
+    if (!isOpen) return;
+
+    const updatePosition = () => {
+      const anchor = buttonRef.current;
+      if (!anchor) return;
+      const rect = anchor.getBoundingClientRect();
+      const width = 288;
+      const left = Math.max(16, Math.min(rect.left, window.innerWidth - width - 16));
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 6,
+        left,
+        zIndex: 50,
+      });
+    };
+
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
   }, [isOpen]);
 
   const handleSelect = (wilayaId: number | null) => {
     onChange(wilayaId);
     setIsOpen(false);
+    buttonRef.current?.querySelector("button")?.focus();
   };
 
   const button = (
     <div
       ref={buttonRef}
       className={cn(
-        "relative inline-flex h-10 w-auto items-center rounded-full border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-neutral-100 active:bg-neutral-200 focus-within:ring-2 focus-within:ring-primary/30",
+        "relative inline-flex min-h-[var(--control-height-compact)] w-auto items-center rounded-full border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-muted active:bg-muted focus-within:ring-2 focus-within:ring-primary/30",
         className,
       )}
     >
@@ -94,6 +117,7 @@ export function WilayaButton({
         aria-label="اختيار الولاية"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-controls={dropdownId}
         onClick={() => setIsOpen(!isOpen)}
         className="absolute inset-0 h-full w-full cursor-pointer"
       />
@@ -103,42 +127,81 @@ export function WilayaButton({
   if (!isOpen) return button;
 
   const dropdown = (
-    <ul
+    <div
       ref={(el) => {
         listRef.current = el;
         dropdownRef.current = el;
       }}
+      id={dropdownId}
       role="listbox"
       aria-label="قائمة الولايات"
+      onKeyDown={(event) => {
+        const options = Array.from(
+          listRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]') ?? [],
+        );
+        const currentIndex = options.indexOf(document.activeElement as HTMLButtonElement);
+        if (event.key === "Escape") {
+          event.preventDefault();
+          setIsOpen(false);
+          buttonRef.current?.querySelector("button")?.focus();
+          return;
+        }
+        if (
+          event.key !== "ArrowDown" &&
+          event.key !== "ArrowUp" &&
+          event.key !== "Home" &&
+          event.key !== "End"
+        ) {
+          return;
+        }
+        event.preventDefault();
+        if (event.key === "Home") {
+          options[0]?.focus();
+          return;
+        }
+        if (event.key === "End") {
+          options[options.length - 1]?.focus();
+          return;
+        }
+        const direction = event.key === "ArrowDown" ? 1 : -1;
+        const nextIndex =
+          currentIndex < 0
+            ? direction > 0
+              ? 0
+              : options.length - 1
+            : (currentIndex + direction + options.length) % options.length;
+        options[nextIndex]?.focus();
+      }}
       style={dropdownStyle}
-      className="min-w-[18rem] max-h-60 overflow-auto rounded-xl border border-border bg-card text-sm shadow-lg animate-fade-up"
-      onMouseDown={(e) => e.stopPropagation()} // Prevent click-outside from closing when clicking inside dropdown
+      className="min-w-[18rem] max-h-60 overflow-auto rounded-[var(--radius-control)] border border-border bg-card text-sm animate-fade-up"
     >
-      <li
+      <button
+        type="button"
         role="option"
         aria-selected={value == null}
+        tabIndex={value == null ? 0 : -1}
         data-selected={value == null}
-        onMouseDown={() => handleSelect(null)} // Use onMouseDown to fire before document mousedown
+        onClick={() => handleSelect(null)}
         className={cn(
-          "flex items-center gap-2 px-3 py-2.5 transition cursor-pointer",
-          value == null ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-neutral-100",
+          "flex min-h-[var(--touch-target-size)] w-full items-center gap-2 px-3 py-2.5 text-start transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
+          value == null ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-muted",
         )}
       >
         {value == null && <Check className="size-4 shrink-0 text-accent-ink" />}
         <span>{allLabel}</span>
-      </li>
+      </button>
       {data.map((w) => (
-        <li
+        <button
+          type="button"
           key={w.id}
           role="option"
           aria-selected={value === w.id}
+          tabIndex={value === w.id ? 0 : -1}
           data-selected={value === w.id}
-          onMouseDown={() => handleSelect(w.id)} // Use onMouseDown to fire before document mousedown
+          onClick={() => handleSelect(w.id)}
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 transition cursor-pointer",
-            value === w.id
-              ? "bg-primary-soft text-accent-ink font-semibold"
-              : "hover:bg-neutral-100",
+            "flex min-h-[var(--touch-target-size)] w-full items-center gap-2 px-3 py-2.5 text-start transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
+            value === w.id ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-muted",
           )}
         >
           {value === w.id && <Check className="size-4 shrink-0 text-accent-ink" />}
@@ -146,9 +209,9 @@ export function WilayaButton({
             {String(w.id).padStart(2, "0")}
           </span>
           <span>{w.name_ar}</span>
-        </li>
+        </button>
       ))}
-    </ul>
+    </div>
   );
   return (
     <>
@@ -182,7 +245,7 @@ export function WilayaSelect({
         aria-label="اختيار الولاية"
         onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
         className={cn(
-          "h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/10",
+          "min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/10",
           className,
         )}
       >

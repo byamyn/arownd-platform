@@ -32,7 +32,7 @@ function CreateStorePage() {
     return (
       <div className="mx-auto max-w-xl px-4 pb-6 pt-4">
         <PageHeader title="أصبح تاجر" back="/settings" />
-        <div className="mt-6 rounded-2xl border border-border bg-card p-6 text-center">
+        <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-card p-6 text-center">
           <p className="text-body text-muted-foreground">يرجى تسجيل الدخول لإنشاء متجر</p>
           <Link
             to="/auth"

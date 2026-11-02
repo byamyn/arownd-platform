@@ -97,49 +97,63 @@ export function MerchantOnboarding({
         <p className="text-sm text-muted-foreground">منصة Arownd للتجار</p>
         <h1 className="text-2xl font-bold">أنشئ متجر Arownd</h1>
       </div>
-      <div className="space-y-3 rounded-3xl bg-card p-4 shadow-soft">
+      <div className="space-y-3 rounded-[var(--radius-card)] bg-card p-4 ">
         <input
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           placeholder="اسم المتجر"
-          className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          aria-label="اسم المتجر"
+          autoComplete="organization"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <input
           value={form.phone}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
           placeholder="هاتف المتجر"
-          className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          aria-label="هاتف المتجر"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <input
           value={form.whatsapp}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
           placeholder="واتساب"
-          className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          aria-label="رقم واتساب"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <WilayaSelect
           value={form.wilaya_id}
           onChange={(wilaya_id) => setForm({ ...form, wilaya_id })}
           required
-          className="h-11 w-full"
+          className="h-[var(--control-height)] w-full"
         />
         <input
           value={form.commune}
           onChange={(e) => setForm({ ...form, commune: e.target.value })}
           placeholder="البلدية"
-          className="h-11 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          aria-label="البلدية"
+          autoComplete="address-level2"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <textarea
           value={form.address_line}
           onChange={(e) => setForm({ ...form, address_line: e.target.value })}
           rows={3}
           placeholder="العنوان"
-          className="w-full rounded-xl border border-input bg-background px-3 py-2 outline-none transition focus:ring-2 focus:ring-primary/30"
+          aria-label="العنوان التفصيلي"
+          autoComplete="street-address"
+          className="w-full min-h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
 
-        <div className="space-y-3 rounded-2xl border border-border bg-background/60 p-3">
+        <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-background/60 p-3">
           <div>
             <p className="text-sm font-bold text-foreground">تصنيف المتجر</p>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               اختر التصنيف الرئيسي لنشاطك، ثم الفئات الفرعية التي تبيعها.
             </p>
           </div>
@@ -174,12 +188,12 @@ export function MerchantOnboarding({
           )}
         </div>
 
-        <div className="rounded-xl border border-dashed border-accent-ink/40 bg-primary-soft/30 p-3">
+        <div className="rounded-[var(--radius-control)] border border-dashed border-accent-ink/40 bg-primary-soft/30 p-3">
           <p className="mb-1 text-xs font-bold text-accent-ink flex items-center gap-1">
             <MapPin className="size-4 shrink-0" /> موقع المتجر على الخريطة{" "}
             <span className="font-medium">(اختياري)</span>
           </p>
-          <p className="mb-2 text-[11px] leading-relaxed text-muted-foreground">
+          <p className="mb-2 text-caption leading-relaxed text-muted-foreground">
             يمكنك فتح المتجر الآن دون تحديد الموقع، وإضافته لاحقًا من «تخصيص المتجر». المتاجر بدون
             موقع تعمل عادةً، لكنها لا تظهر على الخريطة.
           </p>
@@ -187,7 +201,7 @@ export function MerchantOnboarding({
             type="button"
             onClick={locate}
             disabled={locating}
-            className="w-full rounded-xl bg-primary py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
+            className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
           >
             {locating ? "جارٍ تحديد الموقع..." : "تحديد موقعي الحالي"}
           </button>
@@ -201,9 +215,10 @@ export function MerchantOnboarding({
                 })
               }
               placeholder="خط العرض"
+              aria-label="خط العرض"
               inputMode="decimal"
               dir="ltr"
-              className="h-10 rounded-lg border border-input bg-background px-2 text-end text-xs outline-none focus:ring-2 focus:ring-primary/30"
+              className="h-[var(--control-height)] rounded-full border border-input bg-background px-3 text-end text-xs outline-none focus:border-ring focus:ring-2 focus:ring-ring"
             />
             <input
               value={form.longitude ?? ""}
@@ -214,13 +229,14 @@ export function MerchantOnboarding({
                 })
               }
               placeholder="خط الطول"
+              aria-label="خط الطول"
               inputMode="decimal"
               dir="ltr"
-              className="h-10 rounded-lg border border-input bg-background px-2 text-end text-xs outline-none focus:ring-2 focus:ring-primary/30"
+              className="h-[var(--control-height)] rounded-full border border-input bg-background px-3 text-end text-xs outline-none focus:border-ring focus:ring-2 focus:ring-ring"
             />
           </div>
           {form.latitude != null && form.longitude != null && (
-            <p className="mt-2 text-[11px] font-bold text-success flex items-center gap-1">
+            <p className="mt-2 text-caption font-bold text-success flex items-center gap-1">
               <Check className="size-3" /> سيظهر متجرك على الخريطة
             </p>
           )}
@@ -229,21 +245,24 @@ export function MerchantOnboarding({
         <div className="grid grid-cols-2 gap-2">
           <input
             type="time"
+            aria-label="وقت فتح المتجر"
             value={form.open}
             onChange={(e) => setForm({ ...form, open: e.target.value })}
-            className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <input
             type="time"
+            aria-label="وقت إغلاق المتجر"
             value={form.close}
             onChange={(e) => setForm({ ...form, close: e.target.value })}
-            className="h-11 rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
         </div>
         <button
+          type="button"
           onClick={submit}
           disabled={busy}
-          className="w-full rounded-2xl bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50"
+          className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
         >
           {busy ? "جارٍ الإعداد..." : "فتح المتجر"}
         </button>

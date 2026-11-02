@@ -134,13 +134,6 @@ const StoreMapComponent = React.memo(
   >(function StoreMapComponent({ center, user, stores = [], activeId, onSelect }, ref) {
     const mapRef = useRef<maplibregl.Map | null>(null);
     const initialCenterRef = useRef(center);
-    // Expose map instance to parent via ref
-    useEffect(() => {
-      if (ref && typeof ref === "object" && "current" in ref) {
-        ref.current = mapRef.current;
-      }
-    }, [ref]);
-
     const containerRef = useRef<HTMLDivElement>(null);
     const markersRef = useRef<Map<string, maplibregl.Marker>>(new Map());
     const userMarkerRef = useRef<maplibregl.Marker | null>(null);
@@ -213,6 +206,8 @@ const StoreMapComponent = React.memo(
       });
 
       mapRef.current = map;
+      if (typeof ref === "function") ref(map);
+      else if (ref && typeof ref === "object") ref.current = map;
 
       // إجبار تغيير الحجم بعد إنشاء الخريطة (الحاوية قد تكون 1px أثناء Suspense)
       requestAnimationFrame(() => map.resize());
@@ -314,10 +309,12 @@ const StoreMapComponent = React.memo(
         userMarkerRef.current = null;
         mapRef.current?.remove();
         mapRef.current = null;
+        if (typeof ref === "function") ref(null);
+        else if (ref && typeof ref === "object") ref.current = null;
         roMap.disconnect();
         clearInterval(checkInterval);
       };
-    }, [attempt]);
+    }, [attempt, ref]);
 
     useEffect(() => {
       const map = mapRef.current;

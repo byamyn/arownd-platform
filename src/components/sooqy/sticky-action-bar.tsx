@@ -10,11 +10,11 @@ export function StickyActionBar({ children, className }: StickyActionBarProps) {
   return (
     <div
       className={cn(
-        "fixed inset-x-0 bottom-[calc(4rem+env(safe-area-inset-bottom))] z-30 px-4",
+        "fixed inset-x-0 bottom-[calc(var(--nav-height)+env(safe-area-inset-bottom))] z-30 px-[var(--margin)]",
         className,
       )}
     >
-      <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card/95 p-3 shadow-lift backdrop-blur">
+      <div className="mx-auto max-w-xl rounded-[var(--radius-card)] border border-border bg-card/95 p-3 backdrop-blur">
         {children}
       </div>
     </div>

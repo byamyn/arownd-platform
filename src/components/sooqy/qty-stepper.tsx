@@ -34,7 +34,7 @@ export function QtyStepper({
         onClick={() => onChange(Math.max(min, value - 1))}
         disabled={disabled || value <= min}
         className={cn(
-          "flex size-8 items-center justify-center rounded-full text-foreground transition hover:bg-neutral-100 disabled:opacity-40",
+          "flex size-11 items-center justify-center rounded-full text-foreground transition hover:bg-muted disabled:opacity-40",
           isRTL && "rotate-180",
         )}
       >
@@ -49,7 +49,7 @@ export function QtyStepper({
         onClick={() => onChange(Math.min(max, value + 1))}
         disabled={disabled || value >= max}
         className={cn(
-          "flex size-8 items-center justify-center rounded-full text-foreground transition hover:bg-neutral-100 disabled:opacity-40",
+          "flex size-11 items-center justify-center rounded-full text-foreground transition hover:bg-muted disabled:opacity-40",
           isRTL && "rotate-180",
         )}
       >

@@ -150,7 +150,9 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (roleQuery.isLoading)
-    return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
+    return (
+      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+    );
 
   if (roleQuery.isError) {
     return (
@@ -180,7 +182,9 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (companiesQuery.isLoading) {
-    return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
+    return (
+      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+    );
   }
 
   if (companiesQuery.isError) {
@@ -261,13 +265,18 @@ function AdminDeliveryCompaniesPage() {
   return (
     <div className="space-y-4 px-4 pt-4">
       <header className="flex items-center gap-2 py-1">
-        <button onClick={() => goBackOrTo(router, "/admin")} aria-label="رجوع" className="icon-btn">
+        <button
+          type="button"
+          onClick={() => goBackOrTo(router, "/admin")}
+          aria-label="رجوع"
+          className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+        >
           <ArrowRight className="size-5" />
         </button>
         <h1 className="text-h1 text-foreground">إدارة شركات التوصيل</h1>
       </header>
 
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-section font-bold text-foreground">
             {t("admin_unassigned_shipments_heading")}
@@ -277,7 +286,7 @@ function AdminDeliveryCompaniesPage() {
           </span>
         </div>
         {unassignedShipmentsQuery.isLoading || coverageQuery.isLoading ? (
-          <div className="h-24 animate-pulse rounded-xl bg-muted" />
+          <div className="h-24 animate-pulse rounded-[var(--radius-control)] bg-muted" />
         ) : unassignedShipmentsQuery.isError || coverageQuery.isError ? (
           <ErrorState
             scope="admin:delivery:unassigned"
@@ -288,7 +297,7 @@ function AdminDeliveryCompaniesPage() {
             }}
           />
         ) : unassignedShipments.length === 0 ? (
-          <p className="rounded-xl bg-background p-4 text-sm text-muted-foreground">
+          <p className="rounded-[var(--radius-control)] bg-background p-4 text-sm text-muted-foreground">
             {t("admin_unassigned_shipments_empty")}
           </p>
         ) : (
@@ -298,7 +307,7 @@ function AdminDeliveryCompaniesPage() {
               return (
                 <article
                   key={shipment.id}
-                  className="space-y-3 rounded-xl border border-border bg-background p-3"
+                  className="space-y-3 rounded-[var(--radius-control)] border border-border bg-background p-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 space-y-1">
@@ -321,6 +330,7 @@ function AdminDeliveryCompaniesPage() {
                   {eligibleCompanies.length > 0 ? (
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <select
+                        aria-label={`${t("admin_assign_company_placeholder")} — ${shipment.store?.name ?? t("orders_store_quote_heading")}`}
                         value={assignmentSelection[shipment.id] ?? ""}
                         onChange={(event) =>
                           setAssignmentSelection((current) => ({
@@ -328,7 +338,7 @@ function AdminDeliveryCompaniesPage() {
                             [shipment.id]: event.target.value,
                           }))
                         }
-                        className="h-11 min-w-0 flex-1 rounded-xl border border-input bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                        className="min-h-[var(--control-height)] min-w-0 flex-1 rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <option value="">{t("admin_assign_company_placeholder")}</option>
                         {eligibleCompanies.map((company) => (
@@ -343,7 +353,7 @@ function AdminDeliveryCompaniesPage() {
                           !assignmentSelection[shipment.id] || assigningShipmentId === shipment.id
                         }
                         onClick={() => void assignShipment(shipment.id)}
-                        className="min-h-11 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                        className="min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {assigningShipmentId === shipment.id
                           ? t("studio_saving")
@@ -362,7 +372,7 @@ function AdminDeliveryCompaniesPage() {
         )}
       </section>
 
-      <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
         <p className="text-body text-muted-foreground mb-4">
           قائمة شركات التوصيل المسجلة. اعتمد الشركات لتتمكن من استقبال طلبات الشحن داخل التطبيق.
         </p>
@@ -376,7 +386,7 @@ function AdminDeliveryCompaniesPage() {
             {(companies ?? []).map((company) => (
               <div
                 key={company.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background p-3"
+                className="flex items-center justify-between gap-3 rounded-[var(--radius-control)] border border-border bg-background p-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="flex shrink-0 items-center justify-center size-8 rounded-full bg-primary/10 text-accent-ink">
@@ -399,9 +409,11 @@ function AdminDeliveryCompaniesPage() {
                 <div className="flex items-center gap-2">
                   <BadgeStatus isApproved={company.is_approved} />
                   <button
+                    type="button"
+                    aria-label={`${company.is_approved ? "إلغاء اعتماد" : "اعتماد"} ${company.company_name}`}
                     onClick={() => handleToggleApproval(company.id, company.is_approved)}
                     className={cn(
-                      "rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-soft",
+                      "min-h-11 rounded-[var(--radius-control)] px-3 py-2 text-caption font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 ",
                       company.is_approved
                         ? "bg-primary text-accent-ink-foreground hover:bg-primary/90"
                         : "bg-primary/10 text-accent-ink hover:bg-primary",
@@ -428,9 +440,7 @@ function BadgeStatus({ isApproved }: { isApproved: boolean }) {
     <span
       className={cn(
         "inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold",
-        isApproved
-          ? "bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400"
-          : "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+        isApproved ? "bg-success-soft text-success" : "bg-warning-soft text-warning",
       )}
     >
       {isApproved ? "معتمد" : "قيد المراجعة"}

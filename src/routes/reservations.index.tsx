@@ -9,6 +9,7 @@ import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
+import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 
 export const Route = createFileRoute("/reservations/")({
   head: () => ({}),
@@ -16,6 +17,7 @@ export const Route = createFileRoute("/reservations/")({
 });
 
 type ReservationTab = "all" | "active" | "ended" | "cancelled";
+type PendingConfirmation = { title: string; message: string; action: () => Promise<void> };
 
 function isExpired(reservation: { status: string; expires_at: string }) {
   return (
@@ -43,11 +45,26 @@ function ReservationsPage() {
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<ReservationTab>("all");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation | null>(null);
+  const [confirmationBusy, setConfirmationBusy] = useState(false);
   const reservations = useQuery({
     queryKey: ["my-reservations"],
     queryFn: fetchMyReservations,
     enabled: !!user,
   });
+
+  const runPendingConfirmation = async () => {
+    if (!pendingConfirmation || confirmationBusy) return;
+    setConfirmationBusy(true);
+    try {
+      await pendingConfirmation.action();
+      setPendingConfirmation(null);
+    } catch (error) {
+      showError(error);
+    } finally {
+      setConfirmationBusy(false);
+    }
+  };
 
   if (!ready) return null;
   if (!user) {
@@ -98,7 +115,7 @@ function ReservationsPage() {
             key={item.id}
             type="button"
             onClick={() => setTab(item.id)}
-            className={`min-h-10 shrink-0 rounded-full border px-4 text-sm font-semibold transition ${tab === item.id ? "border-accent-ink bg-primary text-accent-ink-foreground" : "border-border bg-card text-muted-foreground"}`}
+            className={`min-h-[var(--control-height-compact)] shrink-0 rounded-full border px-4 text-sm font-semibold transition ${tab === item.id ? "border-accent-ink bg-primary text-accent-ink-foreground" : "border-border bg-card text-muted-foreground"}`}
           >
             {item.label}
           </button>
@@ -108,7 +125,10 @@ function ReservationsPage() {
       {reservations.isLoading && (
         <div className="space-y-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-36 animate-pulse rounded-2xl border border-border bg-card" />
+            <div
+              key={i}
+              className="h-36 animate-pulse rounded-[var(--radius-card)] border border-border bg-card"
+            />
           ))}
         </div>
       )}
@@ -148,7 +168,7 @@ function ReservationsPage() {
           return (
             <article
               key={reservation.id}
-              className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+              className="relative overflow-hidden rounded-[var(--radius-card)] border border-border bg-card "
             >
               <div className="absolute inset-y-0 start-0 w-1 bg-primary" />
               <div className="space-y-4 p-4">
@@ -163,14 +183,14 @@ function ReservationsPage() {
                     </p>
                   </div>
                   <span
-                    className={`shrink-0 rounded-full px-3 py-1.5 text-[11px] font-bold ${statusStyle}`}
+                    className={`shrink-0 rounded-full px-3 py-1.5 text-caption font-bold ${statusStyle}`}
                   >
                     {status}
                   </span>
                 </div>
 
-                <div className="rounded-2xl border border-dashed border-primary/40 bg-primary/5 p-4 text-center">
-                  <p className="text-[11px] font-semibold text-muted-foreground">رمز الحجز</p>
+                <div className="rounded-[var(--radius-card)] border border-dashed border-primary/40 bg-primary-soft p-4 text-center">
+                  <p className="text-caption font-semibold text-muted-foreground">رمز الحجز</p>
                   <p
                     className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground"
                     dir="ltr"
@@ -180,29 +200,29 @@ function ReservationsPage() {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
-                  <div className="rounded-2xl bg-background p-3">
-                    <p className="text-[11px] text-muted-foreground">الكمية</p>
+                  <div className="rounded-[var(--radius-card)] bg-background p-3">
+                    <p className="text-caption text-muted-foreground">الكمية</p>
                     <p className="mt-1 text-sm font-bold text-foreground">{reservation.quantity}</p>
                   </div>
-                  <div className="rounded-2xl bg-background p-3">
-                    <p className="text-[11px] text-muted-foreground">سعر الوحدة</p>
+                  <div className="rounded-[var(--radius-card)] bg-background p-3">
+                    <p className="text-caption text-muted-foreground">سعر الوحدة</p>
                     <p className="mt-1 text-sm font-extrabold text-accent-ink">
                       {reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}
                     </p>
                   </div>
-                  <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
+                  <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-background p-3">
                     <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-[11px] text-muted-foreground">تاريخ الحجز</p>
+                      <p className="text-caption text-muted-foreground">تاريخ الحجز</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
                         {formatDate(reservation.created_at)}
                       </p>
                     </div>
                   </div>
-                  <div className="flex items-start gap-2 rounded-2xl bg-background p-3">
+                  <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-background p-3">
                     <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-[11px] text-muted-foreground">انتهاء الصلاحية</p>
+                      <p className="text-caption text-muted-foreground">انتهاء الصلاحية</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
                         {expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}
                       </p>
@@ -214,23 +234,23 @@ function ReservationsPage() {
                   <button
                     type="button"
                     disabled={cancellingId === reservation.id}
-                    onClick={async () => {
-                      if (
-                        !window.confirm("هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.")
-                      )
-                        return;
-                      setCancellingId(reservation.id);
-                      try {
-                        await cancelMyReservation(reservation.id);
-                        await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                        showSuccess("تم إلغاء الحجز بنجاح.");
-                      } catch (error) {
-                        showError(error);
-                      } finally {
-                        setCancellingId(null);
-                      }
-                    }}
-                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                    onClick={() =>
+                      setPendingConfirmation({
+                        title: "إلغاء الحجز",
+                        message: "هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.",
+                        action: async () => {
+                          setCancellingId(reservation.id);
+                          try {
+                            await cancelMyReservation(reservation.id);
+                            await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                            showSuccess("تم إلغاء الحجز بنجاح.");
+                          } finally {
+                            setCancellingId(null);
+                          }
+                        },
+                      })
+                    }
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                   >
                     <XCircle className="size-4" />
                     {cancellingId === reservation.id ? "جارٍ الإلغاء..." : "إلغاء الحجز"}
@@ -239,22 +259,19 @@ function ReservationsPage() {
                 {archivable && (
                   <button
                     type="button"
-                    onClick={async () => {
-                      if (
-                        !window.confirm(
+                    onClick={() =>
+                      setPendingConfirmation({
+                        title: "إخفاء الحجز من السجل",
+                        message:
                           "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
-                        )
-                      )
-                        return;
-                      try {
-                        await archiveMyActivity("reservation", reservation.id);
-                        await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                        showSuccess("تم إخفاء الحجز من سجلك.");
-                      } catch (error) {
-                        showError(error);
-                      }
-                    }}
-                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                        action: async () => {
+                          await archiveMyActivity("reservation", reservation.id);
+                          await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
+                          showSuccess("تم إخفاء الحجز من سجلك.");
+                        },
+                      })
+                    }
+                    className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                   >
                     <Archive className="size-4" /> إخفاء من السجل
                   </button>
@@ -264,6 +281,16 @@ function ReservationsPage() {
           );
         })}
       </div>
+      <ConfirmDialog
+        open={pendingConfirmation !== null}
+        title={pendingConfirmation?.title ?? ""}
+        message={pendingConfirmation?.message ?? ""}
+        confirmLabel="تأكيد"
+        cancelLabel="إلغاء"
+        busy={confirmationBusy}
+        onConfirm={runPendingConfirmation}
+        onCancel={() => setPendingConfirmation(null)}
+      />
     </main>
   );
 }

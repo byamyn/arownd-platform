@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
@@ -57,17 +57,17 @@ const ROLE_LABELS: Record<string, string> = {
 };
 
 const ROLE_COLORS: Record<string, string> = {
-  admin: "bg-red-100 text-red-700",
-  merchant: "bg-indigo-100 text-indigo-700",
-  customer: "bg-green-100 text-green-700",
-  delivery_company: "bg-amber-100 text-amber-700",
+  admin: "bg-danger-soft text-danger",
+  merchant: "bg-info-soft text-info",
+  customer: "bg-success-soft text-success",
+  delivery_company: "bg-warning-soft text-warning",
 };
 
 function BadgeRole({ role }: { role: string }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2 py-0.5 text-xs font-bold",
+        "inline-flex items-center rounded-full px-2 py-1 text-caption font-bold",
         ROLE_COLORS[role] ?? "bg-gray-100 text-gray-700",
       )}
     >
@@ -80,8 +80,8 @@ function BadgeApproved({ approved }: { approved: boolean }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold",
-        approved ? "bg-green-100 text-green-700" : "bg-amber-100 text-amber-700",
+        "inline-flex min-h-8 items-center gap-1 rounded-full px-2 py-1 text-caption font-bold",
+        approved ? "bg-success-soft text-success" : "bg-warning-soft text-warning",
       )}
     >
       {approved ? <Check className="size-3" /> : <Clock className="size-3" />}
@@ -102,13 +102,18 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-surface p-4 shadow-soft">
-      <div className={cn("flex size-12 items-center justify-center rounded-xl", color)}>
+    <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-border/60 bg-card p-4">
+      <div
+        className={cn(
+          "flex size-12 items-center justify-center rounded-[var(--radius-control)]",
+          color,
+        )}
+      >
         <Icon className="size-6" />
       </div>
       <div>
         <p className="text-2xl font-extrabold">{value}</p>
-        <p className="text-sm text-ink-2">{title}</p>
+        <p className="text-sm text-muted-foreground">{title}</p>
       </div>
     </div>
   );
@@ -116,7 +121,6 @@ function StatCard({
 
 function AdminDashboardPage() {
   const { user, ready } = useAuth();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"overview" | "users" | "stores" | "companies">(
     "overview",
@@ -232,7 +236,7 @@ function AdminDashboardPage() {
     return (
       <div className="p-6 text-center">
         <PageHeader title="لوحة الإدارة" back="/" />
-        <p className="mt-8 text-ink-2">سجّل الدخول للوصول إلى لوحة الإدارة</p>
+        <p className="mt-8 text-muted-foreground">سجّل الدخول للوصول إلى لوحة الإدارة</p>
         <Link to="/auth" className="btn-primary mt-4 inline-block">
           تسجيل الدخول
         </Link>
@@ -240,7 +244,8 @@ function AdminDashboardPage() {
     );
   }
 
-  if (roleQuery.isLoading) return <div className="p-6 text-center text-ink-2">جاري التحقق...</div>;
+  if (roleQuery.isLoading)
+    return <div className="p-6 text-center text-muted-foreground">جاري التحقق...</div>;
 
   if (roleQuery.isError) {
     return (
@@ -259,7 +264,7 @@ function AdminDashboardPage() {
     return (
       <div className="p-6 text-center">
         <PageHeader title="لوحة الإدارة" back="/" />
-        <p className="mt-8 text-red-600">ليس لديك صلاحية الوصول إلى لوحة الإدارة</p>
+        <p className="mt-8 text-danger">ليس لديك صلاحية الوصول إلى لوحة الإدارة</p>
         <Link to="/" className="btn-secondary mt-4 inline-block">
           العودة للرئيسية
         </Link>
@@ -279,14 +284,22 @@ function AdminDashboardPage() {
       <PageHeader title="لوحة الإدارة" back="/" />
 
       {/* تبويبات */}
-      <div className="flex gap-1 overflow-x-auto rounded-xl bg-surface p-1 shadow-soft">
+      <div
+        role="tablist"
+        aria-label="أقسام لوحة الإدارة"
+        className="flex gap-1 overflow-x-auto rounded-[var(--radius-control)] bg-card p-1"
+      >
         {tabs.map((t) => (
           <button
             key={t.key}
+            type="button"
+            role="tab"
+            id={`admin-tab-${t.key}`}
+            aria-selected={activeTab === t.key}
             onClick={() => setActiveTab(t.key)}
             className={cn(
-              "flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition",
-              activeTab === t.key ? "bg-primary text-accent-ink-foreground" : "text-ink-2",
+              "min-h-[var(--control-height)] flex-1 whitespace-nowrap rounded-[var(--radius-medium)] px-3 py-2 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+              activeTab === t.key ? "bg-primary text-primary-foreground" : "text-muted-foreground",
             )}
           >
             {t.label}
@@ -296,7 +309,12 @@ function AdminDashboardPage() {
 
       {/* نظرة عامة */}
       {activeTab === "overview" && (
-        <div className="mt-4 space-y-3">
+        <div
+          id="admin-panel-overview"
+          role="tabpanel"
+          aria-labelledby="admin-tab-overview"
+          className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"
+        >
           {stats.isError && (
             <ErrorState scope="admin:stats" error={stats.error} onRetry={() => stats.refetch()} />
           )}
@@ -310,24 +328,24 @@ function AdminDashboardPage() {
             icon={StoreIcon}
             title="المتاجر"
             value={stats.data?.stores ?? "..."}
-            color="bg-green-50 text-green-600"
+            color="bg-success-soft text-success"
           />
           <StatCard
             icon={Package}
             title="الطلبات"
             value={stats.data?.orders ?? "..."}
-            color="bg-blue-50 text-blue-600"
+            color="bg-info-soft text-info"
           />
           <StatCard
             icon={Truck}
             title="شركات التوصيل"
             value={stats.data?.companies ?? "..."}
-            color="bg-amber-50 text-amber-600"
+            color="bg-warning-soft text-warning"
           />
 
           <Link
             to="/admin/delivery-companies"
-            className="flex items-center justify-between rounded-2xl border border-border/60 bg-surface p-4 shadow-soft transition hover:shadow-lift"
+            className="flex items-center justify-between rounded-[var(--radius-card)] border border-border/60 bg-card p-4  transition "
           >
             <div className="flex items-center gap-3">
               <Truck className="size-5 text-accent-ink" />
@@ -340,11 +358,19 @@ function AdminDashboardPage() {
 
       {/* المستخدمون */}
       {activeTab === "users" && (
-        <div className="mt-4 space-y-3">
+        <div
+          id="admin-panel-users"
+          role="tabpanel"
+          aria-labelledby="admin-tab-users"
+          className="mt-4 space-y-3"
+        >
           {usersList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+                <div
+                  key={i}
+                  className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card"
+                />
               ))}
             </div>
           )}
@@ -356,14 +382,14 @@ function AdminDashboardPage() {
             />
           )}
           {!usersList.isLoading && !usersList.isError && usersList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+            <div className="rounded-[var(--radius-control)] bg-card p-8 text-center text-muted-foreground ">
               لا يوجد مستخدمون لعرضهم
             </div>
           )}
           {usersList.data?.map((u) => (
             <div
               key={u.user_id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
+              className="flex items-center justify-between rounded-[var(--radius-control)] border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
@@ -371,7 +397,9 @@ function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="font-bold">{u.full_name ?? "بدون اسم"}</p>
-                  <p className="text-xs text-ink-2">{u.phone ?? u.user_id.slice(0, 8)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {u.phone ?? u.user_id.slice(0, 8)}
+                  </p>
                 </div>
               </div>
               <BadgeRole role={u.role} />
@@ -382,11 +410,19 @@ function AdminDashboardPage() {
 
       {/* المتاجر */}
       {activeTab === "stores" && (
-        <div className="mt-4 space-y-3">
+        <div
+          id="admin-panel-stores"
+          role="tabpanel"
+          aria-labelledby="admin-tab-stores"
+          className="mt-4 space-y-3"
+        >
           {storesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+                <div
+                  key={i}
+                  className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card"
+                />
               ))}
             </div>
           )}
@@ -398,28 +434,28 @@ function AdminDashboardPage() {
             />
           )}
           {!storesList.isLoading && !storesList.isError && storesList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+            <div className="rounded-[var(--radius-control)] bg-card p-8 text-center text-muted-foreground ">
               لا توجد متاجر مسجلة بعد
             </div>
           )}
           {storesList.data?.map((s) => (
             <div
               key={s.id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
+              className="flex items-center justify-between rounded-[var(--radius-control)] border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-green-50">
-                  <StoreIcon className="size-5 text-green-600" />
+                <div className="flex size-10 items-center justify-center rounded-full bg-success-soft">
+                  <StoreIcon className="size-5 text-success" />
                 </div>
                 <div>
                   <p className="font-bold">{s.name}</p>
-                  <p className="text-xs text-ink-2">ولاية {s.wilaya_id}</p>
+                  <p className="text-xs text-muted-foreground">ولاية {s.wilaya_id}</p>
                 </div>
               </div>
               <span
                 className={cn(
                   "rounded-full px-2 py-0.5 text-xs font-bold",
-                  s.is_active ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700",
+                  s.is_active ? "bg-success-soft text-success" : "bg-danger-soft text-danger",
                 )}
               >
                 {s.is_active ? "نشط" : "موقوف"}
@@ -431,11 +467,19 @@ function AdminDashboardPage() {
 
       {/* شركات التوصيل */}
       {activeTab === "companies" && (
-        <div className="mt-4 space-y-3">
+        <div
+          id="admin-panel-companies"
+          role="tabpanel"
+          aria-labelledby="admin-tab-companies"
+          className="mt-4 space-y-3"
+        >
           {companiesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+                <div
+                  key={i}
+                  className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card"
+                />
               ))}
             </div>
           )}
@@ -449,33 +493,35 @@ function AdminDashboardPage() {
           {!companiesList.isLoading &&
             !companiesList.isError &&
             companiesList.data?.length === 0 && (
-              <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+              <div className="rounded-[var(--radius-control)] bg-card p-8 text-center text-muted-foreground ">
                 لا توجد شركات توصيل مسجلة بعد
               </div>
             )}
           {companiesList.data?.map((c) => (
             <div
               key={c.id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
+              className="flex items-center justify-between rounded-[var(--radius-control)] border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
-                <div className="flex size-10 items-center justify-center rounded-full bg-amber-50">
-                  <Truck className="size-5 text-amber-600" />
+                <div className="flex size-10 items-center justify-center rounded-full bg-warning-soft">
+                  <Truck className="size-5 text-warning" />
                 </div>
                 <div>
                   <p className="font-bold">{c.company_name}</p>
-                  <p className="text-xs text-ink-2">{c.contact_phone}</p>
+                  <p className="text-xs text-muted-foreground">{c.contact_phone}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <BadgeApproved approved={c.is_approved} />
                 <button
+                  type="button"
+                  aria-label={`${c.is_approved ? "إلغاء اعتماد" : "اعتماد"} ${c.company_name}`}
                   onClick={() => handleToggleCompany(c.id, c.is_approved)}
                   className={cn(
-                    "rounded-lg px-2 py-1 text-xs font-bold transition",
+                    "flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-medium)] px-3 py-2 text-caption font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     c.is_approved
-                      ? "bg-red-50 text-red-600 hover:bg-red-100"
-                      : "bg-green-50 text-green-600 hover:bg-green-100",
+                      ? "bg-danger-soft text-danger hover:bg-danger-soft"
+                      : "bg-success-soft text-success hover:bg-success-soft",
                   )}
                 >
                   {c.is_approved ? <X className="size-4" /> : <Check className="size-4" />}

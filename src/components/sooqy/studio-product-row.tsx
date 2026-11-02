@@ -53,7 +53,7 @@ export function StudioProductRow({
           <p className="mt-0.5 text-sm font-semibold text-foreground">{formatDA(offer.price)}</p>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             <StockBadge level={level} />
-            <span className="text-[11px] text-muted-foreground">
+            <span className="text-caption text-muted-foreground">
               {t("studio_in_stock_units", { count: offer.stock_quantity })}
             </span>
           </div>
@@ -90,7 +90,7 @@ export function StudioProductRow({
           >
             <span
               className={cn(
-                "absolute top-1 size-5 rounded-full bg-white shadow-soft transition-all",
+                "absolute top-1 size-5 rounded-full bg-card  transition-all",
                 offer.is_available ? "end-1" : "start-1",
               )}
             />

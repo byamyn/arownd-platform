@@ -125,14 +125,14 @@ function StoresPage() {
 
       {/* البحث */}
       <div className="relative">
-        <div className="flex items-center gap-2 rounded-xl border border-border bg-card px-4 transition focus-within:border-accent-ink focus-within:ring-2 focus-within:ring-primary/20">
+        <div className="flex items-center gap-2 rounded-[var(--radius-control)] border border-border bg-card px-4 transition focus-within:border-accent-ink focus-within:ring-2 focus-within:ring-primary/20">
           <Search className="size-5 shrink-0 text-muted-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("stores_search_placeholder")}
             aria-label={t("stores_search_aria")}
-            className="h-12 flex-1 bg-transparent text-body outline-none placeholder:text-muted"
+            className="h-[var(--control-height)] min-w-0 flex-1 bg-transparent text-body outline-none placeholder:text-muted"
           />
           {q && (
             <button
@@ -154,7 +154,7 @@ function StoresPage() {
           aria-pressed={openOnly}
           onClick={() => setOpenOnly((v) => !v)}
           className={cn(
-            "flex min-h-11 shrink-0 items-center gap-1 rounded-full border px-3.5 py-2 text-xs font-bold transition",
+            "flex min-h-[var(--control-height-compact)] shrink-0 items-center gap-1 rounded-full border px-3.5 py-2 text-xs font-bold transition",
             openOnly
               ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
               : "border-border bg-card text-muted-foreground",
@@ -167,7 +167,7 @@ function StoresPage() {
           aria-pressed={verifiedOnly}
           onClick={() => setVerifiedOnly((v) => !v)}
           className={cn(
-            "flex min-h-11 shrink-0 items-center gap-1 rounded-full border px-3.5 py-2 text-xs font-bold transition",
+            "flex min-h-[var(--control-height-compact)] shrink-0 items-center gap-1 rounded-full border px-3.5 py-2 text-xs font-bold transition",
             verifiedOnly
               ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
               : "border-border bg-card text-muted-foreground",
@@ -178,7 +178,7 @@ function StoresPage() {
         <button
           onClick={() => setShowFilters(true)}
           className={cn(
-            "flex min-h-11 shrink-0 items-center gap-1 rounded-full border px-3.5 py-2 text-xs font-bold transition",
+            "flex min-h-[var(--control-height-compact)] shrink-0 items-center gap-1 rounded-full border px-3.5 py-2 text-xs font-bold transition",
             hasActiveFilters
               ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
               : "border-border bg-card text-muted-foreground",
@@ -261,7 +261,7 @@ function StoresPage() {
             aria-pressed={minRating === 4}
             onClick={() => setMinRating(minRating === 4 ? null : 4)}
             className={cn(
-              "flex min-h-11 w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition",
+              "flex min-h-[var(--control-height-compact)] w-full items-center justify-between rounded-[var(--radius-control)] border px-4 py-3 text-sm font-semibold transition",
               minRating === 4
                 ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
                 : "border-border bg-card",
@@ -277,7 +277,7 @@ function StoresPage() {
             aria-pressed={verifiedOnly}
             onClick={() => setVerifiedOnly((v) => !v)}
             className={cn(
-              "flex min-h-11 w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition",
+              "flex min-h-[var(--control-height-compact)] w-full items-center justify-between rounded-[var(--radius-control)] border px-4 py-3 text-sm font-semibold transition",
               verifiedOnly
                 ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
                 : "border-border bg-card",

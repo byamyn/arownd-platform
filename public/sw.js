@@ -27,7 +27,6 @@ self.addEventListener("install", (event) => {
       const cache = await caches.open(SHELL_CACHE);
       // نتجاهل فشل أي أصل منفرد حتى لا يفشل التثبيت كله.
       await Promise.allSettled(SHELL_ASSETS.map((url) => cache.add(url)));
-      await self.skipWaiting();
     })(),
   );
 });
@@ -117,13 +116,26 @@ self.addEventListener("fetch", (event) => {
         try {
           const fresh = await fetch(request);
           if (fresh.ok) {
-            cache.put(request, fresh.clone());
+            const cachedResponse = fresh.clone();
+            const headers = new Headers(cachedResponse.headers);
+            headers.set("X-Arownd-Cached-At", String(Date.now()));
+            const cacheableResponse = new Response(cachedResponse.body, {
+              status: cachedResponse.status,
+              statusText: cachedResponse.statusText,
+              headers,
+            });
+            await cache.put(request, cacheableResponse);
             void trimCache(DATA_CACHE, MAX_DATA_ENTRIES);
           }
           return fresh;
         } catch {
           const cached = await cache.match(request);
-          if (cached) return cached;
+          if (cached) {
+            const cachedAt = Number(cached.headers.get("X-Arownd-Cached-At"));
+            const isFresh = Number.isFinite(cachedAt) && Date.now() - cachedAt <= DATA_TTL_MS;
+            if (isFresh) return cached;
+            await cache.delete(request);
+          }
           return new Response(JSON.stringify({ error: "offline" }), {
             status: 503,
             headers: { "Content-Type": "application/json" },

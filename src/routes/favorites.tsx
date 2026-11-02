@@ -82,7 +82,7 @@ function FavoritesPage() {
           <button
             onClick={() => goBackOrTo(router, "/profile")}
             aria-label={t("common_back")}
-            className="icon-btn"
+            className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowLeft className="size-5 rtl:rotate-180" />
           </button>
@@ -90,7 +90,7 @@ function FavoritesPage() {
         </header>
 
         {/* التبويبات */}
-        <div role="tablist" className="flex rounded-xl bg-card p-1">
+        <div role="tablist" className="flex rounded-[var(--radius-control)] bg-card p-1">
           {(
             [
               { id: "products", label: t("fav_tab_products", { count: favs.products.length }) },
@@ -104,7 +104,7 @@ function FavoritesPage() {
               aria-selected={tab === tb.id}
               onClick={() => setTab(tb.id)}
               className={cn(
-                "min-h-11 flex-1 rounded-lg py-2 text-sm font-bold transition",
+                "min-h-[var(--control-height-compact)] flex-1 rounded-[var(--radius-medium)] py-2 text-sm font-bold transition",
                 tab === tb.id ? "bg-primary text-accent-ink-foreground" : "text-muted-foreground",
               )}
             >

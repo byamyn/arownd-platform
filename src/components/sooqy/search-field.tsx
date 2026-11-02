@@ -10,22 +10,10 @@ export interface SearchFieldProps {
   placeholder?: string;
   disabled?: boolean;
   className?: string;
-  /**
-   * حقل «عاري»: بلا إطار ولا خلفية — الحاوية الأم هي التي توفّر المظهر.
-   * يُستخدم داخل صف مضغوط (مثل شريط البحث في صفحة الاكتشاف).
-   */
   bare?: boolean;
-  /** محتوى إضافي داخل الحقل من جهة النهاية (مثل زر الكاميرا). */
   trailing?: ReactNode;
 }
 
-/**
- * حقل بحث مشترك وموحد عبر جميع الصفحات.
- * - هندسة حقل موحدة (border-radius 12px، ارتفاع 48px)
- * - أيقونة بحث داخلية مع أيقونة مسح عند وجود نص
- * - دعم RTL تلقائي
- * - حالة disabled واضحة
- */
 export function SearchField({
   value,
   onChange,
@@ -36,14 +24,14 @@ export function SearchField({
   bare = false,
   trailing,
 }: SearchFieldProps) {
-  const { isRTL, t } = useTranslation();
+  const { t } = useTranslation();
   const hasValue = value.length > 0;
   const hasTrailing = Boolean(trailing);
 
   return (
     <div className={cn("relative w-full", className)}>
-      <div className="absolute inset-y-0 left-0 rtl:right-0 rtl:left-auto pl-10 rtl:pr-10 flex items-center pointer-events-none">
-        <Search className="size-5 text-muted-foreground" aria-hidden />
+      <div className="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+        <Search className="size-5 text-muted-foreground" aria-hidden="true" />
       </div>
       <input
         type="search"
@@ -61,20 +49,16 @@ export function SearchField({
         autoCapitalize="none"
         spellCheck={false}
         className={cn(
-          // h-12 = 48px (كان h-48 = 192px في Tailwind v4) · rounded-xl = 12px
-          "w-full h-12 pl-10 pr-4 rtl:pr-10 rtl:pl-4 rounded-xl border border-input bg-card text-foreground placeholder:text-muted-foreground",
-          "focus:ring-2 focus:ring-ring focus:border-transparent outline-none transition-colors",
-          disabled && "opacity-50 pointer-events-none",
-          // حقل عاري: الحاوية الأم توفّر الإطار والارتفاع
-          bare &&
-            "h-full rounded-none border-0 bg-transparent focus:ring-0 focus:border-transparent",
-          // مساحة لأزرار جهة النهاية (الكاميرا / المسح)
-          hasTrailing && "pr-20 rtl:pl-20",
+          "h-12 w-full rounded-full border border-input bg-card ps-11 pe-4 text-base text-foreground placeholder:text-muted-foreground",
+          "outline-none transition-colors focus:border-ring focus:ring-2 focus:ring-ring",
+          disabled && "pointer-events-none opacity-50",
+          bare && "h-full rounded-none border-0 bg-transparent focus:ring-0",
+          hasTrailing && "pe-20",
           className,
         )}
       />
       {(hasValue || hasTrailing) && !disabled && (
-        <div className="absolute inset-y-0 right-0 rtl:left-0 rtl:right-auto flex items-center gap-0.5 pr-2 rtl:pl-2 rtl:pr-0">
+        <div className="absolute inset-y-0 end-0 flex items-center gap-1 pe-2">
           {hasValue && (
             <button
               type="button"
@@ -83,9 +67,9 @@ export function SearchField({
                 onSearch?.();
               }}
               aria-label={t("aria_clear_search")}
-              className="flex size-8 items-center justify-center"
+              className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
             >
-              <X className="size-5 text-muted-foreground hover:text-foreground" aria-hidden />
+              <X className="size-5" aria-hidden="true" />
             </button>
           )}
           {trailing}
@@ -95,13 +79,6 @@ export function SearchField({
   );
 }
 
-/**
- * شريحة تصفية خفيفة وموحدة.
- * - أيقونة اختيارية على اليسار (RTL-aware)
- * - نص متوسط الحجم، وزن متوسط
- * - حالة مختارة تستخدم لون الهوية الأساسية
- * - حالة غير مختارة تستخدم لون السطح مع حدود خفيفة
- */
 export interface FilterChipProps {
   label: string;
   value: string;
@@ -125,14 +102,14 @@ export function FilterChip({
       onClick={() => onChange(value)}
       aria-pressed={selected}
       className={cn(
-        "inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors",
+        "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
         selected
-          ? "border-accent-ink bg-primary text-accent-ink-foreground"
-          : "border-border bg-card text-foreground hover:bg-neutral-100",
+          ? "border-transparent bg-primary text-primary-foreground"
+          : "border-input bg-card text-foreground hover:bg-muted",
         className,
       )}
     >
-      {Icon && <Icon className="size-3.5" aria-hidden />}
+      {Icon && <Icon className="size-4" aria-hidden="true" />}
       {label}
     </button>
   );

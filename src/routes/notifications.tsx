@@ -266,7 +266,7 @@ function NotificationsPage() {
                         )}
                       </p>
                       {n.body && <p className="mt-0.5 text-xs text-muted-foreground">{n.body}</p>}
-                      <p className="mt-1 text-[10px] text-muted-foreground">
+                      <p className="mt-1 text-caption text-muted-foreground">
                         {formatDateTime(n.created_at)}
                       </p>
                     </div>

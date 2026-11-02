@@ -44,7 +44,7 @@ export function StoreLocationPicker({ value, onChange }: Props) {
 
     const placeMarker = (lngLat: maplibregl.LngLat) => {
       markerRef.current?.remove();
-      markerRef.current = new maplibregl.Marker({ color: "#D4F56A" }).setLngLat(lngLat).addTo(map);
+      markerRef.current = new maplibregl.Marker({ color: "#C6F135" }).setLngLat(lngLat).addTo(map);
       onChangeRef.current({ lat: lngLat.lat, lng: lngLat.lng });
     };
 
@@ -61,7 +61,7 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     });
     map.once("load", () => {
       if (value) {
-        markerRef.current = new maplibregl.Marker({ color: "#D4F56A" })
+        markerRef.current = new maplibregl.Marker({ color: "#C6F135" })
           .setLngLat([value.lng, value.lat])
           .addTo(map);
       }
@@ -87,7 +87,7 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     if (markerRef.current) {
       markerRef.current.setLngLat([value.lng, value.lat]);
     } else {
-      markerRef.current = new maplibregl.Marker({ color: "#D4F56A" })
+      markerRef.current = new maplibregl.Marker({ color: "#C6F135" })
         .setLngLat([value.lng, value.lat])
         .addTo(map);
     }

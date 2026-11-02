@@ -7,24 +7,10 @@ export const AppErrorBoundary = Sentry.ErrorBoundary;
 export const ErrorFallback = () => {
   const { t } = useTranslation();
   return (
-    <div
-      role="alert"
-      style={{
-        display: "flex",
-        minHeight: "100dvh",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "24px",
-        background: "#F8FAFC",
-        fontFamily: "inherit",
-        textAlign: "center",
-      }}
-    >
+    <div className="flex min-h-screen items-center justify-center bg-background px-6 text-center">
       <div>
-        <h1 style={{ fontSize: 18, fontWeight: 700, color: "#111827", marginBottom: 8 }}>
-          {t("error_unexpected_title")}
-        </h1>
-        <p style={{ fontSize: 14, color: "#64748B", margin: 0 }}>{t("error_unexpected_hint")}</p>
+        <h1 className="text-h1 text-foreground">{t("error_unexpected_title")}</h1>
+        <p className="mt-2 text-body text-muted-foreground">{t("error_unexpected_hint")}</p>
       </div>
     </div>
   );

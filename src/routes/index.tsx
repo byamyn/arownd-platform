@@ -131,13 +131,13 @@ function Home() {
                   ? `${t("home_notifications")} (${unreadNotifications.data} غير مقروء)`
                   : t("home_notifications")
               }
-              className="icon-btn relative"
+              className="icon-btn relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <Bell className="size-5" />
               {!!unreadNotifications.data && unreadNotifications.data > 0 && (
                 <span
                   aria-hidden="true"
-                  className="absolute -right-0.5 -top-0.5 flex size-[17px] items-center justify-center rounded-full border-2 border-background bg-primary text-[9px] font-extrabold leading-none text-primary-foreground shadow-sm"
+                  className="absolute -end-0.5 -top-0.5 flex size-5 items-center justify-center rounded-full border-2 border-background bg-primary text-caption font-extrabold leading-none text-primary-foreground "
                 >
                   {unreadNotifications.data > 9 ? "9+" : unreadNotifications.data}
                 </span>
@@ -155,7 +155,7 @@ function Home() {
                 key={c.id}
                 to="/category/$catId"
                 params={{ catId: c.id }}
-                className="card-premium flex min-h-11 shrink-0 items-center gap-2 !rounded-full px-4 py-2 text-sm font-semibold text-foreground"
+                className="card-premium flex min-h-11 shrink-0 items-center gap-2 !rounded-full px-4 py-2 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
               >
                 <span aria-hidden="true">{c.emoji}</span>
                 {c.label}

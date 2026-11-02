@@ -81,7 +81,9 @@ function TrackPage() {
     );
   }
   if (orders.isLoading && !order) {
-    return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
+    return (
+      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+    );
   }
   if (!order) {
     return (
@@ -108,7 +110,7 @@ function TrackPage() {
         <button
           onClick={() => goBackOrTo(router, "/orders")}
           aria-label={t("common_back")}
-          className="icon-btn"
+          className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <ArrowRight className="size-5 ltr:rotate-180" />
         </button>
@@ -116,7 +118,7 @@ function TrackPage() {
       </header>
 
       {/* رمز التتبع */}
-      <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
         <p className="text-xs text-muted-foreground">
           {t("orders_code", { code: trackCode(order.id) })}
         </p>
@@ -139,7 +141,7 @@ function TrackPage() {
           </div>
         </div>
       ) : (
-        <div className="rounded-2xl border border-border bg-card p-4">
+        <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
           <ol className="space-y-0">
             {STEPS.map((step, i) => {
               const done = i <= statusIdx;
@@ -149,8 +151,8 @@ function TrackPage() {
                   {i < STEPS.length - 1 && (
                     <span
                       className={cn(
-                        "absolute top-7 start-[15px] h-[calc(100%-28px)] w-0.5 rounded-full",
-                        i < statusIdx ? "bg-primary" : "bg-neutral-200 dark:bg-neutral-700",
+                        "absolute top-7 start-4 h-[calc(100%-var(--space-8)+var(--space-1))] w-0.5 rounded-full",
+                        i < statusIdx ? "bg-primary" : "bg-border",
                       )}
                     />
                   )}
@@ -159,7 +161,7 @@ function TrackPage() {
                       "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full border-2 transition",
                       done
                         ? "border-accent-ink bg-primary text-accent-ink-foreground"
-                        : "border-neutral-300 bg-card text-muted-foreground dark:border-neutral-600",
+                        : "border-border bg-card text-muted-foreground",
                     )}
                   >
                     {done ? <Check className="size-4" /> : <Package className="size-4" />}
@@ -177,7 +179,7 @@ function TrackPage() {
                     >
                       {t(step.labelKey)}
                       {current && (
-                        <span className="ms-2 text-[10px] font-semibold text-accent-ink">
+                        <span className="ms-2 text-caption font-semibold text-accent-ink">
                           {t("track_current")}
                         </span>
                       )}
@@ -192,7 +194,7 @@ function TrackPage() {
       )}
 
       {/* التفاصيل */}
-      <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <h2 className="text-section text-foreground">{t("track_details")}</h2>
         <div className="space-y-1.5">
           {(order.items ?? []).map((it) => (
@@ -225,7 +227,7 @@ function TrackPage() {
       </div>
 
       {/* العنوان */}
-      <div className="flex items-start gap-3 rounded-2xl border border-border bg-card p-4">
+      <div className="flex items-start gap-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <MapPin className="mt-0.5 size-5 shrink-0 text-accent-ink" />
         <div className="text-sm">
           <p className="font-bold text-foreground">{order.full_name}</p>
@@ -246,7 +248,7 @@ function TrackPage() {
         />
       )}
       {orderShipments.length > 0 && (
-        <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
+        <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
           <h2 className="text-section text-foreground flex items-center gap-2">
             <TruckIcon className="size-5" /> {t("track_shipment_heading")}
           </h2>
@@ -295,7 +297,7 @@ function BadgeStatus({ status }: { status: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-bold",
         variants[status],
       )}
     >

@@ -189,7 +189,7 @@ function StorePage() {
         )}
 
         {/* الغلاف */}
-        <div className="relative h-44 bg-neutral-100">
+        <div className="relative h-44 bg-muted">
           {s.cover_url && (
             <img
               src={s.cover_url}
@@ -202,18 +202,18 @@ function StorePage() {
           <button
             onClick={() => goBackOrTo(router, "/stores")}
             aria-label="رجوع"
-            className="absolute top-4 start-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95 shadow-soft backdrop-blur transition active:scale-95"
+            className="absolute top-4 start-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95  backdrop-blur transition active:scale-95"
           >
             <ArrowRight className="size-5" />
           </button>
           <button
             onClick={share}
             aria-label="مشاركة المتجر"
-            className="absolute top-4 end-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95 shadow-soft backdrop-blur transition active:scale-95"
+            className="absolute top-4 end-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95  backdrop-blur transition active:scale-95"
           >
             <Share2 className="size-5" />
           </button>
-          <div className="absolute -bottom-9 start-4 size-[72px] overflow-hidden rounded-2xl border-4 border-background bg-card shadow-soft">
+          <div className="absolute -bottom-9 start-4 size-18 overflow-hidden rounded-[var(--radius-card)] border-4 border-background bg-card ">
             {s.logo_url ? (
               <img src={s.logo_url} alt={s.name} className="size-full object-cover" />
             ) : (
@@ -252,7 +252,7 @@ function StorePage() {
                 toast.success(nowFollowing ? "أُضيف المتجر إلى مفضلتك" : "أُزيل المتجر من المفضلة");
               }}
               className={cn(
-                "flex h-11 items-center justify-center gap-1.5 rounded-xl border text-sm font-bold transition active:scale-95",
+                "flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] border text-sm font-bold transition active:scale-95",
                 followed
                   ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
                   : "border-border bg-card text-foreground",
@@ -265,7 +265,7 @@ function StorePage() {
               lat={s.latitude}
               lng={s.longitude}
               label={s.name}
-              className="flex h-11 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-sm font-bold"
+              className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-border bg-card text-sm font-bold"
             >
               <Navigation className="size-4" />
               الاتجاهات
@@ -275,7 +275,7 @@ function StorePage() {
                 href={whatsappUrl(s.whatsapp)!}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-success text-sm font-bold text-white transition active:scale-95"
+                className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] bg-success text-success-foreground transition active:scale-95"
               >
                 <MessageCircle className="size-4" />
                 واتساب
@@ -283,7 +283,7 @@ function StorePage() {
             ) : telUrl(s.phone) ? (
               <a
                 href={telUrl(s.phone)!}
-                className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-success text-sm font-bold text-white transition active:scale-95"
+                className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] bg-success text-success-foreground transition active:scale-95"
               >
                 <Phone className="size-4" />
                 اتصال
@@ -291,7 +291,7 @@ function StorePage() {
             ) : (
               <span
                 aria-disabled="true"
-                className="flex h-11 items-center justify-center gap-1.5 rounded-xl border border-border bg-muted text-sm font-bold text-muted-foreground"
+                className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-border bg-muted text-sm font-bold text-muted-foreground"
               >
                 <MessageCircle className="size-4" />
                 لا يوجد رقم
@@ -342,7 +342,10 @@ function StorePage() {
               {offers.isLoading && (
                 <div className="grid grid-cols-2 gap-3" aria-label="Loading products">
                   {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="h-56 animate-pulse rounded-2xl bg-muted" />
+                    <div
+                      key={i}
+                      className="h-56 animate-pulse rounded-[var(--radius-card)] bg-muted"
+                    />
                   ))}
                 </div>
               )}
@@ -357,7 +360,7 @@ function StorePage() {
                         params={{ productId: o.product_id }}
                         className="card-premium group overflow-hidden"
                       >
-                        <div className="relative aspect-square bg-neutral-100">
+                        <div className="relative aspect-square bg-muted">
                           {primaryImage(o.images) && (
                             <img
                               src={primaryImage(o.images)!}
@@ -405,18 +408,18 @@ function StorePage() {
           {tab === "about" && (
             <div className="space-y-4">
               {s.description && (
-                <div className="rounded-2xl border border-border bg-card p-4">
+                <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
                   <p className="text-body text-foreground">{s.description}</p>
                 </div>
               )}
-              <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
                 <h3 className="text-section text-foreground">الموقع</h3>
                 <p className="mt-2 flex items-start gap-2 text-body text-muted-foreground">
                   <MapPin className="mt-0.5 size-4 shrink-0 text-accent-ink" />
                   {[s.address_line, s.commune].filter(Boolean).join("، ")}
                 </p>
               </div>
-              <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
                 <div className="flex items-center justify-between">
                   <h3 className="flex items-center gap-1.5 text-section text-foreground">
                     <Clock className="size-4 text-accent-ink" /> ساعات العمل
@@ -445,7 +448,7 @@ function StorePage() {
                   })}
                 </div>
               </div>
-              <div className="rounded-2xl border border-border bg-card p-4">
+              <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
                 <h3 className="text-section text-foreground">التواصل</h3>
                 {s.phone && (
                   <a
@@ -472,7 +475,7 @@ function StorePage() {
                         href={socialHref(s.instagram_url)}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
+                        className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
                       >
                         <Instagram className="size-3.5" /> إنستغرام
                       </a>
@@ -482,7 +485,7 @@ function StorePage() {
                         href={socialHref(s.facebook_url)}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
+                        className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
                       >
                         <Facebook className="size-3.5" /> فيسبوك
                       </a>

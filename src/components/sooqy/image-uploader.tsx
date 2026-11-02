@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Trash2, Pin, Image as ImageIcon, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -50,27 +50,50 @@ export function ImageUploader({
   const { isRTL } = useTranslation();
   const [items, setItems] = useState<ImageUploaderItem[]>(initialItems);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const ownedPreviewUrls = useRef(new Set<string>());
+
+  useEffect(
+    () => () => {
+      ownedPreviewUrls.current.forEach((url) => URL.revokeObjectURL(url));
+      ownedPreviewUrls.current.clear();
+    },
+    [],
+  );
 
   const remaining = useMemo(() => maxFiles - items.length, [items.length, maxFiles]);
 
   const handleFiles = useCallback(
     (fileList: FileList | null) => {
       if (!fileList) return;
-      const files = Array.from(fileList).filter((f) => ACCEPTED_TYPES.includes(f.type));
-      if (files.length === 0) return;
+      const selectedFiles = Array.from(fileList);
+      const files = selectedFiles.filter((file) => ACCEPTED_TYPES.includes(file.type));
+      const oversizedFiles = files.filter((file) => file.size > MAX_FILE_SIZE);
+      const validFiles = files.filter((file) => file.size <= MAX_FILE_SIZE);
 
-      const availableSlots = maxFiles - items.length;
-      const toAdd = files.slice(0, availableSlots);
-      if (toAdd.length === 0) {
-        return;
+      if (selectedFiles.length !== files.length) {
+        toast.error("بعض الملفات ليست بصيغ صور مدعومة.");
+      }
+      if (oversizedFiles.length > 0) {
+        toast.error("يجب ألا يتجاوز حجم الصورة الواحدة 10 ميغابايت.");
       }
 
+      const availableSlots = Math.max(0, maxFiles - items.length);
+      const toAdd = validFiles.slice(0, availableSlots);
+      if (validFiles.length > availableSlots) {
+        toast.error(`يمكنك إضافة ${availableSlots} صورة إضافية فقط.`);
+      }
+      if (toAdd.length === 0) return;
+
       const hasPrimary = items.some((i) => i.isPrimary);
-      const newItems = toAdd.map((f, idx) => ({
-        file: f,
-        preview: URL.createObjectURL(f),
-        isPrimary: !hasPrimary && items.length === 0 && idx === 0,
-      }));
+      const newItems = toAdd.map((file, index) => {
+        const preview = URL.createObjectURL(file);
+        ownedPreviewUrls.current.add(preview);
+        return {
+          file,
+          preview,
+          isPrimary: !hasPrimary && items.length === 0 && index === 0,
+        };
+      });
 
       setItems((prev) => [...prev, ...newItems]);
       onChange([...items, ...newItems]);
@@ -106,6 +129,7 @@ export function ImageUploader({
         const removedItem = prev[index];
         if (removedItem && removedItem.file) {
           URL.revokeObjectURL(removedItem.preview);
+          ownedPreviewUrls.current.delete(removedItem.preview);
         }
         onChange(next);
         return next;
@@ -138,25 +162,32 @@ export function ImageUploader({
     [items, onSetPrimary, onChange],
   );
 
+  const isOverLimit = items.length >= maxFiles;
+
   const triggerFileInput = () => {
+    if (isOverLimit) return;
     fileInputRef.current?.click();
   };
-
-  const isOverLimit = items.length >= maxFiles;
 
   return (
     <div className={cn("space-y-3", className)}>
       {/* منطقة الإدراج / السحب */}
       <div
         className={cn(
-          "flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-neutral-50/50 p-4 text-center transition hover:border-accent-ink hover:bg-primary-50",
+          "flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-neutral-50/50 p-4 text-center transition hover:border-accent-ink hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           isOverLimit ? "opacity-60 pointer-events-none" : "",
         )}
         onClick={triggerFileInput}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && triggerFileInput()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            triggerFileInput();
+          }
+        }}
         aria-label={label}
+        aria-disabled={isOverLimit}
       >
         <input
           ref={fileInputRef}
@@ -200,8 +231,7 @@ export function ImageUploader({
                 {item.isPrimary && (
                   <div
                     className={cn(
-                      "absolute top-2 left-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground shadow-sm",
-                      isRTL && "left-auto right-2",
+                      "absolute start-2 top-2 flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-bold text-primary-foreground",
                     )}
                   >
                     <Pin className="size-3" /> أساسي
@@ -213,8 +243,7 @@ export function ImageUploader({
                   onClick={() => removeItem(index)}
                   aria-label="حذف الصورة"
                   className={cn(
-                    "absolute top-2 right-2 size-7 shrink-0 rounded-full bg-black/60 p-1 text-white transition hover:bg-black/80",
-                    isRTL && "right-auto left-2",
+                    "absolute end-2 top-2 flex size-11 shrink-0 items-center justify-center rounded-full bg-[var(--color-overlay-scrim)] text-white transition hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                   )}
                 >
                   <Trash2 className="size-4" />
@@ -226,8 +255,7 @@ export function ImageUploader({
                     onClick={() => setPrimary(index)}
                     aria-label="تحديد كأساسية"
                     className={cn(
-                      "absolute bottom-2 left-2 size-7 shrink-0 rounded-full bg-white/90 p-1 text-foreground transition hover:bg-white",
-                      isRTL && "left-auto right-2",
+                      "absolute bottom-2 start-2 flex size-11 shrink-0 items-center justify-center rounded-full bg-background/90 text-foreground transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     )}
                   >
                     <Pin className="size-4 text-accent-ink" />

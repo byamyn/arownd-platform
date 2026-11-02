@@ -119,7 +119,7 @@ function StudioOrderDetailPage() {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_order_details")} back="/studio" />
-        <p className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+        <p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">
           {t("studio_order_unavailable")}
         </p>
       </div>
@@ -132,7 +132,7 @@ function StudioOrderDetailPage() {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
         <PageHeader title={t("studio_order_details")} back="/studio" />
-        <p className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground">
+        <p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">
           {t("studio_order_unavailable")}
         </p>
       </div>
@@ -187,15 +187,15 @@ function StudioOrderDetailPage() {
     <>
       <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
         <PageHeader title={t("studio_order_details")} back="/studio" />
-        <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-sm">
-          <div className="rounded-t-[1.75rem] bg-[#111813] p-5 text-white sm:p-6">
-            <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+        <div className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
+          <div className="rounded-t-3xl bg-muted p-5 text-foreground sm:p-6">
+            <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
               AROWND · ORDER
             </p>
             <p className="mt-2 text-xl font-black">
               {t("studio_order_number")} #{order.id.slice(-6)}
             </p>
-            <p className="mt-1 text-xs text-white/65">
+            <p className="mt-1 text-xs text-foreground/65">
               {formatDate(order.created_at, undefined, {
                 day: "numeric",
                 month: "long",
@@ -224,7 +224,7 @@ function StudioOrderDetailPage() {
               {storeOrderItems.map((it) => (
                 <div
                   key={it.id}
-                  className="flex items-center justify-between gap-3 rounded-xl border border-border/70 bg-background/60 p-3"
+                  className="flex items-center justify-between gap-3 rounded-[var(--radius-control)] border border-border/70 bg-background/60 p-3"
                 >
                   <div>
                     <p className="font-semibold">{it.product_name}</p>
@@ -240,7 +240,7 @@ function StudioOrderDetailPage() {
                   value={note}
                   onChange={(e) => setNote(e.target.value)}
                   placeholder={t("studio_order_note_ph")}
-                  className="h-12 min-w-0 flex-1 rounded-xl border border-input bg-background px-4 text-sm outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/25"
+                  className="h-[var(--control-height)] min-w-0 flex-1 rounded-[var(--radius-control)] border border-input bg-background px-4 text-sm outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/25"
                 />
                 <button
                   onClick={async () => {
@@ -253,13 +253,13 @@ function StudioOrderDetailPage() {
                       showError(error);
                     }
                   }}
-                  className="min-h-12 rounded-xl bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
+                  className="min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
                 >
                   حفظ
                 </button>
               </div>
               {merchantOrderStatus === "pending" && (
-                <div className="space-y-2 rounded-2xl border border-border bg-background p-3">
+                <div className="space-y-2 rounded-[var(--radius-card)] border border-border bg-background p-3">
                   <label className="block text-sm font-bold" htmlFor="merchant-shipping-fee">
                     {t("studio_quote_shipping_fee")}
                   </label>
@@ -274,7 +274,7 @@ function StudioOrderDetailPage() {
                     disabled={order.delivery_type === "desk"}
                     onChange={(event) => setShippingFee(event.target.value)}
                     placeholder="0"
-                    className="h-12 w-full rounded-xl border border-input bg-card px-3 outline-none focus:ring-2 focus:ring-primary/30"
+                    className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-card px-3 outline-none focus:ring-2 focus:ring-primary/30"
                   />
                   <p className="text-xs leading-relaxed text-muted-foreground">
                     {t("studio_quote_shipping_fee_hint")}
@@ -307,7 +307,7 @@ function StudioOrderDetailPage() {
                         setSavingQuote(false);
                       }
                     }}
-                    className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                    className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
                   >
                     {savingQuote ? t("studio_saving") : t("studio_send_quote")}
                   </button>
@@ -318,13 +318,13 @@ function StudioOrderDetailPage() {
                   type="button"
                   disabled={savingDecision}
                   onClick={handleReject}
-                  className="min-h-11 w-full rounded-xl border border-destructive/40 px-4 py-2 text-sm font-bold text-destructive disabled:opacity-50"
+                  className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-destructive/40 px-4 py-2 text-sm font-bold text-destructive disabled:opacity-50"
                 >
                   {savingDecision ? t("studio_saving") : t("studio_reject_unavailable")}
                 </button>
               )}
               {merchantOrderStatus === "quoted" && (
-                <p className="rounded-xl bg-warning-soft p-3 text-xs leading-relaxed text-warning">
+                <p className="rounded-[var(--radius-control)] bg-warning-soft p-3 text-xs leading-relaxed text-warning">
                   {t("studio_quote_pending_customer")}
                 </p>
               )}
@@ -332,7 +332,7 @@ function StudioOrderDetailPage() {
                 <button
                   type="button"
                   onClick={() => handleStatus("delivered")}
-                  className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
+                  className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
                 >
                   {t("studio_action_deliver")}
                 </button>
@@ -340,7 +340,7 @@ function StudioOrderDetailPage() {
               {merchantOrderStatus === "delivered" &&
                 order.delivery_type === "desk" &&
                 merchantOrder.payment_status !== "paid" && (
-                  <div className="space-y-2 rounded-xl border border-border bg-background p-3">
+                  <div className="space-y-2 rounded-[var(--radius-control)] border border-border bg-background p-3">
                     <p className="text-sm font-semibold">{t("studio_cod_due")}</p>
                     <p className="text-price font-black">
                       {formatDA((merchantOrder.subtotal ?? 0) + (merchantOrder.shipping_fee ?? 0))}
@@ -349,19 +349,19 @@ function StudioOrderDetailPage() {
                       type="button"
                       disabled={savingDecision}
                       onClick={handleCollectCod}
-                      className="min-h-11 w-full rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                      className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
                     >
                       {savingDecision ? t("studio_saving") : t("studio_cod_collect")}
                     </button>
                   </div>
                 )}
               {merchantOrder.payment_status === "paid" && (
-                <p className="rounded-xl bg-primary-soft p-3 text-sm font-semibold text-foreground">
+                <p className="rounded-[var(--radius-control)] bg-primary-soft p-3 text-sm font-semibold text-foreground">
                   {t("studio_cod_paid", { amount: formatDA(merchantOrder.paid_amount ?? 0) })}
                 </p>
               )}
               {merchantOrderStatus === "confirmed" && order.delivery_type === "home" && (
-                <p className="rounded-xl bg-primary-soft p-3 text-xs leading-relaxed text-muted-foreground">
+                <p className="rounded-[var(--radius-control)] bg-primary-soft p-3 text-xs leading-relaxed text-muted-foreground">
                   {t("studio_order_approved_wait_delivery")}
                 </p>
               )}

@@ -4,14 +4,6 @@ import { ChevronRight, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ENGLISH_ENABLED, useTranslation } from "@/lib/i18n";
 
-/**
- * رأس صفحة موحد ومتسق عبر جميع الشاشات.
- * - عنوان رئيسي بحجم text-h1 (28px، bold)
- * - عنوان فرعي اختياري بحجم text-caption
- * - زر رجوع اختياري مع دعم RTL تلقائي
- * - إجراء جانبي اختياري (زر أو رابط)
- * - padding ثابت p-6، عرض كامل مع مسافة جانبية آمنة
- */
 export function PageHeader({
   title,
   subtitle,
@@ -27,12 +19,12 @@ export function PageHeader({
   className?: string;
   showLanguageToggle?: boolean;
 }) {
-  const { lang, switchLang, isRTL, t } = useTranslation();
+  const { lang, switchLang, t } = useTranslation();
 
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 flex items-center gap-3 border-b border-border bg-background/95 px-4 py-3 backdrop-blur",
+        "sticky top-0 z-20 flex min-h-14 items-center gap-3 border-b border-border bg-background px-[var(--margin)] py-2",
         className,
       )}
     >
@@ -40,9 +32,9 @@ export function PageHeader({
         <Link
           to={back}
           aria-label={t("aria_back")}
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card shadow-soft transition hover:bg-neutral-100 active:scale-95 dark:hover:bg-neutral-800"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:bg-muted"
         >
-          <ChevronRight className="size-5 rtl:rotate-180" />
+          <ChevronRight className="size-5 rtl:rotate-180" aria-hidden="true" />
         </Link>
       )}
       <div className="min-w-0 flex-1">
@@ -52,11 +44,12 @@ export function PageHeader({
       {action}
       {showLanguageToggle && ENGLISH_ENABLED && (
         <button
+          type="button"
           onClick={() => switchLang(lang === "ar" ? "en" : "ar")}
           aria-label={lang === "ar" ? t("aria_switch_lang") : t("aria_switch_lang_en")}
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-card shadow-soft transition hover:bg-neutral-100 active:scale-95 dark:hover:bg-neutral-800"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:bg-muted"
         >
-          <Globe className="size-5" />
+          <Globe className="size-5" aria-hidden="true" />
         </button>
       )}
     </header>

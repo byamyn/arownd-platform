@@ -20,6 +20,7 @@ import { useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { goBackOrTo } from "@/lib/nav";
+import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 
 export const Route = createFileRoute("/orders/")({
   head: () => ({}),
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/orders/")({
 });
 
 type Tab = "all" | "active" | "delivered" | "cancelled";
+type PendingConfirmation = { title: string; message: string; action: () => Promise<void> };
 type OrderRecord = Awaited<ReturnType<typeof fetchMyOrders>>[number];
 type OrderRow = OrderRecord & {
   displayId?: string;
@@ -53,6 +55,8 @@ function OrdersPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
   const [respondingQuoteId, setRespondingQuoteId] = useState<string | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation | null>(null);
+  const [confirmationBusy, setConfirmationBusy] = useState(false);
   const orders = useQuery({
     queryKey: ["my-orders"],
     queryFn: fetchMyOrders,
@@ -73,6 +77,19 @@ function OrdersPage() {
     queryKeys: [["my-orders"]],
     enabled: !!user,
   });
+
+  const runPendingConfirmation = async () => {
+    if (!pendingConfirmation || confirmationBusy) return;
+    setConfirmationBusy(true);
+    try {
+      await pendingConfirmation.action();
+      setPendingConfirmation(null);
+    } catch (error) {
+      showError(error);
+    } finally {
+      setConfirmationBusy(false);
+    }
+  };
 
   if (!ready) return null;
   if (!user) {
@@ -132,7 +149,7 @@ function OrdersPage() {
             type="button"
             onClick={() => goBackOrTo(router, "/profile")}
             aria-label={t("common_back")}
-            className="icon-btn"
+            className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowLeft className="size-5 rtl:rotate-180" />
           </button>
@@ -162,7 +179,7 @@ function OrdersPage() {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="h-40 animate-pulse rounded-2xl border border-border bg-card"
+                className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-card"
               />
             ))}
           </div>
@@ -199,7 +216,7 @@ function OrdersPage() {
             return (
               <article
                 key={o.displayId ?? o.id}
-                className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+                className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card "
               >
                 <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
                   <div className="min-w-0">
@@ -227,7 +244,7 @@ function OrdersPage() {
                     </div>
                   ))}
                   {(o.items ?? []).length > 3 && (
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-caption text-muted-foreground">
                       {t("orders_more_items", { count: (o.items ?? []).length - 3 })}
                     </p>
                   )}
@@ -283,27 +300,32 @@ function OrdersPage() {
                                 setRespondingQuoteId(null);
                               }
                             }}
-                            className="min-h-10 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
+                            className="min-h-[var(--control-height)] rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50 focus-visible:outline"
                           >
                             {t("orders_quote_accept")}
                           </button>
                           <button
                             type="button"
                             disabled={respondingQuoteId === suborder.id}
-                            onClick={async () => {
-                              if (!window.confirm(t("orders_quote_decline") + "?")) return;
-                              setRespondingQuoteId(suborder.id);
-                              try {
-                                await customerRespondToMerchantOrder(suborder.id, false);
-                                await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                                showSuccess(t("orders_quote_declined"));
-                              } catch (error) {
-                                showError(error);
-                              } finally {
-                                setRespondingQuoteId(null);
-                              }
-                            }}
-                            className="min-h-10 rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-xs font-bold text-danger disabled:opacity-50"
+                            onClick={() =>
+                              setPendingConfirmation({
+                                title: t("orders_quote_decline"),
+                                message: t("orders_quote_decline") + "?",
+                                action: async () => {
+                                  setRespondingQuoteId(suborder.id);
+                                  try {
+                                    await customerRespondToMerchantOrder(suborder.id, false);
+                                    await queryClient.invalidateQueries({
+                                      queryKey: ["my-orders"],
+                                    });
+                                    showSuccess(t("orders_quote_declined"));
+                                  } finally {
+                                    setRespondingQuoteId(null);
+                                  }
+                                },
+                              })
+                            }
+                            className="min-h-[var(--control-height)] rounded-full border border-danger/30 bg-danger-soft px-4 py-2 text-sm font-semibold text-danger transition active:scale-[var(--scale-pressed)] disabled:opacity-50 focus-visible:outline"
                           >
                             {t("orders_quote_decline")}
                           </button>
@@ -314,7 +336,7 @@ function OrdersPage() {
                 ))}
 
                 <div className="mx-4 mt-3 flex items-center justify-between gap-3 rounded-2xl bg-primary-soft/50 px-3 py-3">
-                  <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <span className="flex items-center gap-1 text-caption text-muted-foreground">
                     <Truck className="size-3.5" />
                     {o.delivery_type === "home"
                       ? t("orders_delivery_home")
@@ -326,7 +348,7 @@ function OrdersPage() {
                 <Link
                   to="/orders/$orderId"
                   params={{ orderId: o.id }}
-                  className="btn-secondary !h-11 mx-4 mb-4 mt-3 w-[calc(100%-2rem)] rounded-2xl text-sm font-bold"
+                  className="btn-secondary mx-4 mb-4 mt-3 min-h-[var(--control-height)] w-[calc(100%-2rem)] rounded-full text-sm font-semibold"
                 >
                   {t("orders_track")}
                 </Link>
@@ -336,26 +358,23 @@ function OrdersPage() {
                     <button
                       type="button"
                       disabled={cancellingOrderId === o.id}
-                      onClick={async () => {
-                        if (
-                          !window.confirm(
-                            "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
-                          )
-                        ) {
-                          return;
-                        }
-                        setCancellingOrderId(o.id);
-                        try {
-                          await cancelMyOrder(o.id);
-                          await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                          showSuccess("تم إلغاء الطلب بنجاح.");
-                        } catch (error) {
-                          showError(error);
-                        } finally {
-                          setCancellingOrderId(null);
-                        }
-                      }}
-                      className="mx-4 mb-4 inline-flex min-h-11 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                      onClick={() =>
+                        setPendingConfirmation({
+                          title: "إلغاء الطلب",
+                          message: "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
+                          action: async () => {
+                            setCancellingOrderId(o.id);
+                            try {
+                              await cancelMyOrder(o.id);
+                              await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                              showSuccess("تم إلغاء الطلب بنجاح.");
+                            } finally {
+                              setCancellingOrderId(null);
+                            }
+                          },
+                        })
+                      }
+                      className="mx-4 mb-4 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                     >
                       <XCircle className="size-4" />
                       {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
@@ -365,22 +384,19 @@ function OrdersPage() {
                   (o.status === "delivered" || o.status === "cancelled") && (
                     <button
                       type="button"
-                      onClick={async () => {
-                        if (
-                          !window.confirm(
+                      onClick={() =>
+                        setPendingConfirmation({
+                          title: "إخفاء الطلب من السجل",
+                          message:
                             "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
-                          )
-                        )
-                          return;
-                        try {
-                          await archiveMyActivity("order", o.id);
-                          await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                          showSuccess("تم إخفاء الطلب من سجلك.");
-                        } catch (error) {
-                          showError(error);
-                        }
-                      }}
-                      className="mx-4 mb-4 mt-2 inline-flex min-h-10 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                          action: async () => {
+                            await archiveMyActivity("order", o.id);
+                            await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                            showSuccess("تم إخفاء الطلب من سجلك.");
+                          },
+                        })
+                      }
+                      className="mx-4 mb-4 mt-2 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                     >
                       <Archive className="size-4" /> إخفاء من السجل
                     </button>
@@ -390,6 +406,16 @@ function OrdersPage() {
           })}
         </div>
       </div>
+      <ConfirmDialog
+        open={pendingConfirmation !== null}
+        title={pendingConfirmation?.title ?? ""}
+        message={pendingConfirmation?.message ?? ""}
+        confirmLabel="تأكيد"
+        cancelLabel={t("cancel")}
+        busy={confirmationBusy}
+        onConfirm={runPendingConfirmation}
+        onCancel={() => setPendingConfirmation(null)}
+      />
     </>
   );
 }

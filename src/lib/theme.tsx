@@ -3,7 +3,8 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from "
 export type Theme = "light" | "dark" | "system";
 type Resolved = "light" | "dark";
 
-const STORAGE_KEY = "sooqy-theme";
+const STORAGE_KEY = "arownd-theme";
+const LEGACY_STORAGE_KEY = "sooqy-theme";
 
 interface ThemeContextValue {
   theme: Theme;
@@ -14,7 +15,7 @@ interface ThemeContextValue {
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
 function systemResolved(): Resolved {
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") return "dark";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
@@ -22,46 +23,60 @@ function resolve(theme: Theme): Resolved {
   return theme === "system" ? systemResolved() : theme;
 }
 
-function apply(resolved: Resolved) {
+function apply(resolved: Resolved, theme: Theme) {
   const root = document.documentElement;
-  if (resolved === "dark") root.classList.add("dark");
-  else root.classList.remove("dark");
-  root.setAttribute("data-theme", resolved);
+  root.classList.toggle("dark", resolved === "dark");
+
+  // In automatic mode the stylesheet follows prefers-color-scheme directly.
+  // Explicit modes set data-theme and override the operating-system preference.
+  if (theme === "system") root.removeAttribute("data-theme");
+  else root.setAttribute("data-theme", theme);
+
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", resolved === "dark" ? "#000000" : "#FFFFFF");
+  if (meta) {
+    const canvas = getComputedStyle(root).getPropertyValue("--color-bg-canvas").trim();
+    if (canvas) meta.setAttribute("content", canvas);
+  }
+}
+
+function readStoredTheme(): Theme {
+  if (typeof window === "undefined") return "system";
+  try {
+    const stored =
+      window.localStorage.getItem(STORAGE_KEY) ?? window.localStorage.getItem(LEGACY_STORAGE_KEY);
+    if (stored === "light" || stored === "dark" || stored === "system") return stored;
+  } catch {
+    // Storage may be unavailable in private browsing or restricted contexts.
+  }
+  return "system";
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(() => {
-    if (typeof window === "undefined") return "light";
-    const stored = window.localStorage.getItem(STORAGE_KEY) as Theme | null;
-    return stored === "light" || stored === "dark" || stored === "system" ? stored : "light";
-  });
+  const [theme, setThemeState] = useState<Theme>(readStoredTheme);
   const [resolved, setResolved] = useState<Resolved>(() => resolve(theme));
 
   useEffect(() => {
-    const r = resolve(theme);
-    setResolved(r);
-    apply(r);
+    const update = () => {
+      const next = resolve(theme);
+      setResolved(next);
+      apply(next, theme);
+    };
+
+    update();
     if (theme === "system") {
       const mq = window.matchMedia("(prefers-color-scheme: dark)");
-      const handler = () => {
-        const nr = systemResolved();
-        setResolved(nr);
-        apply(nr);
-      };
-      mq.addEventListener("change", handler);
-      return () => mq.removeEventListener("change", handler);
+      mq.addEventListener("change", update);
+      return () => mq.removeEventListener("change", update);
     }
     return;
   }, [theme]);
 
-  const setTheme = (t: Theme) => {
-    setThemeState(t);
+  const setTheme = (nextTheme: Theme) => {
+    setThemeState(nextTheme);
     try {
-      window.localStorage.setItem(STORAGE_KEY, t);
+      window.localStorage.setItem(STORAGE_KEY, nextTheme);
     } catch {
-      /* ignore */
+      // Theme still changes for the current session if storage is unavailable.
     }
   };
 

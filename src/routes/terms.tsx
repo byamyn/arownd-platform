@@ -21,14 +21,14 @@ function TermsPage() {
       <Link
         to="/"
         aria-label="رجوع"
-        className="flex size-10 items-center justify-center rounded-full bg-card shadow-soft"
+        className="flex size-11 items-center justify-center rounded-full bg-card focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
       >
         <ArrowRight className="size-5" />
       </Link>
 
       <PageHeader title="شروط الاستخدام" subtitle="آخر تحديث: 16 أكتوبر 2026" />
 
-      <div className="space-y-3 text-[11px] leading-relaxed text-muted-foreground">
+      <div className="space-y-3 text-caption leading-relaxed text-muted-foreground">
         <p>
           البريد الرسمي:{" "}
           <a href="mailto:arownddz@gmail.com" className="font-semibold text-accent-ink underline">
@@ -48,7 +48,7 @@ function TermsPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl bg-card p-5 text-sm leading-relaxed text-foreground shadow-soft">
+      <div className="rounded-[var(--radius-card)] bg-card p-5 text-sm leading-relaxed text-foreground ">
         <h2 className="mb-4 text-lg font-extrabold">أولًا: شروط الاستخدام</h2>
 
         <Section title="1. التعريف بمنصة Arownd">

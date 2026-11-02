@@ -69,8 +69,9 @@ function BagPage() {
           <h1 className="text-h1 text-foreground">{t("bag_heading")}</h1>
           {bag.items.length > 0 && (
             <button
+              type="button"
               onClick={() => setConfirmClear(true)}
-              className="btn-danger-small flex items-center gap-1.5"
+              className="btn-danger-small flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <Trash2 className="size-3.5" /> {t("bag_clear")}
             </button>
@@ -140,7 +141,7 @@ function BagPage() {
                       <Link
                         to="/products/$productId"
                         params={{ productId: r.offer.product_id }}
-                        className="size-20 shrink-0 overflow-hidden rounded-xl bg-neutral-100"
+                        className="size-20 shrink-0 overflow-hidden rounded-[var(--radius-control)] bg-muted"
                       >
                         {image && (
                           <img
@@ -153,7 +154,7 @@ function BagPage() {
                         )}
                       </Link>
                     ) : (
-                      <div className="size-20 shrink-0 animate-pulse rounded-xl bg-neutral-100" />
+                      <div className="size-20 shrink-0 animate-pulse rounded-[var(--radius-control)] bg-muted" />
                     )}
                     <div className="min-w-0 flex-1 space-y-1">
                       <p className="line-clamp-1 text-sm font-semibold">{name}</p>
@@ -164,12 +165,12 @@ function BagPage() {
                         {formatDA((r.offer?.price ?? 0) * r.item.quantity)}
                       </p>
                       {priceChanged && (
-                        <p className="text-[11px] font-medium text-warning">
+                        <p className="text-caption font-medium text-warning">
                           {priceChanged.message}
                         </p>
                       )}
                       {r.issue && (
-                        <p className="text-[11px] font-semibold text-danger">{r.issue.message}</p>
+                        <p className="text-caption font-semibold text-danger">{r.issue.message}</p>
                       )}
                     </div>
                     <div className="flex flex-col items-end justify-between">
@@ -182,7 +183,7 @@ function BagPage() {
                             action: { label: t("bag_undo"), onClick: () => bag.add(removed) },
                           });
                         }}
-                        className="flex size-9 items-center justify-center rounded-full transition hover:bg-danger-soft active:scale-95"
+                        className="flex size-11 items-center justify-center rounded-full transition hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[var(--scale-pressed)]"
                       >
                         <Trash2 className="size-4 text-danger" />
                       </button>
@@ -239,7 +240,7 @@ function BagPage() {
             <b className="text-section text-accent-ink">{formatDA(total)}</b>
           </div>
           {blocked ? (
-            <p className="mt-2 rounded-xl bg-danger-soft px-3 py-2 text-center text-xs font-bold text-danger">
+            <p className="mt-2 rounded-[var(--radius-control)] bg-danger-soft px-3 py-2 text-center text-xs font-bold text-danger">
               {t("bag_checkout_blocked")}
             </p>
           ) : offers.isLoading || !evaluation.loaded ? (

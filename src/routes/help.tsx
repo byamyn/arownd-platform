@@ -68,13 +68,14 @@ function HelpPage() {
         {TABS.map((t) => (
           <button
             key={t.id}
+            type="button"
             role="tab"
             aria-selected={tab === t.id}
             onClick={() => setTab(t.id)}
             className={cn(
-              "rounded-2xl py-2.5 text-sm font-bold transition",
+              "min-h-[var(--control-height)] rounded-[var(--radius-control)] px-3 py-2.5 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               tab === t.id
-                ? "bg-primary text-accent-ink-foreground shadow-soft"
+                ? "bg-primary text-accent-ink-foreground "
                 : "bg-card text-muted-foreground",
             )}
           >
@@ -95,7 +96,7 @@ function HelpPage() {
 
 function FeatureCard({ icon, title, desc }: { icon: ReactNode; title: string; desc: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl bg-card p-4 shadow-soft">
+    <div className="flex items-start gap-3 rounded-[var(--radius-card)] bg-card p-4">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink">
         {icon}
       </div>
@@ -132,7 +133,7 @@ function UserSection() {
       />
       <Link
         to="/profile"
-        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground shadow-soft"
+        className="block min-h-[var(--control-height)] rounded-[var(--radius-pill)] bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 "
       >
         اذهب إلى حسابي
       </Link>
@@ -175,7 +176,7 @@ function MerchantSection() {
       />
       <Link
         to="/studio"
-        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground shadow-soft"
+        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground "
       >
         افتح استوديو التاجر
       </Link>
@@ -203,10 +204,10 @@ function DeliveryPartnerSection() {
   }
 
   const inputClass =
-    "w-full rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none transition focus:border-primary";
+    "min-h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-3 text-sm outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
   return (
-    <section className="space-y-4 rounded-2xl bg-card p-4 shadow-soft">
+    <section className="space-y-4 rounded-[var(--radius-card)] bg-card p-4">
       <div className="flex items-start gap-3">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink">
           <Building2 className="size-5" />
@@ -295,7 +296,7 @@ function DeliveryPartnerSection() {
         </label>
         <button
           type="submit"
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-soft"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground "
         >
           <Mail className="size-4" />
           إرسال طلب الشراكة عبر البريد
@@ -307,7 +308,7 @@ function DeliveryPartnerSection() {
           arownddz@gmail.com
         </a>
       </p>
-      <p className="text-[11px] leading-relaxed text-muted-foreground">
+      <p className="text-caption leading-relaxed text-muted-foreground">
         عند الضغط على الإرسال، سيفتح تطبيق البريد في جهازك برسالة مجهزة بالبيانات المدخلة. لن يُرسل
         الطلب تلقائيًا؛ يجب مراجعة الرسالة ثم الضغط على إرسال من تطبيق البريد.
       </p>
@@ -352,7 +353,7 @@ function FaqSection({ open, onToggle }: { open: number | null; onToggle: (i: num
       {FAQS.map((f, i) => {
         const isOpen = open === i;
         return (
-          <div key={i} className="overflow-hidden rounded-2xl bg-card shadow-soft">
+          <div key={i} className="overflow-hidden rounded-2xl bg-card ">
             <button
               onClick={() => onToggle(isOpen ? -1 : i)}
               aria-expanded={isOpen}
@@ -393,7 +394,7 @@ function QuickLinks() {
           <Link
             key={l.to}
             to={l.to}
-            className="flex items-center gap-2 rounded-2xl bg-card p-3 text-sm font-bold shadow-soft"
+            className="flex items-center gap-2 rounded-2xl bg-card p-3 text-sm font-bold "
           >
             <span className="text-accent-ink">{l.icon}</span>
             {l.label}

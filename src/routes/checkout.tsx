@@ -232,9 +232,9 @@ function CheckoutPage() {
       <PageHeader title={t("checkout_heading")} subtitle={t("checkout_subtitle")} />
 
       {/* شريط التقدم */}
-      <div className="space-y-2 rounded-3xl border border-border bg-card p-3 shadow-soft">
+      <div className="space-y-2 rounded-[var(--radius-card)] border border-border bg-card p-3 ">
         <div className="flex items-center justify-between px-1">
-          <span className="text-[10px] font-bold tracking-wider text-muted-foreground">
+          <span className="text-caption font-bold tracking-wider text-muted-foreground">
             STEP {String(step + 1).padStart(2, "0")} / 04
           </span>
           <span className="text-xs font-bold text-accent-ink">{t(STEP_KEYS[step])}</span>
@@ -246,17 +246,17 @@ function CheckoutPage() {
                 onClick={() => i < step && setStep(i)}
                 disabled={i > step}
                 className={cn(
-                  "flex w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-[11px] font-bold transition",
+                  "flex min-h-[var(--touch-target-size)] w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-caption font-bold transition",
                   i === step
                     ? "bg-primary text-accent-ink-foreground"
                     : i < step
                       ? "bg-primary/15 text-accent-ink"
-                      : "bg-neutral-100 text-neutral-400",
+                      : "bg-muted text-muted-foreground",
                 )}
               >
                 <span
                   className={cn(
-                    "flex size-4 shrink-0 items-center justify-center rounded-full text-[9px]",
+                    "flex size-4 shrink-0 items-center justify-center rounded-full text-caption",
                     i < step ? "bg-primary text-accent-ink-foreground" : "bg-background/60",
                   )}
                 >
@@ -270,7 +270,7 @@ function CheckoutPage() {
       </div>
 
       {step === 0 && (
-        <section className="rounded-3xl border border-border bg-card p-4 shadow-soft">
+        <section className="rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="mb-3 flex items-center gap-2">
             <ShoppingBag className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">
@@ -313,7 +313,7 @@ function CheckoutPage() {
             <button
               type="button"
               onClick={() => offers.refetch()}
-              className="mt-3 w-full rounded-xl bg-danger-soft py-2 text-xs font-bold text-danger"
+              className="mt-3 w-full min-h-[var(--control-height)] rounded-full bg-danger-soft px-4 text-sm font-semibold text-danger"
             >
               {t("checkout_verify_failed_short")}
             </button>
@@ -354,7 +354,7 @@ function CheckoutPage() {
       )}
 
       {step === 1 && (
-        <section className="space-y-4 rounded-3xl border border-border bg-card p-4 shadow-soft">
+        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <MapPin className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_address_heading")}</h2>
@@ -374,7 +374,7 @@ function CheckoutPage() {
             }}
             placeholder={t("checkout_commune_placeholder")}
             required
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <div className="space-y-3 rounded-2xl bg-background p-3">
             <p className="text-xs font-bold text-muted-foreground">{t("checkout_buyer_data")}</p>
@@ -383,7 +383,7 @@ function CheckoutPage() {
               onChange={(e) => setFullName(e.target.value)}
               placeholder={t("checkout_name_placeholder")}
               required
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
             />
             <input
               value={phone}
@@ -391,14 +391,14 @@ function CheckoutPage() {
               placeholder={t("checkout_phone_placeholder")}
               required
               inputMode="tel"
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
             />
           </div>
         </section>
       )}
 
       {step === 2 && (
-        <section className="space-y-4 rounded-3xl border border-border bg-card p-4 shadow-soft">
+        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <Truck className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_delivery_heading")}</h2>
@@ -434,7 +434,7 @@ function CheckoutPage() {
             onChange={(e) => setAddress(e.target.value)}
             placeholder={t("checkout_address_detail_placeholder")}
             rows={3}
-            className="w-full rounded-xl border bg-background px-3 py-2 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
+            className="w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <p className="flex items-start gap-2 rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             <Truck className="mt-0.5 size-4 shrink-0 text-accent-ink" />
@@ -444,7 +444,7 @@ function CheckoutPage() {
       )}
 
       {step === 3 && (
-        <section className="space-y-3 rounded-3xl border border-border bg-card p-4 shadow-soft">
+        <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <CreditCard className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_payment_heading")}</h2>
@@ -469,7 +469,7 @@ function CheckoutPage() {
       <StickyActionBar>
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-caption text-muted-foreground">
               {step < 3 ? t("checkout_total_label") : t("checkout_final_total_label")}
             </p>
             <p className="text-price text-accent-ink">{formatDA(total)}</p>
@@ -477,7 +477,7 @@ function CheckoutPage() {
           <button
             disabled={submitting}
             onClick={goNext}
-            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-6 text-sm font-bold text-primary-foreground transition disabled:opacity-45 active:scale-[0.98]"
+            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
           >
             {submitting
               ? t("checkout_sending")
@@ -544,8 +544,8 @@ function SuccessScreen({
       </div>
 
       {/* رمز التتبع */}
-      <div className="w-full max-w-xs rounded-3xl border border-border bg-card px-4 py-5 shadow-soft">
-        <p className="text-[11px] opacity-70 text-muted-foreground">
+      <div className="w-full max-w-xs rounded-[var(--radius-card)] border border-border bg-card px-4 py-5 ">
+        <p className="text-caption opacity-70 text-muted-foreground">
           {t("checkout_tracking_code")}
         </p>
         <p className="font-mono text-2xl font-bold tracking-[0.3em] text-accent-ink">{trackCode}</p>
@@ -553,7 +553,7 @@ function SuccessScreen({
 
       {/* ملخّص الطلب — المتجر والقطع والإجمالي */}
       {snapshot && (
-        <div className="w-full max-w-xs space-y-3 rounded-3xl border border-border bg-card p-4 text-start shadow-soft">
+        <div className="w-full max-w-xs space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4 text-start ">
           {snapshot.storeName && (
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-muted-foreground">{t("close_store")}</span>
@@ -566,10 +566,10 @@ function SuccessScreen({
             </span>
             <span className="font-bold text-foreground">{formatDA(snapshot.total)}</span>
           </div>
-          <p className="rounded-xl bg-success-soft/50 p-2.5 text-[11px] leading-relaxed text-success">
+          <p className="rounded-xl bg-success-soft/50 p-2.5 text-caption leading-relaxed text-success">
             {t("checkout_no_commission_note")}
           </p>
-          <p className="flex items-start gap-1.5 pt-1 text-[11px] leading-relaxed text-muted-foreground">
+          <p className="flex items-start gap-1.5 pt-1 text-caption leading-relaxed text-muted-foreground">
             <BellRing className="mt-0.5 size-3.5 shrink-0 text-primary" />
             {t("close_notify_note")}
           </p>
@@ -591,10 +591,10 @@ function SuccessScreen({
         <Link
           to="/products/$productId"
           params={{ productId: snapshot.productId }}
-          className="w-full max-w-xs rounded-2xl border border-border bg-card p-3 transition active:scale-[0.98]"
+          className="w-full max-w-xs rounded-[var(--radius-card)] border border-border bg-card p-3 transition active:scale-[var(--scale-pressed)]"
         >
           <p className="text-sm font-bold text-foreground">{t("close_rate_cta")}</p>
-          <p className="mt-0.5 text-[11px] text-muted-foreground">{t("close_rate_hint")}</p>
+          <p className="mt-0.5 text-caption text-muted-foreground">{t("close_rate_hint")}</p>
         </Link>
       )}
 
@@ -602,13 +602,13 @@ function SuccessScreen({
         <button
           type="button"
           onClick={share}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-bold text-muted-foreground transition active:scale-95"
+          className="inline-flex min-h-[var(--touch-target-size)] items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground transition active:scale-[var(--scale-pressed)]"
         >
           <Share2 className="size-3.5" /> {t("close_share")}
         </button>
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-bold text-muted-foreground transition active:scale-95"
+          className="inline-flex min-h-[var(--touch-target-size)] items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground transition active:scale-[var(--scale-pressed)]"
         >
           {t("checkout_continue_shopping")}
         </Link>

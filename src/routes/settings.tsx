@@ -122,9 +122,9 @@ function SettingsPage() {
 
   if (!user) {
     return (
-      <div className="mx-auto max-w-xl px-4 pb-6 pt-4">
+      <div className="app-page mx-auto max-w-xl pb-6 pt-4">
         <PageHeader title="الإعدادات" back="/profile" />
-        <div className="mt-6 rounded-2xl border border-border bg-card p-6 text-center">
+        <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-card p-6 text-center">
           <p className="text-body text-muted-foreground">يرجى تسجيل الدخول للوصول إلى الإعدادات</p>
           <Link to="/auth" className="btn-primary mt-4 w-full">
             تسجيل الدخول
@@ -139,7 +139,7 @@ function SettingsPage() {
   const initial = (email || "؟").slice(0, 1).toUpperCase();
 
   return (
-    <div className="mx-auto max-w-xl space-y-5 px-4 pb-6 pt-4">
+    <div className="app-page mx-auto max-w-xl space-y-5 pb-6 pt-4">
       <PageHeader title="الإعدادات" subtitle="خصّص تجربتك في Arownd" back="/profile" />
 
       {/* بطاقة الحساب */}
@@ -153,7 +153,7 @@ function SettingsPage() {
         </div>
         <Link
           to="/profile"
-          className="flex min-h-11 shrink-0 items-center rounded-full bg-primary-soft px-4 text-sm font-bold text-accent-ink"
+          className="flex min-h-11 shrink-0 items-center rounded-full bg-primary-soft px-4 text-sm font-bold text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           تعديل
         </Link>
@@ -178,7 +178,7 @@ function SettingsPage() {
                 type="button"
                 onClick={() => void changeVisibility()}
                 disabled={visibilityBusy || profile.isLoading || !profile.data}
-                className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-foreground disabled:opacity-50"
+                className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border px-4 text-sm font-bold text-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
               >
                 {profile.data?.is_public ? (
                   <EyeOff className="size-4" />
@@ -314,7 +314,7 @@ function SettingsPage() {
               onChange={(e) => setNewPassword(e.target.value)}
               autoComplete="new-password"
               dir="ltr"
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="min-h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             />
           </div>
           <div>
@@ -331,7 +331,7 @@ function SettingsPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               autoComplete="new-password"
               dir="ltr"
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
             />
           </div>
         </div>
@@ -374,7 +374,7 @@ function SettingsPage() {
                 setShowTheme(false);
               }}
               className={cn(
-                "flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition",
+                "flex w-full items-center gap-3 rounded-[var(--radius-card)] px-4 py-3 text-sm font-bold transition",
                 theme === opt.value
                   ? "bg-primary text-accent-ink-foreground"
                   : "border border-border bg-background text-foreground",

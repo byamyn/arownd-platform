@@ -83,10 +83,10 @@ export function Carousel({
         <>
           <button
             aria-label={t("aria_prev")}
-            onClick={() => emblaApi?.scrollPrev()}
-            disabled={!canPrev}
+            onClick={prevBtn ?? undefined}
+            disabled={!prevBtn}
             className={cn(
-              "absolute top-1/2 start-0 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground shadow-lift backdrop-blur transition disabled:opacity-0",
+              "absolute top-1/2 start-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground shadow-lift backdrop-blur transition disabled:opacity-0",
               isRTL && "right-auto left-0",
             )}
           >
@@ -94,10 +94,10 @@ export function Carousel({
           </button>
           <button
             aria-label={t("aria_next")}
-            onClick={() => emblaApi?.scrollNext()}
-            disabled={!canNext}
+            onClick={nextBtn ?? undefined}
+            disabled={!nextBtn}
             className={cn(
-              "absolute top-1/2 end-0 z-10 flex size-8 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground shadow-lift backdrop-blur transition disabled:opacity-0",
+              "absolute top-1/2 end-0 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground shadow-lift backdrop-blur transition disabled:opacity-0",
               isRTL && "left-auto right-0",
             )}
           >

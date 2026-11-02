@@ -55,9 +55,9 @@ describe("PWA — الـ manifest", () => {
       });
 
       it("لون الواجهة يطابق هوية التطبيق", () => {
-        // AROWND: الخلفية الفاتحة #F7F8F5 والداكن #0B0F0C
-        expect(m.background_color.toLowerCase()).toBe("#f7f8f5");
-        expect(m.theme_color.toLowerCase()).toBe("#0b0f0c");
+        // AROWND Design System v1.2: الخلفية الفاتحة #F5F5F5 والداكن #0A0A0A
+        expect(m.background_color.toLowerCase()).toBe("#f5f5f5");
+        expect(m.theme_color.toLowerCase()).toBe("#0a0a0a");
       });
 
       it("اختصارات التطبيق تشير إلى مسارات موجودة", () => {
@@ -97,6 +97,9 @@ describe("PWA — Service Worker", () => {
   it("يخزّن البيانات مع حدّ عمر ومقاس", () => {
     expect(sw).toContain("DATA_TTL_MS");
     expect(sw).toContain("MAX_DATA_ENTRIES");
+    expect(sw).toContain('headers.set("X-Arownd-Cached-At"');
+    expect(sw).toContain("Date.now() - cachedAt <= DATA_TTL_MS");
+    expect(sw).toContain("await cache.delete(request)");
   });
 
   it("يحذف الكاش القديم عند التفعيل", () => {

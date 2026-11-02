@@ -57,7 +57,7 @@ export function ErrorState({
       role="alert"
       aria-live="polite"
       className={cn(
-        "flex flex-col items-center justify-center gap-3 rounded-2xl border border-border bg-card px-6 py-10 text-center",
+        "flex flex-col items-center justify-center gap-3 rounded-[var(--radius-card)] border border-border bg-card px-6 py-10 text-center",
         className,
       )}
     >
@@ -80,7 +80,7 @@ export function ErrorState({
           type="button"
           onClick={handleRetry}
           disabled={retrying}
-          className="btn-secondary mt-1"
+          className="btn-secondary mt-1 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
           <RefreshCw className={cn("size-4", retrying && "animate-spin")} aria-hidden />
           {retrying ? t("action_retrying") : t("action_retry")}

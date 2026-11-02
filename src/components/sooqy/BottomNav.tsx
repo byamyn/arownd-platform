@@ -1,33 +1,25 @@
-import { useLocation } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
-import { Compass, Home, Package, Search, ShoppingBag, User } from "lucide-react";
-import { useBag } from "@/lib/bag";
+import { useLocation, Link } from "@tanstack/react-router";
+import { Home, Search, ShoppingBag, User } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
+
 export function BottomNav() {
   const { pathname } = useLocation();
-  const { count } = useBag();
-  const { t, isRTL } = useTranslation();
+  const { t } = useTranslation();
   const items = [
-    { to: "/", labelKey: "home", icon: Home },
-    { to: "/explore", labelKey: "explore", icon: Search },
-    { to: "/bag", labelKey: "cart", icon: ShoppingBag },
-    { to: "/profile", labelKey: "profile", icon: User },
+    { to: "/", labelKey: "home", Icon: Home },
+    { to: "/explore", labelKey: "explore", Icon: Search },
+    { to: "/bag", labelKey: "cart", Icon: ShoppingBag },
+    { to: "/profile", labelKey: "profile", Icon: User },
   ];
 
   return (
     <nav
       aria-label={t("aria_main_nav")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/80 backdrop-blur"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-muted"
     >
-      <div
-        className={cn(
-          "mx-auto flex w-full max-w-2xl items-stretch px-1",
-          "pb-[env(safe-area-inset-bottom)]",
-          isRTL ? "flex-row-reverse" : "",
-        )}
-      >
-        {items.map(({ to, labelKey, icon: Icon }) => {
+      <div className="mx-auto flex h-[var(--nav-height)] w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
+        {items.map(({ to, labelKey, Icon }) => {
           const isActive = pathname === to;
           return (
             <Link
@@ -35,34 +27,24 @@ export function BottomNav() {
               to={to}
               preload="intent"
               activeOptions={{ exact: to === "/" }}
-              className="group relative flex flex-1 flex-col items-center justify-center gap-0.5 py-2"
-              activeProps={{ "aria-current": "page" }}
+              aria-current={isActive ? "page" : undefined}
+              className={cn(
+                "flex min-h-[var(--nav-height)] min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-1 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+                isActive
+                  ? "text-[var(--color-action-ink)]"
+                  : "text-muted-foreground active:bg-muted",
+              )}
             >
               <span
                 className={cn(
-                  "flex size-9 items-center justify-center rounded-md transition-colors duration-200",
-                  isActive
-                    ? "bg-primary/10 text-primary"
-                    : "group-active:bg-muted/30 text-muted-foreground",
+                  "flex size-9 items-center justify-center rounded-full",
+                  isActive ? "bg-muted" : "",
                 )}
                 aria-hidden="true"
               >
-                <Icon
-                  className={cn(
-                    "size-5 transition-colors duration-200",
-                    isActive ? "text-primary" : "text-muted-foreground",
-                  )}
-                  strokeWidth={isActive ? 2.4 : 2}
-                />
+                <Icon className="size-5" strokeWidth={isActive ? 2.4 : 2} />
               </span>
-              <span
-                className={cn(
-                  "w-full truncate px-0.5 text-center text-[10px] font-semibold transition-colors duration-200",
-                  isActive ? "text-primary" : "text-muted-foreground",
-                )}
-              >
-                {t(labelKey)}
-              </span>
+              <span className="w-full truncate text-center">{t(labelKey)}</span>
             </Link>
           );
         })}
