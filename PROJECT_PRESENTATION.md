@@ -28,7 +28,7 @@ The proposed value is a localized discovery experience that helps users find rel
 
 Technology
 
-Project documentation describes a web stack including React and TypeScript, Supabase services, and a possible Android app through Capacitor. Confirm the current repository and production build before presenting this as verified technical status.
+The project uses a responsive web application and PWA built with React and TypeScript, with Supabase services. Android native packaging and Capacitor build tooling have been removed from the repository.
 
 Development priorities
 
@@ -69,7 +69,7 @@ Arownd مشروع منصة رقمية يركز على اكتشاف التجار�
 
 التقنية
 
-تصف وثائق المشروع بنية ويب تشمل React وTypeScript وخدمات Supabase، مع إمكانية تطبيق Android عبر Capacitor. يجب التحقق من المستودع الحالي ونجاح بناء نسخة الإنتاج قبل عرض ذلك بوصفه حالة تقنية مؤكدة.
+يعتمد المشروع حاليًا على تطبيق ويب متجاوب وPWA باستخدام React وTypeScript وخدمات Supabase. تمت إزالة تغليف Android الأصلي وأدوات بناء Capacitor من المستودع.
 
 أولويات التطوير
 

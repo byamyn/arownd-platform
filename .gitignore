@@ -9,7 +9,6 @@ lerna-debug.log*
 
 node_modules
 dist
-dist-mobile
 tmp
 dist-ssr
 api/_generated/*
@@ -43,18 +42,6 @@ api/_generated/*
 # Local tooling / SDK copies
 .polydev/
 opt/
-android/local.properties
-android/.gradle/
-android/app/build/
-android/build/
-android/keystore/
-
-# Android APKs (release artifacts)
-*.apk
-*.aab
-
-# Firebase Android app configuration (client config; keep local/CI-managed)
-android/app/google-services.json
 
 # Supabase CLI local metadata (never commit local project state)
 .temp/

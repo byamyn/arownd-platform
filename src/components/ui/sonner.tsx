@@ -6,7 +6,7 @@ const Toaster = ({ ...props }: ToasterProps) => {
   return (
     <Sonner
       className="toaster group"
-      // Keep feedback temporary across the web app and Capacitor Android app.
+      // Keep feedback temporary across the Arownd web app.
       duration={4000}
       toastOptions={{
         duration: 4000,

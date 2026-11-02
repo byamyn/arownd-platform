@@ -1,5 +1,3 @@
-import { Keyboard } from "@capacitor/keyboard";
-import { Capacitor } from "@capacitor/core";
 import { Sentry } from "./sentry";
 
 type LogLevel = "info" | "warn" | "error";
@@ -142,7 +140,7 @@ export function getDeviceInfo() {
     dpr: window.devicePixelRatio,
     viewport: `${window.innerWidth}x${window.innerHeight}`,
     lang: navigator.language,
-    isNative: Capacitor.isNativePlatform(),
+    platform: "web",
   };
 }
 
@@ -289,27 +287,4 @@ export function initDiagnostics() {
     true,
   );
 
-  // سجّل أحداث لوحة المفاتيح الأصلية عند العمل داخل Capacitor فقط
-  // (على الويب لا يوجد تنفيذ أصلي — استدعاؤه يرمي خطأ).
-  if (!Capacitor.isNativePlatform()) return;
-
-  void Keyboard.addListener("keyboardWillShow", (info) => {
-    logEvent("info", "keyboard.willShow", {
-      keyboardHeight: info.keyboardHeight,
-    });
-  });
-
-  void Keyboard.addListener("keyboardDidShow", (info) => {
-    logEvent("info", "keyboard.didShow", {
-      keyboardHeight: info.keyboardHeight,
-    });
-  });
-
-  void Keyboard.addListener("keyboardWillHide", () => {
-    logEvent("info", "keyboard.willHide");
-  });
-
-  void Keyboard.addListener("keyboardDidHide", () => {
-    logEvent("info", "keyboard.didHide");
-  });
 }

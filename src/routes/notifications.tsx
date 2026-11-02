@@ -27,8 +27,6 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { useState } from "react";
 import { showError, showSuccess } from "@/lib/feedback";
-import { Capacitor } from "@capacitor/core";
-import { enableNativePush } from "@/lib/push-notifications";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({}),
@@ -93,27 +91,6 @@ function NotificationsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [markingId, setMarkingId] = useState<string | null>(null);
   const [markingAll, setMarkingAll] = useState(false);
-  const [enablingPush, setEnablingPush] = useState(false);
-
-  const enablePush = async () => {
-    if (enablingPush) return;
-    setEnablingPush(true);
-    try {
-      const result = await enableNativePush();
-      if (result === "unsupported") {
-        showSuccess("إشعارات الهاتف متاحة في تطبيق Android فقط حاليًا.");
-      } else if (result === "denied") {
-        showError(new Error("لم يتم منح إذن الإشعارات. يمكنك تفعيله من إعدادات الجهاز."));
-      } else {
-        showSuccess("تم إرسال طلب تفعيل إشعارات Arownd.");
-      }
-    } catch (error) {
-      showError(error);
-    } finally {
-      setEnablingPush(false);
-    }
-  };
-
   const q = useQuery({
     queryKey: ["notifications"],
     queryFn: fetchMyNotifications,
@@ -207,30 +184,6 @@ function NotificationsPage() {
             ) : undefined
           }
         />
-
-        {user && Capacitor.isNativePlatform() && (
-          <section className="mt-3 flex flex-col gap-3 rounded-2xl border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
-            <div className="flex items-start gap-3">
-              <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
-                <Bell className="size-5" />
-              </span>
-              <div>
-                <p className="text-sm font-bold text-foreground">إشعارات الهاتف</p>
-                <p className="mt-1 text-xs text-muted-foreground">
-                  استقبل تحديثات الطلبات والحجوزات حتى عندما يكون التطبيق مغلقًا.
-                </p>
-              </div>
-            </div>
-            <button
-              type="button"
-              onClick={() => void enablePush()}
-              disabled={enablingPush}
-              className="btn-primary min-h-11 shrink-0 disabled:opacity-60"
-            >
-              {enablingPush ? "جارٍ التفعيل..." : "تفعيل الإشعارات"}
-            </button>
-          </section>
-        )}
 
         {!user && (
           <EmptyState

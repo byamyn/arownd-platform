@@ -25,7 +25,7 @@
 
 ## Slide 6 — Présentation du prototype (produit/service)
 - Lien prototype/vidéo (≤ 4 min)
-- Lien APK (Android/iOS)
+- Lien prototype web / PWA
 - Lien site web
 
 ## Slide 7 — Brevets, marques et droits de PI

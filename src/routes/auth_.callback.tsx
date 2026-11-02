@@ -1,7 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
-import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
 import { translate, useTranslation } from "@/lib/i18n";
 
@@ -17,7 +16,6 @@ export const Route = createFileRoute("/auth_/callback")({
     redirect?: string;
   } => ({
     reset: s["reset"] === "1" || s["reset"] === true || s["reset"] === "true",
-    code: typeof s["code"] === "string" ? s["code"] : undefined,
     intent:
       s["intent"] === "merchant" || s["intent"] === "delivery" || s["intent"] === "customer"
         ? s["intent"]
@@ -55,7 +53,7 @@ function safePath(path: string | null | undefined) {
 function CallbackPage() {
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const { reset, code, intent, redirect } = Route.useSearch();
+  const { reset, intent, redirect } = Route.useSearch();
 
   useEffect(() => {
     let done = false;
@@ -91,17 +89,6 @@ function CallbackPage() {
     }
 
     const run = async () => {
-      if (code && Capacitor.isNativePlatform()) {
-        const { error } = await supabase.auth.exchangeCodeForSession(code);
-        if (error) {
-          console.debug("[auth/callback] exchange failed", error.message);
-          navigate({ to: "/auth", replace: true });
-        } else {
-          go();
-        }
-        return;
-      }
-
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
       if (data.session) go();
@@ -124,7 +111,7 @@ function CallbackPage() {
       subscription.subscription.unsubscribe();
       window.clearTimeout(timeout);
     };
-  }, [navigate, reset, code, intent, redirect]);
+  }, [navigate, reset, intent, redirect]);
 
   return (
     <div className="flex min-h-[70dvh] flex-col items-center justify-center gap-3 px-4 text-center">

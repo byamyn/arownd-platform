@@ -14,7 +14,6 @@ import {
   UserRound,
 } from "lucide-react";
 import { toast } from "sonner";
-import { Capacitor } from "@capacitor/core";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { translate, useTranslation } from "@/lib/i18n";
@@ -22,9 +21,8 @@ import { translate, useTranslation } from "@/lib/i18n";
 type AuthScreen = "signin" | "signup" | "forgot" | "reset";
 type AccountType = "customer" | "merchant" | "delivery";
 
-const AUTH_CALLBACK_BASE = Capacitor.isNativePlatform()
-  ? "com.sooqy.app://auth/callback"
-  : typeof window !== "undefined"
+const AUTH_CALLBACK_BASE =
+  typeof window !== "undefined"
     ? window.location.origin + "/auth/callback"
     : "http://localhost/auth/callback";
 

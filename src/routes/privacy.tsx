@@ -31,8 +31,8 @@ function PrivacyPage() {
       <div className="space-y-3 text-[11px] leading-relaxed text-muted-foreground">
         <p>
           البريد الرسمي:{" "}
-          <a href="mailto:app.sooqy@gmail.com" className="font-semibold text-accent-ink underline">
-            app.sooqy@gmail.com
+          <a href="mailto:arounddz@gmail.com" className="font-semibold text-accent-ink underline">
+            arounddz@gmail.com
           </a>
         </p>
         <p>
@@ -189,8 +189,8 @@ function PrivacyPage() {
           لممارسة الحقوق المتاحة، يمكن إرسال طلب إلى:
           <br />
           <br />
-          <a href="mailto:app.sooqy@gmail.com" className="font-semibold text-accent-ink underline">
-            app.sooqy@gmail.com
+          <a href="mailto:arounddz@gmail.com" className="font-semibold text-accent-ink underline">
+            arounddz@gmail.com
           </a>
           <br />
           <br />
@@ -228,8 +228,8 @@ function PrivacyPage() {
           بالخصوصية، يرجى التواصل عبر البريد الرسمي:
           <br />
           <br />
-          <a href="mailto:app.sooqy@gmail.com" className="font-semibold text-accent-ink underline">
-            app.sooqy@gmail.com
+          <a href="mailto:arounddz@gmail.com" className="font-semibold text-accent-ink underline">
+            arounddz@gmail.com
           </a>
         </Section>
       </div>

@@ -9,7 +9,6 @@
 | Attestation d'incubation | si accompagné (≤200 MB) | ❌/N/A | Décider accompagnement |
 | Document justificatif PI | pdf/jpg (≤200 MB) | ❌/N/A | Marque/INAPI si dépôt |
 | Site web | URL | 🟡 | Déployer prod + URL stable |
-| APK | lien (Android/iOS) | ❌ | Build mobile + hébergement |
 | Vidéo explicative (≤4 min) | lien | ❌ | Produire |
 | NIN (fondateur) | champ | ❌ | Renseigner |
 | Wilaya/commune/adresse | champ | ❌ | Renseigner |

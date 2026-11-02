@@ -19,16 +19,16 @@ Voir `08-pitch-deck.md` (slides 4–7). Points clés:
 - Reserve & Collect (SQ-XXXX, 3h, stock deduction).
 - Truth Layer (prix achetable uniquement).
 - Hyperlocal (58 wilayas, communes, heures marché).
-- PWA + Android.
+- Application web responsive + PWA.
 
 ## 5. Prototype (liens)
 - Site web: [TODO: URL déployée (Vercel/sooqy.app)]
-- APK: [TODO: lien Android] (build: `npm run build:mobile` + `scripts/build-mobile.mjs`)
+- Application web: [TODO: URL de déploiement].
 - Vidéo explicative (≤ 4 min): [TODO]
 - Capture prototype: `public/` screenshots [TODO]
 
 ## 6. Avancement du projet
-**Produit prêt** (web + PWA + Android) — avec backend Supabase. [Vérifier déploiement prod].
+**Prototype web** (application responsive + PWA) — avec backend Supabase. [Vérifier le déploiement réel].
 
 ## 7. Modèle économique
 B2C (consommateurs) + B2B (commerçants) — aucune commission sur les commandes; éventuels services optionnels à définir séparément.

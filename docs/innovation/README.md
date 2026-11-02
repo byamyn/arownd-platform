@@ -1,6 +1,6 @@
 # حزمة تأهيل «مشروع مبتكر» — Arownd
 
-**المشروع:** Arownd (السوق/التجارة المحلية — تطبيق ويب + PWA + Android через Capacitor)
+**المشروع:** Arownd (السوق/التجارة المحلية — تطبيق ويب متجاوب + PWA)
 **العلامة المستهدفة:** «Label Projet Innovant» (مشروع مبتكر) — Comité National de Labélisation
 **المنصة الرسمية:** https://startup.dz/label-projet/
 **تاريخ إعداد الحزمة:** 2026-10-22
@@ -29,7 +29,7 @@
 | — | `Canevas-label-Projet-Innovant-2025-final.pptx` | قالب Pitch Deck الرسمي (startup.dz) |
 
 ## حالة الجاهزية (مختصر)
-- **التقنية (MVP):** جاهز (ويب + PWA + Android، Supabase، i18n، SEO، tests).
+- **التقنية (MVP):** تطبيق ويب + PWA، مع Supabase وi18n وSEO والاختبارات.
 - **الترشح (label projet innovant):** **غير جاهز بعد** — نواقص: وحدة قانونية/فريق/prototype evidence/بيانات سوق/IP/اسم موحد. انظر `11-readiness-report.md`.
 
 ## قواعد هذه الحزمة
