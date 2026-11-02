@@ -16,7 +16,7 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t("aria_main_nav")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card"
+      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-muted"
     >
       <div className="mx-auto flex h-16 w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
         {items.map(({ to, labelKey, Icon }) => {
