@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ChevronDown, MapPin, Check } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { fetchWilayas } from "@/lib/sooqy";
 import { cn } from "@/lib/utils";
 
@@ -22,6 +22,7 @@ export function WilayaButton({
   const current = data.find((w) => w.id === value);
   const label = value == null ? allLabel : (current?.name_ar ?? String(value).padStart(2, "0"));
   const [isOpen, setIsOpen] = useState(false);
+  const dropdownId = useId();
   const buttonRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -58,11 +59,29 @@ export function WilayaButton({
   }, [isOpen]);
 
   useEffect(() => {
-    if (!isOpen || !buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    const vw = window.innerWidth;
-    const left = Math.max(0, Math.min(rect.left, vw - 288 - 16));
-    setDropdownStyle({ position: "absolute", top: "100%", marginTop: 6, left, zIndex: 50 });
+    if (!isOpen) return;
+
+    const updatePosition = () => {
+      const anchor = buttonRef.current;
+      if (!anchor) return;
+      const rect = anchor.getBoundingClientRect();
+      const width = 288;
+      const left = Math.max(16, Math.min(rect.left, window.innerWidth - width - 16));
+      setDropdownStyle({
+        position: "fixed",
+        top: rect.bottom + 6,
+        left,
+        zIndex: 50,
+      });
+    };
+
+    updatePosition();
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
+    return () => {
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
+    };
   }, [isOpen]);
 
   const handleSelect = (wilayaId: number | null) => {
@@ -94,6 +113,7 @@ export function WilayaButton({
         aria-label="اختيار الولاية"
         aria-expanded={isOpen}
         aria-haspopup="listbox"
+        aria-controls={dropdownId}
         onClick={() => setIsOpen(!isOpen)}
         className="absolute inset-0 h-full w-full cursor-pointer"
       />
@@ -108,6 +128,8 @@ export function WilayaButton({
         listRef.current = el;
         dropdownRef.current = el;
       }}
+      id={dropdownId}
+      role="listbox"
       aria-label="قائمة الولايات"
       style={dropdownStyle}
       className="min-w-[18rem] max-h-60 overflow-auto rounded-[var(--radius-control)] border border-border bg-card text-sm animate-fade-up"
