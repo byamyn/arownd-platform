@@ -199,7 +199,7 @@ function OrdersPage() {
             return (
               <article
                 key={o.displayId ?? o.id}
-                className="overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+                className="overflow-hidden rounded-3xl border border-border bg-card "
               >
                 <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
                   <div className="min-w-0">
