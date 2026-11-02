@@ -33,7 +33,7 @@ export function CommuneSelect({
       disabled={!wilayaId}
       onChange={(e) => onChange(e.target.value || null)}
       className={cn(
-        "h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer disabled:opacity-50 focus:border-primary focus:ring-2 focus:ring-primary/10",
+        "min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer disabled:opacity-50 focus:border-primary focus:ring-2 focus:ring-primary/10",
         className,
       )}
     >
