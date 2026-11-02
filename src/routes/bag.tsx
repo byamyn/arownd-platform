@@ -140,7 +140,7 @@ function BagPage() {
                       <Link
                         to="/products/$productId"
                         params={{ productId: r.offer.product_id }}
-                        className="size-20 shrink-0 overflow-hidden rounded-xl bg-neutral-100"
+                        className="size-20 shrink-0 overflow-hidden rounded-xl bg-muted"
                       >
                         {image && (
                           <img
@@ -153,7 +153,7 @@ function BagPage() {
                         )}
                       </Link>
                     ) : (
-                      <div className="size-20 shrink-0 animate-pulse rounded-xl bg-neutral-100" />
+                      <div className="size-20 shrink-0 animate-pulse rounded-xl bg-muted" />
                     )}
                     <div className="min-w-0 flex-1 space-y-1">
                       <p className="line-clamp-1 text-sm font-semibold">{name}</p>
