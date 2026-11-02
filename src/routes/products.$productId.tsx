@@ -361,19 +361,19 @@ function ProductPage() {
                 <button
                   onClick={goPrev}
                   aria-label={t("aria_prev")}
-                  className="absolute top-1/2 start-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground shadow-lift backdrop-blur transition active:scale-95"
+                  className="absolute top-1/2 start-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground  backdrop-blur transition active:scale-95"
                 >
                   <ChevronRight className="size-5" />
                 </button>
                 <button
                   onClick={goNext}
                   aria-label={t("aria_next")}
-                  className="absolute top-1/2 end-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground shadow-lift backdrop-blur transition active:scale-95"
+                  className="absolute top-1/2 end-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground  backdrop-blur transition active:scale-95"
                 >
                   <ChevronLeft className="size-5" />
                 </button>
                 <div className="absolute inset-x-0 bottom-3 z-10 flex justify-center">
-                  <span className="rounded-full bg-black/60 px-3 py-1 text-[11px] font-bold text-white backdrop-blur">
+                  <span className="rounded-full bg-card/90 px-3 py-1 text-caption font-semibold text-foreground backdrop-blur">
                     {safeIdx + 1} / {images.length}
                   </span>
                 </div>
@@ -453,7 +453,7 @@ function ProductPage() {
                   </div>
                 </div>
                 {sorted.length > 1 && (
-                  <span className="rounded-xl bg-muted px-3 py-2 text-[11px] font-semibold text-muted-foreground">
+                  <span className="rounded-xl bg-muted px-3 py-2 text-caption font-semibold text-muted-foreground">
                     {t("product_available_in", {
                       count: sorted.length,
                       min: formatDA(sorted[0]!.price),
@@ -466,7 +466,7 @@ function ProductPage() {
             {selected && (
               <div className="mt-3 flex items-start gap-2 rounded-2xl bg-muted/60 px-3 py-2.5">
                 <Timer className="mt-0.5 size-3.5 shrink-0 text-muted-foreground" />
-                <p className="text-[11px] leading-relaxed text-muted-foreground">
+                <p className="text-caption leading-relaxed text-muted-foreground">
                   {t("product_stock_confirmed")}{" "}
                   {selected.last_confirmed_at
                     ? formatDistanceToNow(new Date(selected.last_confirmed_at), {
@@ -582,7 +582,7 @@ function ProductPage() {
                     <div className="text-end">
                       <p className="text-lg font-bold text-foreground">{formatDA(o.price)}</p>
                       {o.id === bestPriceId && highPrice > lowPrice && (
-                        <p className="mb-1 text-[11px] font-semibold text-success">
+                        <p className="mb-1 text-caption font-semibold text-success">
                           {t("product_saves", { amount: formatDA(highPrice - lowPrice) })}
                         </p>
                       )}
@@ -644,7 +644,7 @@ function ProductPage() {
       <StickyActionBar>
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-[11px] text-muted-foreground">{t("product_price_label")}</p>
+            <p className="text-caption text-muted-foreground">{t("product_price_label")}</p>
             <p className="text-xl font-extrabold text-foreground">
               {selected ? formatDA(selected.price * qty) : "—"}
             </p>
@@ -653,7 +653,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out" || busy}
             onClick={() => selected && reserve(selected)}
-            className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[0.98]"
+            className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
             aria-label={t("product_reserve")}
           >
             <Timer className="size-4" />
@@ -662,7 +662,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out"}
             onClick={addToBag}
-            className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[0.98]"
+            className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
             aria-label={t("product_add_to_bag")}
           >
             <ShoppingBag key={bagPulse} className="size-4 animate-pop" />
@@ -671,7 +671,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out"}
             onClick={buyNow}
-            className="flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground transition disabled:opacity-45 active:scale-[0.98]"
+            className="flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
           >
             {t("product_buy_now")}
           </button>
@@ -686,13 +686,13 @@ function ProductPage() {
       />
 
       <Dialog open={!!zoomSrc} onOpenChange={(o) => !o && setZoomSrc(null)}>
-        <DialogContent className="max-w-full border-0 bg-black/90 p-0 sm:max-w-lg">
+        <DialogContent className="max-w-full border-0 bg-background/95 p-0 sm:max-w-lg">
           {zoomSrc && (
             <img src={zoomSrc} alt={p.name} className="max-h-[85vh] w-full object-contain" />
           )}
           <button
             onClick={() => setZoomSrc(null)}
-            className="absolute top-3 end-3 flex size-9 items-center justify-center rounded-full bg-black/20 text-white backdrop-blur"
+            className="absolute top-3 end-3 flex size-9 items-center justify-center rounded-full bg-card/90 text-foreground backdrop-blur"
             aria-label={t("aria_close")}
           >
             <X className="size-4" />
