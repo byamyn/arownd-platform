@@ -46,7 +46,7 @@ export function ConfirmDialog({
       role="presentation"
     >
       <div
-        className="animate-scale-in w-full max-w-sm rounded-3xl border border-border bg-card p-5 "
+        className="animate-scale-in w-full max-w-sm rounded-[var(--radius-card)] border border-border bg-card p-5"
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
@@ -59,7 +59,7 @@ export function ConfirmDialog({
             type="button"
             onClick={onCancel}
             disabled={busy}
-            className="rounded-2xl border border-border bg-background py-3 text-sm font-bold transition disabled:opacity-50"
+            className="min-h-[var(--control-height)] rounded-[var(--radius-pill)] border border-border bg-background px-4 py-3 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50"
           >
             {cancelLabel ?? t("cancel")}
           </button>
@@ -68,7 +68,7 @@ export function ConfirmDialog({
             onClick={onConfirm}
             disabled={busy}
             className={cn(
-              "rounded-2xl py-3 text-sm font-bold transition disabled:opacity-50",
+              "min-h-[var(--control-height)] rounded-[var(--radius-pill)] px-4 py-3 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50",
               tone === "danger" ? "bg-danger text-white" : "bg-primary text-accent-ink-foreground",
             )}
           >
