@@ -192,9 +192,7 @@ export function MapPage() {
               )}
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="line-clamp-1 pe-8 text-body font-bold text-foreground">
-                {sel.name}
-              </p>
+              <p className="line-clamp-1 pe-8 text-body font-bold text-foreground">{sel.name}</p>
               <div className="flex flex-wrap items-center gap-2">
                 <OpenBadge open={isOpenNow(sel.opening_hours)} />
                 {sel.is_verified && <VerifiedBadge />}
