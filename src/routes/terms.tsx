@@ -21,7 +21,7 @@ function TermsPage() {
       <Link
         to="/"
         aria-label="رجوع"
-        className="flex size-10 items-center justify-center rounded-full bg-card shadow-soft"
+        className="flex size-10 items-center justify-center rounded-full bg-card "
       >
         <ArrowRight className="size-5" />
       </Link>
@@ -48,7 +48,7 @@ function TermsPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl bg-card p-5 text-sm leading-relaxed text-foreground shadow-soft">
+      <div className="rounded-2xl bg-card p-5 text-sm leading-relaxed text-foreground ">
         <h2 className="mb-4 text-lg font-extrabold">أولًا: شروط الاستخدام</h2>
 
         <Section title="1. التعريف بمنصة Arownd">
