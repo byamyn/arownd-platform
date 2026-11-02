@@ -97,6 +97,9 @@ describe("PWA — Service Worker", () => {
   it("يخزّن البيانات مع حدّ عمر ومقاس", () => {
     expect(sw).toContain("DATA_TTL_MS");
     expect(sw).toContain("MAX_DATA_ENTRIES");
+    expect(sw).toContain('headers.set("X-Arownd-Cached-At"');
+    expect(sw).toContain("Date.now() - cachedAt <= DATA_TTL_MS");
+    expect(sw).toContain("await cache.delete(request)");
   });
 
   it("يحذف الكاش القديم عند التفعيل", () => {
