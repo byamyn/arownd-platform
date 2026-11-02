@@ -275,11 +275,11 @@ function StoreSettingsPage() {
         <Eye className="size-4" />
         {t("studio_preview_store")}
       </Link>
-      <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-5 text-white shadow-lg sm:p-6">
-        <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+      <section className="rounded-3xl border border-border bg-muted p-5 text-foreground  sm:p-6">
+        <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
           AROWND · STORE PROFILE
         </p>
-        <p className="mt-2 text-sm text-white/75">{t("studio_settings_intro")}</p>
+        <p className="mt-2 text-sm text-foreground/75">{t("studio_settings_intro")}</p>
       </section>
 
       {/* بطاقة الهوية: الغلاف + الشعار + الاسم */}
@@ -296,7 +296,7 @@ function StoreSettingsPage() {
           <button
             type="button"
             onClick={() => coverInputRef.current?.click()}
-            className="absolute bottom-2 end-2 flex items-center gap-1 rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-white backdrop-blur transition active:scale-95"
+            className="absolute bottom-2 end-2 flex items-center gap-1 rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-foreground backdrop-blur transition active:scale-95"
             aria-label={t("studio_change_store_cover")}
           >
             <Camera className="size-3.5" /> تغيير الغلاف
@@ -344,7 +344,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: معلومات المتجر */}
-      <section className="space-y-3 rounded-[1.35rem] border border-border bg-card p-4 shadow-sm sm:p-5">
+      <section className="space-y-3 rounded-3xl border border-border bg-card p-4  sm:p-5">
         <h2 className="text-section text-foreground">{t("studio_store_info")}</h2>
         <div>
           <label className={labelCls}>{t("studio_store_name_required")}</label>
@@ -481,7 +481,7 @@ function StoreSettingsPage() {
           type="button"
           onClick={locate}
           disabled={locating}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-soft py-2.5 text-sm font-bold text-accent-ink transition active:scale-[0.98] disabled:opacity-50"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary-soft py-2.5 text-sm font-bold text-accent-ink transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
         >
           <MapPin className="size-4" />
           {locating ? t("studio_locating") : t("studio_locate_on_map")}
@@ -569,7 +569,7 @@ function StoreSettingsPage() {
       <button
         onClick={save}
         disabled={busy}
-        className="sticky bottom-3 z-20 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-extrabold text-primary-foreground shadow-lg transition active:scale-[0.98] disabled:opacity-50"
+        className="sticky bottom-3 z-20 flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
       >
         <Save className="size-4.5" />
         {busy ? "جارٍ الحفظ..." : "حفظ التغييرات"}
