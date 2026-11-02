@@ -75,7 +75,7 @@ export function PwaPrompt() {
             const ok = await promptInstall();
             if (!ok) setDismissed(true);
           }}
-          className="rounded-xl bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground transition active:scale-95"
+          className="min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] focus-visible:outline"
         >
           {t("pwa_install_cta")}
         </button>
@@ -83,7 +83,7 @@ export function PwaPrompt() {
           type="button"
           aria-label={t("aria_close")}
           onClick={() => setDismissed(true)}
-          className="rounded-lg p-1 text-muted-foreground transition active:scale-90"
+          className="icon-btn size-11 shrink-0 rounded-full text-muted-foreground transition active:scale-[var(--scale-pressed)]"
         >
           <X className="size-4" />
         </button>
