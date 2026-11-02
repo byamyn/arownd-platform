@@ -9,7 +9,6 @@ import {
   registerServiceWorker,
 } from "@/lib/pwa";
 import { useTranslation } from "@/lib/i18n";
-import { cn } from "@/lib/utils";
 
 /**
  * عنصر PWA ظاهر — يعرض:
@@ -46,7 +45,7 @@ export function PwaPrompt() {
               applyUpdate();
               setUpdateReady(false);
             }}
-            className="rounded-xl bg-primary px-3 py-1.5 text-xs font-bold text-primary-foreground transition active:scale-95"
+            className="min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] focus-visible:outline"
           >
             {t("pwa_update_now")}
           </button>
@@ -54,7 +53,7 @@ export function PwaPrompt() {
             type="button"
             aria-label={t("aria_close")}
             onClick={() => setUpdateReady(false)}
-            className="rounded-lg p-1 text-muted-foreground transition active:scale-90"
+            className="icon-btn size-11 shrink-0 rounded-full text-muted-foreground transition active:scale-[var(--scale-pressed)]"
           >
             <X className="size-4" />
           </button>
