@@ -9,6 +9,7 @@ import {
   registerServiceWorker,
 } from "@/lib/pwa";
 import { useTranslation } from "@/lib/i18n";
+import { isNativePlatform } from "@/lib/platform";
 
 /**
  * عنصر PWA ظاهر — يعرض:
@@ -30,6 +31,9 @@ export function PwaPrompt() {
       offUpdate();
     };
   }, []);
+
+  // Native releases are installed and updated through Google Play / App Store.
+  if (isNativePlatform()) return null;
 
   if (dismissed) return null;
 

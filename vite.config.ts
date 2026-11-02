@@ -20,10 +20,22 @@ deriveClientEnv("VITE_SUPABASE_URL", "SUPABASE_URL");
 deriveClientEnv("VITE_SUPABASE_PUBLISHABLE_KEY", "SUPABASE_PUBLISHABLE_KEY");
 deriveClientEnv("VITE_SUPABASE_PROJECT_ID", "SUPABASE_PROJECT_ID");
 
-export default defineConfig(async (): Promise<import("vite").UserConfig> => {
+export default defineConfig(async ({ mode }): Promise<import("vite").UserConfig> => {
   const { tanstackStart } = await import("@tanstack/react-start/plugin/vite");
   return {
-    plugins: [tanstackStart({ server: { entry: "server" } }), react(), tailwindcss()],
+    plugins: [
+      tanstackStart({
+        server: { entry: "server" },
+        // Keep web production SSR unchanged; generate a static client shell only for Capacitor.
+        spa: {
+          enabled: mode === "capacitor",
+          // Capacitor requires index.html at the webDir root.
+          prerender: { outputPath: "/index.html" },
+        },
+      }),
+      react(),
+      tailwindcss(),
+    ],
     resolve: {
       // دعم مسارات tsconfig أصليًا في Vite 8 (بديل إضافة vite-tsconfig-paths)
       tsconfigPaths: true,

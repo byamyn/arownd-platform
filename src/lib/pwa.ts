@@ -5,6 +5,8 @@
  * لا تدعمها (SSR، WebView قديم، iOS Safari جزئيًا).
  */
 
+import { isNativePlatform } from "@/lib/platform";
+
 type BeforeInstallPromptEvent = Event & {
   prompt: () => Promise<void>;
   userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
@@ -70,6 +72,8 @@ export function applyUpdate(): void {
  */
 export function registerServiceWorker(): void {
   if (typeof window === "undefined") return;
+  // Native apps are updated through the app stores, not a web Service Worker.
+  if (isNativePlatform()) return;
   if (!("serviceWorker" in navigator)) return;
 
   window.addEventListener("beforeinstallprompt", (event) => {
