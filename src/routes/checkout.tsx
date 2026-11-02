@@ -602,13 +602,13 @@ function SuccessScreen({
         <button
           type="button"
           onClick={share}
-          className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-bold text-muted-foreground transition active:scale-95"
+          className="inline-flex min-h-[var(--touch-target-size)] items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground transition active:scale-[var(--scale-pressed)]"
         >
           <Share2 className="size-3.5" /> {t("close_share")}
         </button>
         <Link
           to="/"
-          className="inline-flex items-center gap-1.5 rounded-xl border border-border px-3 py-2 text-xs font-bold text-muted-foreground transition active:scale-95"
+          className="inline-flex min-h-[var(--touch-target-size)] items-center gap-1.5 rounded-full border border-border px-4 py-2 text-xs font-semibold text-muted-foreground transition active:scale-[var(--scale-pressed)]"
         >
           {t("checkout_continue_shopping")}
         </Link>
