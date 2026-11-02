@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
@@ -58,7 +58,7 @@ const ROLE_LABELS: Record<string, string> = {
 
 const ROLE_COLORS: Record<string, string> = {
   admin: "bg-danger-soft text-danger",
-  merchant: "bg-indigo-100 text-indigo-700",
+  merchant: "bg-info-soft text-info",
   customer: "bg-success-soft text-success",
   delivery_company: "bg-warning-soft text-warning",
 };
@@ -67,7 +67,7 @@ function BadgeRole({ role }: { role: string }) {
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2 py-0.5 text-xs font-bold",
+        "inline-flex items-center rounded-full px-2 py-1 text-caption font-bold",
         ROLE_COLORS[role] ?? "bg-gray-100 text-gray-700",
       )}
     >
@@ -80,7 +80,7 @@ function BadgeApproved({ approved }: { approved: boolean }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-xs font-bold",
+        "inline-flex min-h-8 items-center gap-1 rounded-full px-2 py-1 text-caption font-bold",
         approved ? "bg-success-soft text-success" : "bg-warning-soft text-warning",
       )}
     >
@@ -102,7 +102,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-border/60 bg-card p-4 ">
+    <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-border/60 bg-card p-4">
       <div className={cn("flex size-12 items-center justify-center rounded-[var(--radius-control)]", color)}>
         <Icon className="size-6" />
       </div>
@@ -116,7 +116,6 @@ function StatCard({
 
 function AdminDashboardPage() {
   const { user, ready } = useAuth();
-  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState<"overview" | "users" | "stores" | "companies">(
     "overview",
@@ -279,13 +278,19 @@ function AdminDashboardPage() {
       <PageHeader title="لوحة الإدارة" back="/" />
 
       {/* تبويبات */}
-      <div className="flex gap-1 overflow-x-auto rounded-[var(--radius-control)] bg-card p-1 ">
+      <div role="tablist" aria-label="أقسام لوحة الإدارة" className="flex gap-1 overflow-x-auto rounded-[var(--radius-control)] bg-card p-1">
         {tabs.map((t) => (
           <button
             key={t.key}
+            type="button"
+            role="tab"
+            id={`admin-tab-${t.key}`}
+            aria-selected={activeTab === t.key}
+            aria-controls={`admin-panel-${t.key}`}
+            tabIndex={activeTab === t.key ? 0 : -1}
             onClick={() => setActiveTab(t.key)}
             className={cn(
-              "flex-1 whitespace-nowrap rounded-[var(--radius-medium)] px-3 py-2 text-sm font-bold transition",
+              "min-h-[var(--control-height)] flex-1 whitespace-nowrap rounded-[var(--radius-medium)] px-3 py-2 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               activeTab === t.key ? "bg-primary text-primary-foreground" : "text-muted-foreground",
             )}
           >
@@ -296,7 +301,7 @@ function AdminDashboardPage() {
 
       {/* نظرة عامة */}
       {activeTab === "overview" && (
-        <div className="mt-4 space-y-3">
+        <div id="admin-panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {stats.isError && (
             <ErrorState scope="admin:stats" error={stats.error} onRetry={() => stats.refetch()} />
           )}
@@ -340,7 +345,7 @@ function AdminDashboardPage() {
 
       {/* المستخدمون */}
       {activeTab === "users" && (
-        <div className="mt-4 space-y-3">
+        <div id="admin-panel-users" role="tabpanel" aria-labelledby="admin-tab-users" className="mt-4 space-y-3">
           {usersList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
@@ -382,7 +387,7 @@ function AdminDashboardPage() {
 
       {/* المتاجر */}
       {activeTab === "stores" && (
-        <div className="mt-4 space-y-3">
+        <div id="admin-panel-stores" role="tabpanel" aria-labelledby="admin-tab-stores" className="mt-4 space-y-3">
           {storesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
@@ -431,7 +436,7 @@ function AdminDashboardPage() {
 
       {/* شركات التوصيل */}
       {activeTab === "companies" && (
-        <div className="mt-4 space-y-3">
+        <div id="admin-panel-companies" role="tabpanel" aria-labelledby="admin-tab-companies" className="mt-4 space-y-3">
           {companiesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
@@ -470,9 +475,11 @@ function AdminDashboardPage() {
               <div className="flex items-center gap-2">
                 <BadgeApproved approved={c.is_approved} />
                 <button
+                  type="button"
+                  aria-label={`${c.is_approved ? "إلغاء اعتماد" : "اعتماد"} ${c.company_name}`}
                   onClick={() => handleToggleCompany(c.id, c.is_approved)}
                   className={cn(
-                    "rounded-[var(--radius-medium)] px-2 py-1 text-xs font-bold transition",
+                    "flex min-h-11 min-w-11 items-center justify-center rounded-[var(--radius-medium)] px-3 py-2 text-caption font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                     c.is_approved
                       ? "bg-danger-soft text-danger hover:bg-danger-soft"
                       : "bg-success-soft text-success hover:bg-success-soft",
