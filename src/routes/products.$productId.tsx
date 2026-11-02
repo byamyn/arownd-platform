@@ -303,7 +303,7 @@ function ProductPage() {
         {/* Hero image */}
         <section className="relative bg-muted">
           <div
-            className="relative aspect-[4/5] w-full overflow-hidden rounded-b-3xl sm:aspect-square"
+            className="relative aspect-[4/5] w-full overflow-hidden rounded-b-[var(--radius-card)] sm:aspect-square"
             onTouchStart={(e) => {
               touchStartX.current = e.touches[0].clientX;
             }}
@@ -341,14 +341,14 @@ function ProductPage() {
             <button
               onClick={goBack}
               aria-label={t("aria_back")}
-              className="absolute top-4 start-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90  backdrop-blur transition active:scale-95"
+              className="absolute top-4 start-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
             >
               <ArrowRight className="size-5" />
             </button>
             <button
               onClick={share}
               aria-label={t("aria_share")}
-              className="absolute top-4 end-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90  backdrop-blur transition active:scale-95"
+              className="absolute top-4 end-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
             >
               <Share2 className="size-5" />
             </button>
@@ -361,14 +361,14 @@ function ProductPage() {
                 <button
                   onClick={goPrev}
                   aria-label={t("aria_prev")}
-                  className="absolute top-1/2 start-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground  backdrop-blur transition active:scale-95"
+                  className="absolute top-1/2 start-3 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
                 >
                   <ChevronRight className="size-5" />
                 </button>
                 <button
                   onClick={goNext}
                   aria-label={t("aria_next")}
-                  className="absolute top-1/2 end-3 z-10 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground  backdrop-blur transition active:scale-95"
+                  className="absolute top-1/2 end-3 z-10 flex size-11 -translate-y-1/2 items-center justify-center rounded-full bg-card/90 text-foreground backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
                 >
                   <ChevronLeft className="size-5" />
                 </button>
@@ -411,7 +411,7 @@ function ProductPage() {
 
         {/* Product info */}
         <div className="space-y-6 px-5 pt-6">
-          <section className="overflow-hidden rounded-3xl border border-border bg-card p-4 ">
+          <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-4 ">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 {p.brand && (
@@ -516,7 +516,7 @@ function ProductPage() {
           {/* Specs / delivery info */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_specs_title")}</h2>
-            <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card ">
+            <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
               {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
               {p.category && (
                 <SpecRow label={t("product_category_label")} value={categoryLabel(p.category)} />
@@ -653,7 +653,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out" || busy}
             onClick={() => selected && reserve(selected)}
-            className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-card)] border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
             aria-label={t("product_reserve")}
           >
             <Timer className="size-4" />
@@ -662,7 +662,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out"}
             onClick={addToBag}
-            className="flex size-11 shrink-0 items-center justify-center rounded-2xl border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-card)] border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
             aria-label={t("product_add_to_bag")}
           >
             <ShoppingBag key={bagPulse} className="size-4 animate-pop" />
