@@ -210,13 +210,13 @@ function WalletPage() {
 
         {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
         <section className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground  sm:p-6">
-          <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-4 border-white/10" />
+          <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-4 border-primary-foreground/10" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="min-w-0">
               <p className="text-xs font-bold opacity-80">الرصيد المتاح</p>
               {txs.isLoading ? (
                 <div
-                  className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-black/10"
+                  className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-primary-foreground/10"
                   aria-label="جارٍ تحميل الرصيد"
                 />
               ) : txs.isError ? (
@@ -227,7 +227,7 @@ function WalletPage() {
                 </p>
               )}
             </div>
-            <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-white/20 ring-1 ring-white/15">
+            <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/20 ring-1 ring-primary-foreground/15">
               <Wallet className="size-7" strokeWidth={1.8} />
             </span>
           </div>
@@ -235,14 +235,14 @@ function WalletPage() {
             الرصيد محسوب من العمليات المعتمدة فقط
           </p>
           {!txs.isLoading && !txs.isError && (
-            <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-black/10 pt-3">
-              <div className="rounded-xl bg-black/5 px-3 py-2">
+            <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-primary-foreground/10 pt-3">
+              <div className="rounded-xl bg-primary-foreground/5 px-3 py-2">
                 <p className="text-caption font-bold opacity-70">إيداعات قيد المراجعة</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingTopup)}
                 </p>
               </div>
-              <div className="rounded-xl bg-black/5 px-3 py-2">
+              <div className="rounded-xl bg-primary-foreground/5 px-3 py-2">
                 <p className="text-caption font-bold opacity-70">سحوبات قيد المراجعة</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingWithdraw)}
@@ -495,7 +495,7 @@ function WalletPage() {
           {filtered.map((t) => {
             const st = STATUS[t.status] ?? {
               label: t.status,
-              cls: "bg-neutral-200 text-neutral-600",
+              cls: "bg-muted text-muted-foreground",
             };
             const meta = TYPE_META[t.type] ?? { label: t.type, icon: Wallet };
             const Icon = meta.icon;
