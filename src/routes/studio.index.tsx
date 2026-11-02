@@ -530,7 +530,7 @@ function StudioPage() {
     <div className="mx-auto w-full max-w-screen-2xl space-y-6 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
       <header className="flex items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-[11px] font-extrabold uppercase tracking-[0.22em] text-accent-ink">
+          <p className="text-caption font-extrabold uppercase tracking-[0.22em] text-accent-ink">
             AROWND · MERCHANT
           </p>
           <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
@@ -544,24 +544,24 @@ function StudioPage() {
           <button
             type="button"
             onClick={() => navigate({ to: "/studio/settings" })}
-            className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground shadow-sm transition hover:border-accent-ink/40 active:scale-95"
+            className="flex size-11 items-center justify-center rounded-2xl border border-border bg-card text-foreground  transition hover:border-accent-ink/40 active:scale-95"
             aria-label={t("studio_settings")}
             title={t("studio_settings")}
           >
             <Settings className="size-5" />
           </button>
-          <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground shadow-sm">
+          <div className="flex size-11 items-center justify-center rounded-2xl bg-primary text-primary-foreground ">
             <Store className="size-5" />
           </div>
         </div>
       </header>
 
       {/* بطاقة المتجر الرئيسية */}
-      <section className="relative isolate overflow-hidden rounded-[1.75rem] border border-accent-ink/20 bg-[#111813] p-4 text-white shadow-lg sm:p-6">
-        <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-[#D4F56A]/10 blur-3xl" />
+      <section className="relative isolate overflow-hidden rounded-3xl border border-border bg-muted p-4 text-foreground  sm:p-6">
+        <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-            <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-white/10 bg-white/5 sm:size-[4.5rem]">
+            <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border bg-card sm:size-[4.5rem]">
               {store.data?.logo_url ? (
                 <img
                   src={store.data.logo_url}
@@ -569,15 +569,15 @@ function StudioPage() {
                   className="size-full object-cover"
                 />
               ) : (
-                <Store className="size-7 text-[#D4F56A]" />
+                <Store className="size-7 text-accent-ink" />
               )}
             </div>
             <div className="min-w-0">
-              <p className="text-[10px] font-bold tracking-wide text-[#D4F56A]">
+              <p className="text-caption font-bold tracking-wide text-accent-ink">
                 {t("studio_store_on_arownd")}
               </p>
               <h2 className="mt-1 truncate text-xl font-black sm:text-2xl">{store.data?.name}</h2>
-              <p className="mt-1 flex items-center gap-1 truncate text-xs text-white/60">
+              <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
                 <MapPin className="size-3 shrink-0" />
                 {store.data?.commune || "الموقع قيد الإعداد"}
               </p>
@@ -585,11 +585,11 @@ function StudioPage() {
                 {(() => {
                   const st = getStoreStatus(store.data?.opening_hours);
                   return (
-                    <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-bold">
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 text-caption font-bold">
                       <span
                         className={cn(
                           "size-1.5 rounded-full",
-                          st.isOpen ? "bg-[#D4F56A]" : "bg-white/40",
+                          st.isOpen ? "bg-primary" : "bg-muted-foreground/40",
                         )}
                       />
                       {st.isOpen ? "مفتوح الآن" : "مغلق حاليًا"}
@@ -597,7 +597,7 @@ function StudioPage() {
                   );
                 })()}
                 {store.data?.is_verified && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-[#D4F56A]/15 px-2.5 py-1 text-[10px] font-bold text-[#D4F56A]">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-caption font-bold text-accent-ink">
                     <ShieldCheck className="size-3" /> متجر موثق
                   </span>
                 )}
@@ -607,14 +607,14 @@ function StudioPage() {
           <div className="grid grid-cols-2 gap-2 sm:min-w-[250px]">
             <Link
               to="/studio/settings"
-              className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#D4F56A] px-3 text-xs font-extrabold text-[#111813] transition hover:brightness-95 active:scale-[.98]"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-xl bg-primary px-3 text-xs font-extrabold text-primary-foreground transition hover:brightness-95 active:scale-[var(--scale-pressed)]"
             >
               <Settings className="size-4" /> تخصيص المتجر
             </Link>
             <Link
               to="/stores/$storeId"
               params={{ storeId: store.data?.id ?? "" }}
-              className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-white/15 bg-white/5 px-3 text-xs font-bold text-white transition hover:bg-white/10 active:scale-[.98]"
+              className="flex min-h-11 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-xs font-bold text-foreground transition hover:bg-muted active:scale-[var(--scale-pressed)]"
             >
               <Eye className="size-4" /> معاينة المتجر
             </Link>
@@ -623,7 +623,7 @@ function StudioPage() {
                 lat={store.data.latitude}
                 lng={store.data.longitude}
                 label={store.data?.name ?? ""}
-                className="col-span-2 flex min-h-10 items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-bold text-white/80"
+                className="col-span-2 flex min-h-10 items-center justify-center gap-2 rounded-xl border border-border bg-card px-3 text-xs font-bold text-foreground/80"
               >
                 <MapPin className="size-4" /> عرض الموقع والاتجاهات
               </DirectionsButton>
@@ -643,7 +643,7 @@ function StudioPage() {
           className="flex min-h-11 w-full items-center justify-between gap-3 rounded-2xl border border-warning/30 bg-warning-soft px-4 py-3 text-start text-sm font-bold text-warning"
         >
           <span>{t("studio_low_stock_alert", { count: lowCount + outCount })}</span>
-          <span className="shrink-0 rounded-full bg-warning px-3 py-1 text-xs text-white">
+          <span className="shrink-0 rounded-full bg-warning px-3 py-1 text-xs text-foreground">
             {t("studio_low_stock_review")}
           </span>
         </button>
@@ -656,17 +656,17 @@ function StudioPage() {
             <h2 className="text-base font-extrabold text-foreground">{t("studio_overview")}</h2>
             <p className="mt-0.5 text-xs text-muted-foreground">{t("studio_live_summary")}</p>
           </div>
-          <span className="rounded-full border border-border bg-card px-2.5 py-1 text-[10px] font-semibold text-muted-foreground">
+          <span className="rounded-full border border-border bg-card px-2.5 py-1 text-caption font-semibold text-muted-foreground">
             {t("studio_store_data")}
           </span>
         </div>
         <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="flex size-9 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
                 <Package className="size-4.5" />
               </span>
-              <span className="text-[10px] font-semibold text-muted-foreground">
+              <span className="text-caption font-semibold text-muted-foreground">
                 {t("studio_catalog")}
               </span>
             </div>
@@ -675,12 +675,12 @@ function StudioPage() {
               {t("studio_total_products")}
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="flex size-9 items-center justify-center rounded-xl bg-warning-soft text-warning">
                 <ShoppingBag className="size-4.5" />
               </span>
-              <span className="text-[10px] font-semibold text-muted-foreground">
+              <span className="text-caption font-semibold text-muted-foreground">
                 {t("studio_follow_up")}
               </span>
             </div>
@@ -689,12 +689,12 @@ function StudioPage() {
               {t("studio_pending_orders_reservations")}
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
-              <span className="flex size-9 items-center justify-center rounded-xl bg-blue-soft text-blue">
+              <span className="flex size-9 items-center justify-center rounded-xl bg-muted text-muted-foreground">
                 <Eye className="size-4.5" />
               </span>
-              <span className="text-[10px] font-semibold text-muted-foreground">
+              <span className="text-caption font-semibold text-muted-foreground">
                 {t("studio_reach")}
               </span>
             </div>
@@ -707,12 +707,12 @@ function StudioPage() {
               {t("studio_product_views")}
             </p>
           </div>
-          <div className="rounded-2xl border border-border bg-card p-3.5 shadow-sm sm:p-4">
+          <div className="rounded-2xl border border-border bg-card p-3.5  sm:p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="flex size-9 items-center justify-center rounded-xl bg-success-soft text-success">
                 <Star className="size-4.5" />
               </span>
-              <span className="text-[10px] font-semibold text-muted-foreground">
+              <span className="text-caption font-semibold text-muted-foreground">
                 {t("studio_store_reputation")}
               </span>
             </div>
@@ -758,7 +758,7 @@ function StudioPage() {
                   <span
                     className={cn(
                       "flex size-4 items-center justify-center rounded-full",
-                      i.done ? "bg-success text-white" : "border border-accent-ink/40 bg-card",
+                      i.done ? "bg-success text-foreground" : "border border-accent-ink/40 bg-card",
                     )}
                   >
                     {i.done && <Check className="size-2.5" />}
@@ -890,7 +890,7 @@ function StudioPage() {
               </span>
             </span>
             {pendingCount > 0 && (
-              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-danger text-[10px] font-bold text-white">
+              <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-danger text-caption font-bold text-foreground">
                 {pendingCount}
               </span>
             )}
@@ -954,24 +954,24 @@ function StudioPage() {
       {/* تبويب المنتجات */}
       {mode === "offers" && (
         <section className="space-y-5">
-          <div className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white shadow-sm sm:p-5">
-            <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+          <div className="rounded-3xl border border-border bg-muted p-4 text-foreground  sm:p-5">
+            <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
               AROWND · CATALOG
             </p>
             <h2 className="mt-1 text-xl font-black">{t("studio_catalog_heading")}</h2>
-            <p className="mt-1 text-xs text-white/60">{t("studio_catalog_intro")}</p>
+            <p className="mt-1 text-xs text-muted-foreground">{t("studio_catalog_intro")}</p>
             <div className="mt-4 grid grid-cols-3 gap-2">
-              <div className="rounded-xl bg-white/5 p-2.5">
+              <div className="rounded-xl bg-card p-2.5">
                 <p className="text-lg font-black">{allOffers.length}</p>
-                <p className="text-[10px] text-white/60">{t("studio_products_total")}</p>
+                <p className="text-caption text-muted-foreground">{t("studio_products_total")}</p>
               </div>
-              <div className="rounded-xl bg-white/5 p-2.5">
-                <p className="text-lg font-black text-[#D4F56A]">{lowCount}</p>
-                <p className="text-[10px] text-white/60">{t("studio_stock_low")}</p>
+              <div className="rounded-xl bg-card p-2.5">
+                <p className="text-lg font-black text-accent-ink">{lowCount}</p>
+                <p className="text-caption text-muted-foreground">{t("studio_stock_low")}</p>
               </div>
-              <div className="rounded-xl bg-white/5 p-2.5">
+              <div className="rounded-xl bg-card p-2.5">
                 <p className="text-lg font-black">{outCount}</p>
-                <p className="text-[10px] text-white/60">{t("studio_stock_out")}</p>
+                <p className="text-caption text-muted-foreground">{t("studio_stock_out")}</p>
               </div>
             </div>
           </div>
@@ -985,7 +985,7 @@ function StudioPage() {
             </button>
           </div>
 
-          <div className="rounded-[1.4rem] border border-border bg-card p-4 shadow-sm sm:p-5">
+          <div className="rounded-3xl border border-border bg-card p-4  sm:p-5">
             <h2 className="mb-3 flex items-center gap-2 font-bold">
               <PackagePlus className="size-5 text-accent-ink" /> إضافة منتج في 30 ثانية
             </h2>
@@ -1051,7 +1051,7 @@ function StudioPage() {
               <button
                 onClick={addProduct}
                 disabled={busy}
-                className="min-h-12 rounded-xl bg-primary py-3 font-extrabold text-primary-foreground shadow-sm transition active:scale-[.99] disabled:opacity-50"
+                className="min-h-12 rounded-xl bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
               >
                 {busy ? "جارٍ الحفظ..." : "حفظ المنتج"}
               </button>
@@ -1066,7 +1066,7 @@ function StudioPage() {
                   {t("studio_results_shown", { count: visibleOffers.length })}
                 </p>
               </div>
-              <span className="rounded-full bg-primary-soft px-3 py-1 text-[10px] font-bold text-accent-ink">
+              <span className="rounded-full bg-primary-soft px-3 py-1 text-caption font-bold text-accent-ink">
                 {t("studio_inventory")}
               </span>
             </div>
@@ -1338,7 +1338,7 @@ function StudioPage() {
               />
               <button
                 onClick={confirmReservation}
-                className="rounded-xl bg-primary px-4 font-bold text-primary-foreground shadow-sm transition hover:brightness-95"
+                className="rounded-xl bg-primary px-4 font-bold text-primary-foreground  transition hover:brightness-95"
               >
                 تأكيد
               </button>
@@ -1359,7 +1359,7 @@ function StudioPage() {
                     </div>
                     <span
                       className={cn(
-                        "rounded-full px-2 py-1 text-[10px] font-bold",
+                        "rounded-full px-2 py-1 text-caption font-bold",
                         isActiveReservation(r)
                           ? "bg-warning-soft text-warning"
                           : r.status === "collected"
@@ -1579,7 +1579,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
           )}
         </select>
       </div>
-      <p className="text-[11px] text-muted-foreground">{t("studio_product_category_note")}</p>
+      <p className="text-caption text-muted-foreground">{t("studio_product_category_note")}</p>
     </div>
   );
 }
