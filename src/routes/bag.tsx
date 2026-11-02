@@ -69,8 +69,9 @@ function BagPage() {
           <h1 className="text-h1 text-foreground">{t("bag_heading")}</h1>
           {bag.items.length > 0 && (
             <button
+              type="button"
               onClick={() => setConfirmClear(true)}
-              className="btn-danger-small flex items-center gap-1.5"
+              className="btn-danger-small flex items-center gap-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
               <Trash2 className="size-3.5" /> {t("bag_clear")}
             </button>
@@ -182,7 +183,7 @@ function BagPage() {
                             action: { label: t("bag_undo"), onClick: () => bag.add(removed) },
                           });
                         }}
-                        className="flex size-9 items-center justify-center rounded-full transition hover:bg-danger-soft active:scale-95"
+                        className="flex size-11 items-center justify-center rounded-full transition hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
                       >
                         <Trash2 className="size-4 text-danger" />
                       </button>
