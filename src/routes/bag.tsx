@@ -141,7 +141,7 @@ function BagPage() {
                       <Link
                         to="/products/$productId"
                         params={{ productId: r.offer.product_id }}
-                        className="size-20 shrink-0 overflow-hidden rounded-xl bg-muted"
+                        className="size-20 shrink-0 overflow-hidden rounded-[var(--radius-control)] bg-muted"
                       >
                         {image && (
                           <img
@@ -154,7 +154,7 @@ function BagPage() {
                         )}
                       </Link>
                     ) : (
-                      <div className="size-20 shrink-0 animate-pulse rounded-xl bg-muted" />
+                      <div className="size-20 shrink-0 animate-pulse rounded-[var(--radius-control)] bg-muted" />
                     )}
                     <div className="min-w-0 flex-1 space-y-1">
                       <p className="line-clamp-1 text-sm font-semibold">{name}</p>
@@ -183,7 +183,7 @@ function BagPage() {
                             action: { label: t("bag_undo"), onClick: () => bag.add(removed) },
                           });
                         }}
-                        className="flex size-11 items-center justify-center rounded-full transition hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
+                        className="flex size-11 items-center justify-center rounded-full transition hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[var(--scale-pressed)]"
                       >
                         <Trash2 className="size-4 text-danger" />
                       </button>
@@ -240,7 +240,7 @@ function BagPage() {
             <b className="text-section text-accent-ink">{formatDA(total)}</b>
           </div>
           {blocked ? (
-            <p className="mt-2 rounded-xl bg-danger-soft px-3 py-2 text-center text-xs font-bold text-danger">
+            <p className="mt-2 rounded-[var(--radius-control)] bg-danger-soft px-3 py-2 text-center text-xs font-bold text-danger">
               {t("bag_checkout_blocked")}
             </p>
           ) : offers.isLoading || !evaluation.loaded ? (
