@@ -108,7 +108,10 @@ function ReservationsPage() {
       {reservations.isLoading && (
         <div className="space-y-3">
           {[0, 1, 2].map((i) => (
-            <div key={i} className="h-36 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+            <div
+              key={i}
+              className="h-36 animate-pulse rounded-[var(--radius-card)] border border-border bg-card"
+            />
           ))}
         </div>
       )}
