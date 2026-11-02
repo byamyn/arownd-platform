@@ -202,18 +202,18 @@ function StorePage() {
           <button
             onClick={() => goBackOrTo(router, "/stores")}
             aria-label="رجوع"
-            className="absolute top-4 start-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95 shadow-soft backdrop-blur transition active:scale-95"
+            className="absolute top-4 start-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95  backdrop-blur transition active:scale-95"
           >
             <ArrowRight className="size-5" />
           </button>
           <button
             onClick={share}
             aria-label="مشاركة المتجر"
-            className="absolute top-4 end-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95 shadow-soft backdrop-blur transition active:scale-95"
+            className="absolute top-4 end-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95  backdrop-blur transition active:scale-95"
           >
             <Share2 className="size-5" />
           </button>
-          <div className="absolute -bottom-9 start-4 size-[72px] overflow-hidden rounded-2xl border-4 border-background bg-card shadow-soft">
+          <div className="absolute -bottom-9 start-4 size-18 overflow-hidden rounded-2xl border-4 border-background bg-card ">
             {s.logo_url ? (
               <img src={s.logo_url} alt={s.name} className="size-full object-cover" />
             ) : (
