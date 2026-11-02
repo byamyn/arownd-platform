@@ -15,8 +15,7 @@ const CHANGE_EVENT = "arownd:wilaya-change";
 export function getSelectedWilaya(): number | null {
   if (typeof window === "undefined") return null;
   try {
-    const raw =
-      window.localStorage.getItem(STORAGE_KEY) ??
+    const raw = window.localStorage.getItem(STORAGE_KEY) ??
       window.localStorage.getItem(LEGACY_STORAGE_KEY);
     if (raw && !window.localStorage.getItem(STORAGE_KEY)) {
       window.localStorage.setItem(STORAGE_KEY, raw);
