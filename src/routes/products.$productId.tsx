@@ -605,7 +605,7 @@ function ProductPage() {
                         {tel && (
                           <a
                             href={tel}
-                            className="flex min-h-11 items-center justify-center gap-1 rounded-xl bg-muted text-xs font-semibold text-foreground transition active:scale-95"
+                            className="flex min-h-[var(--control-height)] items-center justify-center gap-1 rounded-full bg-muted text-xs font-semibold text-foreground transition active:scale-95"
                           >
                             <Phone className="size-3.5" /> {t("product_call")}
                           </a>
@@ -615,7 +615,7 @@ function ProductPage() {
                             href={wa}
                             target="_blank"
                             rel="noreferrer"
-                            className="flex min-h-11 items-center justify-center gap-1 rounded-xl bg-success-soft text-xs font-semibold text-success transition active:scale-95"
+                            className="flex min-h-[var(--control-height)] items-center justify-center gap-1 rounded-full bg-success-soft text-xs font-semibold text-success transition active:scale-95"
                           >
                             <MessageCircle className="size-3.5" /> {t("product_whatsapp")}
                           </a>
@@ -625,7 +625,7 @@ function ProductPage() {
                             lat={o.store.latitude}
                             lng={o.store.longitude}
                             label={o.store.name}
-                            className="flex min-h-11 items-center justify-center gap-1 rounded-xl bg-secondary text-xs font-semibold text-secondary-foreground transition active:scale-95"
+                            className="flex min-h-[var(--control-height)] items-center justify-center gap-1 rounded-full bg-secondary text-xs font-semibold text-secondary-foreground transition active:scale-95"
                           >
                             <Navigation className="size-3.5" /> {t("product_directions")}
                           </DirectionsButton>
@@ -653,7 +653,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out" || busy}
             onClick={() => selected && reserve(selected)}
-            className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-card)] border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
             aria-label={t("product_reserve")}
           >
             <Timer className="size-4" />
@@ -662,7 +662,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out"}
             onClick={addToBag}
-            className="flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-card)] border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
             aria-label={t("product_add_to_bag")}
           >
             <ShoppingBag key={bagPulse} className="size-4 animate-pop" />
@@ -671,7 +671,7 @@ function ProductPage() {
             type="button"
             disabled={!selected || level === "out"}
             onClick={buyNow}
-            className="flex h-11 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-4 text-sm font-bold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
           >
             {t("product_buy_now")}
           </button>
@@ -723,7 +723,7 @@ function OptionRow({
             key={v}
             onClick={() => onChange(v)}
             className={cn(
-              "min-w-11 rounded-xl border px-3 py-2 text-sm font-semibold transition active:scale-95",
+              "min-h-[var(--touch-target-size)] min-w-[var(--touch-target-size)] rounded-full border px-4 py-2 text-sm font-semibold transition active:scale-[var(--scale-pressed)]",
               v === value
                 ? "border-primary bg-primary text-primary-foreground"
                 : "border-border bg-card text-foreground hover:border-primary/40",
@@ -782,7 +782,7 @@ function ReservationDialog({
           <p className="text-xs text-muted-foreground">{t("product_pickup_hint")}</p>
           <button
             onClick={onClose}
-            className="w-full rounded-2xl bg-primary py-3 font-bold text-primary-foreground"
+            className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground"
           >
             {t("product_ok")}
           </button>
