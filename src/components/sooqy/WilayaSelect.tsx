@@ -74,7 +74,7 @@ export function WilayaButton({
     <div
       ref={buttonRef}
       className={cn(
-        "relative inline-flex h-10 w-auto items-center rounded-full border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-neutral-100 active:bg-neutral-200 focus-within:ring-2 focus-within:ring-primary/30",
+        "relative inline-flex min-h-[var(--control-height-compact)] w-auto items-center rounded-full border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-muted active:bg-muted focus-within:ring-2 focus-within:ring-primary/30",
         className,
       )}
     >
@@ -111,7 +111,7 @@ export function WilayaButton({
       role="listbox"
       aria-label="قائمة الولايات"
       style={dropdownStyle}
-      className="min-w-[18rem] max-h-60 overflow-auto rounded-xl border border-border bg-card text-sm shadow-lg animate-fade-up"
+      className="min-w-[18rem] max-h-60 overflow-auto rounded-[var(--radius-control)] border border-border bg-card text-sm animate-fade-up"
       onMouseDown={(e) => e.stopPropagation()} // Prevent click-outside from closing when clicking inside dropdown
     >
       <li
@@ -120,8 +120,8 @@ export function WilayaButton({
         data-selected={value == null}
         onMouseDown={() => handleSelect(null)} // Use onMouseDown to fire before document mousedown
         className={cn(
-          "flex items-center gap-2 px-3 py-2.5 transition cursor-pointer",
-          value == null ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-neutral-100",
+          "flex min-h-[var(--touch-target-size)] items-center gap-2 px-3 py-2.5 transition cursor-pointer",
+          value == null ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-muted",
         )}
       >
         {value == null && <Check className="size-4 shrink-0 text-accent-ink" />}
@@ -135,10 +135,10 @@ export function WilayaButton({
           data-selected={value === w.id}
           onMouseDown={() => handleSelect(w.id)} // Use onMouseDown to fire before document mousedown
           className={cn(
-            "flex items-center gap-2 px-3 py-2.5 transition cursor-pointer",
+            "flex min-h-[var(--touch-target-size)] items-center gap-2 px-3 py-2.5 transition cursor-pointer",
             value === w.id
               ? "bg-primary-soft text-accent-ink font-semibold"
-              : "hover:bg-neutral-100",
+              : "hover:bg-muted",
           )}
         >
           {value === w.id && <Check className="size-4 shrink-0 text-accent-ink" />}
@@ -182,7 +182,7 @@ export function WilayaSelect({
         aria-label="اختيار الولاية"
         onChange={(e) => onChange(e.target.value ? Number(e.target.value) : null)}
         className={cn(
-          "h-11 w-full rounded-xl border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/10",
+          "min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm text-foreground outline-none transition-all appearance-none cursor-pointer focus:border-primary focus:ring-2 focus:ring-primary/10",
           className,
         )}
       >
