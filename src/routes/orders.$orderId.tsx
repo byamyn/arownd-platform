@@ -81,7 +81,9 @@ function TrackPage() {
     );
   }
   if (orders.isLoading && !order) {
-    return <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />;
+    return (
+      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+    );
   }
   if (!order) {
     return (
