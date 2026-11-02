@@ -20,6 +20,7 @@ import { useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { goBackOrTo } from "@/lib/nav";
+import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 
 export const Route = createFileRoute("/orders/")({
   head: () => ({}),
@@ -27,6 +28,7 @@ export const Route = createFileRoute("/orders/")({
 });
 
 type Tab = "all" | "active" | "delivered" | "cancelled";
+type PendingConfirmation = { title: string; message: string; action: () => Promise<void> };
 type OrderRecord = Awaited<ReturnType<typeof fetchMyOrders>>[number];
 type OrderRow = OrderRecord & {
   displayId?: string;
@@ -53,6 +55,8 @@ function OrdersPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
   const [respondingQuoteId, setRespondingQuoteId] = useState<string | null>(null);
+  const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation | null>(null);
+  const [confirmationBusy, setConfirmationBusy] = useState(false);
   const orders = useQuery({
     queryKey: ["my-orders"],
     queryFn: fetchMyOrders,
@@ -73,6 +77,19 @@ function OrdersPage() {
     queryKeys: [["my-orders"]],
     enabled: !!user,
   });
+
+  const runPendingConfirmation = async () => {
+    if (!pendingConfirmation || confirmationBusy) return;
+    setConfirmationBusy(true);
+    try {
+      await pendingConfirmation.action();
+      setPendingConfirmation(null);
+    } catch (error) {
+      showError(error);
+    } finally {
+      setConfirmationBusy(false);
+    }
+  };
 
   if (!ready) return null;
   if (!user) {
@@ -290,19 +307,22 @@ function OrdersPage() {
                           <button
                             type="button"
                             disabled={respondingQuoteId === suborder.id}
-                            onClick={async () => {
-                              if (!window.confirm(t("orders_quote_decline") + "?")) return;
-                              setRespondingQuoteId(suborder.id);
-                              try {
-                                await customerRespondToMerchantOrder(suborder.id, false);
-                                await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                                showSuccess(t("orders_quote_declined"));
-                              } catch (error) {
-                                showError(error);
-                              } finally {
-                                setRespondingQuoteId(null);
-                              }
-                            }}
+                            onClick={() =>
+                              setPendingConfirmation({
+                                title: t("orders_quote_decline"),
+                                message: t("orders_quote_decline") + "?",
+                                action: async () => {
+                                  setRespondingQuoteId(suborder.id);
+                                  try {
+                                    await customerRespondToMerchantOrder(suborder.id, false);
+                                    await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                                    showSuccess(t("orders_quote_declined"));
+                                  } finally {
+                                    setRespondingQuoteId(null);
+                                  }
+                                },
+                              })
+                            }
                             className="min-h-[var(--control-height)] rounded-full border border-danger/30 bg-danger-soft px-4 py-2 text-sm font-semibold text-danger transition active:scale-[var(--scale-pressed)] disabled:opacity-50 focus-visible:outline"
                           >
                             {t("orders_quote_decline")}
@@ -336,25 +356,22 @@ function OrdersPage() {
                     <button
                       type="button"
                       disabled={cancellingOrderId === o.id}
-                      onClick={async () => {
-                        if (
-                          !window.confirm(
-                            "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
-                          )
-                        ) {
-                          return;
-                        }
-                        setCancellingOrderId(o.id);
-                        try {
-                          await cancelMyOrder(o.id);
-                          await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                          showSuccess("تم إلغاء الطلب بنجاح.");
-                        } catch (error) {
-                          showError(error);
-                        } finally {
-                          setCancellingOrderId(null);
-                        }
-                      }}
+                      onClick={() =>
+                        setPendingConfirmation({
+                          title: "إلغاء الطلب",
+                          message: "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
+                          action: async () => {
+                            setCancellingOrderId(o.id);
+                            try {
+                              await cancelMyOrder(o.id);
+                              await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                              showSuccess("تم إلغاء الطلب بنجاح.");
+                            } finally {
+                              setCancellingOrderId(null);
+                            }
+                          },
+                        })
+                      }
                       className="mx-4 mb-4 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                     >
                       <XCircle className="size-4" />
@@ -365,21 +382,17 @@ function OrdersPage() {
                   (o.status === "delivered" || o.status === "cancelled") && (
                     <button
                       type="button"
-                      onClick={async () => {
-                        if (
-                          !window.confirm(
-                            "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
-                          )
-                        )
-                          return;
-                        try {
-                          await archiveMyActivity("order", o.id);
-                          await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                          showSuccess("تم إخفاء الطلب من سجلك.");
-                        } catch (error) {
-                          showError(error);
-                        }
-                      }}
+                      onClick={() =>
+                        setPendingConfirmation({
+                          title: "إخفاء الطلب من السجل",
+                          message: "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                          action: async () => {
+                            await archiveMyActivity("order", o.id);
+                            await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                            showSuccess("تم إخفاء الطلب من سجلك.");
+                          },
+                        })
+                      }
                       className="mx-4 mb-4 mt-2 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                     >
                       <Archive className="size-4" /> إخفاء من السجل
@@ -390,6 +403,16 @@ function OrdersPage() {
           })}
         </div>
       </div>
+      <ConfirmDialog
+        open={pendingConfirmation !== null}
+        title={pendingConfirmation?.title ?? ""}
+        message={pendingConfirmation?.message ?? ""}
+        confirmLabel="تأكيد"
+        cancelLabel={t("cancel")}
+        busy={confirmationBusy}
+        onConfirm={runPendingConfirmation}
+        onCancel={() => setPendingConfirmation(null)}
+      />
     </>
   );
 }
