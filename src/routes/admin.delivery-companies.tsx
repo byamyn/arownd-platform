@@ -261,7 +261,7 @@ function AdminDeliveryCompaniesPage() {
   return (
     <div className="space-y-4 px-4 pt-4">
       <header className="flex items-center gap-2 py-1">
-        <button onClick={() => goBackOrTo(router, "/admin")} aria-label="رجوع" className="icon-btn">
+        <button type="button" onClick={() => goBackOrTo(router, "/admin")} aria-label="رجوع" className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
           <ArrowRight className="size-5" />
         </button>
         <h1 className="text-h1 text-foreground">إدارة شركات التوصيل</h1>
@@ -321,6 +321,7 @@ function AdminDeliveryCompaniesPage() {
                   {eligibleCompanies.length > 0 ? (
                     <div className="flex flex-col gap-2 sm:flex-row">
                       <select
+                        aria-label={`${t("admin_assign_company_placeholder")} — ${shipment.store?.name ?? t("orders_store_quote_heading")}`}
                         value={assignmentSelection[shipment.id] ?? ""}
                         onChange={(event) =>
                           setAssignmentSelection((current) => ({
@@ -328,7 +329,7 @@ function AdminDeliveryCompaniesPage() {
                             [shipment.id]: event.target.value,
                           }))
                         }
-                        className="h-[var(--control-height-compact)] min-w-0 flex-1 rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                        className="min-h-[var(--control-height)] min-w-0 flex-1 rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                       >
                         <option value="">{t("admin_assign_company_placeholder")}</option>
                         {eligibleCompanies.map((company) => (
@@ -343,7 +344,7 @@ function AdminDeliveryCompaniesPage() {
                           !assignmentSelection[shipment.id] || assigningShipmentId === shipment.id
                         }
                         onClick={() => void assignShipment(shipment.id)}
-                        className="min-h-[var(--control-height-compact)] rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                        className="min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
                       >
                         {assigningShipmentId === shipment.id
                           ? t("studio_saving")
@@ -399,9 +400,11 @@ function AdminDeliveryCompaniesPage() {
                 <div className="flex items-center gap-2">
                   <BadgeStatus isApproved={company.is_approved} />
                   <button
+                    type="button"
+                    aria-label={`${company.is_approved ? "إلغاء اعتماد" : "اعتماد"} ${company.company_name}`}
                     onClick={() => handleToggleApproval(company.id, company.is_approved)}
                     className={cn(
-                      "rounded-[var(--radius-control)] px-3 py-1.5 text-xs font-bold transition ",
+                      "min-h-11 rounded-[var(--radius-control)] px-3 py-2 text-caption font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 "
                       company.is_approved
                         ? "bg-primary text-accent-ink-foreground hover:bg-primary/90"
                         : "bg-primary/10 text-accent-ink hover:bg-primary",
