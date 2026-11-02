@@ -209,8 +209,8 @@ function WalletPage() {
         />
 
         {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
-        <section className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-lift sm:p-6">
-          <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-[22px] border-white/10" />
+        <section className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground  sm:p-6">
+          <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-4 border-white/10" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="min-w-0">
               <p className="text-xs font-bold opacity-80">الرصيد المتاح</p>
@@ -231,19 +231,19 @@ function WalletPage() {
               <Wallet className="size-7" strokeWidth={1.8} />
             </span>
           </div>
-          <p className="relative mt-4 text-[11px] font-semibold opacity-75">
+          <p className="relative mt-4 text-caption font-semibold opacity-75">
             الرصيد محسوب من العمليات المعتمدة فقط
           </p>
           {!txs.isLoading && !txs.isError && (
             <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-black/10 pt-3">
               <div className="rounded-xl bg-black/5 px-3 py-2">
-                <p className="text-[10px] font-bold opacity-70">إيداعات قيد المراجعة</p>
+                <p className="text-caption font-bold opacity-70">إيداعات قيد المراجعة</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingTopup)}
                 </p>
               </div>
               <div className="rounded-xl bg-black/5 px-3 py-2">
-                <p className="text-[10px] font-bold opacity-70">سحوبات قيد المراجعة</p>
+                <p className="text-caption font-bold opacity-70">سحوبات قيد المراجعة</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingWithdraw)}
                 </p>
@@ -345,7 +345,7 @@ function WalletPage() {
         {showWithdraw && (
           <div className="animate-fade-up space-y-3 rounded-2xl border border-border bg-card p-4">
             <p className="text-sm font-extrabold text-foreground">سحب رصيد</p>
-            <p className="text-[11px] font-semibold text-muted-foreground">
+            <p className="text-caption font-semibold text-muted-foreground">
               الرصيد المتاح للسحب: {formatDA(summary.balance)}
             </p>
             <div>
@@ -400,7 +400,7 @@ function WalletPage() {
             <div className="rounded-2xl border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-success">
                 <ArrowDownLeft className="size-4" />
-                <span className="text-[11px] font-bold text-muted-foreground">
+                <span className="text-caption font-bold text-muted-foreground">
                   إجمالي الإيداعات
                 </span>
               </div>
@@ -411,7 +411,7 @@ function WalletPage() {
             <div className="rounded-2xl border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-danger">
                 <ArrowUpRight className="size-4" />
-                <span className="text-[11px] font-bold text-muted-foreground">إجمالي السحوبات</span>
+                <span className="text-caption font-bold text-muted-foreground">إجمالي السحوبات</span>
               </div>
               <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">
                 {formatDA(summary.totalWithdraw)}
@@ -428,10 +428,10 @@ function WalletPage() {
         <div className="flex items-center justify-between gap-3">
           <div>
             <h2 className="text-base font-extrabold text-foreground">سجل المعاملات</h2>
-            <p className="mt-0.5 text-[11px] text-muted-foreground">كل الحركات المسجلة في محفظتك</p>
+            <p className="mt-0.5 text-caption text-muted-foreground">كل الحركات المسجلة في محفظتك</p>
           </div>
           {!txs.isLoading && !txs.isError && (
-            <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-bold text-muted-foreground">
+            <span className="rounded-full bg-muted px-2.5 py-1 text-caption font-bold text-muted-foreground">
               {filtered.length} عملية
             </span>
           )}
@@ -518,7 +518,7 @@ function WalletPage() {
                   </span>
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-bold text-foreground">{meta.label}</p>
-                    <p className="truncate text-[11px] text-muted-foreground">
+                    <p className="truncate text-caption text-muted-foreground">
                       {date} · {time}
                       {methodLabel ? ` · ${methodLabel}` : ""}
                     </p>
@@ -536,7 +536,7 @@ function WalletPage() {
                     </p>
                     <span
                       className={cn(
-                        "mt-1 inline-block rounded-full px-2 py-0.5 text-[10px] font-bold",
+                        "mt-1 inline-block rounded-full px-2 py-0.5 text-caption font-bold",
                         st.cls,
                       )}
                     >
@@ -544,7 +544,7 @@ function WalletPage() {
                     </span>
                   </div>
                 </div>
-                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-[10px] text-muted-foreground">
+                <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-caption text-muted-foreground">
                   <span>
                     رقم المعاملة:{" "}
                     <b dir="ltr" className="font-mono">
@@ -554,7 +554,7 @@ function WalletPage() {
                   {methodLabel && <span>{methodLabel}</span>}
                 </div>
                 {t.note && (
-                  <p className="mt-2 rounded-xl bg-background px-3 py-2 text-[11px] font-semibold text-muted-foreground">
+                  <p className="mt-2 rounded-xl bg-background px-3 py-2 text-caption font-semibold text-muted-foreground">
                     {t.note}
                   </p>
                 )}
