@@ -14,8 +14,8 @@
     "browser"
   ],
   "orientation": "portrait",
-  "background_color": "#F7F8F5",
-  "theme_color": "#0B0F0C",
+  "background_color": "#F5F5F5",
+  "theme_color": "#0A0A0A",
   "categories": [
     "shopping",
     "lifestyle",
