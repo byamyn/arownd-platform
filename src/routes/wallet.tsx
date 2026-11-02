@@ -209,7 +209,7 @@ function WalletPage() {
         />
 
         {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
-        <section className="relative overflow-hidden rounded-[1.75rem] bg-primary p-5 text-primary-foreground shadow-lift sm:p-6">
+        <section className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground shadow-lift sm:p-6">
           <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-[22px] border-white/10" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="min-w-0">
