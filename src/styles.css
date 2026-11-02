@@ -104,6 +104,7 @@
   --color-feedback-error: var(--red-500);
   --color-feedback-warning: var(--amber-500);
   --color-on-feedback: var(--neutral-950);
+  --color-overlay-scrim: rgba(0, 0, 0, 0.6);
 
   /* Layout and spacing */
   --space-1: 4px;
@@ -213,6 +214,7 @@
   --color-feedback-error: var(--red-700);
   --color-feedback-warning: var(--amber-700);
   --color-on-feedback: var(--neutral-0);
+  --color-overlay-scrim: rgba(10, 10, 10, 0.4);
 }
 
 :root[data-theme="dark"] {
@@ -236,6 +238,7 @@
     --color-feedback-error: var(--red-700);
     --color-feedback-warning: var(--amber-700);
     --color-on-feedback: var(--neutral-0);
+  --color-overlay-scrim: rgba(10, 10, 10, 0.4);
   }
 }
 
