@@ -33,13 +33,13 @@ export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: 
         e.stopPropagation();
         toggleFavorite(kind, id);
       }}
-      className="flex size-8 items-center justify-center transition-transform duration-200 active:scale-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+      className="absolute end-3 top-3 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 text-foreground transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <svg
         viewBox="0 0 24 24"
         className={cn(
           "size-5 transition-colors duration-200",
-          active ? "fill-rose-500 text-rose-500" : "fill-transparent text-muted-foreground",
+          active ? "fill-current text-accent-ink" : "fill-transparent text-muted-foreground",
         )}
         stroke="currentColor"
         strokeWidth="2"
@@ -78,14 +78,11 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       params={{ productId: g.product.id }}
       preload="intent"
       className={cn(
-        "group flex flex-col overflow-hidden rounded-2xl bg-card transition-all duration-200",
-        "border border-transparent",
-        level === "out"
-          ? "opacity-70 cursor-not-allowed pointer-events-none"
-          : "border-border hover:border-primary/20 hover:shadow-lift",
+        "group flex flex-col overflow-hidden rounded-3xl border border-border bg-card transition-colors duration-200",
+        level === "out" ? "opacity-70 cursor-not-allowed pointer-events-none" : "hover:border-ring",
       )}
     >
-      <div className="relative aspect-square overflow-hidden bg-neutral-100">
+      <div className="relative aspect-square overflow-hidden bg-muted">
         {g.image ? (
           <img
             src={g.image}
@@ -109,7 +106,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       </div>
 
       <div className="p-4 flex flex-col flex-1 gap-2">
-        <p className="text-sm line-clamp-2 text-text truncate">{g.product.name}</p>
+        <p className="text-body line-clamp-2 text-foreground truncate">{g.product.name}</p>
         {rating > 0 && (
           <div className="flex items-center gap-1">
             <RatingStars rating={rating} size="size-3" showValue />
@@ -124,7 +121,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
           </span>
         )}
         {level === "out" && (
-          <span className="rounded-lg bg-black/60 text-[10px] font-bold text-white px-2 py-0.5 backdrop-blur-sm">
+          <span className="rounded-full bg-danger px-3 py-1 text-caption font-semibold text-danger-foreground">
             {t("badge_stock_out")}
           </span>
         )}
