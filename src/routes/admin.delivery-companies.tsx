@@ -56,7 +56,11 @@ function AdminDeliveryCompaniesPage() {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
+    enabled:
+      !!user &&
+      ready &&
+      !!roleQuery.data?.includes("admin") &&
+      mfaQuery.data?.currentLevel === "aal2",
   });
 
   const coverageQuery = useQuery({
@@ -69,7 +73,11 @@ function AdminDeliveryCompaniesPage() {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
+    enabled:
+      !!user &&
+      ready &&
+      !!roleQuery.data?.includes("admin") &&
+      mfaQuery.data?.currentLevel === "aal2",
   });
 
   const unassignedShipmentsQuery = useQuery({
@@ -132,19 +140,31 @@ function AdminDeliveryCompaniesPage() {
         };
       });
     },
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
+    enabled:
+      !!user &&
+      ready &&
+      !!roleQuery.data?.includes("admin") &&
+      mfaQuery.data?.currentLevel === "aal2",
   });
 
   // تحديثات حية: شركات التوصيل والشحنات التي تنتظر الإسناد.
   useRealtimeSubscription({
     table: "delivery_companies",
     queryKeys: [["admin-delivery-companies"]],
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
+    enabled:
+      !!user &&
+      ready &&
+      !!roleQuery.data?.includes("admin") &&
+      mfaQuery.data?.currentLevel === "aal2",
   });
   useRealtimeSubscription({
     table: "shipments",
     queryKeys: [["admin-unassigned-shipments"]],
-    enabled: !!user && ready && !!roleQuery.data?.includes("admin") && mfaQuery.data?.currentLevel === "aal2",
+    enabled:
+      !!user &&
+      ready &&
+      !!roleQuery.data?.includes("admin") &&
+      mfaQuery.data?.currentLevel === "aal2",
   });
 
   if (!ready) return null;
@@ -192,7 +212,11 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (mfaQuery.isLoading) {
-    return <div className="p-6 text-center text-muted-foreground">جارٍ التحقق من المصادقة الثنائية...</div>;
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        جارٍ التحقق من المصادقة الثنائية...
+      </div>
+    );
   }
 
   if (mfaQuery.isError) {
@@ -204,7 +228,9 @@ function AdminDeliveryCompaniesPage() {
       <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 px-6 text-center">
         <ShieldCheck className="size-12 text-muted-foreground" />
         <h1 className="text-h1 text-foreground">يلزم تفعيل المصادقة الثنائية</h1>
-        <p className="text-body text-muted-foreground">يجب تأكيد عامل مصادقة ثانٍ قبل الوصول إلى بيانات الإدارة.</p>
+        <p className="text-body text-muted-foreground">
+          يجب تأكيد عامل مصادقة ثانٍ قبل الوصول إلى بيانات الإدارة.
+        </p>
         <Link to="/settings" className="btn-primary mt-4">
           إعداد المصادقة الثنائية
         </Link>
