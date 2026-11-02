@@ -67,9 +67,9 @@ export function BottomSheet({
         ref={panelRef}
         className={cn(
           "animate-fade-up flex max-h-[88vh] w-full max-w-lg flex-col overflow-hidden",
-          "rounded-t-3xl border-t border-border bg-card shadow-float",
+          "rounded-t-[var(--radius-sheet)] border-t border-border bg-card",
           "pb-[env(safe-area-inset-bottom)]",
-          modal && "animate-scale-in items-center rounded-3xl border-t-0 max-w-[calc(100vw-2rem)]",
+          modal && "animate-scale-in items-center rounded-[var(--radius-sheet)] border-t-0 max-w-[calc(100vw-2rem)]",
           className,
         )}
         style={modal ? { width } : undefined}
@@ -92,9 +92,9 @@ export function BottomSheet({
               type="button"
               onClick={onClose}
               aria-label={t("aria_close")}
-              className="flex size-9 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition active:scale-95"
+              className="flex size-11 shrink-0 items-center justify-center rounded-full bg-muted text-muted-foreground transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
             >
-              <X className="size-4.5" />
+              <X className="size-4.5" aria-hidden="true" />
             </button>
           </div>
         </div>
