@@ -138,25 +138,32 @@ export function ImageUploader({
     [items, onSetPrimary, onChange],
   );
 
+  const isOverLimit = items.length >= maxFiles;
+
   const triggerFileInput = () => {
+    if (isOverLimit) return;
     fileInputRef.current?.click();
   };
-
-  const isOverLimit = items.length >= maxFiles;
 
   return (
     <div className={cn("space-y-3", className)}>
       {/* منطقة الإدراج / السحب */}
       <div
         className={cn(
-          "flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-neutral-50/50 p-4 text-center transition hover:border-accent-ink hover:bg-primary-50",
+          "flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-border bg-neutral-50/50 p-4 text-center transition hover:border-accent-ink hover:bg-primary-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
           isOverLimit ? "opacity-60 pointer-events-none" : "",
         )}
         onClick={triggerFileInput}
         role="button"
         tabIndex={0}
-        onKeyDown={(e) => e.key === "Enter" && triggerFileInput()}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            triggerFileInput();
+          }
+        }}
         aria-label={label}
+        aria-disabled={isOverLimit}
       >
         <input
           ref={fileInputRef}
