@@ -10,7 +10,7 @@ English
 
 Effective date: [ADD DATE]
 Data controller / operator: [ADD VERIFIED LEGAL IDENTITY]
-Privacy contact: [ADD OFFICIAL EMAIL]
+Privacy contact: arownddz@gmail.com
 Website: https://arownd.vercel.app
 
 1. Scope
@@ -52,7 +52,7 @@ Apply reasonable technical and organizational measures to protect data. Do not p
 
 8. Rights and contact
 
-Users may send privacy requests to [ADD OFFICIAL EMAIL]. The final policy must explain applicable rights, identity-verification steps, and procedures under current law.
+Users may send privacy requests to arownddz@gmail.com. The final policy must explain applicable rights, identity-verification steps, and procedures under current law.
 
 9. Changes
 
@@ -60,16 +60,16 @@ Material changes should be communicated through appropriate means.
 
 10. Operator details
 
-- Legal identity: [COMPLETE]
-- Professional contact details: [COMPLETE]
-- Privacy email: [COMPLETE]
-- Last updated: [COMPLETE]
+- Legal identity: arownddz@gmail.com
+- Professional contact details: arownddz@gmail.com
+- Privacy email: arownddz@gmail.com
+- Last updated: arownddz@gmail.com
 
 العربية
 
 تاريخ السريان: [أضف التاريخ]
 مسؤول المعالجة / مشغّل المنصة: [أضف الهوية القانونية المؤكدة]
-بريد الخصوصية: [أضف البريد الرسمي]
+بريد الخصوصية: arownddz@gmail.com
 الموقع: https://arownd.vercel.app
 
 1. النطاق
@@ -111,7 +111,7 @@ Material changes should be communicated through appropriate means.
 
 8. الحقوق والتواصل
 
-يمكن إرسال طلبات الخصوصية إلى [أضف البريد الرسمي]. يجب أن توضح السياسة النهائية الحقوق المنطبقة وخطوات التحقق من الهوية والإجراءات وفق القانون الساري.
+يمكن إرسال طلبات الخصوصية إلى arownddz@gmail.com. يجب أن توضح السياسة النهائية الحقوق المنطبقة وخطوات التحقق من الهوية والإجراءات وفق القانون الساري.
 
 9. التعديلات
 
