@@ -34,7 +34,7 @@ export function SideSheet({
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[1000] bg-neutral-950/50" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[1000] bg-[var(--color-overlay-scrim)]" />
         <DialogPrimitive.Content
           className={cn(
             "animate-sheet fixed z-[1001] flex flex-col bg-card  outline-none",
