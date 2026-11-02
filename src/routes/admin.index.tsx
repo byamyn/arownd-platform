@@ -103,7 +103,12 @@ function StatCard({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-border/60 bg-card p-4">
-      <div className={cn("flex size-12 items-center justify-center rounded-[var(--radius-control)]", color)}>
+      <div
+        className={cn(
+          "flex size-12 items-center justify-center rounded-[var(--radius-control)]",
+          color,
+        )}
+      >
         <Icon className="size-6" />
       </div>
       <div>
@@ -239,7 +244,8 @@ function AdminDashboardPage() {
     );
   }
 
-  if (roleQuery.isLoading) return <div className="p-6 text-center text-muted-foreground">جاري التحقق...</div>;
+  if (roleQuery.isLoading)
+    return <div className="p-6 text-center text-muted-foreground">جاري التحقق...</div>;
 
   if (roleQuery.isError) {
     return (
@@ -278,7 +284,11 @@ function AdminDashboardPage() {
       <PageHeader title="لوحة الإدارة" back="/" />
 
       {/* تبويبات */}
-      <div role="tablist" aria-label="أقسام لوحة الإدارة" className="flex gap-1 overflow-x-auto rounded-[var(--radius-control)] bg-card p-1">
+      <div
+        role="tablist"
+        aria-label="أقسام لوحة الإدارة"
+        className="flex gap-1 overflow-x-auto rounded-[var(--radius-control)] bg-card p-1"
+      >
         {tabs.map((t) => (
           <button
             key={t.key}
@@ -299,7 +309,12 @@ function AdminDashboardPage() {
 
       {/* نظرة عامة */}
       {activeTab === "overview" && (
-        <div id="admin-panel-overview" role="tabpanel" aria-labelledby="admin-tab-overview" className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <div
+          id="admin-panel-overview"
+          role="tabpanel"
+          aria-labelledby="admin-tab-overview"
+          className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2"
+        >
           {stats.isError && (
             <ErrorState scope="admin:stats" error={stats.error} onRetry={() => stats.refetch()} />
           )}
@@ -343,11 +358,19 @@ function AdminDashboardPage() {
 
       {/* المستخدمون */}
       {activeTab === "users" && (
-        <div id="admin-panel-users" role="tabpanel" aria-labelledby="admin-tab-users" className="mt-4 space-y-3">
+        <div
+          id="admin-panel-users"
+          role="tabpanel"
+          aria-labelledby="admin-tab-users"
+          className="mt-4 space-y-3"
+        >
           {usersList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card" />
+                <div
+                  key={i}
+                  className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card"
+                />
               ))}
             </div>
           )}
@@ -374,7 +397,9 @@ function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="font-bold">{u.full_name ?? "بدون اسم"}</p>
-                  <p className="text-xs text-muted-foreground">{u.phone ?? u.user_id.slice(0, 8)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {u.phone ?? u.user_id.slice(0, 8)}
+                  </p>
                 </div>
               </div>
               <BadgeRole role={u.role} />
@@ -385,11 +410,19 @@ function AdminDashboardPage() {
 
       {/* المتاجر */}
       {activeTab === "stores" && (
-        <div id="admin-panel-stores" role="tabpanel" aria-labelledby="admin-tab-stores" className="mt-4 space-y-3">
+        <div
+          id="admin-panel-stores"
+          role="tabpanel"
+          aria-labelledby="admin-tab-stores"
+          className="mt-4 space-y-3"
+        >
           {storesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card" />
+                <div
+                  key={i}
+                  className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card"
+                />
               ))}
             </div>
           )}
@@ -434,11 +467,19 @@ function AdminDashboardPage() {
 
       {/* شركات التوصيل */}
       {activeTab === "companies" && (
-        <div id="admin-panel-companies" role="tabpanel" aria-labelledby="admin-tab-companies" className="mt-4 space-y-3">
+        <div
+          id="admin-panel-companies"
+          role="tabpanel"
+          aria-labelledby="admin-tab-companies"
+          className="mt-4 space-y-3"
+        >
           {companiesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card" />
+                <div
+                  key={i}
+                  className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card"
+                />
               ))}
             </div>
           )}
