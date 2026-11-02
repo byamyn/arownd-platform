@@ -5,7 +5,7 @@ AROWND — STRICT PROPRIETARY LICENSE
 
 Effective Date / تاريخ السريان: 2026-10-23
 Rights Holder / صاحب الحقوق: Mohamed Bougarune
-Contact / البريد الإلكتروني: aroundplt@gmail.com
+Contact / البريد الإلكتروني: arownddz@gmail.com
 Website / الموقع: https://arownd.vercel.app
 
 العربية
@@ -26,7 +26,7 @@ Website / الموقع: https://arownd.vercel.app
 
 تُطبَّق هذه الرخصة وفقًا للقانون المعمول به، ولا تلغي الحقوق أو الاستثناءات التي يقررها القانون.
 
-للحصول على إذن أو للاستفسار، تواصل عبر: aroundplt@gmail.com
+للحصول على إذن أو للاستفسار، تواصل عبر: arownddz@gmail.com
 
 English
 
@@ -46,7 +46,7 @@ This License grants no permission to use protected materials. Third-party librar
 
 This License is subject to applicable law and does not override any rights or exceptions established by law.
 
-For permission or inquiries, contact: aroundplt@gmail.com
+For permission or inquiries, contact: arownddz@gmail.com
 
 ---
 
