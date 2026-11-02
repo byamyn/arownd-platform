@@ -50,24 +50,24 @@ function dbg(...args: unknown[]) {
 function createMarkerElement(emoji = "🛍️"): HTMLElement {
   const root = document.createElement("div");
   root.style.cssText =
-    "display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;";
+    "display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;outline:none;";
 
   const pill = document.createElement("div");
   pill.className = "arownd-pin-pill";
   pill.style.cssText = [
-    "max-width:150px",
-    "padding:4px 10px",
-    "border-radius:9999px",
-    "background:rgba(255,255,255,.97)",
-    "border:1px solid #E2E8F0",
+    "max-width:176px",
+    "padding:5px 11px",
+    "border-radius:12px",
+    "background:rgba(255,255,255,.98)",
+    "border:1px solid rgba(157,187,24,.42)",
     "color:" + C.ink,
-    "font-size:11.5px",
-    "font-weight:700",
-    "line-height:1.3",
+    "font-size:12px",
+    "font-weight:800",
+    "line-height:1.35",
     "white-space:nowrap",
     "overflow:hidden",
     "text-overflow:ellipsis",
-    "box-shadow:0 6px 18px rgba(15,23,42,.16)",
+    "box-shadow:0 5px 16px rgba(15,23,42,.18)",
     "opacity:0",
     "transform:translateY(4px) scale(.94)",
     "transition:opacity .18s ease, transform .18s ease",
@@ -77,11 +77,11 @@ function createMarkerElement(emoji = "🛍️"): HTMLElement {
   const pin = document.createElement("div");
   pin.className = "arownd-pin-dot";
   pin.style.cssText =
-    "display:flex;align-items:center;justify-content:center;border-radius:16px 16px 16px 5px;transform:rotate(-45deg);color:#172033;border:3px solid #fff;transition:transform .18s ease, box-shadow .18s ease, border-width .18s ease;";
+    "display:flex;align-items:center;justify-content:center;border-radius:50%;color:#172033;border:3px solid #fff;transition:transform .18s ease, box-shadow .18s ease, border-width .18s ease;";
 
   const glyph = document.createElement("span");
   glyph.textContent = emoji;
-  glyph.style.cssText = "display:block;transform:rotate(45deg);";
+  glyph.style.cssText = "display:block;font-size:16px;line-height:1;";
   pin.append(glyph);
   pin.dataset["emoji"] = emoji;
   root.append(pill, pin);
@@ -98,11 +98,11 @@ function applyMarkerStyle(el: HTMLElement, active: boolean, label = ""): HTMLEle
   pill.style.transform = active ? "translateY(0) scale(1)" : "translateY(4px) scale(.94)";
   pill.style.pointerEvents = active ? "auto" : "none";
 
-  const size = active ? 36 : 28;
+  const size = active ? 42 : 34;
   const border = active ? 4 : 3;
   const shadow = active
-    ? "0 10px 30px rgba(180,205,30,.38), 0 0 0 6px rgba(223,255,69,.26)"
-    : "0 6px 18px rgba(15,23,42,.16)";
+    ? "0 10px 28px rgba(157,187,24,.42), 0 0 0 7px rgba(223,255,69,.3)"
+    : "0 5px 16px rgba(15,23,42,.24), 0 0 0 3px rgba(255,255,255,.72)";
   pin.style.width = size + "px";
   pin.style.height = size + "px";
   pin.style.borderWidth = border + "px";
@@ -110,9 +110,10 @@ function applyMarkerStyle(el: HTMLElement, active: boolean, label = ""): HTMLEle
   pin.style.background = active
     ? C.primaryDeep
     : `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryDark} 100%)`;
-  pin.style.transform = active ? "rotate(-45deg) scale(1.12)" : "rotate(-45deg) scale(1)";
+  pin.style.transform = active ? "scale(1.12)" : "scale(1)";
   pin.style.background = "#FFFFFF";
   pin.style.borderColor = active ? "#DFFF72" : "#FFFFFF";
+  el.style.zIndex = active ? "20" : "1";
 
   return el;
 }
@@ -357,8 +358,8 @@ const StoreMapComponent = React.memo(
           type: "geojson",
           data: { type: "FeatureCollection", features: [] },
           cluster: true,
-          clusterMaxZoom: 13,
-          clusterRadius: 56,
+          clusterMaxZoom: 14,
+          clusterRadius: 48,
           clusterMinPoints: 2,
         });
       }
@@ -378,10 +379,11 @@ const StoreMapComponent = React.memo(
               30,
               "#638F36",
             ],
-            "circle-radius": ["step", ["get", "point_count"], 19, 10, 23, 30, 28],
+            "circle-radius": ["step", ["get", "point_count"], 21, 10, 25, 30, 30],
             "circle-stroke-color": "#FFFFFF",
-            "circle-stroke-width": 3,
-            "circle-opacity": 0.96,
+            "circle-stroke-width": 3.5,
+            "circle-opacity": 0.98,
+            "circle-blur": 0.02,
           },
         });
       }
@@ -394,7 +396,8 @@ const StoreMapComponent = React.memo(
           layout: {
             "text-field": ["to-string", ["get", "point_count_abbreviated"]],
             "text-font": ["Noto Sans Regular"],
-            "text-size": 12,
+            "text-size": 13,
+            "text-font": ["Noto Sans Bold"],
             "text-allow-overlap": true,
           },
           paint: { "text-color": "#24311B" },
@@ -408,10 +411,11 @@ const StoreMapComponent = React.memo(
           filter: ["!", ["has", "point_count"]],
           maxzoom: 14,
           paint: {
-            "circle-radius": 5,
-            "circle-color": "#DFFF72",
+            "circle-radius": ["interpolate", ["linear"], ["zoom"], 5, 5, 12, 7, 14, 9],
+            "circle-color": "#DFFF45",
             "circle-stroke-color": "#FFFFFF",
-            "circle-stroke-width": 2,
+            "circle-stroke-width": 2.5,
+            "circle-opacity": 1,
           },
         });
       }
@@ -484,7 +488,7 @@ const StoreMapComponent = React.memo(
 
       const renderDetailMarkers = () => {
         const visibleIds = new Set<string>();
-        if (map.getZoom() >= 14) {
+        if (map.getZoom() >= 14.5) {
           stores.forEach((store) => {
             const item = store as Store & {
               latitude?: number | null;
@@ -506,6 +510,16 @@ const StoreMapComponent = React.memo(
             let marker = markersRef.current.get(id);
             if (!marker) {
               const el = createMarkerElement(categoryEmoji(item.category));
+              el.setAttribute("role", "button");
+              el.setAttribute("tabindex", "0");
+              el.setAttribute("aria-label", store.name ? `فتح متجر ${store.name}` : "فتح المتجر");
+              el.title = store.name ?? "متجر";
+              el.addEventListener("keydown", (event) => {
+                if (event.key === "Enter" || event.key === " ") {
+                  event.preventDefault();
+                  onSelect?.(id);
+                }
+              });
               marker = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([
                 item.longitude,
                 item.latitude,
@@ -517,6 +531,8 @@ const StoreMapComponent = React.memo(
               marker.setLngLat([item.longitude, item.latitude]);
               const glyph = marker.getElement().querySelector(".arownd-pin-dot span");
               if (glyph) glyph.textContent = categoryEmoji(item.category);
+              marker.getElement().setAttribute("aria-label", store.name ? `فتح متجر ${store.name}` : "فتح المتجر");
+              marker.getElement().title = store.name ?? "متجر";
             }
             applyMarkerStyle(marker.getElement(), activeId === id, String(store.name ?? ""));
           });
