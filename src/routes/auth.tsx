@@ -240,7 +240,7 @@ function AuthPage() {
 
       <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-12 lg:py-10 xl:px-20">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
-          <div className="mb-8 overflow-hidden rounded-2xl bg-ink px-6 py-6 text-ink-foreground lg:hidden">
+          <div className="mb-8 overflow-hidden rounded-[var(--radius-card)] bg-ink px-6 py-6 text-ink-foreground lg:hidden">
             <img
               src="/2995.svg"
               alt="Arownd"
@@ -282,7 +282,7 @@ function AuthPage() {
                   onClick={() => changeScreen("signin")}
                   aria-current={screen === "signin" ? "page" : undefined}
                   className={
-                    "border-b-2 pb-3 text-sm font-semibold transition-colors " +
+                    "border-b-2 pb-3 text-sm font-semibold transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 " +
                     (screen === "signin"
                       ? "border-accent-ink text-foreground"
                       : "border-transparent text-muted-foreground hover:text-foreground")
@@ -352,7 +352,7 @@ function AuthPage() {
           </section>
 
           {verificationSent ? (
-            <div className="mt-8 rounded-2xl border border-primary/50 bg-primary/10 p-5">
+            <div className="mt-8 rounded-[var(--radius-card)] border border-primary/50 bg-primary/10 p-5">
               <div className="mb-4 flex size-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <MailCheck className="size-6" />
               </div>
@@ -385,7 +385,7 @@ function AuthPage() {
                         aria-pressed={selected}
                         onClick={() => setAccountType(id)}
                         className={
-                          "group flex min-h-22 w-full items-center gap-4 rounded-2xl border p-4 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink " +
+                          "group flex min-h-22 w-full items-center gap-4 rounded-[var(--radius-card)] border p-4 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink " +
                           (selected
                             ? "border-accent-ink bg-primary/10"
                             : "border-border bg-card hover:border-accent-ink/50")
@@ -402,7 +402,7 @@ function AuthPage() {
                         </span>
                         <span
                           className={
-                            "flex size-11 shrink-0 items-center justify-center rounded-xl transition-colors " +
+                            "flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-control)] transition-colors " +
                             (selected
                               ? "bg-primary text-primary-foreground"
                               : "bg-muted text-muted-foreground")
@@ -431,7 +431,7 @@ function AuthPage() {
 
               {isSignup && signupStep === 2 && (
                 <>
-                  <div className="flex items-center justify-between rounded-xl bg-muted/60 px-4 py-3">
+                  <div className="flex items-center justify-between rounded-[var(--radius-control)] bg-muted/60 px-4 py-3">
                     <div>
                       <p className="text-xs text-muted-foreground">{t("auth_selected_account")}</p>
                       <p className="mt-1 text-sm font-semibold">
@@ -456,7 +456,7 @@ function AuthPage() {
                         value={name}
                         onChange={(event) => setName(event.target.value)}
                         placeholder={t("enter_name")}
-                        className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                        className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-border bg-background px-4 pe-12 text-sm outline-none transition focus-visible:outline-none focus-visible:border-accent-ink focus-visible:ring-2 focus-visible:ring-primary/30"
                       />
                     </span>
                   </label>
@@ -475,7 +475,7 @@ function AuthPage() {
                       value={email}
                       onChange={(event) => setEmail(event.target.value)}
                       placeholder={t("enter_email")}
-                      className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                      className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-border bg-background px-4 pe-12 text-sm outline-none transition focus-visible:outline-none focus-visible:border-accent-ink focus-visible:ring-2 focus-visible:ring-primary/30"
                     />
                   </span>
                 </label>
@@ -496,7 +496,7 @@ function AuthPage() {
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
                       placeholder={t("enter_password")}
-                      className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 ps-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                      className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-border bg-background px-4 pe-12 ps-12 text-sm outline-none transition focus-visible:outline-none focus-visible:border-accent-ink focus-visible:ring-2 focus-visible:ring-primary/30"
                     />
                     <button
                       type="button"
@@ -528,7 +528,7 @@ function AuthPage() {
                       value={confirmPassword}
                       onChange={(event) => setConfirmPassword(event.target.value)}
                       placeholder={t("confirm_password")}
-                      className="h-13 w-full rounded-xl border border-border bg-background px-4 pe-12 text-sm outline-none transition focus:border-accent-ink focus:ring-4 focus:ring-primary/20"
+                      className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-border bg-background px-4 pe-12 text-sm outline-none transition focus-visible:outline-none focus-visible:border-accent-ink focus-visible:ring-2 focus-visible:ring-primary/30"
                     />
                   </span>
                 </label>
@@ -539,7 +539,7 @@ function AuthPage() {
                   <button
                     type="button"
                     onClick={() => changeScreen("forgot")}
-                    className="min-h-10 text-sm font-semibold text-accent-ink underline underline-offset-4"
+                    className="min-h-[var(--control-height-compact)] text-sm font-semibold text-accent-ink underline underline-offset-4"
                   >
                     {t("forgot_password")}
                   </button>
@@ -556,7 +556,7 @@ function AuthPage() {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="btn-primary flex min-h-13 w-full items-center justify-center gap-2 rounded-xl px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60"
+                  className="btn-primary flex min-h-[var(--control-height)] w-full items-center justify-center gap-2 rounded-[var(--radius-control)] px-5 text-sm font-bold disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {busy ? (
                     <span>{t("loading")}</span>
@@ -591,7 +591,7 @@ function AuthPage() {
           )}
 
           {!verificationSent && !isForgot && !isReset && (
-            <div className="mt-7 flex items-start gap-3 rounded-xl bg-muted/50 p-4">
+            <div className="mt-7 flex items-start gap-3 rounded-[var(--radius-control)] bg-muted/50 p-4">
               <ShieldCheck className="mt-0.5 size-5 shrink-0 text-accent-ink" />
               <p className="text-xs leading-6 text-muted-foreground">
                 {isSignup ? t("auth_email_confirmation_note") : t("auth_secure_note")}
