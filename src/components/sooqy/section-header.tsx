@@ -36,10 +36,10 @@ export function SeeAllLink({ to, children }: { to: string; children?: ReactNode 
   return (
     <Link
       to={to}
-      className="inline-flex items-center gap-0.5 text-sm font-semibold text-accent-ink transition active:scale-95"
+      className="inline-flex min-h-11 items-center gap-0.5 rounded-[var(--radius-control)] text-sm font-semibold text-accent-ink transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
     >
       {children ?? t("action_see_all")}
-      <ChevronLeft className="size-3.5" />
+      <ChevronLeft className="size-3.5" aria-hidden="true" />
     </Link>
   );
 }
