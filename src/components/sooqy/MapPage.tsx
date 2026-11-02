@@ -8,7 +8,7 @@ import { ALGIERS, formatKm, geoErrorMessage, isOpenNow, useGeo } from "@/lib/geo
 import { fetchNearStores } from "@/lib/sooqy";
 import { OpenBadge, VerifiedBadge } from "@/components/sooqy/badges";
 import { ErrorState } from "@/components/sooqy/error-state";
-import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
+import { InAppNavigation } from "@/components/sooqy/InAppNavigation";
 import { RatingStars } from "@/components/sooqy/rating-stars";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
@@ -26,6 +26,12 @@ export function MapPage() {
   const [onlyVerified, setOnlyVerified] = useState(false);
   const [sort, setSort] = useState<Sort>("near");
   const [showFilters, setShowFilters] = useState(false);
+  const [navigationOrigin, setNavigationOrigin] = useState<{ lat: number; lng: number } | null>(null);
+  const [navigationTarget, setNavigationTarget] = useState<{
+    lat: number;
+    lng: number;
+    name?: string;
+  } | null>(null);
   const [center, setCenter] = useState(ALGIERS);
   const mapRef = useRef<maplibregl.Map | null>(null);
 
@@ -176,7 +182,7 @@ export function MapPage() {
         </button>
       </div>
 
-      {sel && (
+      {sel && !navigationTarget && (
         <div className="card-premium absolute inset-x-3 bottom-3 z-[1000] animate-fade-up p-4 sm:inset-x-5 sm:bottom-5">
           <button
             aria-label={t("close")}
@@ -216,19 +222,44 @@ export function MapPage() {
             >
               {t("map_view_store")}
             </Link>
-            <DirectionsButton
-              lat={sel.latitude}
-              lng={sel.longitude}
-              label={sel.name}
+            <button
+              type="button"
+              onClick={async () => {
+                let start = pos;
+                if (!start) {
+                  const result = await ask();
+                  start = result.pos;
+                  if (!start) {
+                    toast.error(geoErrorMessage(result.reason));
+                    return;
+                  }
+                }
+                setNavigationOrigin({ lat: start.lat, lng: start.lng });
+                setNavigationTarget({
+                  lat: Number(sel.latitude),
+                  lng: Number(sel.longitude),
+                  name: sel.name,
+                });
+              }}
               className="btn-primary !h-11 text-sm"
-              mapRef={mapRef}
-              external
             >
               <Navigation className="size-4" />
               {t("map_directions")}
-            </DirectionsButton>
+            </button>
           </div>
         </div>
+      )}
+
+      {navigationTarget && (
+        <InAppNavigation
+          map={mapRef.current}
+          origin={navigationOrigin}
+          destination={navigationTarget}
+          onClose={() => {
+            setNavigationTarget(null);
+            setNavigationOrigin(null);
+          }}
+        />
       )}
 
       {showFilters && (
