@@ -132,8 +132,7 @@ self.addEventListener("fetch", (event) => {
           const cached = await cache.match(request);
           if (cached) {
             const cachedAt = Number(cached.headers.get("X-Arownd-Cached-At"));
-            const isFresh =
-              Number.isFinite(cachedAt) && Date.now() - cachedAt <= DATA_TTL_MS;
+            const isFresh = Number.isFinite(cachedAt) && Date.now() - cachedAt <= DATA_TTL_MS;
             if (isFresh) return cached;
             await cache.delete(request);
           }
