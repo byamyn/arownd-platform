@@ -283,7 +283,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة الهوية: الغلاف + الشعار + الاسم */}
-      <section className="overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+      <section className="overflow-hidden rounded-2xl border border-border bg-card ">
         <div className="relative h-40 bg-muted/40">
           {coverPreview ? (
             <img src={coverPreview} alt="غلاف المتجر" className="size-full object-cover" />
@@ -296,7 +296,7 @@ function StoreSettingsPage() {
           <button
             type="button"
             onClick={() => coverInputRef.current?.click()}
-            className="absolute bottom-2 end-2 flex items-center gap-1 rounded-full bg-black/55 px-3 py-1.5 text-xs font-bold text-foreground backdrop-blur transition active:scale-95"
+            className="absolute bottom-2 end-2 flex items-center gap-1 rounded-full bg-card/90 px-3 py-1.5 text-xs font-bold text-foreground backdrop-blur transition active:scale-95"
             aria-label={t("studio_change_store_cover")}
           >
             <Camera className="size-3.5" /> تغيير الغلاف
@@ -306,7 +306,7 @@ function StoreSettingsPage() {
           <button
             type="button"
             onClick={() => logoInputRef.current?.click()}
-            className="relative -mt-9 size-20 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-primary-soft shadow-soft transition active:scale-95"
+            className="relative -mt-9 size-20 shrink-0 overflow-hidden rounded-2xl border-4 border-card bg-primary-soft  transition active:scale-95"
             aria-label={t("studio_change_store_logo")}
           >
             {logoPreview ? (
