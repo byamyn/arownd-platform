@@ -10,7 +10,7 @@ English
 
 Effective date: [ADD DATE]
 Platform operator: [ADD VERIFIED LEGAL IDENTITY AND CAPACITY]
-Contact email: [ADD OFFICIAL EMAIL]
+Contact email: arownddz@gmail.com
 Website: https://arownd.vercel.app
 
 1. Acceptance
@@ -63,19 +63,19 @@ Services may be interrupted for maintenance, security, or operational reasons. M
 
 12. Complaints and disputes
 
-Send complaints to [ADD OFFICIAL EMAIL]. Specify applicable law, dispute forum, operator details, and mandatory consumer disclosures after local legal review.
+Send complaints to arownddz@gmail.com. Specify applicable law, dispute forum, operator details, and mandatory consumer disclosures after local legal review.
 
 13. Operator information
 
-- Legal name and capacity: [COMPLETE]
-- Professional address, if legally required: [COMPLETE]
+- Legal name and capacity: arownddz@gmail.com
+- Professional address, if legally required: arownddz@gmail.com
 - Registration or identification details, only if applicable and actually obtained: [COMPLETE ONLY IF TRUE]
 
 العربية
 
 تاريخ السريان: [أضف التاريخ]
 مشغّل المنصة: [أضف الهوية القانونية والصفة الفعلية]
-البريد الرسمي: [أضف البريد]
+البريد الرسمي: arownddz@gmail.com
 الموقع: https://arownd.vercel.app
 
 1. قبول الشروط
@@ -128,7 +128,7 @@ Send complaints to [ADD OFFICIAL EMAIL]. Specify applicable law, dispute forum, 
 
 12. الشكاوى والنزاعات
 
-تُرسل الشكاوى إلى [أضف البريد الرسمي]. وقبل النشر، يجب تحديد القانون المنطبق وجهة تسوية النزاعات وبيانات المشغّل والإفصاحات الإلزامية بعد مراجعة قانونية محلية.
+تُرسل الشكاوى إلى arownddz@gmail.com. وقبل النشر، يجب تحديد القانون المنطبق وجهة تسوية النزاعات وبيانات المشغّل والإفصاحات الإلزامية بعد مراجعة قانونية محلية.
 
 13. بيانات المشغّل
 
