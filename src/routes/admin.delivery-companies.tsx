@@ -182,7 +182,9 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (companiesQuery.isLoading) {
-    return <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />;
+    return (
+      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
+    );
   }
 
   if (companiesQuery.isError) {
