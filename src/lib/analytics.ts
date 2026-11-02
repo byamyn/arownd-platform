@@ -9,8 +9,7 @@ export type AnalyticsEvent =
 export function track(event: AnalyticsEvent, data?: Record<string, unknown>) {
   try {
     const raw =
-      localStorage.getItem("arownd:events") ?? localStorage.getItem("sooqy:events") ??
-      "[]";
+      localStorage.getItem("arownd:events") ?? localStorage.getItem("sooqy:events") ?? "[]";
     const list = JSON.parse(raw) as unknown[];
     list.push({ event, data, at: new Date().toISOString() });
     localStorage.setItem("arownd:events", JSON.stringify(list.slice(-200)));
