@@ -150,7 +150,7 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (roleQuery.isLoading)
-    return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
+    return <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />;
 
   if (roleQuery.isError) {
     return (
@@ -180,7 +180,7 @@ function AdminDeliveryCompaniesPage() {
   }
 
   if (companiesQuery.isLoading) {
-    return <div className="m-4 h-64 animate-pulse rounded-2xl border border-border bg-card" />;
+    return <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />;
   }
 
   if (companiesQuery.isError) {
@@ -267,7 +267,7 @@ function AdminDeliveryCompaniesPage() {
         <h1 className="text-h1 text-foreground">إدارة شركات التوصيل</h1>
       </header>
 
-      <section className="space-y-3 rounded-2xl border border-border bg-card p-4">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-section font-bold text-foreground">
             {t("admin_unassigned_shipments_heading")}
@@ -277,7 +277,7 @@ function AdminDeliveryCompaniesPage() {
           </span>
         </div>
         {unassignedShipmentsQuery.isLoading || coverageQuery.isLoading ? (
-          <div className="h-24 animate-pulse rounded-xl bg-muted" />
+          <div className="h-24 animate-pulse rounded-[var(--radius-control)] bg-muted" />
         ) : unassignedShipmentsQuery.isError || coverageQuery.isError ? (
           <ErrorState
             scope="admin:delivery:unassigned"
@@ -288,7 +288,7 @@ function AdminDeliveryCompaniesPage() {
             }}
           />
         ) : unassignedShipments.length === 0 ? (
-          <p className="rounded-xl bg-background p-4 text-sm text-muted-foreground">
+          <p className="rounded-[var(--radius-control)] bg-background p-4 text-sm text-muted-foreground">
             {t("admin_unassigned_shipments_empty")}
           </p>
         ) : (
@@ -298,7 +298,7 @@ function AdminDeliveryCompaniesPage() {
               return (
                 <article
                   key={shipment.id}
-                  className="space-y-3 rounded-xl border border-border bg-background p-3"
+                  className="space-y-3 rounded-[var(--radius-control)] border border-border bg-background p-3"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0 space-y-1">
@@ -328,7 +328,7 @@ function AdminDeliveryCompaniesPage() {
                             [shipment.id]: event.target.value,
                           }))
                         }
-                        className="h-11 min-w-0 flex-1 rounded-xl border border-input bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
+                        className="h-[var(--control-height-compact)] min-w-0 flex-1 rounded-[var(--radius-control)] border border-input bg-card px-3 text-sm outline-none focus:ring-2 focus:ring-primary/30"
                       >
                         <option value="">{t("admin_assign_company_placeholder")}</option>
                         {eligibleCompanies.map((company) => (
@@ -343,7 +343,7 @@ function AdminDeliveryCompaniesPage() {
                           !assignmentSelection[shipment.id] || assigningShipmentId === shipment.id
                         }
                         onClick={() => void assignShipment(shipment.id)}
-                        className="min-h-11 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                        className="min-h-[var(--control-height-compact)] rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
                       >
                         {assigningShipmentId === shipment.id
                           ? t("studio_saving")
@@ -362,7 +362,7 @@ function AdminDeliveryCompaniesPage() {
         )}
       </section>
 
-      <div className="rounded-2xl border border-border bg-card p-4">
+      <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
         <p className="text-body text-muted-foreground mb-4">
           قائمة شركات التوصيل المسجلة. اعتمد الشركات لتتمكن من استقبال طلبات الشحن داخل التطبيق.
         </p>
@@ -376,7 +376,7 @@ function AdminDeliveryCompaniesPage() {
             {(companies ?? []).map((company) => (
               <div
                 key={company.id}
-                className="flex items-center justify-between gap-3 rounded-xl border border-border bg-background p-3"
+                className="flex items-center justify-between gap-3 rounded-[var(--radius-control)] border border-border bg-background p-3"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div className="flex shrink-0 items-center justify-center size-8 rounded-full bg-primary/10 text-accent-ink">
@@ -401,7 +401,7 @@ function AdminDeliveryCompaniesPage() {
                   <button
                     onClick={() => handleToggleApproval(company.id, company.is_approved)}
                     className={cn(
-                      "rounded-xl px-3 py-1.5 text-xs font-bold transition ",
+                      "rounded-[var(--radius-control)] px-3 py-1.5 text-xs font-bold transition ",
                       company.is_approved
                         ? "bg-primary text-accent-ink-foreground hover:bg-primary/90"
                         : "bg-primary/10 text-accent-ink hover:bg-primary",
