@@ -108,19 +108,17 @@ export function WilayaButton({
         listRef.current = el;
         dropdownRef.current = el;
       }}
-      role="listbox"
       aria-label="قائمة الولايات"
       style={dropdownStyle}
       className="min-w-[18rem] max-h-60 overflow-auto rounded-[var(--radius-control)] border border-border bg-card text-sm animate-fade-up"
     >
       <button
         type="button"
-        role="option"
-        aria-selected={value == null}
+        aria-pressed={value == null}
         data-selected={value == null}
         onClick={() => handleSelect(null)}
         className={cn(
-          "flex min-h-[var(--touch-target-size)] items-center gap-2 px-3 py-2.5 transition cursor-pointer",
+          "flex min-h-[var(--touch-target-size)] w-full items-center gap-2 px-3 py-2.5 text-start transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
           value == null ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-muted",
         )}
       >
@@ -131,12 +129,11 @@ export function WilayaButton({
         <button
           type="button"
           key={w.id}
-          role="option"
-          aria-selected={value === w.id}
+          aria-pressed={value === w.id}
           data-selected={value === w.id}
           onClick={() => handleSelect(w.id)}
           className={cn(
-            "flex min-h-[var(--touch-target-size)] items-center gap-2 px-3 py-2.5 transition cursor-pointer",
+            "flex min-h-[var(--touch-target-size)] w-full items-center gap-2 px-3 py-2.5 text-start transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
             value === w.id
               ? "bg-primary-soft text-accent-ink font-semibold"
               : "hover:bg-muted",
