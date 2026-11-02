@@ -192,7 +192,7 @@ export function MapPage() {
               )}
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="line-clamp-1 pe-8 text-[15px] font-extrabold tracking-tight text-foreground">
+              <p className="line-clamp-1 pe-8 text-body font-bold text-foreground">
                 {sel.name}
               </p>
               <div className="flex flex-wrap items-center gap-2">
@@ -265,7 +265,7 @@ export function MapPage() {
                   <span
                     className={cn(
                       "size-4 rounded-full border-2 transition",
-                      sort === o.id ? "border-accent-ink bg-primary" : "border-neutral-300",
+                      sort === o.id ? "border-accent-ink bg-primary" : "border-border",
                     )}
                   />
                 </button>
@@ -283,7 +283,7 @@ export function MapPage() {
                 <span
                   className={cn(
                     "size-4 rounded-full border-2 transition",
-                    onlyOpen ? "border-accent-ink bg-primary" : "border-neutral-300",
+                    onlyOpen ? "border-accent-ink bg-primary" : "border-border",
                   )}
                 />
               </button>
