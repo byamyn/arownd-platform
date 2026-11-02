@@ -126,6 +126,13 @@ function AdminDashboardPage() {
     "overview",
   );
 
+  // user_roles تقبل عدة أدوار لكل مستخدم — استعلام مصفوفة بدل .single() الذي يفشل بـ406
+  const roleQuery = useQuery({
+    queryKey: ["admin-role-check", user?.id],
+    queryFn: fetchMyRoles,
+    enabled: !!user && roleQuery.data?.includes("admin") === true,
+  });
+
   const stats = useQuery({
     queryKey: ["admin-stats"],
     queryFn: async () => {
@@ -144,7 +151,7 @@ function AdminDashboardPage() {
         companies: companies.count ?? 0,
       };
     },
-    enabled: !!user,
+    enabled: !!user && roleQuery.data?.includes("admin") === true,
   });
 
   const usersList = useQuery({
@@ -180,7 +187,7 @@ function AdminDashboardPage() {
         role: roleMap.get(p.user_id) ?? "customer",
       }));
     },
-    enabled: !!user && activeTab === "users",
+    enabled: !!user && roleQuery.data?.includes("admin") === true && activeTab === "users",
   });
 
   const storesList = useQuery({
@@ -194,7 +201,7 @@ function AdminDashboardPage() {
       if (error) throw error;
       return data as unknown as StoreRow[];
     },
-    enabled: !!user && activeTab === "stores",
+    enabled: !!user && roleQuery.data?.includes("admin") === true && activeTab === "stores",
   });
 
   const companiesList = useQuery({
@@ -207,21 +214,14 @@ function AdminDashboardPage() {
       if (error) throw error;
       return data as CompanyRow[];
     },
-    enabled: !!user && activeTab === "companies",
-  });
-
-  // user_roles تقبل عدة أدوار لكل مستخدم — استعلام مصفوفة بدل .single() الذي يفشل بـ406
-  const roleQuery = useQuery({
-    queryKey: ["admin-role-check", user?.id],
-    queryFn: fetchMyRoles,
-    enabled: !!user,
+    enabled: !!user && roleQuery.data?.includes("admin") === true && activeTab === "companies",
   });
 
   const handleToggleCompany = async (id: string, current: boolean) => {
-    const { error } = await supabase
-      .from("delivery_companies")
-      .update({ is_approved: !current })
-      .eq("id", id);
+    const { error } = await supabase.rpc("admin_set_delivery_company_approval", {
+      _company_id: id,
+      _is_approved: !current,
+    });
     if (error) {
       toast.error("حدث خطأ، حاول مرة أخرى");
       return;
