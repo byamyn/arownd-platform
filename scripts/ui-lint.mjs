@@ -108,7 +108,13 @@ if (existsSync(stylesFile)) {
   ];
   for (const [needle, label] of required) {
     if (!css.includes(needle)) {
-      add("error", "design-system-contract", stylesFile, 1, `مفقود من src/styles.css: ${label} (${needle})`);
+      add(
+        "error",
+        "design-system-contract",
+        stylesFile,
+        1,
+        `مفقود من src/styles.css: ${label} (${needle})`,
+      );
     }
   }
 } else {
