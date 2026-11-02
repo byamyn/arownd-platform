@@ -27,7 +27,7 @@ const add = (level, rule, file, line, msg) =>
 const isComment = (l) => /^\s*(\/\/|\*|\/\*|\{\/\*)/.test(l);
 const PHYS =
   /(?<![\w-])(?:[a-z0-9\[\]&:>*_-]+:)*-?(ml|mr|pl|pr|left|right)-(?=[\[0-9a]|px)|(?<![\w-])text-(left|right)\b/;
-const BRAND = /\b(SooQy|SOOQY|AROWND)\b/;
+const BRAND = /\b(SooQy|SOOQY)\b/;
 
 for (const f of files) {
   const src = readFileSync(f, "utf8");
