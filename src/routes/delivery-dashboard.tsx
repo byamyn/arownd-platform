@@ -209,7 +209,7 @@ function DeliveryDashboardPage() {
   if (!company.data.is_approved) {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
-        <Clock className="mx-auto size-12 text-amber-500" />
+        <Clock className="mx-auto size-12 text-warning" />
         <h1 className="text-2xl font-bold">حسابك قيد المراجعة</h1>
         <p className="text-sm text-muted-foreground">
           تم إرسال طلب تسجيل شركتك ({company.data.company_name}) وسيتم تفعيله بعد مراجعة إدارة
@@ -270,7 +270,7 @@ function DeliveryDashboardPage() {
             label="طلبات جديدة قيد الانتظار"
             value={pendingShipments.data?.length ?? 0}
             icon={PackageCheck}
-            color="text-amber-500"
+            color="text-warning"
           />
           <StatCard
             label="إجمالي الشحنات"
@@ -282,13 +282,13 @@ function DeliveryDashboardPage() {
             label="تم التسليم"
             value={allShipments.data?.filter((s) => s.status === "delivered").length ?? 0}
             icon={Check}
-            color="text-green-500"
+            color="text-success"
           />
           <StatCard
             label="تعذر التسليم"
             value={allShipments.data?.filter((s) => s.status === "failed").length ?? 0}
             icon={X}
-            color="text-rose-500"
+            color="text-danger"
           />
         </div>
       </section>
@@ -412,7 +412,7 @@ function PendingShipmentsList({
   return (
     <div className="mt-4 space-y-3">
       {shipments.map((shipment) => (
-        <div key={shipment.id} className="rounded-2xl border p-4 bg-card shadow-sm">
+        <div key={shipment.id} className="rounded-2xl border p-4 bg-card ">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold truncate">طلب شحن #{shipment.id.slice(0, 8)}</p>
@@ -502,7 +502,7 @@ function AllShipmentsList({
           currentStatus === "in_transit";
 
         return (
-          <div key={shipment.id} className="rounded-2xl border p-4 bg-card shadow-sm">
+          <div key={shipment.id} className="rounded-2xl border p-4 bg-card ">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold truncate">شحنة #{shipment.id.slice(0, 8)}</p>
