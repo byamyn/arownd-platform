@@ -93,8 +93,12 @@ export function ConfirmDialog({
         aria-labelledby={titleId}
         aria-describedby={messageId}
       >
-        <h2 id={titleId} className="text-lg font-bold">{title}</h2>
-        <p id={messageId} className="mt-2 text-sm leading-relaxed text-muted-foreground">{message}</p>
+        <h2 id={titleId} className="text-lg font-bold">
+          {title}
+        </h2>
+        <p id={messageId} className="mt-2 text-sm leading-relaxed text-muted-foreground">
+          {message}
+        </p>
         <div className="mt-5 grid grid-cols-2 gap-2">
           <button
             type="button"
