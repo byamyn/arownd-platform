@@ -95,6 +95,7 @@ if (existsSync(stylesFile)) {
     ["--color-bg-canvas", "رمز خلفية التطبيق"],
     ["--color-action-primary", "رمز الإجراء الرئيسي"],
     ["--color-action-ink", "رمز نص/أيقونة الإجراء"],
+    ["--color-overlay-scrim", "رمز تعتيم الخلفية"],
     ["--space-1", "سلم المسافات"],
     ["--radius-pill", "نصف قطر الأزرار والحقول"],
     ["--radius-card", "نصف قطر البطاقات"],
