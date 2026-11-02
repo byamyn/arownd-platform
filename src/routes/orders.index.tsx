@@ -132,7 +132,7 @@ function OrdersPage() {
             type="button"
             onClick={() => goBackOrTo(router, "/profile")}
             aria-label={t("common_back")}
-            className="icon-btn"
+            className="icon-btn focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <ArrowLeft className="size-5 rtl:rotate-180" />
           </button>
@@ -162,7 +162,7 @@ function OrdersPage() {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="h-40 animate-pulse rounded-2xl border border-border bg-card"
+                className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-card"
               />
             ))}
           </div>
@@ -199,7 +199,7 @@ function OrdersPage() {
             return (
               <article
                 key={o.displayId ?? o.id}
-                className="overflow-hidden rounded-3xl border border-border bg-card "
+                className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card "
               >
                 <div className="flex items-start justify-between gap-3 border-b border-border bg-background/60 p-4">
                   <div className="min-w-0">
