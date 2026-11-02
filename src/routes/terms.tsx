@@ -31,8 +31,8 @@ function TermsPage() {
       <div className="space-y-3 text-[11px] leading-relaxed text-muted-foreground">
         <p>
           البريد الرسمي:{" "}
-          <a href="mailto:arounddz@gmail.com" className="font-semibold text-accent-ink underline">
-            arounddz@gmail.com
+          <a href="mailto:arownddz@gmail.com" className="font-semibold text-accent-ink underline">
+            arownddz@gmail.com
           </a>
         </p>
         <p>
@@ -206,8 +206,8 @@ function TermsPage() {
           للاستفسارات أو الإبلاغ عن المشكلات أو تقديم الشكاوى، يمكن التواصل مع Arownd عبر:
           <br />
           <br />
-          <a href="mailto:arounddz@gmail.com" className="font-semibold text-accent-ink underline">
-            arounddz@gmail.com
+          <a href="mailto:arownddz@gmail.com" className="font-semibold text-accent-ink underline">
+            arownddz@gmail.com
           </a>
           <br />
           <br />
