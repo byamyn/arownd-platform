@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 export function ProductCardSkeleton({ className }: { className?: string }) {
   return (
     <div className={cn("overflow-hidden rounded-3xl border border-border bg-card", className)}>
-      <div className="aspect-square animate-pulse bg-muted" />
+      <div className="aspect-square skeleton" />
       <div className="space-y-2 p-4">
         <div className="h-3 w-3/4 animate-pulse rounded-full bg-muted" />
         <div className="h-3 w-1/2 animate-pulse rounded-full bg-muted" />
