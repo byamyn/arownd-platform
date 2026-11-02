@@ -36,7 +36,10 @@ export function ProductGridSkeleton({
 }) {
   return (
     <div
-      className={cn("grid grid-cols-2 gap-[var(--gutter)] sm:grid-cols-3 lg:grid-cols-4", className)}
+      className={cn(
+        "grid grid-cols-2 gap-[var(--gutter)] sm:grid-cols-3 lg:grid-cols-4",
+        className,
+      )}
     >
       {Array.from({ length: count }).map((_, i) => (
         <ProductCardSkeleton key={i} />
