@@ -161,7 +161,10 @@ function AdminDashboardPage() {
         companies: companies.count ?? 0,
       };
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2",
+    enabled:
+      !!user &&
+      roleQuery.data?.includes("admin") === true &&
+      mfaQuery.data?.currentLevel === "aal2",
   });
 
   const usersList = useQuery({
@@ -197,7 +200,11 @@ function AdminDashboardPage() {
         role: roleMap.get(p.user_id) ?? "customer",
       }));
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2" && activeTab === "users",
+    enabled:
+      !!user &&
+      roleQuery.data?.includes("admin") === true &&
+      mfaQuery.data?.currentLevel === "aal2" &&
+      activeTab === "users",
   });
 
   const storesList = useQuery({
@@ -211,7 +218,11 @@ function AdminDashboardPage() {
       if (error) throw error;
       return data as unknown as StoreRow[];
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2" && activeTab === "stores",
+    enabled:
+      !!user &&
+      roleQuery.data?.includes("admin") === true &&
+      mfaQuery.data?.currentLevel === "aal2" &&
+      activeTab === "stores",
   });
 
   const companiesList = useQuery({
@@ -224,7 +235,11 @@ function AdminDashboardPage() {
       if (error) throw error;
       return data as CompanyRow[];
     },
-    enabled: !!user && roleQuery.data?.includes("admin") === true && mfaQuery.data?.currentLevel === "aal2" && activeTab === "companies",
+    enabled:
+      !!user &&
+      roleQuery.data?.includes("admin") === true &&
+      mfaQuery.data?.currentLevel === "aal2" &&
+      activeTab === "companies",
   });
 
   const handleToggleCompany = async (id: string, current: boolean) => {
@@ -283,7 +298,11 @@ function AdminDashboardPage() {
   }
 
   if (mfaQuery.isLoading) {
-    return <div className="p-6 text-center text-muted-foreground">جارٍ التحقق من المصادقة الثنائية...</div>;
+    return (
+      <div className="p-6 text-center text-muted-foreground">
+        جارٍ التحقق من المصادقة الثنائية...
+      </div>
+    );
   }
 
   if (mfaQuery.isError) {
@@ -299,8 +318,13 @@ function AdminDashboardPage() {
     return (
       <div className="mx-auto max-w-xl space-y-3 p-6 text-center">
         <PageHeader title="حماية حساب الإدارة" back="/" />
-        <p className="text-foreground">تتطلب لوحة الإدارة تفعيل المصادقة الثنائية والتحقق منها قبل المتابعة.</p>
-        <Link to="/settings" className="btn-primary inline-flex min-h-11 items-center justify-center px-5">
+        <p className="text-foreground">
+          تتطلب لوحة الإدارة تفعيل المصادقة الثنائية والتحقق منها قبل المتابعة.
+        </p>
+        <Link
+          to="/settings"
+          className="btn-primary inline-flex min-h-11 items-center justify-center px-5"
+        >
           إعداد المصادقة الثنائية
         </Link>
       </div>
