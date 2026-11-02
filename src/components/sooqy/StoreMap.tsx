@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import maplibreglWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Minus, Plus, RotateCcw, Mountain, Layers3 } from "lucide-react";
 import { MAP_COLORS, OSM_RASTER_FALLBACK } from "./map-style";
 import { AROWND_VERSATILES_STYLE, VERSATILES_SOURCE_ID } from "./map-style-versatiles";
 import type { LatLng } from "@/lib/geo";
@@ -139,8 +138,6 @@ const StoreMapComponent = React.memo(
     const [tilesWarn, setTilesWarn] = useState(false);
     const [usedFallback, setUsedFallback] = useState(false);
     const [mapReady, setMapReady] = useState(false);
-    const [terrainEnabled, setTerrainEnabled] = useState(false);
-    const [is3D, setIs3D] = useState(true);
     const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
     const usedFallbackRef = useRef(false);
 
@@ -200,7 +197,7 @@ const StoreMapComponent = React.memo(
         attributionControl: { compact: true },
         dragRotate: true,
         touchPitch: true,
-        pitch: 48,
+        pitch: 55,
         bearing: -12,
         maxPitch: 60,
         cooperativeGestures: true,
@@ -219,7 +216,25 @@ const StoreMapComponent = React.memo(
       map.on("style.load", () => {
         dbg("حدث style.load — النمط المتجهي حُمّل");
         setUsedFallback(usedFallbackRef.current);
-        setTerrainEnabled(false);
+        // Keep the map in 3D and enable terrain whenever a style is (re)loaded.
+        // The fallback raster style has no DEM source, so add it before enabling relief.
+        try {
+          if (!map.getSource("arownd-terrain-dem")) {
+            map.addSource("arownd-terrain-dem", {
+              type: "raster-dem",
+              tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"],
+              tileSize: 256,
+              maxzoom: 15,
+              encoding: "terrarium",
+              attribution:
+                'Terrain data: <a href="https://registry.opendata.aws/terrain-tiles/" target="_blank" rel="noreferrer">Mapzen / AWS Terrain Tiles</a>',
+            });
+          }
+          map.setTerrain({ source: "arownd-terrain-dem", exaggeration: 1.15 });
+          map.easeTo({ pitch: 55, duration: 0 });
+        } catch (terrainError) {
+          console.warn("[StoreMap] تعذّر تفعيل التضاريس تلقائياً:", terrainError);
+        }
         setTilesWarn(false);
         setMapReady(true);
         requestAnimationFrame(() => map.resize());
@@ -240,7 +255,6 @@ const StoreMapComponent = React.memo(
           } catch {
             // The style may already be changing.
           }
-          setTerrainEnabled(false);
           return;
         }
         if (usedFallbackRef.current) return;
@@ -567,18 +581,6 @@ const StoreMapComponent = React.memo(
         .addTo(map);
     }, [user, mapReady]);
 
-    const zoomBy = useCallback((delta: number) => {
-      const map = mapRef.current;
-      if (!map) return;
-      map.easeTo({ zoom: map.getZoom() + delta, duration: 280 });
-    }, []);
-
-    const recenter = useCallback(() => {
-      const map = mapRef.current;
-      if (!map) return;
-      map.flyTo({ center: [center.lng, center.lat], zoom: 14, duration: 600 });
-    }, [center.lat, center.lng]);
-
     if (error) {
       return (
         <div className="relative size-full flex flex-col items-center justify-center gap-3 text-center px-4 bg-[#F8FAFC]">
@@ -619,73 +621,6 @@ const StoreMapComponent = React.memo(
             تم التحويل لنمط OSM احتياطيًا (بلاطات متجهية غير متاحة مؤقتًا)
           </div>
         )}
-        <div className="absolute bottom-4 start-4 z-10 flex flex-col gap-2">
-          <button
-            onClick={() => zoomBy(1)}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#111827] shadow-soft ring-1 ring-[#E2E8F0] transition hover:bg-white active:scale-95"
-            aria-label="تكبير"
-          >
-            <Plus className="h-5 w-5" />
-          </button>
-          <button
-            onClick={() => zoomBy(-1)}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#111827] shadow-soft ring-1 ring-[#E2E8F0] transition hover:bg-white active:scale-95"
-            aria-label="تصغير"
-          >
-            <Minus className="h-5 w-5" />
-          </button>
-          <button
-            onClick={recenter}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#111827] shadow-soft ring-1 ring-[#E2E8F0] transition hover:bg-white active:scale-95"
-            aria-label="العودة لمركز الخريطة"
-          >
-            <RotateCcw className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            disabled={!mapReady}
-            onClick={() => {
-              const map = mapRef.current;
-              if (!map || !mapReady) return;
-              const next3D = !is3D;
-              map.easeTo({ pitch: next3D ? 48 : 0, duration: 520 });
-              setIs3D(next3D);
-            }}
-            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#111827] shadow-soft ring-1 ring-[#E2E8F0] transition hover:bg-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
-            aria-label={is3D ? "التحويل إلى العرض المسطح" : "التحويل إلى العرض ثلاثي الأبعاد"}
-            aria-pressed={is3D}
-            title={is3D ? "عرض ثنائي الأبعاد" : "عرض ثلاثي الأبعاد"}
-          >
-            <Layers3 className="h-5 w-5" />
-          </button>
-          <button
-            type="button"
-            disabled={!mapReady || usedFallback}
-            onClick={() => {
-              const map = mapRef.current;
-              if (!map || !mapReady || usedFallback) return;
-              try {
-                if (terrainEnabled) {
-                  map.setTerrain(null);
-                  setTerrainEnabled(false);
-                } else {
-                  map.setTerrain({ source: "arownd-terrain-dem", exaggeration: 1 });
-                  setTerrainEnabled(true);
-                }
-              } catch (terrainError) {
-                console.warn("[StoreMap] تعذّر تفعيل التضاريس ثلاثية الأبعاد:", terrainError);
-              }
-            }}
-            className={`flex h-10 w-10 items-center justify-center rounded-full shadow-soft ring-1 transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${terrainEnabled ? "bg-[#DFFF72] text-[#202A25] ring-[#C6E62E]" : "bg-white/95 text-[#111827] ring-[#E2E8F0] hover:bg-white"}`}
-            aria-label={
-              terrainEnabled ? "إيقاف التضاريس ثلاثية الأبعاد" : "إظهار التضاريس ثلاثية الأبعاد"
-            }
-            aria-pressed={terrainEnabled}
-            title="التضاريس ثلاثية الأبعاد"
-          >
-            <Mountain className="h-5 w-5" />
-          </button>
-        </div>
         <style>{`
         @keyframes arownd-pulse {
           0% { box-shadow: 0 0 0 0 rgba(37,99,235,.45), 0 6px 16px rgba(37,99,235,.3); }
