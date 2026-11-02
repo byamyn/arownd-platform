@@ -44,7 +44,7 @@ export function MapPage() {
   const sel = list.find((s) => s.id === active) ?? stores.data?.find((s) => s.id === active);
 
   return (
-    <div className="fixed inset-0 bottom-16 z-0 h-[calc(100vh-4rem)]">
+    <div className="fixed inset-0 bottom-[var(--nav-height)] z-0 h-[calc(100dvh-var(--nav-height))]">
       <ClientOnly fallback={<div className="h-full w-full animate-pulse bg-muted" />}>
         <Suspense fallback={<div className="h-full w-full animate-pulse bg-muted" />}>
           <StoreMap
@@ -59,14 +59,14 @@ export function MapPage() {
       </ClientOnly>
 
       <div className="absolute inset-x-3 top-3 z-[1000] sm:inset-x-5 sm:top-5">
-        <div className="flex items-center gap-3 rounded-2xl border border-white/70 bg-card/95 px-4 shadow-[0_12px_40px_rgba(15,23,42,.13)] backdrop-blur-xl ring-1 ring-black/[0.04]">
+        <div className="flex items-center gap-3 rounded-[var(--radius-control)] border border-border bg-card px-4">
           <Search className="size-5 shrink-0 text-muted-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("map_search_placeholder")}
             aria-label={t("map_search_label")}
-            className="h-[54px] min-w-0 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-12 min-w-0 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
           />
           {q && (
             <button
@@ -85,10 +85,10 @@ export function MapPage() {
               setOnlyVerified(false);
             }}
             className={cn(
-              "shrink-0 rounded-full border px-4 py-2 text-xs font-bold shadow-sm transition",
+              "min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition",
               !onlyOpen && !onlyVerified
-                ? "border-primary bg-primary text-[#17191C]"
-                : "border-border/80 bg-card/90 text-foreground backdrop-blur",
+                ? "border-accent-ink bg-primary text-primary-foreground"
+                : "border-border bg-card text-foreground",
             )}
           >
             {t("map_all_stores")}
@@ -99,10 +99,10 @@ export function MapPage() {
               setOnlyVerified(false);
             }}
             className={cn(
-              "shrink-0 rounded-full border px-4 py-2 text-xs font-bold shadow-sm transition",
+              "min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition",
               onlyOpen
-                ? "border-primary bg-primary text-[#17191C]"
-                : "border-border/80 bg-card/90 text-foreground backdrop-blur",
+                ? "border-accent-ink bg-primary text-primary-foreground"
+                : "border-border bg-card text-foreground",
             )}
           >
             {t("map_open_now")}
@@ -113,24 +113,24 @@ export function MapPage() {
               setOnlyOpen(false);
             }}
             className={cn(
-              "shrink-0 rounded-full border px-4 py-2 text-xs font-bold shadow-sm transition",
+              "min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition",
               onlyVerified
-                ? "border-primary bg-primary text-[#17191C]"
-                : "border-border/80 bg-card/90 text-foreground backdrop-blur",
+                ? "border-accent-ink bg-primary text-primary-foreground"
+                : "border-border bg-card text-foreground",
             )}
           >
             {t("map_verified")}
           </button>
           <button
             onClick={() => setShowFilters(true)}
-            className="flex size-9 shrink-0 items-center justify-center rounded-full border border-border/80 bg-card/90 text-foreground shadow-sm backdrop-blur"
+            className="icon-btn shrink-0"
             aria-label={t("filter")}
           >
             <Filter className="size-4" />
           </button>
         </div>
         {!stores.isLoading && !stores.isError && list.length === 0 && (
-          <div className="mt-2 rounded-xl border border-border bg-card/95 p-3 text-center text-xs text-muted-foreground shadow-soft">
+          <div className="card-premium mt-2 p-3 text-center text-xs text-muted-foreground">
             {q.trim() || onlyOpen || onlyVerified ? t("map_no_match") : t("map_no_stores")}
           </div>
         )}
@@ -147,9 +147,9 @@ export function MapPage() {
           aria-label={t("filter")}
           onClick={() => setShowFilters(true)}
           className={cn(
-            "flex size-11 items-center justify-center rounded-full border border-white/70 bg-card/95 text-foreground shadow-[0_8px_24px_rgba(15,23,42,.16)] backdrop-blur-xl",
+            "icon-btn rounded-full border border-border bg-card",
             (onlyOpen || onlyVerified || sort !== "near") &&
-              "border-primary bg-primary text-[#17191C]",
+              "border-accent-ink bg-primary text-primary-foreground",
           )}
         >
           <Filter className="size-5" />
@@ -168,7 +168,7 @@ export function MapPage() {
             toast.success(t("map_location_found"));
           }}
           className={cn(
-            "flex size-11 items-center justify-center rounded-full border border-white/70 bg-card/95 text-foreground shadow-[0_8px_24px_rgba(15,23,42,.16)] backdrop-blur-xl",
+            "icon-btn rounded-full border border-border bg-card",
             locating && "animate-pulse",
           )}
         >
@@ -177,16 +177,16 @@ export function MapPage() {
       </div>
 
       {sel && (
-        <div className="absolute inset-x-3 bottom-3 z-[1000] animate-fade-up rounded-[26px] border border-white/70 bg-card/95 p-4 shadow-[0_18px_55px_rgba(15,23,42,.2)] backdrop-blur-xl ring-1 ring-black/[0.04] sm:inset-x-5 sm:bottom-5">
+        <div className="card-premium absolute inset-x-3 bottom-3 z-[1000] animate-fade-up p-4 sm:inset-x-5 sm:bottom-5">
           <button
             aria-label={t("close")}
             onClick={() => setActive(null)}
-            className="absolute top-3 end-3 flex size-8 items-center justify-center rounded-full bg-neutral-100 text-muted-foreground"
+            className="icon-btn absolute top-3 end-3 rounded-full"
           >
             <X className="size-4" />
           </button>
           <div className="flex gap-3">
-            <div className="size-[72px] shrink-0 overflow-hidden rounded-2xl bg-muted ring-1 ring-black/5">
+            <div className="size-[72px] shrink-0 overflow-hidden rounded-[var(--radius-control)] bg-muted">
               {sel.cover_url && (
                 <img src={sel.cover_url} alt="" className="size-full object-cover" />
               )}
@@ -235,14 +235,14 @@ export function MapPage() {
 
       {showFilters && (
         <div
-          className="absolute inset-0 z-[1100] flex items-end bg-black/30"
+          className="absolute inset-0 z-[1100] flex items-end bg-neutral-950/50"
           onClick={() => setShowFilters(false)}
         >
           <div
-            className="w-full animate-fade-up rounded-t-3xl border-t border-border bg-card p-5 pb-8"
+            className="w-full animate-fade-up rounded-t-[var(--radius-sheet)] border-t border-border bg-card p-5 pb-8"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-neutral-300" />
+            <div className="mx-auto mb-4 h-1 w-10 rounded-full bg-border" />
             <h2 className="text-lg font-extrabold tracking-tight text-foreground">{t("filter")}</h2>
             <div className="mt-4 space-y-2">
               {(
@@ -255,7 +255,7 @@ export function MapPage() {
                   key={o.id}
                   onClick={() => setSort(o.id)}
                   className={cn(
-                    "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition",
+                    "flex min-h-11 w-full items-center justify-between rounded-[var(--radius-control)] border px-4 py-3 text-sm font-semibold transition",
                     sort === o.id
                       ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
                       : "border-border bg-card text-foreground",
@@ -273,7 +273,7 @@ export function MapPage() {
               <button
                 onClick={() => setOnlyOpen(!onlyOpen)}
                 className={cn(
-                  "flex w-full items-center justify-between rounded-xl border px-4 py-3 text-sm font-semibold transition",
+                  "flex min-h-11 w-full items-center justify-between rounded-[var(--radius-control)] border px-4 py-3 text-sm font-semibold transition",
                   onlyOpen
                     ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
                     : "border-border bg-card text-foreground",
