@@ -102,31 +102,31 @@ export function MerchantOnboarding({
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           placeholder="اسم المتجر"
-          className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <input
           value={form.phone}
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
           placeholder="هاتف المتجر"
-          className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <input
           value={form.whatsapp}
           onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
           placeholder="واتساب"
-          className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <WilayaSelect
           value={form.wilaya_id}
           onChange={(wilaya_id) => setForm({ ...form, wilaya_id })}
           required
-          className="h-[var(--control-height-compact)] w-full"
+          className="h-[var(--control-height)] w-full"
         />
         <input
           value={form.commune}
           onChange={(e) => setForm({ ...form, commune: e.target.value })}
           placeholder="البلدية"
-          className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+          className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <textarea
           value={form.address_line}
@@ -187,7 +187,7 @@ export function MerchantOnboarding({
             type="button"
             onClick={locate}
             disabled={locating}
-            className="w-full rounded-[var(--radius-control)] bg-primary py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
+            className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
           >
             {locating ? "جارٍ تحديد الموقع..." : "تحديد موقعي الحالي"}
           </button>
@@ -203,7 +203,7 @@ export function MerchantOnboarding({
               placeholder="خط العرض"
               inputMode="decimal"
               dir="ltr"
-              className="h-[var(--control-height-compact)] rounded-[var(--radius-medium)] border border-input bg-background px-2 text-end text-xs outline-none focus:ring-2 focus:ring-primary/30"
+              className="h-[var(--control-height)] rounded-full border border-input bg-background px-3 text-end text-xs outline-none focus:border-ring focus:ring-2 focus:ring-ring"
             />
             <input
               value={form.longitude ?? ""}
@@ -216,7 +216,7 @@ export function MerchantOnboarding({
               placeholder="خط الطول"
               inputMode="decimal"
               dir="ltr"
-              className="h-[var(--control-height-compact)] rounded-[var(--radius-medium)] border border-input bg-background px-2 text-end text-xs outline-none focus:ring-2 focus:ring-primary/30"
+              className="h-[var(--control-height)] rounded-full border border-input bg-background px-3 text-end text-xs outline-none focus:border-ring focus:ring-2 focus:ring-ring"
             />
           </div>
           {form.latitude != null && form.longitude != null && (
@@ -231,19 +231,19 @@ export function MerchantOnboarding({
             type="time"
             value={form.open}
             onChange={(e) => setForm({ ...form, open: e.target.value })}
-            className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <input
             type="time"
             value={form.close}
             onChange={(e) => setForm({ ...form, close: e.target.value })}
-            className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
         </div>
         <button
           onClick={submit}
           disabled={busy}
-          className="w-full rounded-[var(--radius-card)] bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50"
+          className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
         >
           {busy ? "جارٍ الإعداد..." : "فتح المتجر"}
         </button>
