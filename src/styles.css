@@ -111,6 +111,7 @@
   --margin: 16px;
   --gutter: 12px;
   --section-gap: 32px;
+  --layout-studio-grid-min: 250px;
 
   /* Shape and motion */
   --radius-pill: 999px;
