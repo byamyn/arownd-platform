@@ -130,7 +130,7 @@ function AdminDashboardPage() {
   const roleQuery = useQuery({
     queryKey: ["admin-role-check", user?.id],
     queryFn: fetchMyRoles,
-    enabled: !!user && roleQuery.data?.includes("admin") === true,
+    enabled: !!user,
   });
 
   const stats = useQuery({
