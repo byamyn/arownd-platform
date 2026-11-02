@@ -232,7 +232,7 @@ function CheckoutPage() {
       <PageHeader title={t("checkout_heading")} subtitle={t("checkout_subtitle")} />
 
       {/* شريط التقدم */}
-      <div className="space-y-2 rounded-3xl border border-border bg-card p-3 ">
+      <div className="space-y-2 rounded-[var(--radius-card)] border border-border bg-card p-3 ">
         <div className="flex items-center justify-between px-1">
           <span className="text-caption font-bold tracking-wider text-muted-foreground">
             STEP {String(step + 1).padStart(2, "0")} / 04
@@ -270,7 +270,7 @@ function CheckoutPage() {
       </div>
 
       {step === 0 && (
-        <section className="rounded-3xl border border-border bg-card p-4 ">
+        <section className="rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="mb-3 flex items-center gap-2">
             <ShoppingBag className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">
@@ -354,7 +354,7 @@ function CheckoutPage() {
       )}
 
       {step === 1 && (
-        <section className="space-y-4 rounded-3xl border border-border bg-card p-4 ">
+        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <MapPin className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_address_heading")}</h2>
@@ -398,7 +398,7 @@ function CheckoutPage() {
       )}
 
       {step === 2 && (
-        <section className="space-y-4 rounded-3xl border border-border bg-card p-4 ">
+        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <Truck className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_delivery_heading")}</h2>
@@ -444,7 +444,7 @@ function CheckoutPage() {
       )}
 
       {step === 3 && (
-        <section className="space-y-3 rounded-3xl border border-border bg-card p-4 ">
+        <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <CreditCard className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_payment_heading")}</h2>
@@ -544,7 +544,7 @@ function SuccessScreen({
       </div>
 
       {/* رمز التتبع */}
-      <div className="w-full max-w-xs rounded-3xl border border-border bg-card px-4 py-5 ">
+      <div className="w-full max-w-xs rounded-[var(--radius-card)] border border-border bg-card px-4 py-5 ">
         <p className="text-caption opacity-70 text-muted-foreground">
           {t("checkout_tracking_code")}
         </p>
@@ -553,7 +553,7 @@ function SuccessScreen({
 
       {/* ملخّص الطلب — المتجر والقطع والإجمالي */}
       {snapshot && (
-        <div className="w-full max-w-xs space-y-3 rounded-3xl border border-border bg-card p-4 text-start ">
+        <div className="w-full max-w-xs space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4 text-start ">
           {snapshot.storeName && (
             <div className="flex items-center justify-between gap-2 text-sm">
               <span className="text-muted-foreground">{t("close_store")}</span>
@@ -591,7 +591,7 @@ function SuccessScreen({
         <Link
           to="/products/$productId"
           params={{ productId: snapshot.productId }}
-          className="w-full max-w-xs rounded-2xl border border-border bg-card p-3 transition active:scale-[var(--scale-pressed)]"
+          className="w-full max-w-xs rounded-[var(--radius-card)] border border-border bg-card p-3 transition active:scale-[var(--scale-pressed)]"
         >
           <p className="text-sm font-bold text-foreground">{t("close_rate_cta")}</p>
           <p className="mt-0.5 text-caption text-muted-foreground">{t("close_rate_hint")}</p>
