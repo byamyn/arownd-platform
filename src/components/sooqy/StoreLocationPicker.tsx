@@ -2,7 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import maplibreglWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { OSM_RASTER_FALLBACK, AROWND_VECTOR_STYLE } from "./map-style";
+import { OSM_RASTER_FALLBACK } from "./map-style";
+import { AROWND_VERSATILES_STYLE } from "./map-style-versatiles";
 import type { LatLng } from "@/lib/geo";
 
 type Props = {
@@ -27,9 +28,9 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     try {
       map = new maplibregl.Map({
         container,
-        style: AROWND_VECTOR_STYLE as maplibregl.StyleSpecification,
+        style: AROWND_VERSATILES_STYLE as maplibregl.StyleSpecification,
         center: initial,
-        zoom: value ? 15 : 6,
+        zoom: value ? 15 : 12,
         attributionControl: { compact: true },
         dragRotate: false,
         touchPitch: false,
@@ -51,7 +52,11 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     map.on("click", (event) => placeMarker(event.lngLat));
     map.on("error", (event) => {
       const message = (event as unknown as { error?: { message?: string; url?: string } }).error;
-      if (message?.url?.includes("openfreemap.org") || message?.message?.includes("tile")) {
+      if (
+        message?.url?.includes("openfreemap.org") ||
+        message?.url?.includes("tiles.versatiles.org") ||
+        message?.message?.includes("tile")
+      ) {
         try {
           map.setStyle(OSM_RASTER_FALLBACK as maplibregl.StyleSpecification);
         } catch {

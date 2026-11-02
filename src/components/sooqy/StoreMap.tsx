@@ -2,20 +2,14 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import * as maplibregl from "maplibre-gl";
 import maplibreglWorkerUrl from "maplibre-gl/dist/maplibre-gl-worker.mjs?url";
 import "maplibre-gl/dist/maplibre-gl.css";
-import { Minus, Plus, RotateCcw } from "lucide-react";
-import {
-  MAP_COLORS,
-  OSM_RASTER_FALLBACK,
-  AROWND_VECTOR_STYLE,
-  VECTOR_SOURCE_ID,
-} from "./map-style";
+import { Minus, Plus, RotateCcw, Mountain, Layers3 } from "lucide-react";
+import { MAP_COLORS, OSM_RASTER_FALLBACK } from "./map-style";
+import { AROWND_VERSATILES_STYLE, VERSATILES_SOURCE_ID } from "./map-style-versatiles";
 import type { LatLng } from "@/lib/geo";
 import type { Store } from "@/lib/sooqy";
+import { categoryEmoji } from "@/lib/taxonomy";
 
 const C = MAP_COLORS;
-
-const STORE_ICON =
-  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:58%;height:58%"><path d="M3.6 9.6 5.2 7h13.6l1.6 2.6"/><path d="M4.4 9.6h15.2"/><path d="M6 9.6V19a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V9.6"/><path d="M10 20v-4.4h4V20"/></svg>';
 
 function hasWebGL2(): boolean {
   try {
@@ -53,7 +47,7 @@ function dbg(...args: unknown[]) {
   if (DEBUG) console.log("[StoreMap]", ...args);
 }
 
-function createMarkerElement(): HTMLElement {
+function createMarkerElement(emoji = "🛍️"): HTMLElement {
   const root = document.createElement("div");
   root.style.cssText =
     "display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;";
@@ -83,8 +77,13 @@ function createMarkerElement(): HTMLElement {
   const pin = document.createElement("div");
   pin.className = "arownd-pin-dot";
   pin.style.cssText =
-    "display:flex;align-items:center;justify-content:center;border-radius:9999px;border-style:solid;border-color:#fff;color:#fff;transition:transform .18s ease, box-shadow .18s ease, border-width .18s ease;";
+    "display:flex;align-items:center;justify-content:center;border-radius:16px 16px 16px 5px;transform:rotate(-45deg);color:#172033;border:3px solid #fff;transition:transform .18s ease, box-shadow .18s ease, border-width .18s ease;";
 
+  const glyph = document.createElement("span");
+  glyph.textContent = emoji;
+  glyph.style.cssText = "display:block;transform:rotate(45deg);";
+  pin.append(glyph);
+  pin.dataset["emoji"] = emoji;
   root.append(pill, pin);
   return root;
 }
@@ -93,11 +92,6 @@ function applyMarkerStyle(el: HTMLElement, active: boolean, label = ""): HTMLEle
   const pill = el.querySelector(".arownd-pin-pill") as HTMLElement | null;
   const pin = el.querySelector(".arownd-pin-dot") as HTMLElement | null;
   if (!pill || !pin) return el;
-
-  if (!pin.dataset["icon"]) {
-    pin.innerHTML = STORE_ICON;
-    pin.dataset["icon"] = "1";
-  }
 
   if (label && pill.textContent !== label) pill.textContent = label;
   pill.style.opacity = active ? "1" : "0";
@@ -116,7 +110,9 @@ function applyMarkerStyle(el: HTMLElement, active: boolean, label = ""): HTMLEle
   pin.style.background = active
     ? C.primaryDeep
     : `linear-gradient(135deg, ${C.primary} 0%, ${C.primaryDark} 100%)`;
-  pin.style.transform = active ? "scale(1.08)" : "scale(1)";
+  pin.style.transform = active ? "rotate(-45deg) scale(1.12)" : "rotate(-45deg) scale(1)";
+  pin.style.background = "#FFFFFF";
+  pin.style.borderColor = active ? "#DFFF72" : "#FFFFFF";
 
   return el;
 }
@@ -142,10 +138,14 @@ const StoreMapComponent = React.memo(
     const [tilesWarn, setTilesWarn] = useState(false);
     const [usedFallback, setUsedFallback] = useState(false);
     const [mapReady, setMapReady] = useState(false);
+    const [terrainEnabled, setTerrainEnabled] = useState(false);
+    const [is3D, setIs3D] = useState(true);
     const [containerSize, setContainerSize] = useState({ w: 0, h: 0 });
+    const usedFallbackRef = useRef(false);
 
     useEffect(() => {
       maplibregl.setWorkerUrl(maplibreglWorkerUrl);
+      usedFallbackRef.current = false;
       if (DEBUG) dbg("عنوان الـ worker:", maplibreglWorkerUrl);
     }, []);
 
@@ -193,13 +193,16 @@ const StoreMapComponent = React.memo(
 
       const map = new maplibregl.Map({
         container: el,
-        style: AROWND_VECTOR_STYLE as maplibregl.StyleSpecification,
+        style: AROWND_VERSATILES_STYLE as maplibregl.StyleSpecification,
         center: [initialCenterRef.current.lng, initialCenterRef.current.lat] as [number, number],
-        zoom: 6,
+        zoom: 13,
         attributionControl: { compact: true },
-        dragRotate: false,
-        touchPitch: false,
-        pitch: 0,
+        dragRotate: true,
+        touchPitch: true,
+        pitch: 48,
+        bearing: -12,
+        maxPitch: 60,
+        cooperativeGestures: true,
         maxZoom: 19,
         minZoom: 4,
         maxCanvasSize: [4096, 4096],
@@ -214,7 +217,8 @@ const StoreMapComponent = React.memo(
 
       map.on("style.load", () => {
         dbg("حدث style.load — النمط المتجهي حُمّل");
-        setUsedFallback(false);
+        setUsedFallback(usedFallbackRef.current);
+        setTerrainEnabled(false);
         setTilesWarn(false);
         setMapReady(true);
         requestAnimationFrame(() => map.resize());
@@ -227,9 +231,22 @@ const StoreMapComponent = React.memo(
         const msg = err?.message ?? String(e);
         const url = err?.url ?? "";
         console.error("[StoreMap] خطأ في الخريطة:", msg, url);
-        if (usedFallback) return;
+        // A terrain tile failure must never replace the working basemap.
+        if (url.includes("elevation-tiles-prod")) {
+          console.warn("[StoreMap] تعذّر تحميل بلاطات التضاريس؛ ستبقى الخريطة الأساسية متاحة.");
+          try {
+            map.setTerrain(null);
+          } catch {
+            // The style may already be changing.
+          }
+          setTerrainEnabled(false);
+          return;
+        }
+        if (usedFallbackRef.current) return;
         if (
           url.includes("openfreemap.org/planet") ||
+          url.includes("tiles.versatiles.org/tiles/osm") ||
+          url.includes("tiles.versatiles.org/fonts") ||
           msg.includes("source") ||
           msg.includes("tile") ||
           msg.includes("Style")
@@ -238,8 +255,10 @@ const StoreMapComponent = React.memo(
             "[StoreMap] فشل تحميل البلاطات المتجهية — التحويل للنمط الاحتياطي (OSM نقطي)",
           );
           try {
-            map.setStyle(OSM_RASTER_FALLBACK as maplibregl.StyleSpecification);
+            setMapReady(false);
+            usedFallbackRef.current = true;
             setUsedFallback(true);
+            map.setStyle(OSM_RASTER_FALLBACK as maplibregl.StyleSpecification);
             setTilesWarn(true);
           } catch (err2) {
             console.error("[StoreMap] فشل التحويل للـ fallback:", err2);
@@ -297,7 +316,7 @@ const StoreMapComponent = React.memo(
       setTimeout(() => clearInterval(checkInterval), 10000);
 
       map.on("data", (e) => {
-        if (e.dataType === "source" && e.sourceId === VECTOR_SOURCE_ID && e.isSourceLoaded) {
+        if (e.dataType === "source" && e.sourceId === VERSATILES_SOURCE_ID && e.isSourceLoaded) {
           dbg("وصلت بيانات البلاطات المتجهية ✔");
         }
       });
@@ -322,40 +341,201 @@ const StoreMapComponent = React.memo(
       map.setCenter([center.lng, center.lat]);
     }, [center.lat, center.lng]);
 
+    // Cluster store coordinates in a GeoJSON source. Detailed DOM pins are
+    // mounted only at neighborhood zoom to keep wide-area views responsive.
     useEffect(() => {
       const map = mapRef.current;
       if (!mapReady || !map) return;
-      const seen = new Set<string>();
-      stores.forEach((store) => {
-        const s = store as Store & { latitude?: number | null; longitude?: number | null };
-        const id = String(store.id);
-        if (typeof s.latitude !== "number" || typeof s.longitude !== "number") return;
-        seen.add(id);
-        let marker = markersRef.current.get(id);
-        if (!marker) {
-          const el = createMarkerElement();
-          marker = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([
-            s.longitude,
-            s.latitude,
-          ]);
-          el.addEventListener("click", () => onSelect?.(id));
-          marker.addTo(map);
-          markersRef.current.set(id, marker);
-        } else {
-          marker.setLngLat([s.longitude, s.latitude]);
+
+      const sourceId = "arownd-store-points";
+      const clusterLayerId = "arownd-store-clusters";
+      const countLayerId = "arownd-store-cluster-count";
+      const pointLayerId = "arownd-store-unclustered";
+
+      if (!map.getSource(sourceId)) {
+        map.addSource(sourceId, {
+          type: "geojson",
+          data: { type: "FeatureCollection", features: [] },
+          cluster: true,
+          clusterMaxZoom: 13,
+          clusterRadius: 56,
+          clusterMinPoints: 2,
+        });
+      }
+      if (!map.getLayer(clusterLayerId)) {
+        map.addLayer({
+          id: clusterLayerId,
+          type: "circle",
+          source: sourceId,
+          filter: ["has", "point_count"],
+          paint: {
+            "circle-color": [
+              "step",
+              ["get", "point_count"],
+              "#B9D84B",
+              10,
+              "#8FBF3D",
+              30,
+              "#638F36",
+            ],
+            "circle-radius": ["step", ["get", "point_count"], 19, 10, 23, 30, 28],
+            "circle-stroke-color": "#FFFFFF",
+            "circle-stroke-width": 3,
+            "circle-opacity": 0.96,
+          },
+        });
+      }
+      if (!map.getLayer(countLayerId)) {
+        map.addLayer({
+          id: countLayerId,
+          type: "symbol",
+          source: sourceId,
+          filter: ["has", "point_count"],
+          layout: {
+            "text-field": ["to-string", ["get", "point_count_abbreviated"]],
+            "text-font": ["Noto Sans Regular"],
+            "text-size": 12,
+            "text-allow-overlap": true,
+          },
+          paint: { "text-color": "#24311B" },
+        });
+      }
+      if (!map.getLayer(pointLayerId)) {
+        map.addLayer({
+          id: pointLayerId,
+          type: "circle",
+          source: sourceId,
+          filter: ["!", ["has", "point_count"]],
+          maxzoom: 14,
+          paint: {
+            "circle-radius": 5,
+            "circle-color": "#DFFF72",
+            "circle-stroke-color": "#FFFFFF",
+            "circle-stroke-width": 2,
+          },
+        });
+      }
+
+      const onClusterClick = (event: maplibregl.MapMouseEvent) => {
+        const features = map.queryRenderedFeatures(event.point, { layers: [clusterLayerId] });
+        const feature = features[0];
+        if (!feature) return;
+        const clusterId = Number(feature.properties?.["cluster_id"]);
+        const source = map.getSource(sourceId) as maplibregl.GeoJSONSource;
+        const coordinates = (feature.geometry as { coordinates: [number, number] }).coordinates;
+        void source
+          .getClusterExpansionZoom(clusterId)
+          .then((zoom) => {
+            map.easeTo({
+              center: coordinates,
+              zoom: Math.min(zoom + 0.35, 17),
+              duration: 520,
+            });
+          })
+          .catch((clusterError: unknown) => {
+            dbg("تعذّر توسيع مجموعة المتاجر:", clusterError);
+          });
+      };
+      const onClusterEnter = () => {
+        map.getCanvas().style.cursor = "pointer";
+      };
+      const onClusterLeave = () => {
+        map.getCanvas().style.cursor = "";
+      };
+      map.on("click", clusterLayerId, onClusterClick);
+      map.on("mouseenter", clusterLayerId, onClusterEnter);
+      map.on("mouseleave", clusterLayerId, onClusterLeave);
+
+      const features = stores.flatMap((store) => {
+        const item = store as Store & {
+          latitude?: number | null;
+          longitude?: number | null;
+          category?: string | null;
+        };
+        if (
+          typeof item.latitude !== "number" ||
+          typeof item.longitude !== "number" ||
+          !Number.isFinite(item.latitude) ||
+          !Number.isFinite(item.longitude) ||
+          Math.abs(item.latitude) > 90 ||
+          Math.abs(item.longitude) > 180
+        ) {
+          return [];
         }
-        applyMarkerStyle(
-          marker.getElement() as HTMLElement,
-          activeId === id,
-          String(store.name ?? ""),
-        );
+        return [
+          {
+            type: "Feature" as const,
+            geometry: {
+              type: "Point" as const,
+              coordinates: [item.longitude, item.latitude],
+            },
+            properties: {
+              id: String(store.id),
+              name: store.name ?? "",
+              category: item.category ?? "",
+            },
+          },
+        ];
       });
-      markersRef.current.forEach((m, id) => {
-        if (!seen.has(id)) {
-          m.remove();
-          markersRef.current.delete(id);
+      (map.getSource(sourceId) as maplibregl.GeoJSONSource).setData({
+        type: "FeatureCollection",
+        features,
+      });
+
+      const renderDetailMarkers = () => {
+        const visibleIds = new Set<string>();
+        if (map.getZoom() >= 14) {
+          stores.forEach((store) => {
+            const item = store as Store & {
+              latitude?: number | null;
+              longitude?: number | null;
+              category?: string | null;
+            };
+            const id = String(store.id);
+            if (
+              typeof item.latitude !== "number" ||
+              typeof item.longitude !== "number" ||
+              !Number.isFinite(item.latitude) ||
+              !Number.isFinite(item.longitude) ||
+              Math.abs(item.latitude) > 90 ||
+              Math.abs(item.longitude) > 180
+            ) {
+              return;
+            }
+            visibleIds.add(id);
+            let marker = markersRef.current.get(id);
+            if (!marker) {
+              const el = createMarkerElement(categoryEmoji(item.category));
+              marker = new maplibregl.Marker({ element: el, anchor: "bottom" }).setLngLat([
+                item.longitude,
+                item.latitude,
+              ]);
+              el.addEventListener("click", () => onSelect?.(id));
+              marker.addTo(map);
+              markersRef.current.set(id, marker);
+            } else {
+              marker.setLngLat([item.longitude, item.latitude]);
+              const glyph = marker.getElement().querySelector(".arownd-pin-dot span");
+              if (glyph) glyph.textContent = categoryEmoji(item.category);
+            }
+            applyMarkerStyle(marker.getElement(), activeId === id, String(store.name ?? ""));
+          });
         }
-      });
+        markersRef.current.forEach((marker, id) => {
+          if (!visibleIds.has(id)) {
+            marker.remove();
+            markersRef.current.delete(id);
+          }
+        });
+      };
+      renderDetailMarkers();
+      map.on("zoomend", renderDetailMarkers);
+      return () => {
+        map.off("click", clusterLayerId, onClusterClick);
+        map.off("mouseenter", clusterLayerId, onClusterEnter);
+        map.off("mouseleave", clusterLayerId, onClusterLeave);
+        map.off("zoomend", renderDetailMarkers);
+      };
     }, [stores, activeId, mapReady, onSelect]);
 
     useEffect(() => {
@@ -444,6 +624,50 @@ const StoreMapComponent = React.memo(
             aria-label="العودة لمركز الخريطة"
           >
             <RotateCcw className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            disabled={!mapReady}
+            onClick={() => {
+              const map = mapRef.current;
+              if (!map || !mapReady) return;
+              const next3D = !is3D;
+              map.easeTo({ pitch: next3D ? 48 : 0, duration: 520 });
+              setIs3D(next3D);
+            }}
+            className="flex h-10 w-10 items-center justify-center rounded-full bg-white/95 text-[#111827] shadow-soft ring-1 ring-[#E2E8F0] transition hover:bg-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-40"
+            aria-label={is3D ? "التحويل إلى العرض المسطح" : "التحويل إلى العرض ثلاثي الأبعاد"}
+            aria-pressed={is3D}
+            title={is3D ? "عرض ثنائي الأبعاد" : "عرض ثلاثي الأبعاد"}
+          >
+            <Layers3 className="h-5 w-5" />
+          </button>
+          <button
+            type="button"
+            disabled={!mapReady || usedFallback}
+            onClick={() => {
+              const map = mapRef.current;
+              if (!map || !mapReady || usedFallback) return;
+              try {
+                if (terrainEnabled) {
+                  map.setTerrain(null);
+                  setTerrainEnabled(false);
+                } else {
+                  map.setTerrain({ source: "arownd-terrain-dem", exaggeration: 1 });
+                  setTerrainEnabled(true);
+                }
+              } catch (terrainError) {
+                console.warn("[StoreMap] تعذّر تفعيل التضاريس ثلاثية الأبعاد:", terrainError);
+              }
+            }}
+            className={`flex h-10 w-10 items-center justify-center rounded-full shadow-soft ring-1 transition active:scale-95 disabled:cursor-not-allowed disabled:opacity-40 ${terrainEnabled ? "bg-[#DFFF72] text-[#202A25] ring-[#C6E62E]" : "bg-white/95 text-[#111827] ring-[#E2E8F0] hover:bg-white"}`}
+            aria-label={
+              terrainEnabled ? "إيقاف التضاريس ثلاثية الأبعاد" : "إظهار التضاريس ثلاثية الأبعاد"
+            }
+            aria-pressed={terrainEnabled}
+            title="التضاريس ثلاثية الأبعاد"
+          >
+            <Mountain className="h-5 w-5" />
           </button>
         </div>
         <style>{`

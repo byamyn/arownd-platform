@@ -23,6 +23,7 @@ export function MapPage() {
   const [active, setActive] = useState<string | null>(null);
   const [q, setQ] = useState("");
   const [sort, setSort] = useState<Sort>("near");
+  const [quickFilter, setQuickFilter] = useState<"all" | "open" | "verified">("all");
   const [showFilters, setShowFilters] = useState(false);
   const [navigationOrigin, setNavigationOrigin] = useState<{
     lat: number;
@@ -46,6 +47,9 @@ export function MapPage() {
   if (sort === "near") list = [...list].sort((a, b) => (a.distance ?? 1e9) - (b.distance ?? 1e9));
   else list = [...list].sort((a, b) => Number(b.rating) - Number(a.rating));
 
+  if (quickFilter === "open") list = list.filter((s) => isOpenNow(s.opening_hours));
+  if (quickFilter === "verified") list = list.filter((s) => s.is_verified);
+
   const sel = list.find((s) => s.id === active) ?? stores.data?.find((s) => s.id === active);
 
   return (
@@ -64,14 +68,14 @@ export function MapPage() {
       </ClientOnly>
 
       <div className="absolute inset-x-3 top-3 z-[1000] sm:inset-x-5 sm:top-5">
-        <div className="flex items-center gap-3 rounded-[var(--radius-control)] border border-border bg-card px-4">
+        <div className="flex items-center gap-3 rounded-[22px] border border-white/80 bg-white/95 px-4 shadow-[0_12px_36px_rgba(35,55,85,.16)] backdrop-blur-xl">
           <Search className="size-5 shrink-0 text-muted-foreground" />
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
             placeholder={t("map_search_placeholder")}
             aria-label={t("map_search_label")}
-            className="h-12 min-w-0 flex-1 bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground"
+            className="h-[54px] min-w-0 flex-1 bg-transparent text-sm font-semibold text-slate-800 outline-none placeholder:text-slate-400"
           />
           {q && (
             <button
@@ -83,8 +87,34 @@ export function MapPage() {
             </button>
           )}
         </div>
+        <div className="mt-2 flex items-center gap-2 overflow-x-auto pb-1">
+          {(
+            [
+              { id: "all", label: "كل الأماكن" },
+              { id: "open", label: "مفتوح الآن" },
+              { id: "verified", label: "متاجر موثّقة" },
+            ] as const
+          ).map((filter) => (
+            <button
+              key={filter.id}
+              type="button"
+              onClick={() => setQuickFilter(filter.id)}
+              className={cn(
+                "shrink-0 rounded-full border px-4 py-2 text-[11px] font-extrabold shadow-[0_5px_18px_rgba(35,55,85,.10)] backdrop-blur-xl transition",
+                quickFilter === filter.id
+                  ? "border-accent-ink bg-primary text-primary-foreground"
+                  : "border-white/90 bg-white/90 text-slate-600 hover:bg-white",
+              )}
+            >
+              {filter.label}
+            </button>
+          ))}
+          <span className="ms-auto shrink-0 rounded-full bg-white/90 px-3 py-2 text-[10px] font-bold text-slate-500 shadow-sm">
+            {list.length} مكان
+          </span>
+        </div>
         {!stores.isLoading && !stores.isError && list.length === 0 && (
-          <div className="card-premium mt-2 p-3 text-center text-xs text-muted-foreground">
+          <div className="mt-2 rounded-2xl border border-white/80 bg-white/95 p-3 text-center text-xs font-semibold text-slate-500 shadow-lg backdrop-blur-xl">
             {q.trim() ? t("map_no_match") : t("map_no_stores")}
           </div>
         )}
@@ -96,14 +126,13 @@ export function MapPage() {
         </div>
       )}
 
-      <div className="absolute top-40 left-3 z-[1000] flex flex-col gap-2 sm:top-44 sm:left-5">
+      <div className="absolute top-40 start-3 z-[1000] flex flex-col gap-2 sm:top-44 sm:start-5">
         <button
           aria-label={t("filter")}
           onClick={() => setShowFilters(true)}
           className={cn(
             "icon-btn rounded-full border border-border bg-card",
-            sort !== "near" &&
-              "border-accent-ink bg-primary text-primary-foreground",
+            sort !== "near" && "border-accent-ink bg-primary text-primary-foreground",
           )}
         >
           <Filter className="size-5" />
@@ -131,7 +160,7 @@ export function MapPage() {
       </div>
 
       {sel && !navigationTarget && (
-        <div className="card-premium absolute inset-x-3 bottom-3 z-[1000] animate-fade-up p-4 sm:inset-x-5 sm:bottom-5">
+        <div className="absolute inset-x-3 bottom-3 z-[1000] animate-fade-up rounded-[28px] border border-white/90 bg-white/95 p-4 shadow-[0_20px_60px_rgba(25,42,70,.22)] backdrop-blur-2xl sm:inset-x-5 sm:bottom-5">
           <button
             aria-label={t("close")}
             onClick={() => setActive(null)}
@@ -139,14 +168,22 @@ export function MapPage() {
           >
             <X className="size-4" />
           </button>
+          <div className="mb-3 flex items-center justify-between">
+            <span className="rounded-full bg-primary-soft px-3 py-1 text-[10px] font-extrabold text-accent-ink-soft-foreground">
+              اكتشف حولك
+            </span>
+            <span className="text-[10px] font-bold text-slate-400">تفاصيل المكان</span>
+          </div>
           <div className="flex gap-3">
-            <div className="size-[72px] shrink-0 overflow-hidden rounded-[var(--radius-control)] bg-muted">
+            <div className="size-[82px] shrink-0 overflow-hidden rounded-[20px] bg-slate-100 ring-1 ring-slate-100">
               {sel.cover_url && (
                 <img src={sel.cover_url} alt="" className="size-full object-cover" />
               )}
             </div>
             <div className="min-w-0 space-y-1">
-              <p className="line-clamp-1 pe-8 text-body font-bold text-foreground">{sel.name}</p>
+              <p className="line-clamp-1 pe-8 text-[16px] font-extrabold tracking-tight text-slate-900">
+                {sel.name}
+              </p>
               <div className="flex flex-wrap items-center gap-2">
                 <OpenBadge open={isOpenNow(sel.opening_hours)} />
                 {sel.is_verified && <VerifiedBadge />}
@@ -166,7 +203,7 @@ export function MapPage() {
             <Link
               to="/stores/$storeId"
               params={{ storeId: sel.id }}
-              className="btn-secondary !h-11 text-sm"
+              className="!h-11 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-700 shadow-sm"
             >
               {t("map_view_store")}
             </Link>
@@ -189,7 +226,7 @@ export function MapPage() {
                   name: sel.name,
                 });
               }}
-              className="btn-primary !h-11 text-sm"
+              className="!h-11 rounded-2xl bg-primary text-sm font-extrabold text-primary-foreground shadow-md hover:bg-primary/90"
             >
               <Navigation className="size-4" />
               {t("map_directions")}
