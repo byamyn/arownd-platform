@@ -46,7 +46,7 @@ function AdminDeliveryCompaniesPage() {
       if (error) throw error;
       return data;
     },
-    enabled: !!user && ready,
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
   });
 
   const coverageQuery = useQuery({
@@ -129,7 +129,7 @@ function AdminDeliveryCompaniesPage() {
   useRealtimeSubscription({
     table: "delivery_companies",
     queryKeys: [["admin-delivery-companies"]],
-    enabled: !!user && ready,
+    enabled: !!user && ready && !!roleQuery.data?.includes("admin"),
   });
   useRealtimeSubscription({
     table: "shipments",
