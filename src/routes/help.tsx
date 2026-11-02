@@ -199,7 +199,7 @@ function DeliveryPartnerSection() {
       .map(([label, name]) => `${label}: ${String(formData.get(name) ?? "").trim()}`)
       .join("\\n");
     const subject = encodeURIComponent("طلب شراكة توصيل مع Arownd");
-    window.location.href = `mailto:arounddz@gmail.com?subject=${subject}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:arownddz@gmail.com?subject=${subject}&body=${encodeURIComponent(body)}`;
   }
 
   const inputClass =
@@ -303,8 +303,8 @@ function DeliveryPartnerSection() {
       </form>
       <p className="text-center text-xs text-muted-foreground">
         أو راسلنا مباشرة على{" "}
-        <a href="mailto:arounddz@gmail.com" className="font-semibold text-accent-ink underline">
-          arounddz@gmail.com
+        <a href="mailto:arownddz@gmail.com" className="font-semibold text-accent-ink underline">
+          arownddz@gmail.com
         </a>
       </p>
       <p className="text-[11px] leading-relaxed text-muted-foreground">
