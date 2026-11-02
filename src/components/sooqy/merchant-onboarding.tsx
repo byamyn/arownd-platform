@@ -133,7 +133,7 @@ export function MerchantOnboarding({
           onChange={(e) => setForm({ ...form, address_line: e.target.value })}
           rows={3}
           placeholder="العنوان"
-          className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2 outline-none transition focus:ring-2 focus:ring-primary/30"
+          className="w-full min-h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
 
         <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-background/60 p-3">
