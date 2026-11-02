@@ -189,7 +189,7 @@ function StorePage() {
         )}
 
         {/* الغلاف */}
-        <div className="relative h-44 bg-neutral-100">
+        <div className="relative h-44 bg-muted">
           {s.cover_url && (
             <img
               src={s.cover_url}
@@ -275,7 +275,7 @@ function StorePage() {
                 href={whatsappUrl(s.whatsapp)!}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-success text-sm font-bold text-white transition active:scale-95"
+                className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-success text-success-foreground transition active:scale-95"
               >
                 <MessageCircle className="size-4" />
                 واتساب
@@ -283,7 +283,7 @@ function StorePage() {
             ) : telUrl(s.phone) ? (
               <a
                 href={telUrl(s.phone)!}
-                className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-success text-sm font-bold text-white transition active:scale-95"
+                className="flex h-11 items-center justify-center gap-1.5 rounded-xl bg-success text-success-foreground transition active:scale-95"
               >
                 <Phone className="size-4" />
                 اتصال
@@ -357,7 +357,7 @@ function StorePage() {
                         params={{ productId: o.product_id }}
                         className="card-premium group overflow-hidden"
                       >
-                        <div className="relative aspect-square bg-neutral-100">
+                        <div className="relative aspect-square bg-muted">
                           {primaryImage(o.images) && (
                             <img
                               src={primaryImage(o.images)!}
@@ -472,7 +472,7 @@ function StorePage() {
                         href={socialHref(s.instagram_url)}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
+                        className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
                       >
                         <Instagram className="size-3.5" /> إنستغرام
                       </a>
@@ -482,7 +482,7 @@ function StorePage() {
                         href={socialHref(s.facebook_url)}
                         target="_blank"
                         rel="noreferrer"
-                        className="flex items-center gap-1.5 rounded-full bg-neutral-100 px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
+                        className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
                       >
                         <Facebook className="size-3.5" /> فيسبوك
                       </a>
