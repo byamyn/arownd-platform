@@ -148,7 +148,7 @@ function ReservationsPage() {
           return (
             <article
               key={reservation.id}
-              className="relative overflow-hidden rounded-3xl border border-border bg-card shadow-soft"
+              className="relative overflow-hidden rounded-3xl border border-border bg-card "
             >
               <div className="absolute inset-y-0 start-0 w-1 bg-primary" />
               <div className="space-y-4 p-4">
