@@ -246,7 +246,7 @@ function CheckoutPage() {
                 onClick={() => i < step && setStep(i)}
                 disabled={i > step}
                 className={cn(
-                  "flex w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-caption font-bold transition",
+                  "flex min-h-[var(--touch-target-size)] w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-caption font-bold transition",
                   i === step
                     ? "bg-primary text-accent-ink-foreground"
                     : i < step
@@ -313,7 +313,7 @@ function CheckoutPage() {
             <button
               type="button"
               onClick={() => offers.refetch()}
-              className="mt-3 w-full rounded-xl bg-danger-soft py-2 text-xs font-bold text-danger"
+              className="mt-3 w-full min-h-[var(--control-height)] rounded-full bg-danger-soft px-4 text-sm font-semibold text-danger"
             >
               {t("checkout_verify_failed_short")}
             </button>
@@ -374,7 +374,7 @@ function CheckoutPage() {
             }}
             placeholder={t("checkout_commune_placeholder")}
             required
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <div className="space-y-3 rounded-2xl bg-background p-3">
             <p className="text-xs font-bold text-muted-foreground">{t("checkout_buyer_data")}</p>
@@ -383,7 +383,7 @@ function CheckoutPage() {
               onChange={(e) => setFullName(e.target.value)}
               placeholder={t("checkout_name_placeholder")}
               required
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
             />
             <input
               value={phone}
@@ -391,7 +391,7 @@ function CheckoutPage() {
               placeholder={t("checkout_phone_placeholder")}
               required
               inputMode="tel"
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
             />
           </div>
         </section>
@@ -434,7 +434,7 @@ function CheckoutPage() {
             onChange={(e) => setAddress(e.target.value)}
             placeholder={t("checkout_address_detail_placeholder")}
             rows={3}
-            className="w-full rounded-xl border bg-background px-3 py-2 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
+            className="w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <p className="flex items-start gap-2 rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
             <Truck className="mt-0.5 size-4 shrink-0 text-accent-ink" />
@@ -477,7 +477,7 @@ function CheckoutPage() {
           <button
             disabled={submitting}
             onClick={goNext}
-            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-6 text-sm font-bold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
           >
             {submitting
               ? t("checkout_sending")
