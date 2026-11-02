@@ -46,7 +46,7 @@ export function ConfirmDialog({
       role="presentation"
     >
       <div
-        className="animate-scale-in w-full max-w-sm rounded-3xl border border-border bg-card p-5 shadow-float"
+        className="animate-scale-in w-full max-w-sm rounded-3xl border border-border bg-card p-5 "
         onClick={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
