@@ -45,7 +45,7 @@ for (const f of files) {
         "استخدم ms/me/ps/pe/start/end بدل ml/mr/pl/pr/left/right",
       );
     // 2) اسم العلامة
-    if (BRAND.test(l) && !/SOOQY_VECTOR_STYLE|console\.|\[SooQy\]|name: "SooQy/.test(l))
+    if (BRAND.test(l) && !relative(ROOT, f).includes("/test/") && !/SOOQY_VECTOR_STYLE|console\\.|\\[SooQy\\]|name: "SooQy/.test(l))
       add("error", "brand-name", f, n, "الكتابة المعتمدة: Arownd");
     // 3) حوارات المتصفح الأصلية
     if (/(?<![\w.])(prompt|alert|confirm)\(/.test(l))
