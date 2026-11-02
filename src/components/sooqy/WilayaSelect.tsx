@@ -134,9 +134,7 @@ export function WilayaButton({
           onClick={() => handleSelect(w.id)}
           className={cn(
             "flex min-h-[var(--touch-target-size)] w-full items-center gap-2 px-3 py-2.5 text-start transition cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary",
-            value === w.id
-              ? "bg-primary-soft text-accent-ink font-semibold"
-              : "hover:bg-muted",
+            value === w.id ? "bg-primary-soft text-accent-ink font-semibold" : "hover:bg-muted",
           )}
         >
           {value === w.id && <Check className="size-4 shrink-0 text-accent-ink" />}
