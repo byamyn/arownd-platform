@@ -31,7 +31,7 @@ export function ConnectionBanner() {
       aria-live="polite"
       className="pointer-events-none fixed inset-x-0 top-0 z-[60] flex justify-center px-3 pt-[max(0.5rem,env(safe-area-inset-top))]"
     >
-      <div className="animate-fade-up flex items-center gap-2 rounded-full bg-warning px-4 py-2 text-xs font-bold text-warning-foreground shadow-lift">
+      <div className="animate-fade-up flex items-center gap-2 rounded-full bg-warning px-4 py-2 text-xs font-bold text-warning-foreground ">
         <WifiOff className="size-4 shrink-0" aria-hidden />
         <span>{t("offline_banner")}</span>
       </div>
