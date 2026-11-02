@@ -331,7 +331,7 @@ function SettingsPage() {
               onChange={(e) => setConfirmPassword(e.target.value)}
               autoComplete="new-password"
               dir="ltr"
-              className="h-12 w-full rounded-xl border border-input bg-background px-3 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
+              className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
             />
           </div>
         </div>
@@ -374,7 +374,7 @@ function SettingsPage() {
                 setShowTheme(false);
               }}
               className={cn(
-                "flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold transition",
+                "flex w-full items-center gap-3 rounded-[var(--radius-card)] px-4 py-3 text-sm font-bold transition",
                 theme === opt.value
                   ? "bg-primary text-accent-ink-foreground"
                   : "border border-border bg-background text-foreground",
