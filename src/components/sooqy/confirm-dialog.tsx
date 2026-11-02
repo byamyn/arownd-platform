@@ -41,7 +41,7 @@ export function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[1200] flex items-end justify-center bg-black/45 p-4 pb-8 sm:items-center"
+      className="fixed inset-0 z-[1200] flex items-end justify-center bg-[var(--color-overlay-scrim)] p-4 pb-8 sm:items-center"
       onClick={onCancel}
       role="presentation"
     >
@@ -69,7 +69,7 @@ export function ConfirmDialog({
             disabled={busy}
             className={cn(
               "min-h-[var(--control-height)] rounded-[var(--radius-pill)] px-4 py-3 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50",
-              tone === "danger" ? "bg-danger text-white" : "bg-primary text-accent-ink-foreground",
+              tone === "danger" ? "bg-danger text-danger-foreground" : "bg-primary text-accent-ink-foreground",
             )}
           >
             {busy ? t("action_busy") : (confirmLabel ?? t("action_confirm"))}
