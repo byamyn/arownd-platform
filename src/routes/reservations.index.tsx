@@ -262,7 +262,8 @@ function ReservationsPage() {
                     onClick={() =>
                       setPendingConfirmation({
                         title: "إخفاء الحجز من السجل",
-                        message: "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                        message:
+                          "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
                         action: async () => {
                           await archiveMyActivity("reservation", reservation.id);
                           await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });

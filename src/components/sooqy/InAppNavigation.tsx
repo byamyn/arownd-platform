@@ -155,11 +155,7 @@ export function InAppNavigation({ map, origin, destination, onClose }: InAppNavi
         <div className="mt-3 flex items-start gap-2 text-sm text-danger" role="alert">
           <AlertCircle className="mt-0.5 size-4 shrink-0" />
           <span className="flex-1">{error}</span>
-          <button
-            type="button"
-            onClick={() => void loadRoute()}
-            className="font-bold underline"
-          >
+          <button type="button" onClick={() => void loadRoute()} className="font-bold underline">
             إعادة المحاولة
           </button>
         </div>

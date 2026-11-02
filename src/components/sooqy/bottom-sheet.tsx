@@ -122,7 +122,9 @@ export function BottomSheet({
           )}
           <div className="flex items-start gap-3">
             <div className="min-w-0 flex-1">
-              <h2 id={titleId} className="text-h3 text-foreground">{title}</h2>
+              <h2 id={titleId} className="text-h3 text-foreground">
+                {title}
+              </h2>
               {subtitle && <p className="mt-0.5 text-xs text-muted-foreground">{subtitle}</p>}
             </div>
             <button

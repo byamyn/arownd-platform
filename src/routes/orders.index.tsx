@@ -315,7 +315,9 @@ function OrdersPage() {
                                   setRespondingQuoteId(suborder.id);
                                   try {
                                     await customerRespondToMerchantOrder(suborder.id, false);
-                                    await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                                    await queryClient.invalidateQueries({
+                                      queryKey: ["my-orders"],
+                                    });
                                     showSuccess(t("orders_quote_declined"));
                                   } finally {
                                     setRespondingQuoteId(null);
@@ -385,7 +387,8 @@ function OrdersPage() {
                       onClick={() =>
                         setPendingConfirmation({
                           title: "إخفاء الطلب من السجل",
-                          message: "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                          message:
+                            "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
                           action: async () => {
                             await archiveMyActivity("order", o.id);
                             await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
