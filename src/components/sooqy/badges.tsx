@@ -17,7 +17,7 @@ export function StockBadge({ level, className }: { level: StockLevel; className?
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold",
+        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-caption font-semibold",
         map.cls,
         className,
       )}
@@ -127,7 +127,7 @@ export function OpenBadge({
     return (
       <span
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-semibold",
+          "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-semibold",
           config.bgClass,
           className,
         )}
@@ -143,7 +143,7 @@ export function OpenBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[11px] font-bold",
+        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-bold",
         open ? "bg-success-soft text-success" : "bg-neutral-200 text-muted-foreground",
         className,
       )}
@@ -162,7 +162,7 @@ export function VerifiedBadge({ className }: { className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 text-[11px] font-bold text-accent-ink",
+        "inline-flex items-center gap-1 text-caption font-bold text-accent-ink",
         className,
       )}
     >
@@ -187,7 +187,7 @@ export function OrderStatusBadge({ status, className }: { status: string; classN
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-bold",
         m?.cls ?? "bg-muted text-muted-foreground",
         className,
       )}
