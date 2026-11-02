@@ -96,7 +96,7 @@ function DeliveryRegisterPage() {
     <div className="space-y-5 px-4 pb-32 pt-5">
       <PageHeader title="تسجيل شركة توصيل" subtitle="انضم إلى شبكة التوصيل في Arownd" back="/" />
 
-      <section className="rounded-3xl bg-card p-5 shadow-soft space-y-4">
+      <section className="rounded-3xl bg-card p-5  space-y-4">
         <div className="flex items-center gap-2">
           <Truck className="size-5 text-accent-ink" />
           <h2 className="font-bold">بيانات الشركة</h2>
