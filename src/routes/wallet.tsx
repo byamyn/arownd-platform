@@ -103,7 +103,7 @@ function WalletPage() {
   if (!user) {
     return (
       <div className="flex min-h-[70vh] flex-col items-center justify-center gap-4 px-6 text-center">
-        <span className="flex size-20 items-center justify-center rounded-3xl bg-primary-soft">
+        <span className="flex size-20 items-center justify-center rounded-[var(--radius-card)] bg-primary-soft">
           <Wallet className="size-9 text-accent-ink" strokeWidth={1.6} />
         </span>
         <h1 className="text-h1 text-foreground">سجّل الدخول لفتح محفظتك</h1>
@@ -209,7 +209,7 @@ function WalletPage() {
         />
 
         {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
-        <section className="relative overflow-hidden rounded-3xl bg-primary p-5 text-primary-foreground  sm:p-6">
+        <section className="relative overflow-hidden rounded-[var(--radius-card)] bg-primary p-5 text-primary-foreground  sm:p-6">
           <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-4 border-primary-foreground/10" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="min-w-0">
@@ -227,7 +227,7 @@ function WalletPage() {
                 </p>
               )}
             </div>
-            <span className="flex size-14 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/20 ring-1 ring-primary-foreground/15">
+            <span className="flex size-14 shrink-0 items-center justify-center rounded-[var(--radius-card)] bg-primary-foreground/20 ring-1 ring-primary-foreground/15">
               <Wallet className="size-7" strokeWidth={1.8} />
             </span>
           </div>
@@ -236,13 +236,13 @@ function WalletPage() {
           </p>
           {!txs.isLoading && !txs.isError && (
             <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-primary-foreground/10 pt-3">
-              <div className="rounded-xl bg-primary-foreground/5 px-3 py-2">
+              <div className="rounded-[var(--radius-control)] bg-primary-foreground/5 px-3 py-2">
                 <p className="text-caption font-bold opacity-70">إيداعات قيد المراجعة</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingTopup)}
                 </p>
               </div>
-              <div className="rounded-xl bg-primary-foreground/5 px-3 py-2">
+              <div className="rounded-[var(--radius-control)] bg-primary-foreground/5 px-3 py-2">
                 <p className="text-caption font-bold opacity-70">سحوبات قيد المراجعة</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingWithdraw)}
@@ -276,7 +276,7 @@ function WalletPage() {
 
         {/* نموذج الشحن */}
         {showTopup && (
-          <div className="animate-fade-up space-y-3 rounded-2xl border border-border bg-card p-4">
+          <div className="animate-fade-up space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
             <p className="text-sm font-extrabold text-foreground">شحن المحفظة</p>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
@@ -288,7 +288,7 @@ function WalletPage() {
                 inputMode="numeric"
                 placeholder={`الحد الأدنى ${MIN_AMOUNT} دج`}
                 dir="ltr"
-                className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <div className="mt-2 flex gap-2">
                 {PRESETS.map((p) => (
@@ -314,7 +314,7 @@ function WalletPage() {
               <select
                 value={topupMethod}
                 onChange={(e) => setTopupMethod(e.target.value)}
-                className="w-full rounded-xl border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
               >
                 {METHODS.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -323,7 +323,7 @@ function WalletPage() {
                 ))}
               </select>
             </div>
-            <label className="flex cursor-pointer items-center justify-between gap-2 rounded-xl border border-dashed border-border bg-background px-3 py-3 text-sm font-bold transition active:scale-[0.99]">
+            <label className="flex cursor-pointer items-center justify-between gap-2 rounded-[var(--radius-control)] border border-dashed border-border bg-background px-3 py-3 text-sm font-bold transition active:scale-[0.99]">
               <span className="flex items-center gap-2 text-muted-foreground">
                 <Upload className="size-4" />
                 {topupReceipt ? "تم اختيار السند ✓" : "أرفق صورة سند الدفع *"}
@@ -343,7 +343,7 @@ function WalletPage() {
 
         {/* نموذج السحب */}
         {showWithdraw && (
-          <div className="animate-fade-up space-y-3 rounded-2xl border border-border bg-card p-4">
+          <div className="animate-fade-up space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
             <p className="text-sm font-extrabold text-foreground">سحب رصيد</p>
             <p className="text-caption font-semibold text-muted-foreground">
               الرصيد المتاح للسحب: {formatDA(summary.balance)}
@@ -358,7 +358,7 @@ function WalletPage() {
                 inputMode="numeric"
                 placeholder={`الحد الأدنى ${MIN_AMOUNT} دج`}
                 dir="ltr"
-                className="w-full rounded-xl border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
               />
             </div>
             <div>
@@ -368,7 +368,7 @@ function WalletPage() {
               <select
                 value={withdrawMethod}
                 onChange={(e) => setWithdrawMethod(e.target.value)}
-                className="w-full rounded-xl border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
               >
                 {METHODS.map((m) => (
                   <option key={m.id} value={m.id}>
@@ -385,7 +385,7 @@ function WalletPage() {
                 value={withdrawNote}
                 onChange={(e) => setWithdrawNote(e.target.value)}
                 placeholder="مثال: CCP 0012345678 ..."
-                className="w-full rounded-xl border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
             </div>
             <button onClick={submitWithdraw} disabled={busyWithdraw} className="btn-primary w-full">
@@ -397,7 +397,7 @@ function WalletPage() {
         {/* ملخص الحركة المالية من المعاملات المعتمدة فقط */}
         {!txs.isLoading && !txs.isError && (
           <div className="grid grid-cols-2 gap-3">
-            <div className="rounded-2xl border border-border bg-card p-3.5">
+            <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-success">
                 <ArrowDownLeft className="size-4" />
                 <span className="text-caption font-bold text-muted-foreground">
@@ -408,7 +408,7 @@ function WalletPage() {
                 {formatDA(summary.totalTopup)}
               </p>
             </div>
-            <div className="rounded-2xl border border-border bg-card p-3.5">
+            <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5">
               <div className="flex items-center gap-2 text-danger">
                 <ArrowUpRight className="size-4" />
                 <span className="text-caption font-bold text-muted-foreground">إجمالي السحوبات</span>
@@ -417,7 +417,7 @@ function WalletPage() {
                 {formatDA(summary.totalWithdraw)}
               </p>
             </div>
-            <div className="col-span-2 flex items-center justify-between rounded-2xl border border-border bg-card px-4 py-3">
+            <div className="col-span-2 flex items-center justify-between rounded-[var(--radius-card)] border border-border bg-card px-4 py-3">
               <span className="text-xs font-bold text-muted-foreground">عمليات قيد المراجعة</span>
               <span className="text-sm font-extrabold text-foreground">{pendingCount}</span>
             </div>
@@ -458,14 +458,14 @@ function WalletPage() {
             {[0, 1, 2].map((i) => (
               <div
                 key={i}
-                className="h-20 animate-pulse rounded-2xl border border-border bg-card"
+                className="h-20 animate-pulse rounded-[var(--radius-card)] border border-border bg-card"
               />
             ))}
           </div>
         )}
 
         {txs.isError && (
-          <div className="rounded-2xl border border-danger/30 bg-danger-soft p-4 text-center">
+          <div className="rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft p-4 text-center">
             <p className="text-sm font-bold text-foreground">تعذّر تحميل بيانات المحفظة</p>
             <p className="mt-1 text-xs text-muted-foreground">
               تحقق من اتصالك بالإنترنت ثم أعد المحاولة.
@@ -506,11 +506,11 @@ function WalletPage() {
             const time = formatTime(t.created_at);
             const methodLabel = METHODS.find((m) => m.id === t.method)?.label ?? t.method;
             return (
-              <div key={t.id} className="rounded-2xl border border-border bg-card p-4">
+              <div key={t.id} className="rounded-[var(--radius-card)] border border-border bg-card p-4">
                 <div className="flex items-center gap-3">
                   <span
                     className={cn(
-                      "flex size-11 shrink-0 items-center justify-center rounded-2xl",
+                      "flex size-11 shrink-0 items-center justify-center rounded-[var(--radius-card)]",
                       t.amount >= 0 ? "bg-success-soft text-success" : "bg-danger-soft text-danger",
                     )}
                   >
@@ -554,7 +554,7 @@ function WalletPage() {
                   {methodLabel && <span>{methodLabel}</span>}
                 </div>
                 {t.note && (
-                  <p className="mt-2 rounded-xl bg-background px-3 py-2 text-caption font-semibold text-muted-foreground">
+                  <p className="mt-2 rounded-[var(--radius-control)] bg-background px-3 py-2 text-caption font-semibold text-muted-foreground">
                     {t.note}
                   </p>
                 )}
