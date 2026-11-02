@@ -307,7 +307,7 @@ function DeliveryPartnerSection() {
           arownddz@gmail.com
         </a>
       </p>
-      <p className="text-[11px] leading-relaxed text-muted-foreground">
+      <p className="text-caption leading-relaxed text-muted-foreground">
         عند الضغط على الإرسال، سيفتح تطبيق البريد في جهازك برسالة مجهزة بالبيانات المدخلة. لن يُرسل
         الطلب تلقائيًا؛ يجب مراجعة الرسالة ثم الضغط على إرسال من تطبيق البريد.
       </p>
