@@ -20,7 +20,12 @@ import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
-import { fetchMyProfile, fetchMyAccountType, fetchMyRoles, setMyProfileVisibility } from "@/lib/sooqy";
+import {
+  fetchMyProfile,
+  fetchMyAccountType,
+  fetchMyRoles,
+  setMyProfileVisibility,
+} from "@/lib/sooqy";
 import { useTheme, type Theme } from "@/lib/theme";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
