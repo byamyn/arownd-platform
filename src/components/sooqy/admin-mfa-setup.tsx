@@ -137,7 +137,9 @@ export function AdminMfaSetup() {
       {!loading && verified && verifiedFactorId && (
         <div className="space-y-2">
           <label className="block space-y-1">
-            <span className="text-sm font-semibold text-foreground">رمز المصادقة لتأكيد هذه الجلسة</span>
+            <span className="text-sm font-semibold text-foreground">
+              رمز المصادقة لتأكيد هذه الجلسة
+            </span>
             <input
               value={code}
               onChange={(event) => setCode(event.target.value.replace(/[^0-9]/g, "").slice(0, 6))}
@@ -165,7 +167,11 @@ export function AdminMfaSetup() {
           <p className="text-sm text-foreground">
             امسح رمز QR باستخدام تطبيق مصادقة، ثم أدخل الرمز المكوّن من 6 أرقام.
           </p>
-          <img src={qrCode} alt="رمز إعداد المصادقة الثنائية" className="mx-auto size-48 bg-white p-2" />
+          <img
+            src={qrCode}
+            alt="رمز إعداد المصادقة الثنائية"
+            className="mx-auto size-48 bg-white p-2"
+          />
           {secret && (
             <p className="break-all text-center text-xs text-muted-foreground" dir="ltr">
               المفتاح اليدوي: {secret}
@@ -195,7 +201,11 @@ export function AdminMfaSetup() {
         </div>
       )}
 
-      {message && <p role="status" className="text-sm text-muted-foreground">{message}</p>}
+      {message && (
+        <p role="status" className="text-sm text-muted-foreground">
+          {message}
+        </p>
+      )}
     </section>
   );
 }
