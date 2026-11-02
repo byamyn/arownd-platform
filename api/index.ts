@@ -102,7 +102,7 @@ function compressIfAccepted(
 }
 
 /** رؤوس الأمان الأساسية */
-function setSecurityHeaders(res: ServerResponse): void {
+function setSecurityHeaders(res: ServerResponse, isHttps: boolean): void {
   res.setHeader("X-Content-Type-Options", "nosniff");
   res.setHeader("X-Frame-Options", "DENY");
   res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -113,8 +113,7 @@ function setSecurityHeaders(res: ServerResponse): void {
     "Permissions-Policy",
     "geolocation=(self), camera=(self), microphone=(), payment=(), usb=()",
   );
-  const proto = (res.getHeader("x-forwarded-proto") as string) || "";
-  if (proto === "https") {
+  if (isHttps) {
     res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
   }
 }
@@ -244,6 +243,12 @@ function withTimeout<T>(value: T | Promise<T>, ms: number): Promise<T> {
 }
 
 export default async function handler(req: IncomingMessage, res: ServerResponse): Promise<void> {
+  const forwardedProto = req.headers["x-forwarded-proto"];
+  const isForwardedHttps =
+    typeof forwardedProto === "string" &&
+    forwardedProto.split(",")[0].trim().toLowerCase() === "https";
+  const socket = req.socket as typeof req.socket & { encrypted?: boolean };
+  const isHttps = isForwardedHttps || Boolean(socket.encrypted);
   try {
     // تحديد المعدل لكل عنوان IP
     const ip = getClientIp(req);
@@ -252,7 +257,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       res.statusCode = 429;
       res.setHeader("content-type", "text/html; charset=utf-8");
       res.setHeader("retry-after", String(rateLimit.retryAfter ?? 60));
-      setSecurityHeaders(res);
+      setSecurityHeaders(res, isHttps);
       res.end(
         `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">` +
           `<meta name="viewport" content="width=device-width, initial-scale=1">` +
@@ -277,7 +282,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     if (staticRes) {
       res.statusCode = staticRes.status;
       staticRes.headers.forEach((value, key) => res.setHeader(key, value));
-      setSecurityHeaders(res);
+      setSecurityHeaders(res, isHttps);
       res.end(Buffer.from(await staticRes.arrayBuffer()));
       return;
     }
@@ -287,7 +292,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     if (typeof bodyResult === "object" && "error" in bodyResult) {
       res.statusCode = 413;
       res.setHeader("content-type", "text/html; charset=utf-8");
-      setSecurityHeaders(res);
+      setSecurityHeaders(res, isHttps);
       res.end(
         `<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">` +
           `<meta name="viewport" content="width=device-width, initial-scale=1">` +
@@ -330,7 +335,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
     // ولا نضغط للطلبات HEAD أو الاستجابات 304
     const existingEncoding = response.headers.get("content-encoding");
     if (existingEncoding || req.method === "HEAD" || response.status === 304) {
-      setSecurityHeaders(res);
+      setSecurityHeaders(res, isHttps);
       // لا نخزن الصفحات الديناميكية (طلبات، ملفات تعريف، إلخ) في الكاش
       res.setHeader("cache-control", "no-store, private, must-revalidate");
       res.end();
@@ -345,7 +350,7 @@ export default async function handler(req: IncomingMessage, res: ServerResponse)
       res.setHeader("content-encoding", "gzip");
     }
     res.setHeader("content-length", String(compressed.body.length));
-    setSecurityHeaders(res);
+    setSecurityHeaders(res, isHttps);
     // لا نخزن الصفحات الديناميكية (طلبات، ملفات تعريف، إلخ) في الكاش
     res.setHeader("cache-control", "no-store, private, must-revalidate");
     res.end(Buffer.from(compressed.body));

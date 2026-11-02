@@ -40,7 +40,8 @@ if (!DATABASE_URL) {
 
 const client = new pg.Client({
   connectionString: DATABASE_URL,
-  ssl: { rejectUnauthorized: false },
+  // Verify the database server certificate; never disable TLS identity checks.
+  ssl: { rejectUnauthorized: true },
 });
 
 async function applyFile(file, label, track = true) {
