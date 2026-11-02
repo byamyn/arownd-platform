@@ -37,10 +37,7 @@ function NotFoundComponent() {
         <h2 className="mt-4 text-h1 text-foreground">{t("notfound_title")}</h2>
         <p className="mt-2 text-body text-muted-foreground">{t("notfound_hint")}</p>
         <div className="mt-6">
-          <Link
-            to="/"
-            className="btn-primary"
-          >
+          <Link to="/" className="btn-primary">
             {t("notfound_home")}
           </Link>
         </div>
@@ -69,10 +66,7 @@ function ErrorComponent({ error, reset }: ErrorComponentProps) {
           >
             {t("error_retry")}
           </button>
-          <a
-            href="/"
-            className="btn-secondary"
-          >
+          <a href="/" className="btn-secondary">
             {t("error_home")}
           </a>
         </div>
