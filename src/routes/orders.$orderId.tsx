@@ -150,7 +150,7 @@ function TrackPage() {
                     <span
                       className={cn(
                         "absolute top-7 start-[15px] h-[calc(100%-28px)] w-0.5 rounded-full",
-                        i < statusIdx ? "bg-primary" : "bg-neutral-200 dark:bg-neutral-700",
+                        i < statusIdx ? "bg-primary" : "bg-border",
                       )}
                     />
                   )}
@@ -159,7 +159,7 @@ function TrackPage() {
                       "relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full border-2 transition",
                       done
                         ? "border-accent-ink bg-primary text-accent-ink-foreground"
-                        : "border-neutral-300 bg-card text-muted-foreground dark:border-neutral-600",
+                        : "border-border bg-card text-muted-foreground",
                     )}
                   >
                     {done ? <Check className="size-4" /> : <Package className="size-4" />}
@@ -177,7 +177,7 @@ function TrackPage() {
                     >
                       {t(step.labelKey)}
                       {current && (
-                        <span className="ms-2 text-[10px] font-semibold text-accent-ink">
+                        <span className="ms-2 text-caption font-semibold text-accent-ink">
                           {t("track_current")}
                         </span>
                       )}
@@ -295,7 +295,7 @@ function BadgeStatus({ status }: { status: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-bold",
         variants[status],
       )}
     >
