@@ -23,6 +23,8 @@
   --font-size-body-small: 14px;
   --font-size-caption: 12px;
   --font-size-button: 15px;
+  --font-size-small-heading: 18px;
+  --font-size-micro: 11px;
   --line-height-display: 1.4;
   --line-height-title: 1.5;
   --line-height-heading: 1.5;
@@ -108,6 +110,14 @@
   --radius-control: 16px;
   --radius-card: 32px;
   --radius-sheet: 32px;
+  --radius-small: 8px;
+  --radius-medium: 12px;
+  --radius-large: 20px;
+  --radius-xl: 24px;
+  --touch-target-size: 44px;
+  --focus-width: 2px;
+  --focus-offset: 2px;
+  --scale-pressed: .98;
   --duration-fast: 120ms;
   --duration-base: 200ms;
   --duration-medium: 250ms;
@@ -225,11 +235,11 @@
 
 @theme inline {
   --font-sans: var(--font-family-latin);
-  --radius-sm: 8px;
-  --radius-md: 12px;
+  --radius-sm: var(--radius-small);
+  --radius-md: var(--radius-medium);
   --radius-lg: var(--radius-control);
-  --radius-xl: 20px;
-  --radius-2xl: 24px;
+  --radius-xl: var(--radius-large);
+  --radius-2xl: var(--radius-xl);
   --radius-3xl: var(--radius-card);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -294,6 +304,9 @@
     font-family: var(--font-family-arabic);
     letter-spacing: normal;
   }
+  html[lang="ar"] body { line-height: var(--line-height-body-ar); }
+  html[lang="ar"] .text-body { font-size: 15px; }
+  html[lang="ar"] .text-caption { font-size: 13px; }
   body {
     margin: 0;
     background: var(--color-bg-canvas);
@@ -308,8 +321,8 @@
     color: var(--color-text-primary);
   }
   :focus-visible {
-    outline: 2px solid var(--color-action-ink);
-    outline-offset: 2px;
+    outline: var(--focus-width) solid var(--color-action-ink);
+    outline-offset: var(--focus-offset);
   }
   button, input, textarea, select { font: inherit; }
 }
@@ -335,7 +348,7 @@
   font-weight: var(--font-weight-bold);
 }
 @utility text-h3 {
-  font-size: 18px;
+  font-size: var(--font-size-small-heading);
   line-height: 1.5;
   font-weight: var(--font-weight-semibold);
 }
@@ -365,7 +378,7 @@
   font-weight: var(--font-weight-medium);
 }
 @utility text-caption-sm {
-  font-size: 11px;
+  font-size: var(--font-size-caption);
   line-height: 1.5;
   font-weight: var(--font-weight-regular);
 }
@@ -423,7 +436,7 @@
 }
 @utility icon-btn {
   display: inline-flex; align-items: center; justify-content: center;
-  min-width: 44px; min-height: 44px; border: 0; border-radius: var(--radius-control);
+  min-width: var(--touch-target-size); min-height: var(--touch-target-size); border: 0; border-radius: var(--radius-control);
   background: var(--color-bg-elevated); color: var(--color-text-primary);
   &:active { background: var(--color-bg-surface); }
 }
