@@ -301,7 +301,7 @@ function ProductPage() {
       />
       <div className="pb-36">
         {/* Hero image */}
-        <section className="relative bg-neutral-100 dark:bg-neutral-800">
+        <section className="relative bg-muted">
           <div
             className="relative aspect-[4/5] w-full overflow-hidden rounded-b-3xl sm:aspect-square"
             onTouchStart={(e) => {
@@ -341,14 +341,14 @@ function ProductPage() {
             <button
               onClick={goBack}
               aria-label={t("aria_back")}
-              className="absolute top-4 start-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/90 shadow-soft backdrop-blur transition active:scale-95"
+              className="absolute top-4 start-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90  backdrop-blur transition active:scale-95"
             >
               <ArrowRight className="size-5" />
             </button>
             <button
               onClick={share}
               aria-label={t("aria_share")}
-              className="absolute top-4 end-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/90 shadow-soft backdrop-blur transition active:scale-95"
+              className="absolute top-4 end-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90  backdrop-blur transition active:scale-95"
             >
               <Share2 className="size-5" />
             </button>
@@ -411,7 +411,7 @@ function ProductPage() {
 
         {/* Product info */}
         <div className="space-y-6 px-5 pt-6">
-          <section className="overflow-hidden rounded-3xl border border-border bg-card p-4 shadow-soft">
+          <section className="overflow-hidden rounded-3xl border border-border bg-card p-4 ">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex flex-wrap items-center gap-2">
                 {p.brand && (
@@ -516,7 +516,7 @@ function ProductPage() {
           {/* Specs / delivery info */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_specs_title")}</h2>
-            <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
+            <div className="divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card ">
               {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
               {p.category && (
                 <SpecRow label={t("product_category_label")} value={categoryLabel(p.category)} />
@@ -544,7 +544,7 @@ function ProductPage() {
                   key={o.id}
                   onClick={() => setSelectedId(o.id)}
                   className={cn(
-                    "cursor-pointer space-y-3 rounded-3xl border-2 bg-card p-4 shadow-soft transition-all duration-200 active:scale-[0.995]",
+                    "cursor-pointer space-y-3 rounded-3xl border-2 bg-card p-4  transition-all duration-200 active:scale-[var(--scale-pressed)]",
                     selected?.id === o.id ? "border-primary" : "border-transparent",
                   )}
                 >
