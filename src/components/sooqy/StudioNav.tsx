@@ -26,7 +26,7 @@ export function StudioNav() {
 
   const navClass = (active: boolean) =>
     cn(
-      "flex min-h-[var(--nav-height)] min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-1 text-xs font-medium transition-colors duration-200",
+      "flex min-h-[var(--nav-height)] min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-1 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       active ? "text-[var(--color-action-ink)]" : "text-muted-foreground active:bg-muted",
     );
 
