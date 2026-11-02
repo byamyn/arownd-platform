@@ -235,7 +235,7 @@ export function MapPage() {
 
       {showFilters && (
         <div
-          className="absolute inset-0 z-[1100] flex items-end bg-neutral-950/50"
+          className="absolute inset-0 z-[1100] flex items-end bg-[var(--color-overlay-scrim)]"
           onClick={() => setShowFilters(false)}
         >
           <div
