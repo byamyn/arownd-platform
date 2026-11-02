@@ -155,7 +155,7 @@ function RootShell({ children }: { children: ReactNode }) {
         <meta name="apple-mobile-web-app-title" content="Arownd" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('arownd-theme')||localStorage.getItem('sooqy-theme');var explicit=t==='light'||t==='dark';var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=explicit?t==='dark':mq;var r=document.documentElement;r.classList.toggle('dark',d);if(explicit){r.setAttribute('data-theme',t);}else{r.removeAttribute('data-theme');}var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',d?'#0A0A0A':'#F5F5F5');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('arownd-theme')||localStorage.getItem('sooqy-theme');var explicit=t==='light'||t==='dark';var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=explicit?t==='dark':mq;var r=document.documentElement;r.classList.toggle('dark',d);if(explicit){r.setAttribute('data-theme',t);}else{r.removeAttribute('data-theme');}var m=document.querySelector('meta[name=theme-color]');if(m){var v=getComputedStyle(r).getPropertyValue('--color-bg-canvas').trim();if(v)m.setAttribute('content',v);}}catch(e){}})();`,
           }}
         />
       </head>
