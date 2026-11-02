@@ -13,20 +13,20 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
     <section className="mb-8">
       <h2 className="mb-3 text-lg font-extrabold">{title}</h2>
-      <div className="space-y-3 text-sm leading-relaxed text-ink-2">{children}</div>
+      <div className="space-y-3 text-sm leading-relaxed text-muted-foreground">{children}</div>
     </section>
   );
 }
 
 function Item({ icon, title, desc }: { icon: ReactNode; title: string; desc: string }) {
   return (
-    <div className="flex gap-3 rounded-2xl border border-border/60 bg-surface p-4 shadow-soft">
+    <div className="flex gap-3 rounded-2xl border border-border/60 bg-card p-4 ">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
         {icon}
       </div>
       <div>
         <p className="font-bold">{title}</p>
-        <p className="mt-1 text-xs leading-relaxed text-ink-2">{desc}</p>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{desc}</p>
       </div>
     </div>
   );
@@ -42,7 +42,7 @@ function AboutPage() {
       />
       <PageHeader title="حول Arownd" back="/" />
 
-      <div className="mb-8 rounded-2xl bg-gradient-to-br from-primary to-primary-dark p-6 text-center text-primary-foreground shadow-lift">
+      <div className="mb-8 rounded-2xl bg-primary p-6 text-center text-primary-foreground ">
         <Store className="mx-auto mb-3 size-12" />
         <h1 className="text-2xl font-extrabold">Arownd — اكتشف ما حولك</h1>
         <p className="mt-2 text-sm opacity-85">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
@@ -127,10 +127,10 @@ function AboutPage() {
         </p>
       </Section>
 
-      <div className="mt-10 rounded-2xl border border-border/60 bg-surface p-6 text-center shadow-soft">
+      <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6 text-center ">
         <Heart className="mx-auto mb-3 size-8 text-accent-ink" />
         <p className="text-lg font-extrabold">Arownd — اكتشف ما حولك</p>
-        <p className="mt-1 text-xs text-ink-2">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
+        <p className="mt-1 text-xs text-muted-foreground">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
