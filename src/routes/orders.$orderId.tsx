@@ -149,7 +149,7 @@ function TrackPage() {
                   {i < STEPS.length - 1 && (
                     <span
                       className={cn(
-                        "absolute top-7 start-[15px] h-[calc(100%-28px)] w-0.5 rounded-full",
+                        "absolute top-7 start-4 h-[calc(100%-var(--space-8)+var(--space-1))] w-0.5 rounded-full",
                         i < statusIdx ? "bg-primary" : "bg-border",
                       )}
                     />
