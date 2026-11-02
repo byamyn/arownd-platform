@@ -401,7 +401,7 @@ function AdminDeliveryCompaniesPage() {
                   <button
                     onClick={() => handleToggleApproval(company.id, company.is_approved)}
                     className={cn(
-                      "rounded-xl px-3 py-1.5 text-xs font-bold transition shadow-soft",
+                      "rounded-xl px-3 py-1.5 text-xs font-bold transition ",
                       company.is_approved
                         ? "bg-primary text-accent-ink-foreground hover:bg-primary/90"
                         : "bg-primary/10 text-accent-ink hover:bg-primary",
