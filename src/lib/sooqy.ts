@@ -993,7 +993,14 @@ export async function merchantConfirmAll(storeId: string) {
 export async function merchantConfirmReservation(code: string) {
   const { data, error } = await supabase.rpc("merchant_confirm_reservation", { _code: code });
   if (error) throw new Error(friendlyError(error));
-  return data as Reservation;
+
+  const reservation = data as Reservation;
+  // The RPC commits expiry + stock restoration before returning the expired row.
+  // Preserve the existing UX error only after that transaction has committed.
+  if (reservation?.status === "expired") {
+    throw new Error(ERRORS["reservation_expired"]);
+  }
+  return reservation;
 }
 
 export async function merchantQuickAddProduct(

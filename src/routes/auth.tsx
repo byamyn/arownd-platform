@@ -202,10 +202,7 @@ function AuthPage() {
   const isForgot = screen === "forgot";
 
   return (
-    <div
-      dir={isRTL ? "rtl" : "ltr"}
-      className="min-h-dvh w-full bg-background text-foreground"
-    >
+    <div dir={isRTL ? "rtl" : "ltr"} className="min-h-dvh w-full bg-background text-foreground">
       <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-6 lg:py-10 xl:px-8">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
           <header className="mb-7 flex items-center justify-between">
