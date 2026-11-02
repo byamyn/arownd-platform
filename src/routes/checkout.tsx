@@ -256,7 +256,7 @@ function CheckoutPage() {
               >
                 <span
                   className={cn(
-                    "flex size-4 shrink-0 items-center justify-center rounded-full text-[9px]",
+                    "flex size-4 shrink-0 items-center justify-center rounded-full text-caption",
                     i < step ? "bg-primary text-accent-ink-foreground" : "bg-background/60",
                   )}
                 >
