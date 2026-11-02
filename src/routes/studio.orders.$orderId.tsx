@@ -187,15 +187,15 @@ function StudioOrderDetailPage() {
     <>
       <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
         <PageHeader title={t("studio_order_details")} back="/studio" />
-        <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-sm">
-          <div className="rounded-t-[1.75rem] bg-[#111813] p-5 text-white sm:p-6">
-            <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+        <div className="overflow-hidden rounded-3xl border border-border bg-card ">
+          <div className="rounded-t-3xl bg-muted p-5 text-foreground sm:p-6">
+            <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
               AROWND · ORDER
             </p>
             <p className="mt-2 text-xl font-black">
               {t("studio_order_number")} #{order.id.slice(-6)}
             </p>
-            <p className="mt-1 text-xs text-white/65">
+            <p className="mt-1 text-xs text-foreground/65">
               {formatDate(order.created_at, undefined, {
                 day: "numeric",
                 month: "long",
