@@ -67,8 +67,8 @@ Send complaints to arownddz@gmail.com. Specify applicable law, dispute forum, op
 
 13. Operator information
 
-- Legal name and capacity: arownddz@gmail.com
-- Professional address, if legally required: arownddz@gmail.com
+- Legal name and capacity: [COMPLETE]
+- Professional address, if legally required: [COMPLETE]
 - Registration or identification details, only if applicable and actually obtained: [COMPLETE ONLY IF TRUE]
 
 العربية
