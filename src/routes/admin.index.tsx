@@ -474,8 +474,8 @@ function AdminDashboardPage() {
                   className={cn(
                     "rounded-lg px-2 py-1 text-xs font-bold transition",
                     c.is_approved
-                      ? "bg-red-50 text-danger hover:bg-red-100"
-                      : "bg-success-soft text-success hover:bg-green-100",
+                      ? "bg-red-50 text-danger hover:bg-danger-soft"
+                      : "bg-success-soft text-success hover:bg-success-soft",
                   )}
                 >
                   {c.is_approved ? <X className="size-4" /> : <Check className="size-4" />}
