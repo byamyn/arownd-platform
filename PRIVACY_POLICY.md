@@ -60,10 +60,10 @@ Material changes should be communicated through appropriate means.
 
 10. Operator details
 
-- Legal identity: arownddz@gmail.com
-- Professional contact details: arownddz@gmail.com
+- Legal identity: [COMPLETE]
+- Professional contact details: [COMPLETE]
 - Privacy email: arownddz@gmail.com
-- Last updated: arownddz@gmail.com
+- Last updated: [COMPLETE]
 
 العربية
 
