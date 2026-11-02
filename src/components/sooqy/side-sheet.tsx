@@ -34,14 +34,14 @@ export function SideSheet({
   return (
     <DialogPrimitive.Root open={open} onOpenChange={onOpenChange}>
       <DialogPrimitive.Portal>
-        <DialogPrimitive.Overlay className="fixed inset-0 z-[1000] bg-black/45 backdrop-blur-[1px]" />
+        <DialogPrimitive.Overlay className="fixed inset-0 z-[1000] bg-neutral-950/50" />
         <DialogPrimitive.Content
           className={cn(
             "animate-sheet fixed z-[1001] flex flex-col bg-card  outline-none",
             // الهاتف: ورقة سفلية
-            "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-3xl border-t border-border",
+            "inset-x-0 bottom-0 max-h-[calc(100dvh-env(safe-area-inset-top))] rounded-t-[var(--radius-sheet)] border-t border-border",
             // md+: لوحة جانبية
-            "md:inset-y-0 md:bottom-auto md:start-auto md:end-0 md:max-h-none md:w-[28rem] md:max-w-[92vw] md:rounded-none md:rounded-s-3xl md:border-s md:border-t-0",
+            "md:inset-y-0 md:bottom-auto md:start-auto md:end-0 md:max-h-none md:w-[28rem] md:max-w-[92vw] md:rounded-none md:rounded-s-[var(--radius-sheet)] md:border-s md:border-t-0",
             className,
           )}
         >
