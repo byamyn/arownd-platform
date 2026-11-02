@@ -42,7 +42,12 @@ export function StudioNav() {
         {items.map(({ to, key, Icon }) => {
           const active = currentPath === to;
           return (
-            <Link key={to} to={to} aria-current={active ? "page" : undefined} className={navClass(active)}>
+            <Link
+              key={to}
+              to={to}
+              aria-current={active ? "page" : undefined}
+              className={navClass(active)}
+            >
               <span className={iconClass(active)} aria-hidden="true">
                 <Icon className="size-5 shrink-0" />
               </span>
