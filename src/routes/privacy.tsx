@@ -21,7 +21,7 @@ function PrivacyPage() {
       <Link
         to="/"
         aria-label="رجوع"
-        className="flex size-10 items-center justify-center rounded-full bg-card shadow-soft"
+        className="flex size-10 items-center justify-center rounded-full bg-card "
       >
         <ArrowRight className="size-5" />
       </Link>
@@ -48,7 +48,7 @@ function PrivacyPage() {
         </p>
       </div>
 
-      <div className="rounded-2xl bg-card p-5 text-sm leading-relaxed text-foreground shadow-soft">
+      <div className="rounded-2xl bg-card p-5 text-sm leading-relaxed text-foreground ">
         <Section title="13. هدف السياسة">
           توضح هذه السياسة كيفية تعامل Arownd مع المعلومات الشخصية التي قد تُجمع أو تُستخدم عند
           إنشاء الحساب أو استخدام المتاجر أو إرسال الطلبات أو الاستفادة من الخدمات المتاحة.
