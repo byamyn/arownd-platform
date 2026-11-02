@@ -84,6 +84,15 @@ export function registerServiceWorker(): void {
   });
 
   window.addEventListener("load", () => {
+    let hasController = Boolean(navigator.serviceWorker.controller);
+    navigator.serviceWorker.addEventListener("controllerchange", () => {
+      if (hasController) {
+        window.location.reload();
+      } else {
+        hasController = true;
+      }
+    });
+
     navigator.serviceWorker
       .register("/sw.js", { scope: "/" })
       .then((registration) => {
