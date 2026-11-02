@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { translate, useTranslation } from "@/lib/i18n";
+import { ArowndLogo } from "@/components/sooqy/logo";
 
 type AuthScreen = "signin" | "signup" | "forgot" | "reset";
 type AccountType = "customer" | "merchant" | "delivery";
@@ -208,13 +209,7 @@ function AuthPage() {
       <main className="flex min-h-dvh flex-col px-4 pb-8 pt-4 sm:px-8 lg:px-6 lg:py-10 xl:px-8">
         <div className="mx-auto flex w-full max-w-lg flex-1 flex-col lg:justify-center">
           <header className="mb-7 flex items-center justify-between">
-            <img
-              src="/2994.svg"
-              alt="Arownd"
-              loading="eager"
-              decoding="async"
-              className="h-8 w-auto lg:h-9"
-            />
+            <ArowndLogo className="h-8 w-auto lg:h-9" width={160} height={40} />
             <Link
               to="/"
               aria-label={t("common_back")}
