@@ -20,8 +20,8 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
 
 function Item({ icon, title, desc }: { icon: ReactNode; title: string; desc: string }) {
   return (
-    <div className="flex gap-3 rounded-2xl border border-border/60 bg-card p-4 ">
-      <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-accent-ink">
+    <div className="flex gap-3 rounded-[var(--radius-card)] border border-border/60 bg-card p-4 ">
+      <div className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
         {icon}
       </div>
       <div>
@@ -42,7 +42,7 @@ function AboutPage() {
       />
       <PageHeader title="حول Arownd" back="/" />
 
-      <div className="mb-8 rounded-2xl bg-primary p-6 text-center text-primary-foreground ">
+      <div className="mb-8 rounded-[var(--radius-card)] bg-primary p-6 text-center text-primary-foreground ">
         <Store className="mx-auto mb-3 size-12" />
         <h1 className="text-2xl font-extrabold">Arownd — اكتشف ما حولك</h1>
         <p className="mt-2 text-sm opacity-85">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
@@ -127,7 +127,7 @@ function AboutPage() {
         </p>
       </Section>
 
-      <div className="mt-10 rounded-2xl border border-border/60 bg-card p-6 text-center ">
+      <div className="mt-10 rounded-[var(--radius-card)] border border-border/60 bg-card p-6 text-center ">
         <Heart className="mx-auto mb-3 size-8 text-accent-ink" />
         <p className="text-lg font-extrabold">Arownd — اكتشف ما حولك</p>
         <p className="mt-1 text-xs text-muted-foreground">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
