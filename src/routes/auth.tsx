@@ -385,7 +385,7 @@ function AuthPage() {
                         aria-pressed={selected}
                         onClick={() => setAccountType(id)}
                         className={
-                          "group flex min-h-[88px] w-full items-center gap-4 rounded-2xl border p-4 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink " +
+                          "group flex min-h-22 w-full items-center gap-4 rounded-2xl border p-4 text-start transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-ink " +
                           (selected
                             ? "border-accent-ink bg-primary/10"
                             : "border-border bg-card hover:border-accent-ink/50")
@@ -621,7 +621,7 @@ function AuthPage() {
           </p>
         </div>
 
-        <footer className="mx-auto mt-8 flex w-full max-w-lg items-center justify-center gap-2 text-[11px] text-muted-foreground lg:mt-4">
+        <footer className="mx-auto mt-8 flex w-full max-w-lg items-center justify-center gap-2 text-caption text-muted-foreground lg:mt-4">
           <LockKeyhole className="size-3.5" />
           <span>{t("auth_footer_note")}</span>
         </footer>
