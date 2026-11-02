@@ -111,12 +111,12 @@ function StudioShipmentsPage() {
       <PageHeader title={t("studio_shipments")} back="/studio" />
       <div className="mx-auto max-w-6xl space-y-5 px-4 py-5 sm:px-6">
         {/* ملخص الحالات */}
-        <section className="rounded-[1.5rem] border border-[#D4F56A]/20 bg-[#111813] p-4 text-white sm:p-5">
-          <p className="text-[10px] font-extrabold tracking-[0.2em] text-[#D4F56A]">
+        <section className="rounded-3xl border border-border bg-muted p-4 text-foreground sm:p-5">
+          <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
             AROWND · DELIVERY
           </p>
           <h2 className="mt-1 text-xl font-black">{t("studio_shipments_heading")}</h2>
-          <p className="mt-1 text-xs text-white/60">{t("studio_shipments_intro")}</p>
+          <p className="mt-1 text-xs text-foreground/60">{t("studio_shipments_intro")}</p>
         </section>
         <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
           {[
@@ -217,7 +217,7 @@ function BadgeStatus({ status }: { status: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-caption font-bold",
         variants[status],
       )}
     >
@@ -235,7 +235,7 @@ function ShipmentRow({
   const order = shipment.order;
 
   return (
-    <div className="rounded-[1.35rem] border border-border bg-card p-4 shadow-sm transition-shadow hover:shadow-md sm:p-5">
+    <div className="rounded-3xl border border-border bg-card p-4  transition-shadow hover: sm:p-5">
       <div className="flex justify-between items-start mb-2">
         <div>
           <div className="font-semibold text-foreground">
