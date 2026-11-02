@@ -32,7 +32,7 @@ export function PageHeader({
         <Link
           to={back}
           aria-label={t("aria_back")}
-          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors active:bg-muted"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:bg-muted"
         >
           <ChevronRight className="size-5 rtl:rotate-180" aria-hidden="true" />
         </Link>
@@ -47,7 +47,7 @@ export function PageHeader({
           type="button"
           onClick={() => switchLang(lang === "ar" ? "en" : "ar")}
           aria-label={lang === "ar" ? t("aria_switch_lang") : t("aria_switch_lang_en")}
-          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors active:bg-muted"
+          className="flex size-11 shrink-0 items-center justify-center rounded-full bg-card text-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:bg-muted"
         >
           <Globe className="size-5" aria-hidden="true" />
         </button>
