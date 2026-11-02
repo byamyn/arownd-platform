@@ -232,7 +232,7 @@ function AuthPage() {
             {t("auth_brand_footer")}
           </div>
         </div>
-        <div className="relative z-10 flex items-center justify-between border-t border-white/10 pt-5 text-xs text-ink-foreground/45">
+        <div className="relative z-10 flex items-center justify-between border-t border-border pt-5 text-xs text-ink-foreground/45">
           <span>Arownd</span>
           <span>{t("auth_brand_tagline")}</span>
         </div>
@@ -414,7 +414,7 @@ function AuthPage() {
                           className={
                             "flex size-5 shrink-0 items-center justify-center rounded-full border " +
                             (selected
-                              ? "border-accent-ink bg-accent-ink text-white"
+                              ? "border-primary bg-primary text-primary-foreground"
                               : "border-border text-transparent")
                           }
                         >
