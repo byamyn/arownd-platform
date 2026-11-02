@@ -86,7 +86,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { name: "theme-color", content: "#0B0F0C" },
+      { name: "theme-color", content: "#0A0A0A" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { title: translate("root_title") },
       {
@@ -124,7 +124,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&family=Noto+Sans+Arabic:wght@400;500;700;800&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap",
       },
       { rel: "preload", href: "/seo/og.svg", as: "image" },
       { rel: "sitemap", href: "/sitemap.xml", type: "application/xml" },
@@ -148,14 +148,14 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
         <HeadContent />
-        <meta name="theme-color" content="#0B0F0C" />
+        <meta name="theme-color" content="#0A0A0A" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="Arownd" />
         <script
           dangerouslySetInnerHTML={{
-            __html: `(function(){try{var t=localStorage.getItem('sooqy-theme');var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=(t==='dark')||((t==='system'||!t)&&mq);var r=document.documentElement;if(d){r.classList.add('dark');}r.setAttribute('data-theme',d?'dark':'light');}catch(e){}})();`,
+            __html: `(function(){try{var t=localStorage.getItem('arownd-theme')||localStorage.getItem('sooqy-theme');var explicit=t==='light'||t==='dark';var mq=window.matchMedia('(prefers-color-scheme: dark)').matches;var d=explicit?t==='dark':mq;var r=document.documentElement;r.classList.toggle('dark',d);if(explicit){r.setAttribute('data-theme',t);}else{r.removeAttribute('data-theme');}var m=document.querySelector('meta[name=theme-color]');if(m)m.setAttribute('content',d?'#0A0A0A':'#F5F5F5');}catch(e){}})();`,
           }}
         />
       </head>
