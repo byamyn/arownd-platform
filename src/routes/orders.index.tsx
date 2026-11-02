@@ -227,7 +227,7 @@ function OrdersPage() {
                     </div>
                   ))}
                   {(o.items ?? []).length > 3 && (
-                    <p className="text-[11px] text-muted-foreground">
+                    <p className="text-caption text-muted-foreground">
                       {t("orders_more_items", { count: (o.items ?? []).length - 3 })}
                     </p>
                   )}
@@ -314,7 +314,7 @@ function OrdersPage() {
                 ))}
 
                 <div className="mx-4 mt-3 flex items-center justify-between gap-3 rounded-2xl bg-primary-soft/50 px-3 py-3">
-                  <span className="flex items-center gap-1 text-[11px] text-muted-foreground">
+                  <span className="flex items-center gap-1 text-caption text-muted-foreground">
                     <Truck className="size-3.5" />
                     {o.delivery_type === "home"
                       ? t("orders_delivery_home")
