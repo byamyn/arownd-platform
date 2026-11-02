@@ -14,7 +14,7 @@ export function StickyActionBar({ children, className }: StickyActionBarProps) {
         className,
       )}
     >
-      <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card/95 p-3 shadow-lift backdrop-blur">
+      <div className="mx-auto max-w-xl rounded-2xl border border-border bg-card/95 p-3  backdrop-blur">
         {children}
       </div>
     </div>
