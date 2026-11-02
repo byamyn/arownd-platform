@@ -37,7 +37,7 @@ export function PwaPrompt() {
   if (updateReady) {
     return (
       <div className="pointer-events-none fixed inset-x-0 top-2 z-50 flex justify-center px-4">
-        <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-2xl border border-border bg-card/95 p-3 shadow-lift backdrop-blur">
+        <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-2xl border border-border bg-card/95 p-3  backdrop-blur">
           <RefreshCw className="size-4 shrink-0 text-primary" />
           <p className="flex-1 text-xs font-bold text-foreground">{t("pwa_update_ready")}</p>
           <button
@@ -67,7 +67,7 @@ export function PwaPrompt() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 flex justify-center px-4">
-      <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-2xl border border-border bg-card/95 p-2.5 shadow-lift backdrop-blur">
+      <div className="pointer-events-auto flex w-full max-w-md items-center gap-2 rounded-2xl border border-border bg-card/95 p-2.5  backdrop-blur">
         <Download className="size-4 shrink-0 text-primary" />
         <p className="flex-1 text-xs font-bold text-foreground">{t("pwa_install_hint")}</p>
         <button
