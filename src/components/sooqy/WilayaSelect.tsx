@@ -90,6 +90,7 @@ export function WilayaButton({
   const handleSelect = (wilayaId: number | null) => {
     onChange(wilayaId);
     setIsOpen(false);
+    buttonRef.current?.querySelector("button")?.focus();
   };
 
   const button = (
@@ -145,11 +146,30 @@ export function WilayaButton({
           buttonRef.current?.querySelector("button")?.focus();
           return;
         }
-        if (event.key !== "ArrowDown" && event.key !== "ArrowUp") return;
+        if (
+          event.key !== "ArrowDown" &&
+          event.key !== "ArrowUp" &&
+          event.key !== "Home" &&
+          event.key !== "End"
+        ) {
+          return;
+        }
         event.preventDefault();
+        if (event.key === "Home") {
+          options[0]?.focus();
+          return;
+        }
+        if (event.key === "End") {
+          options[options.length - 1]?.focus();
+          return;
+        }
         const direction = event.key === "ArrowDown" ? 1 : -1;
         const nextIndex =
-          currentIndex < 0 ? 0 : (currentIndex + direction + options.length) % options.length;
+          currentIndex < 0
+            ? direction > 0
+              ? 0
+              : options.length - 1
+            : (currentIndex + direction + options.length) % options.length;
         options[nextIndex]?.focus();
       }}
       style={dropdownStyle}
