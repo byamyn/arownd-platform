@@ -312,7 +312,7 @@ function DeliveryDashboardPage() {
             className={cn(
               "px-4 py-2 rounded-[var(--radius-control)] text-sm font-medium transition",
               activeTab === "all"
-                ? "bg-primary text-accent-ink-foreground"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted",
             )}
           >
