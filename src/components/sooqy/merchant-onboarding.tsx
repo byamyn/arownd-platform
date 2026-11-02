@@ -102,18 +102,28 @@ export function MerchantOnboarding({
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           placeholder="اسم المتجر"
+          aria-label="اسم المتجر"
+          autoComplete="organization"
           className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <input
           value={form.phone}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           onChange={(e) => setForm({ ...form, phone: e.target.value })}
           placeholder="هاتف المتجر"
+          aria-label="هاتف المتجر"
           className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <input
           value={form.whatsapp}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
           onChange={(e) => setForm({ ...form, whatsapp: e.target.value })}
           placeholder="واتساب"
+          aria-label="رقم واتساب"
           className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <WilayaSelect
@@ -126,6 +136,8 @@ export function MerchantOnboarding({
           value={form.commune}
           onChange={(e) => setForm({ ...form, commune: e.target.value })}
           placeholder="البلدية"
+          aria-label="البلدية"
+          autoComplete="address-level2"
           className="h-[var(--control-height)] w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
         <textarea
@@ -133,6 +145,8 @@ export function MerchantOnboarding({
           onChange={(e) => setForm({ ...form, address_line: e.target.value })}
           rows={3}
           placeholder="العنوان"
+          aria-label="العنوان التفصيلي"
+          autoComplete="street-address"
           className="w-full min-h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
         />
 
@@ -201,6 +215,7 @@ export function MerchantOnboarding({
                 })
               }
               placeholder="خط العرض"
+              aria-label="خط العرض"
               inputMode="decimal"
               dir="ltr"
               className="h-[var(--control-height)] rounded-full border border-input bg-background px-3 text-end text-xs outline-none focus:border-ring focus:ring-2 focus:ring-ring"
@@ -214,6 +229,7 @@ export function MerchantOnboarding({
                 })
               }
               placeholder="خط الطول"
+              aria-label="خط الطول"
               inputMode="decimal"
               dir="ltr"
               className="h-[var(--control-height)] rounded-full border border-input bg-background px-3 text-end text-xs outline-none focus:border-ring focus:ring-2 focus:ring-ring"
@@ -229,18 +245,21 @@ export function MerchantOnboarding({
         <div className="grid grid-cols-2 gap-2">
           <input
             type="time"
+            aria-label="وقت فتح المتجر"
             value={form.open}
             onChange={(e) => setForm({ ...form, open: e.target.value })}
             className="h-[var(--control-height)] rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
           <input
             type="time"
+            aria-label="وقت إغلاق المتجر"
             value={form.close}
             onChange={(e) => setForm({ ...form, close: e.target.value })}
             className="h-[var(--control-height)] rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
           />
         </div>
         <button
+          type="button"
           onClick={submit}
           disabled={busy}
           className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
