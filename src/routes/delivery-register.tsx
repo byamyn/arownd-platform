@@ -48,7 +48,7 @@ function DeliveryRegisterPage() {
         <Link
           to="/auth"
           search={{ redirect: "/delivery-register" }}
-          className="inline-block rounded-2xl bg-primary px-8 py-3 font-bold text-primary-foreground"
+          className="inline-block rounded-[var(--radius-control)] bg-primary min-h-[var(--control-height)] rounded-full px-6 py-3 font-bold text-primary-foreground"
         >
           دخول
         </Link>
@@ -96,7 +96,7 @@ function DeliveryRegisterPage() {
     <div className="space-y-5 px-4 pb-32 pt-5">
       <PageHeader title="تسجيل شركة توصيل" subtitle="انضم إلى شبكة التوصيل في Arownd" back="/" />
 
-      <section className="rounded-3xl bg-card p-5  space-y-4">
+      <section className="rounded-[var(--radius-card)] bg-card p-5  space-y-4">
         <div className="flex items-center gap-2">
           <Truck className="size-5 text-accent-ink" />
           <h2 className="font-bold">بيانات الشركة</h2>
@@ -110,7 +110,7 @@ function DeliveryRegisterPage() {
             placeholder="اسم الشركة التجاري"
             aria-label="اسم الشركة التجاري"
             autoComplete="organization"
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
           />
           <input
             value={contactName}
@@ -118,7 +118,7 @@ function DeliveryRegisterPage() {
             placeholder="اسم الشخص المسؤول (اختياري)"
             aria-label="اسم الشخص المسؤول (اختياري)"
             autoComplete="name"
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
           />
           <input
             required
@@ -129,7 +129,7 @@ function DeliveryRegisterPage() {
             placeholder="رقم هاتف الشركة (مطلوب)"
             aria-label="رقم هاتف الشركة (مطلوب)"
             autoComplete="tel"
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
           />
           <input
             type="email"
@@ -138,14 +138,14 @@ function DeliveryRegisterPage() {
             placeholder="البريد الإلكتروني (اختياري)"
             aria-label="البريد الإلكتروني (اختياري)"
             autoComplete="email"
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
           />
           <input
             value={licenseNumber}
             onChange={(e) => setLicenseNumber(e.target.value)}
             placeholder="رقم السجل التجاري / الرخصة (اختياري)"
             aria-label="رقم السجل التجاري / الرخصة (اختياري)"
-            className="h-12 w-full rounded-xl border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
           />
 
           <p className="text-xs text-muted-foreground leading-relaxed">
@@ -157,7 +157,7 @@ function DeliveryRegisterPage() {
             type="submit"
             disabled={busy}
             className={cn(
-              "w-full rounded-2xl bg-primary px-8 py-3 font-bold text-primary-foreground transition disabled:opacity-50",
+              "w-full rounded-[var(--radius-control)] bg-primary min-h-[var(--control-height)] rounded-full px-6 py-3 font-bold text-primary-foreground transition disabled:opacity-50",
               busy && "cursor-not-allowed",
             )}
           >
