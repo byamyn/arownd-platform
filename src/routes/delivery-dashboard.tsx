@@ -155,7 +155,7 @@ function DeliveryDashboardPage() {
         <Link
           to="/auth"
           search={{ redirect: "/delivery-dashboard" }}
-          className="inline-block rounded-2xl bg-primary px-8 py-3 font-bold text-primary-foreground"
+          className="inline-block rounded-[var(--radius-control)] bg-primary min-h-[var(--control-height)] rounded-full px-6 py-3 font-bold text-primary-foreground"
         >
           دخول
         </Link>
@@ -198,7 +198,7 @@ function DeliveryDashboardPage() {
         </p>
         <Link
           to="/delivery-register"
-          className="inline-block rounded-2xl bg-primary px-8 py-3 font-bold text-primary-foreground"
+          className="inline-block rounded-[var(--radius-control)] bg-primary px-8 py-3 font-bold text-primary-foreground"
         >
           تسجيل شركة توصيل جديدة
         </Link>
@@ -254,7 +254,7 @@ function DeliveryDashboardPage() {
       <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
 
       {/* بطاقة ملخص الشركة */}
-      <section className="rounded-3xl bg-card p-5  space-y-4">
+      <section className="rounded-[var(--radius-card)] bg-card p-5  space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-bold text-lg">نظرة عامة</h2>
@@ -294,14 +294,14 @@ function DeliveryDashboardPage() {
       </section>
 
       {/* التبويبات */}
-      <section className="rounded-3xl bg-card p-4 ">
+      <section className="rounded-[var(--radius-card)] bg-card p-4 ">
         <div className="flex gap-1 border-b border-border pb-2">
           <button
             onClick={() => setActiveTab("pending")}
             className={cn(
-              "px-4 py-2 rounded-xl text-sm font-medium transition",
+              "px-4 py-2 rounded-[var(--radius-control)] text-sm font-medium transition",
               activeTab === "pending"
-                ? "bg-primary text-accent-ink-foreground"
+                ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted",
             )}
           >
@@ -310,7 +310,7 @@ function DeliveryDashboardPage() {
           <button
             onClick={() => setActiveTab("all")}
             className={cn(
-              "px-4 py-2 rounded-xl text-sm font-medium transition",
+              "px-4 py-2 rounded-[var(--radius-control)] text-sm font-medium transition",
               activeTab === "all"
                 ? "bg-primary text-accent-ink-foreground"
                 : "text-muted-foreground hover:bg-muted",
@@ -378,7 +378,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-2xl border p-4 bg-background">
+    <div className="rounded-[var(--radius-control)] border p-4 bg-background">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-muted-foreground">{label}</p>
@@ -412,7 +412,7 @@ function PendingShipmentsList({
   return (
     <div className="mt-4 space-y-3">
       {shipments.map((shipment) => (
-        <div key={shipment.id} className="rounded-2xl border p-4 bg-card ">
+        <div key={shipment.id} className="rounded-[var(--radius-control)] border p-4 bg-card ">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold truncate">طلب شحن #{shipment.id.slice(0, 8)}</p>
@@ -444,13 +444,13 @@ function PendingShipmentsList({
           <div className="mt-4 flex items-center gap-2">
             <button
               onClick={() => onDecision(shipment.id, "accept")}
-              className="flex-1 rounded-xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition"
+              className="flex-1 rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition"
             >
               <Check className="ms-1.5 size-4" /> قبول
             </button>
             <button
               onClick={() => onDecision(shipment.id, "reject")}
-              className="rounded-xl bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground hover:bg-rose-soft/80 transition"
+              className="rounded-[var(--radius-control)] bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground hover:bg-rose-soft/80 transition"
             >
               <X className="ms-1.5 size-4" /> رفض
             </button>
@@ -502,7 +502,7 @@ function AllShipmentsList({
           currentStatus === "in_transit";
 
         return (
-          <div key={shipment.id} className="rounded-2xl border p-4 bg-card ">
+          <div key={shipment.id} className="rounded-[var(--radius-control)] border p-4 bg-card ">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold truncate">شحنة #{shipment.id.slice(0, 8)}</p>
@@ -534,7 +534,7 @@ function AllShipmentsList({
             </div>
 
             {currentStatus === "delivered" && shipment.merchant_order_id && (
-              <div className="mt-4 rounded-xl border border-border bg-background p-3">
+              <div className="mt-4 rounded-[var(--radius-control)] border border-border bg-background p-3">
                 {shipment.cod_collection ? (
                   <p className="text-sm font-semibold text-green-soft-foreground">
                     تم تسجيل تحصيل الدفع عند الاستلام
@@ -551,7 +551,7 @@ function AllShipmentsList({
                       type="button"
                       disabled={collectingCodFor === shipment.id}
                       onClick={() => onCollectCod(shipment)}
-                      className="w-full rounded-xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                      className="w-full rounded-[var(--radius-control)] bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
                     >
                       {collectingCodFor === shipment.id
                         ? "جارٍ تسجيل التحصيل..."
@@ -577,7 +577,7 @@ function AllShipmentsList({
                       key={status}
                       onClick={() => onStatusUpdate(shipment.id, status)}
                       className={cn(
-                        "rounded-xl border px-3 py-1.5 text-xs font-medium transition",
+                        "rounded-[var(--radius-control)] border px-3 py-1.5 text-xs font-medium transition",
                         STATUS_COLORS[status],
                       )}
                     >
