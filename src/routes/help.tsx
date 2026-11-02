@@ -74,7 +74,7 @@ function HelpPage() {
             className={cn(
               "rounded-2xl py-2.5 text-sm font-bold transition",
               tab === t.id
-                ? "bg-primary text-accent-ink-foreground shadow-soft"
+                ? "bg-primary text-accent-ink-foreground "
                 : "bg-card text-muted-foreground",
             )}
           >
@@ -95,7 +95,7 @@ function HelpPage() {
 
 function FeatureCard({ icon, title, desc }: { icon: ReactNode; title: string; desc: string }) {
   return (
-    <div className="flex items-start gap-3 rounded-2xl bg-card p-4 shadow-soft">
+    <div className="flex items-start gap-3 rounded-2xl bg-card p-4 ">
       <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink">
         {icon}
       </div>
@@ -132,7 +132,7 @@ function UserSection() {
       />
       <Link
         to="/profile"
-        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground shadow-soft"
+        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground "
       >
         اذهب إلى حسابي
       </Link>
@@ -175,7 +175,7 @@ function MerchantSection() {
       />
       <Link
         to="/studio"
-        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground shadow-soft"
+        className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground "
       >
         افتح استوديو التاجر
       </Link>
@@ -206,7 +206,7 @@ function DeliveryPartnerSection() {
     "w-full rounded-xl border border-border bg-background px-3 py-3 text-sm outline-none transition focus:border-primary";
 
   return (
-    <section className="space-y-4 rounded-2xl bg-card p-4 shadow-soft">
+    <section className="space-y-4 rounded-2xl bg-card p-4 ">
       <div className="flex items-start gap-3">
         <div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink">
           <Building2 className="size-5" />
@@ -295,7 +295,7 @@ function DeliveryPartnerSection() {
         </label>
         <button
           type="submit"
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground shadow-soft"
+          className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground "
         >
           <Mail className="size-4" />
           إرسال طلب الشراكة عبر البريد
@@ -352,7 +352,7 @@ function FaqSection({ open, onToggle }: { open: number | null; onToggle: (i: num
       {FAQS.map((f, i) => {
         const isOpen = open === i;
         return (
-          <div key={i} className="overflow-hidden rounded-2xl bg-card shadow-soft">
+          <div key={i} className="overflow-hidden rounded-2xl bg-card ">
             <button
               onClick={() => onToggle(isOpen ? -1 : i)}
               aria-expanded={isOpen}
@@ -393,7 +393,7 @@ function QuickLinks() {
           <Link
             key={l.to}
             to={l.to}
-            className="flex items-center gap-2 rounded-2xl bg-card p-3 text-sm font-bold shadow-soft"
+            className="flex items-center gap-2 rounded-2xl bg-card p-3 text-sm font-bold "
           >
             <span className="text-accent-ink">{l.icon}</span>
             {l.label}
