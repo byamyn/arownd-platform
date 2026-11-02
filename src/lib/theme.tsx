@@ -33,7 +33,10 @@ function apply(resolved: Resolved, theme: Theme) {
   else root.setAttribute("data-theme", theme);
 
   const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) meta.setAttribute("content", resolved === "dark" ? "#0A0A0A" : "#F5F5F5");
+  if (meta) {
+    const canvas = getComputedStyle(root).getPropertyValue("--color-bg-canvas").trim();
+    if (canvas) meta.setAttribute("content", canvas);
+  }
 }
 
 function readStoredTheme(): Theme {
