@@ -153,7 +153,9 @@ Deno.serve(async (req: Request) => {
         : undefined;
     const userId =
       typeof record?.user_id === "string" &&
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(record.user_id)
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(
+        record.user_id,
+      )
         ? record.user_id
         : null;
     if (!record || !userId) {
