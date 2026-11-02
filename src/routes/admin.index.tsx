@@ -102,13 +102,13 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-surface p-4 shadow-soft">
+    <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card p-4 ">
       <div className={cn("flex size-12 items-center justify-center rounded-xl", color)}>
         <Icon className="size-6" />
       </div>
       <div>
         <p className="text-2xl font-extrabold">{value}</p>
-        <p className="text-sm text-ink-2">{title}</p>
+        <p className="text-sm text-muted-foreground">{title}</p>
       </div>
     </div>
   );
@@ -232,7 +232,7 @@ function AdminDashboardPage() {
     return (
       <div className="p-6 text-center">
         <PageHeader title="لوحة الإدارة" back="/" />
-        <p className="mt-8 text-ink-2">سجّل الدخول للوصول إلى لوحة الإدارة</p>
+        <p className="mt-8 text-muted-foreground">سجّل الدخول للوصول إلى لوحة الإدارة</p>
         <Link to="/auth" className="btn-primary mt-4 inline-block">
           تسجيل الدخول
         </Link>
@@ -240,7 +240,7 @@ function AdminDashboardPage() {
     );
   }
 
-  if (roleQuery.isLoading) return <div className="p-6 text-center text-ink-2">جاري التحقق...</div>;
+  if (roleQuery.isLoading) return <div className="p-6 text-center text-muted-foreground">جاري التحقق...</div>;
 
   if (roleQuery.isError) {
     return (
@@ -279,14 +279,14 @@ function AdminDashboardPage() {
       <PageHeader title="لوحة الإدارة" back="/" />
 
       {/* تبويبات */}
-      <div className="flex gap-1 overflow-x-auto rounded-xl bg-surface p-1 shadow-soft">
+      <div className="flex gap-1 overflow-x-auto rounded-xl bg-card p-1 ">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
             className={cn(
               "flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition",
-              activeTab === t.key ? "bg-primary text-accent-ink-foreground" : "text-ink-2",
+              activeTab === t.key ? "bg-primary text-accent-ink-foreground" : "text-muted-foreground",
             )}
           >
             {t.label}
@@ -327,7 +327,7 @@ function AdminDashboardPage() {
 
           <Link
             to="/admin/delivery-companies"
-            className="flex items-center justify-between rounded-2xl border border-border/60 bg-surface p-4 shadow-soft transition hover:shadow-lift"
+            className="flex items-center justify-between rounded-2xl border border-border/60 bg-card p-4  transition "
           >
             <div className="flex items-center gap-3">
               <Truck className="size-5 text-accent-ink" />
@@ -344,7 +344,7 @@ function AdminDashboardPage() {
           {usersList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+                <div key={i} className="h-16 animate-pulse rounded-xl bg-card" />
               ))}
             </div>
           )}
@@ -356,14 +356,14 @@ function AdminDashboardPage() {
             />
           )}
           {!usersList.isLoading && !usersList.isError && usersList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+            <div className="rounded-xl bg-card p-8 text-center text-muted-foreground ">
               لا يوجد مستخدمون لعرضهم
             </div>
           )}
           {usersList.data?.map((u) => (
             <div
               key={u.user_id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
+              className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
@@ -371,7 +371,7 @@ function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="font-bold">{u.full_name ?? "بدون اسم"}</p>
-                  <p className="text-xs text-ink-2">{u.phone ?? u.user_id.slice(0, 8)}</p>
+                  <p className="text-xs text-muted-foreground">{u.phone ?? u.user_id.slice(0, 8)}</p>
                 </div>
               </div>
               <BadgeRole role={u.role} />
@@ -386,7 +386,7 @@ function AdminDashboardPage() {
           {storesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+                <div key={i} className="h-16 animate-pulse rounded-xl bg-card" />
               ))}
             </div>
           )}
@@ -398,14 +398,14 @@ function AdminDashboardPage() {
             />
           )}
           {!storesList.isLoading && !storesList.isError && storesList.data?.length === 0 && (
-            <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+            <div className="rounded-xl bg-card p-8 text-center text-muted-foreground ">
               لا توجد متاجر مسجلة بعد
             </div>
           )}
           {storesList.data?.map((s) => (
             <div
               key={s.id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
+              className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-success-soft">
@@ -413,7 +413,7 @@ function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="font-bold">{s.name}</p>
-                  <p className="text-xs text-ink-2">ولاية {s.wilaya_id}</p>
+                  <p className="text-xs text-muted-foreground">ولاية {s.wilaya_id}</p>
                 </div>
               </div>
               <span
@@ -435,7 +435,7 @@ function AdminDashboardPage() {
           {companiesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-surface" />
+                <div key={i} className="h-16 animate-pulse rounded-xl bg-card" />
               ))}
             </div>
           )}
@@ -449,14 +449,14 @@ function AdminDashboardPage() {
           {!companiesList.isLoading &&
             !companiesList.isError &&
             companiesList.data?.length === 0 && (
-              <div className="rounded-xl bg-surface p-8 text-center text-ink-2 shadow-soft">
+              <div className="rounded-xl bg-card p-8 text-center text-muted-foreground ">
                 لا توجد شركات توصيل مسجلة بعد
               </div>
             )}
           {companiesList.data?.map((c) => (
             <div
               key={c.id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-surface p-3 shadow-soft"
+              className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-warning-soft">
@@ -464,7 +464,7 @@ function AdminDashboardPage() {
                 </div>
                 <div>
                   <p className="font-bold">{c.company_name}</p>
-                  <p className="text-xs text-ink-2">{c.contact_phone}</p>
+                  <p className="text-xs text-muted-foreground">{c.contact_phone}</p>
                 </div>
               </div>
               <div className="flex items-center gap-2">
