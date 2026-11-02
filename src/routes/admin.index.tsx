@@ -102,8 +102,8 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex items-center gap-3 rounded-2xl border border-border/60 bg-card p-4 ">
-      <div className={cn("flex size-12 items-center justify-center rounded-xl", color)}>
+    <div className="flex items-center gap-3 rounded-[var(--radius-card)] border border-border/60 bg-card p-4 ">
+      <div className={cn("flex size-12 items-center justify-center rounded-[var(--radius-control)]", color)}>
         <Icon className="size-6" />
       </div>
       <div>
@@ -279,14 +279,14 @@ function AdminDashboardPage() {
       <PageHeader title="لوحة الإدارة" back="/" />
 
       {/* تبويبات */}
-      <div className="flex gap-1 overflow-x-auto rounded-xl bg-card p-1 ">
+      <div className="flex gap-1 overflow-x-auto rounded-[var(--radius-control)] bg-card p-1 ">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setActiveTab(t.key)}
             className={cn(
-              "flex-1 whitespace-nowrap rounded-lg px-3 py-2 text-sm font-bold transition",
-              activeTab === t.key ? "bg-primary text-accent-ink-foreground" : "text-muted-foreground",
+              "flex-1 whitespace-nowrap rounded-[var(--radius-medium)] px-3 py-2 text-sm font-bold transition",
+              activeTab === t.key ? "bg-primary text-primary-foreground" : "text-muted-foreground",
             )}
           >
             {t.label}
@@ -327,7 +327,7 @@ function AdminDashboardPage() {
 
           <Link
             to="/admin/delivery-companies"
-            className="flex items-center justify-between rounded-2xl border border-border/60 bg-card p-4  transition "
+            className="flex items-center justify-between rounded-[var(--radius-card)] border border-border/60 bg-card p-4  transition "
           >
             <div className="flex items-center gap-3">
               <Truck className="size-5 text-accent-ink" />
@@ -344,7 +344,7 @@ function AdminDashboardPage() {
           {usersList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-card" />
+                <div key={i} className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card" />
               ))}
             </div>
           )}
@@ -356,14 +356,14 @@ function AdminDashboardPage() {
             />
           )}
           {!usersList.isLoading && !usersList.isError && usersList.data?.length === 0 && (
-            <div className="rounded-xl bg-card p-8 text-center text-muted-foreground ">
+            <div className="rounded-[var(--radius-control)] bg-card p-8 text-center text-muted-foreground ">
               لا يوجد مستخدمون لعرضهم
             </div>
           )}
           {usersList.data?.map((u) => (
             <div
               key={u.user_id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 "
+              className="flex items-center justify-between rounded-[var(--radius-control)] border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-primary/10">
@@ -386,7 +386,7 @@ function AdminDashboardPage() {
           {storesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-card" />
+                <div key={i} className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card" />
               ))}
             </div>
           )}
@@ -398,14 +398,14 @@ function AdminDashboardPage() {
             />
           )}
           {!storesList.isLoading && !storesList.isError && storesList.data?.length === 0 && (
-            <div className="rounded-xl bg-card p-8 text-center text-muted-foreground ">
+            <div className="rounded-[var(--radius-control)] bg-card p-8 text-center text-muted-foreground ">
               لا توجد متاجر مسجلة بعد
             </div>
           )}
           {storesList.data?.map((s) => (
             <div
               key={s.id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 "
+              className="flex items-center justify-between rounded-[var(--radius-control)] border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-success-soft">
@@ -435,7 +435,7 @@ function AdminDashboardPage() {
           {companiesList.isLoading && (
             <div className="space-y-2">
               {[1, 2, 3].map((i) => (
-                <div key={i} className="h-16 animate-pulse rounded-xl bg-card" />
+                <div key={i} className="h-16 animate-pulse rounded-[var(--radius-control)] bg-card" />
               ))}
             </div>
           )}
@@ -449,14 +449,14 @@ function AdminDashboardPage() {
           {!companiesList.isLoading &&
             !companiesList.isError &&
             companiesList.data?.length === 0 && (
-              <div className="rounded-xl bg-card p-8 text-center text-muted-foreground ">
+              <div className="rounded-[var(--radius-control)] bg-card p-8 text-center text-muted-foreground ">
                 لا توجد شركات توصيل مسجلة بعد
               </div>
             )}
           {companiesList.data?.map((c) => (
             <div
               key={c.id}
-              className="flex items-center justify-between rounded-xl border border-border/60 bg-card p-3 "
+              className="flex items-center justify-between rounded-[var(--radius-control)] border border-border/60 bg-card p-3 "
             >
               <div className="flex items-center gap-3">
                 <div className="flex size-10 items-center justify-center rounded-full bg-warning-soft">
@@ -472,7 +472,7 @@ function AdminDashboardPage() {
                 <button
                   onClick={() => handleToggleCompany(c.id, c.is_approved)}
                   className={cn(
-                    "rounded-lg px-2 py-1 text-xs font-bold transition",
+                    "rounded-[var(--radius-medium)] px-2 py-1 text-xs font-bold transition",
                     c.is_approved
                       ? "bg-danger-soft text-danger hover:bg-danger-soft"
                       : "bg-success-soft text-success hover:bg-success-soft",
