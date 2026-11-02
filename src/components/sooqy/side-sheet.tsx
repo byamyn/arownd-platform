@@ -37,7 +37,7 @@ export function SideSheet({
         <DialogPrimitive.Overlay className="fixed inset-0 z-[1000] bg-black/45 backdrop-blur-[1px]" />
         <DialogPrimitive.Content
           className={cn(
-            "animate-sheet fixed z-[1001] flex flex-col bg-card shadow-pop outline-none",
+            "animate-sheet fixed z-[1001] flex flex-col bg-card  outline-none",
             // الهاتف: ورقة سفلية
             "inset-x-0 bottom-0 max-h-[92dvh] rounded-t-3xl border-t border-border",
             // md+: لوحة جانبية
