@@ -254,7 +254,7 @@ function DeliveryDashboardPage() {
       <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
 
       {/* بطاقة ملخص الشركة */}
-      <section className="rounded-3xl bg-card p-5 shadow-soft space-y-4">
+      <section className="rounded-3xl bg-card p-5  space-y-4">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-bold text-lg">نظرة عامة</h2>
@@ -294,7 +294,7 @@ function DeliveryDashboardPage() {
       </section>
 
       {/* التبويبات */}
-      <section className="rounded-3xl bg-card p-4 shadow-soft">
+      <section className="rounded-3xl bg-card p-4 ">
         <div className="flex gap-1 border-b border-border pb-2">
           <button
             onClick={() => setActiveTab("pending")}
