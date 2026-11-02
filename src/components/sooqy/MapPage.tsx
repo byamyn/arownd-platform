@@ -22,8 +22,6 @@ export function MapPage() {
   const { t } = useTranslation();
   const [active, setActive] = useState<string | null>(null);
   const [q, setQ] = useState("");
-  const [onlyOpen, setOnlyOpen] = useState(false);
-  const [onlyVerified, setOnlyVerified] = useState(false);
   const [sort, setSort] = useState<Sort>("near");
   const [showFilters, setShowFilters] = useState(false);
   const [navigationOrigin, setNavigationOrigin] = useState<{
@@ -45,8 +43,6 @@ export function MapPage() {
 
   let list = stores.data ?? [];
   if (q.trim()) list = list.filter((s) => s.name.includes(q.trim()));
-  if (onlyOpen) list = list.filter((s) => isOpenNow(s.opening_hours));
-  if (onlyVerified) list = list.filter((s) => s.is_verified);
   if (sort === "near") list = [...list].sort((a, b) => (a.distance ?? 1e9) - (b.distance ?? 1e9));
   else list = [...list].sort((a, b) => Number(b.rating) - Number(a.rating));
 
@@ -87,60 +83,9 @@ export function MapPage() {
             </button>
           )}
         </div>
-        <div className="mt-3 flex items-center gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          <button
-            onClick={() => {
-              setOnlyOpen(false);
-              setOnlyVerified(false);
-            }}
-            className={cn(
-              "min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition",
-              !onlyOpen && !onlyVerified
-                ? "border-accent-ink bg-primary text-primary-foreground"
-                : "border-border bg-card text-foreground",
-            )}
-          >
-            {t("map_all_stores")}
-          </button>
-          <button
-            onClick={() => {
-              setOnlyOpen(!onlyOpen);
-              setOnlyVerified(false);
-            }}
-            className={cn(
-              "min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition",
-              onlyOpen
-                ? "border-accent-ink bg-primary text-primary-foreground"
-                : "border-border bg-card text-foreground",
-            )}
-          >
-            {t("map_open_now")}
-          </button>
-          <button
-            onClick={() => {
-              setOnlyVerified(!onlyVerified);
-              setOnlyOpen(false);
-            }}
-            className={cn(
-              "min-h-11 shrink-0 rounded-full border px-4 py-2 text-xs font-bold transition",
-              onlyVerified
-                ? "border-accent-ink bg-primary text-primary-foreground"
-                : "border-border bg-card text-foreground",
-            )}
-          >
-            {t("map_verified")}
-          </button>
-          <button
-            onClick={() => setShowFilters(true)}
-            className="icon-btn shrink-0"
-            aria-label={t("filter")}
-          >
-            <Filter className="size-4" />
-          </button>
-        </div>
         {!stores.isLoading && !stores.isError && list.length === 0 && (
           <div className="card-premium mt-2 p-3 text-center text-xs text-muted-foreground">
-            {q.trim() || onlyOpen || onlyVerified ? t("map_no_match") : t("map_no_stores")}
+            {q.trim() ? t("map_no_match") : t("map_no_stores")}
           </div>
         )}
       </div>
@@ -151,13 +96,13 @@ export function MapPage() {
         </div>
       )}
 
-      <div className="absolute top-40 end-3 z-[1000] flex flex-col gap-2 sm:top-44 sm:end-5">
+      <div className="absolute top-40 left-3 z-[1000] flex flex-col gap-2 sm:top-44 sm:left-5">
         <button
           aria-label={t("filter")}
           onClick={() => setShowFilters(true)}
           className={cn(
             "icon-btn rounded-full border border-border bg-card",
-            (onlyOpen || onlyVerified || sort !== "near") &&
+            sort !== "near" &&
               "border-accent-ink bg-primary text-primary-foreground",
           )}
         >
@@ -302,23 +247,6 @@ export function MapPage() {
                   />
                 </button>
               ))}
-              <button
-                onClick={() => setOnlyOpen(!onlyOpen)}
-                className={cn(
-                  "flex min-h-11 w-full items-center justify-between rounded-[var(--radius-control)] border px-4 py-3 text-sm font-semibold transition",
-                  onlyOpen
-                    ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
-                    : "border-border bg-card text-foreground",
-                )}
-              >
-                {t("map_open_only")}
-                <span
-                  className={cn(
-                    "size-4 rounded-full border-2 transition",
-                    onlyOpen ? "border-accent-ink bg-primary" : "border-border",
-                  )}
-                />
-              </button>
             </div>
             <button onClick={() => setShowFilters(false)} className="btn-primary mt-5 w-full">
               {t("apply")}
