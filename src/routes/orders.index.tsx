@@ -283,7 +283,7 @@ function OrdersPage() {
                                 setRespondingQuoteId(null);
                               }
                             }}
-                            className="min-h-10 rounded-xl bg-primary px-3 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
+                            className="min-h-[var(--control-height)] rounded-full bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50 focus-visible:outline"
                           >
                             {t("orders_quote_accept")}
                           </button>
@@ -303,7 +303,7 @@ function OrdersPage() {
                                 setRespondingQuoteId(null);
                               }
                             }}
-                            className="min-h-10 rounded-xl border border-danger/30 bg-danger-soft px-3 py-2 text-xs font-bold text-danger disabled:opacity-50"
+                            className="min-h-[var(--control-height)] rounded-full border border-danger/30 bg-danger-soft px-4 py-2 text-sm font-semibold text-danger transition active:scale-[var(--scale-pressed)] disabled:opacity-50 focus-visible:outline"
                           >
                             {t("orders_quote_decline")}
                           </button>
@@ -326,7 +326,7 @@ function OrdersPage() {
                 <Link
                   to="/orders/$orderId"
                   params={{ orderId: o.id }}
-                  className="btn-secondary !h-11 mx-4 mb-4 mt-3 w-[calc(100%-2rem)] rounded-2xl text-sm font-bold"
+                  className="btn-secondary mx-4 mb-4 mt-3 min-h-[var(--control-height)] w-[calc(100%-2rem)] rounded-full text-sm font-semibold"
                 >
                   {t("orders_track")}
                 </Link>
@@ -355,7 +355,7 @@ function OrdersPage() {
                           setCancellingOrderId(null);
                         }
                       }}
-                      className="mx-4 mb-4 inline-flex min-h-11 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                      className="mx-4 mb-4 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                     >
                       <XCircle className="size-4" />
                       {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
@@ -380,7 +380,7 @@ function OrdersPage() {
                           showError(error);
                         }
                       }}
-                      className="mx-4 mb-4 mt-2 inline-flex min-h-10 w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-2xl border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
+                      className="mx-4 mb-4 mt-2 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                     >
                       <Archive className="size-4" /> إخفاء من السجل
                     </button>
