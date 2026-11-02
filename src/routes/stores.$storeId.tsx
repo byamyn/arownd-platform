@@ -342,7 +342,10 @@ function StorePage() {
               {offers.isLoading && (
                 <div className="grid grid-cols-2 gap-3" aria-label="Loading products">
                   {[0, 1, 2, 3].map((i) => (
-                    <div key={i} className="h-56 animate-pulse rounded-[var(--radius-card)] bg-muted" />
+                    <div
+                      key={i}
+                      className="h-56 animate-pulse rounded-[var(--radius-card)] bg-muted"
+                    />
                   ))}
                 </div>
               )}
