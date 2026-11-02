@@ -498,6 +498,16 @@
   color: var(--color-action-ink); font-size: var(--font-size-caption); font-weight: var(--font-weight-semibold);
 }
 
+@keyframes skeleton-shimmer {
+  to { background-position: -200% 0; }
+}
+@utility skeleton {
+  background-image: linear-gradient(90deg, var(--color-bg-elevated) 25%, var(--color-border-default) 50%, var(--color-bg-elevated) 75%);
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.4s linear infinite;
+  border-radius: var(--radius-small);
+}
+
 @keyframes fade-up {
   from { opacity: 0; transform: translateY(var(--space-2)); }
   to { opacity: 1; transform: translateY(0); }
@@ -552,6 +562,7 @@
 .maplibregl-ctrl-attrib a { color: var(--color-action-ink) !important; }
 
 @media (prefers-reduced-motion: reduce) {
+  .skeleton { animation: none; }
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
