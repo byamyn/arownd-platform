@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Plus, Trash2, Pin, Image as ImageIcon, ImageOff } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
@@ -50,6 +50,15 @@ export function ImageUploader({
   const { isRTL } = useTranslation();
   const [items, setItems] = useState<ImageUploaderItem[]>(initialItems);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const ownedPreviewUrls = useRef(new Set<string>());
+
+  useEffect(
+    () => () => {
+      ownedPreviewUrls.current.forEach((url) => URL.revokeObjectURL(url));
+      ownedPreviewUrls.current.clear();
+    },
+    [],
+  );
 
   const remaining = useMemo(() => maxFiles - items.length, [items.length, maxFiles]);
 
@@ -76,11 +85,15 @@ export function ImageUploader({
       if (toAdd.length === 0) return;
 
       const hasPrimary = items.some((i) => i.isPrimary);
-      const newItems = toAdd.map((f, idx) => ({
-        file: f,
-        preview: URL.createObjectURL(f),
-        isPrimary: !hasPrimary && items.length === 0 && idx === 0,
-      }));
+      const newItems = toAdd.map((file, index) => {
+        const preview = URL.createObjectURL(file);
+        ownedPreviewUrls.current.add(preview);
+        return {
+          file,
+          preview,
+          isPrimary: !hasPrimary && items.length === 0 && index === 0,
+        };
+      });
 
       setItems((prev) => [...prev, ...newItems]);
       onChange([...items, ...newItems]);
@@ -116,6 +129,7 @@ export function ImageUploader({
         const removedItem = prev[index];
         if (removedItem && removedItem.file) {
           URL.revokeObjectURL(removedItem.preview);
+          ownedPreviewUrls.current.delete(removedItem.preview);
         }
         onChange(next);
         return next;
