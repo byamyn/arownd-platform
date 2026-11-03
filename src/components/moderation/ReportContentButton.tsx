@@ -61,7 +61,12 @@ export function ReportContentButton({
       setDetails("");
       setOpen(false);
     } catch (error) {
-      showError(error);
+      const message = (error as { message?: string })?.message ?? "";
+      if (message.includes("report_rate_limit_exceeded")) {
+        toast.error("وصلت إلى الحد اليومي للبلاغات. حاول مجددًا لاحقًا.");
+      } else {
+        showError(error);
+      }
     } finally {
       setBusy(false);
     }
