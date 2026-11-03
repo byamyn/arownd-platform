@@ -21,6 +21,7 @@ import { showError, showSuccess } from "@/lib/feedback";
 import { useTranslation } from "@/lib/i18n";
 import { logNetError } from "@/lib/conn";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
+import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 import { useAuth } from "@/lib/auth";
 import {
   fetchMyStore,
@@ -186,15 +187,7 @@ function StudioPage() {
     return <AuthGate onLogin={() => navigate({ to: "/auth", search: { redirect: "/studio" } })} />;
   }
   if (store.isLoading || roles.isLoading || accountType.isLoading) {
-    return (
-      <div
-        className="flex min-h-[60vh] items-center justify-center"
-        role="status"
-        aria-label={t("studio_dashboard_loading")}
-      >
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <DashboardLoadingSkeleton cards={3} />;
   }
   if (store.isError || roles.isError || accountType.isError) {
     const error = store.error ?? roles.error ?? accountType.error;
