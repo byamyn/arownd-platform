@@ -183,7 +183,7 @@ function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
         .getPropertyValue("--color-bg-canvas")
         .trim();
       const bodyColor = getComputedStyle(document.body).backgroundColor;
-      const rgb = bodyColor.match(/^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/);
+      const rgb = bodyColor.match(/^rgba?\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)/);
       const bodyHex = rgb
         ? `#${rgb.slice(1, 4).map((channel) => Number(channel).toString(16).padStart(2, "0")).join("")}`
         : undefined;
