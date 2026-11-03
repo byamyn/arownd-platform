@@ -16,6 +16,7 @@ import { StockBadge } from "@/components/sooqy/badges";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/latest")({
   head: () => ({
@@ -58,11 +59,7 @@ function LatestStoreProductsPage() {
     roles.isLoading ||
     (accountType.data === "merchant" && store.isLoading)
   ) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center" role="status">
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <DashboardLoadingSkeleton cards={2} />;
   }
 
   if (accountType.isError || roles.isError) {
