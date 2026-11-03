@@ -287,6 +287,7 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
   const [pullDistance, setPullDistance] = useState(0);
   const [refreshing, setRefreshing] = useState(false);
   const startY = useRef<number | null>(null);
+  const startX = useRef<number | null>(null);
   const distanceRef = useRef(0);
   const active = useRef(false);
   const threshold = 84;
@@ -296,20 +297,32 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
     const onStart = (event: TouchEvent) => {
       if (refreshing || event.touches.length !== 1) return;
       const target = event.target;
-      if (target instanceof Element && target.closest("input, textarea, select, [contenteditable='true'], [data-no-pull-refresh]")) return;
+      if (target instanceof Element) {
+        if (target.closest("input, textarea, select, [contenteditable='true'], [data-no-pull-refresh]")) return;
+        let ancestor: Element | null = target;
+        while (ancestor && ancestor !== document.body) {
+          const style = window.getComputedStyle(ancestor);
+          if (/(auto|scroll)/.test(style.overflowY) && ancestor.scrollHeight > ancestor.clientHeight && (ancestor as HTMLElement).scrollTop > 0) return;
+          ancestor = ancestor.parentElement;
+        }
+      }
       if ((document.scrollingElement?.scrollTop ?? window.scrollY) > 0) return;
       startY.current = event.touches[0]?.clientY ?? null;
-      active.current = startY.current !== null;
+      startX.current = event.touches[0]?.clientX ?? null;
+      active.current = startY.current !== null && startX.current !== null;
     };
     const onMove = (event: TouchEvent) => {
       if (!active.current || startY.current === null || refreshing || event.touches.length !== 1) return;
-      const delta = (event.touches[0]?.clientY ?? startY.current) - startY.current;
-      distanceRef.current = delta > 0 ? Math.min(threshold, delta * 0.55) : 0;
+      const touch = event.touches[0];
+      const delta = (touch?.clientY ?? startY.current) - startY.current;
+      const horizontalDelta = Math.abs((touch?.clientX ?? startX.current ?? 0) - (startX.current ?? 0));
+      distanceRef.current = delta > horizontalDelta && delta > 0 ? Math.min(threshold, delta * 0.55) : 0;
       setPullDistance(distanceRef.current);
     };
     const reset = () => {
       active.current = false;
       startY.current = null;
+      startX.current = null;
       distanceRef.current = 0;
       setPullDistance(0);
     };
