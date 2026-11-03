@@ -40,7 +40,6 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useCountdown } from "@/components/sooqy/DynamicIsland";
 import { ReviewSection } from "@/components/sooqy/ReviewSection";
 import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
-import { StickyActionBar } from "@/components/sooqy/sticky-action-bar";
 import { cn } from "@/lib/utils";
 import { categoryLabel } from "@/lib/taxonomy";
 import { formatDistanceToNow } from "date-fns";
@@ -417,23 +416,13 @@ function ProductPage() {
         <div className="space-y-6 px-5 pt-6">
           <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-4 ">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <div className="flex flex-wrap items-center gap-2">
-                {p.brand && (
-                  <span className="rounded-full bg-muted px-3 py-1 text-xs font-semibold text-foreground">
-                    {p.brand}
-                  </span>
-                )}
-                {p.category && (
-                  <span className="rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
-                    {categoryLabel(p.category)}
-                  </span>
-                )}
+              <div className="min-w-0 flex-1">
+                <h1 className="text-xl font-extrabold leading-tight tracking-tight text-foreground">
+                  {p.name}
+                </h1>
               </div>
               <StockBadge level={level} />
             </div>
-            <h1 className="mt-4 text-[1.65rem] font-extrabold leading-tight tracking-tight text-foreground">
-              {p.name}
-            </h1>
             {selected && (
               <div className="mt-4 flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
                 <div>
@@ -482,14 +471,22 @@ function ProductPage() {
                 </p>
               </div>
             )}
+            <div className="mt-4 border-t border-border pt-3">
+              <p className="text-sm font-semibold text-foreground">{t("product_delivery_title")}</p>
+              <p className="mt-1 text-sm leading-relaxed text-muted-foreground">{t("product_delivery_desc")}</p>
+            </div>
             {p.description && (
-              <p className="mt-4 border-t border-border pt-4 text-sm leading-7 text-muted-foreground">
+              <p className="mt-3 border-t border-border pt-3 text-sm leading-7 text-muted-foreground">
                 {p.description}
               </p>
             )}
           </section>
-          {/* Options */}
-          {!isOwnProduct && <div className="space-y-4">
+          {/* Card 2: product options and attributes */}
+          {!isOwnProduct && <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4">
+            <div className="grid grid-cols-2 gap-3">
+              {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
+              {p.category && <SpecRow label={t("product_category_label")} value={categoryLabel(p.category)} />}
+            </div>
             {opts.colors?.length ? (
               <OptionRow
                 label={t("product_color_option")}
@@ -515,21 +512,12 @@ function ProductPage() {
                 max={Math.min(selected?.stock_quantity ?? 10, 10)}
               />
             </div>
-          </div>}
-
-          {/* Specs / delivery info */}
-          {!isOwnProduct && <section className="space-y-3">
-            <h2 className="text-lg font-bold text-foreground">{t("product_specs_title")}</h2>
-            <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
-              {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
-              {p.category && (
-                <SpecRow label={t("product_category_label")} value={categoryLabel(p.category)} />
-              )}
-              <SpecRow label={t("product_delivery_title")} value={t("product_delivery_desc")} />
-            </div>
           </section>}
 
-          {!isOwnProduct && <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} /> }
+          {/* Specs / delivery info */}
+
+
+
 
           {!isOwnProduct && (
           {/* Where to find */}
@@ -649,50 +637,50 @@ function ProductPage() {
                 </div>
               );
             })}
+            <div className="mt-4 border-t border-border pt-4">
+                      <div className="flex items-center gap-3">
+                        <div className="min-w-0 flex-1">
+                          <p className="text-caption text-muted-foreground">{t("product_price_label")}</p>
+                          <p className="text-xl font-extrabold text-foreground">
+                            {selected ? formatDA(selected.price * qty) : "—"}
+                          </p>
+                        </div>
+                        <button
+                          type="button"
+                          disabled={!selected || level === "out" || busy}
+                          onClick={() => selected && reserve(selected)}
+                          className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+                          aria-label={t("product_reserve")}
+                        >
+                          <Timer className="size-4" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!selected || level === "out"}
+                          onClick={addToBag}
+                          className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+                          aria-label={t("product_add_to_bag")}
+                        >
+                          <ShoppingBag key={bagPulse} className="size-4 animate-pop" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!selected || level === "out"}
+                          onClick={buyNow}
+                          className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+                        >
+                          {t("product_buy_now")}
+                        </button>
+                      </div>
+              
+            </div>
           </section>
           )}
+                    {!isOwnProduct && <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} />}
         </div>
       </div>
 
-      {!isOwnProduct && (
-      {/* Sticky bottom bar */}
-      <StickyActionBar>
-        <div className="flex items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-caption text-muted-foreground">{t("product_price_label")}</p>
-            <p className="text-xl font-extrabold text-foreground">
-              {selected ? formatDA(selected.price * qty) : "—"}
-            </p>
-          </div>
-          <button
-            type="button"
-            disabled={!selected || level === "out" || busy}
-            onClick={() => selected && reserve(selected)}
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
-            aria-label={t("product_reserve")}
-          >
-            <Timer className="size-4" />
-          </button>
-          <button
-            type="button"
-            disabled={!selected || level === "out"}
-            onClick={addToBag}
-            className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
-            aria-label={t("product_add_to_bag")}
-          >
-            <ShoppingBag key={bagPulse} className="size-4 animate-pop" />
-          </button>
-          <button
-            type="button"
-            disabled={!selected || level === "out"}
-            onClick={buyNow}
-            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
-          >
-            {t("product_buy_now")}
-          </button>
-        </div>
-      </StickyActionBar>
-      )}
+
 
       <ReservationDialog
         reservation={reservation}
