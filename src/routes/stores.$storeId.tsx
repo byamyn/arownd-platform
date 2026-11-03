@@ -38,6 +38,7 @@ import { StoreDetailSkeleton } from "@/components/sooqy/skeleton";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { telUrl, whatsappUrl } from "@/lib/contact";
+import { useRealtimeSubscription } from "@/hooks/use-realtime";
 
 export const Route = createFileRoute("/stores/$storeId")({
   head: () => ({}),
@@ -61,6 +62,7 @@ function StorePage() {
   const [tab, setTab] = useState<Tab>("products");
   const favs = useFavorites();
   const store = useQuery({ queryKey: ["store", storeId], queryFn: () => getStore(storeId) });
+  useRealtimeSubscription({ table: "offers", filter: "store_id=eq." + storeId, queryKeys: [["store", storeId], ["store-offers", storeId]] });
   const offers = useQuery({
     queryKey: ["store-offers", storeId],
     queryFn: () => getStoreOffers(storeId),
