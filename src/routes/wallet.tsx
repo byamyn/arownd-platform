@@ -29,6 +29,7 @@ import { PageHeader } from "@/components/sooqy/page-header";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { WalletPageSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/wallet")({
   head: () => ({}),
@@ -116,6 +117,8 @@ function WalletPage() {
       </div>
     );
   }
+
+  if (txs.isLoading) return <WalletPageSkeleton />;
 
   const list = txs.data ?? [];
   const summary = summarizeWallet(list);
