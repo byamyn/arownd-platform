@@ -7,7 +7,6 @@ import android.view.Window;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
-import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
@@ -17,9 +16,8 @@ import com.getcapacitor.annotation.CapacitorPlugin;
 public class ArowndSystemUiPlugin extends Plugin {
     @PluginMethod
     public void setStatusBar(PluginCall call) {
-        JSObject options = call.getData();
-        boolean dark = options.getBool("dark", false);
-        String color = options.getString("color");
+        boolean dark = call.getBoolean("dark", false);
+        String color = call.getString("color");
 
         getActivity().runOnUiThread(() -> {
             Window window = getActivity().getWindow();
