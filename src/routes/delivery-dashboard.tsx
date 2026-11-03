@@ -20,6 +20,7 @@ import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { translate } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { collectMerchantOrderCod } from "@/lib/sooqy";
+import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/delivery-dashboard")({
   head: () => ({
@@ -164,15 +165,7 @@ function DeliveryDashboardPage() {
   }
 
   if (company.isLoading) {
-    return (
-      <div
-        className="flex min-h-[50vh] items-center justify-center"
-        role="status"
-        aria-label="جارٍ تحميل حساب شركة التوصيل"
-      >
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <DashboardLoadingSkeleton cards={2} />;
   }
 
   if (company.isError) {
@@ -225,15 +218,7 @@ function DeliveryDashboardPage() {
   const activeShipmentsQuery = activeTab === "pending" ? pendingShipments : allShipments;
 
   if (activeShipmentsQuery.isLoading) {
-    return (
-      <div
-        className="flex min-h-[50vh] items-center justify-center"
-        role="status"
-        aria-label="جارٍ تحميل الشحنات"
-      >
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <DashboardLoadingSkeleton cards={3} />;
   }
 
   if (activeShipmentsQuery.isError) {
