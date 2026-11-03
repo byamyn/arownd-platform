@@ -464,9 +464,6 @@ function StudioPage() {
     <div className="mx-auto w-full min-w-0 max-w-screen-2xl space-y-6 overflow-x-clip px-4 pb-28 pt-5 sm:px-6 lg:pt-8">
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
-          <p className="text-caption font-extrabold uppercase tracking-[0.22em] text-accent-ink">
-            AROWND · MERCHANT
-          </p>
           <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
             {t("studio_dashboard_heading")}
           </h1>
@@ -474,19 +471,8 @@ function StudioPage() {
             {t("studio_dashboard_intro")}
           </p>
         </div>
-        <div className="flex shrink-0 items-center gap-2">
-          <button
-            type="button"
-            onClick={() => navigate({ to: "/studio/settings" })}
-            className="flex size-11 items-center justify-center rounded-[var(--radius-card)] border border-border bg-card text-foreground  transition hover:border-accent-ink/40 active:scale-95"
-            aria-label={t("studio_settings")}
-            title={t("studio_settings")}
-          >
-            <Settings className="size-5" />
-          </button>
-          <div className="flex size-11 items-center justify-center rounded-[var(--radius-control)] bg-primary text-primary-foreground">
-            <Store className="size-5" />
-          </div>
+        <div className="flex size-11 items-center justify-center rounded-[var(--radius-control)] bg-primary text-primary-foreground">
+          <Store className="size-5" />
         </div>
       </header>
 
@@ -574,16 +560,6 @@ function StudioPage() {
             >
               <Eye className="size-4" /> معاينة المتجر
             </Link>
-            {store.data?.latitude != null && store.data?.longitude != null && (
-              <DirectionsButton
-                lat={store.data.latitude}
-                lng={store.data.longitude}
-                label={store.data?.name ?? ""}
-                className="col-span-2 flex min-h-[var(--control-height-compact)] items-center justify-center gap-2 rounded-[var(--radius-control)] border border-border bg-card px-3 text-xs font-bold text-foreground/80"
-              >
-                <MapPin className="size-4" /> عرض الموقع والاتجاهات
-              </DirectionsButton>
-            )}
           </div>
         </div>
       </section>
@@ -844,24 +820,7 @@ function StudioPage() {
             )}
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
           </button>
-          <Link
-            to="/studio/settings"
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
-          >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
-              <Store className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">
-                {t("studio_store_info")}
-              </span>
-              <span className="block text-xs text-muted-foreground">
-                تعديل الاسم والوصف والصور والتصنيف
-              </span>
-            </span>
-            <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
-          </Link>
-          <Link
+<Link
             to="/studio/settings"
             className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
           >
@@ -878,25 +837,7 @@ function StudioPage() {
             </span>
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
           </Link>
-          <Link
-            to="/stores/$storeId"
-            params={{ storeId: store.data?.id ?? "" }}
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
-          >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
-              <Eye className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">
-                {t("studio_preview_store")}
-              </span>
-              <span className="block text-xs text-muted-foreground">
-                عرض الصفحة كما يراها العميل
-              </span>
-            </span>
-            <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
-          </Link>
-        </div>
+</div>
       </section>
 
       {/* تبويب المنتجات */}
