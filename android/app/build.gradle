@@ -10,7 +10,7 @@ android {
         // Use Groovy property assignment so Gradle does not resolve this as a
         // dynamic method call while configuring defaultConfig.
         versionCode = (project.findProperty("versionCodeOverride") ?: "1").toString().toInteger()
-        versionName "1.0"
+        versionName = (project.findProperty("versionNameOverride") ?: "1.0").toString()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -49,6 +49,14 @@ android {
             def keystore = file(required.ANDROID_KEYSTORE_PATH)
             if (!keystore.isFile()) {
                 throw new GradleException("ANDROID_KEYSTORE_PATH does not point to an existing keystore file.")
+            }
+            def versionCodeValue = project.findProperty("versionCodeOverride")
+            if (!versionCodeValue || versionCodeValue.toString().toInteger() < 1) {
+                throw new GradleException("Set versionCodeOverride to a positive, store-increasing integer for every release.")
+            }
+            def versionNameValue = project.findProperty("versionNameOverride")
+            if (!versionNameValue?.toString()?.trim()) {
+                throw new GradleException("Set versionNameOverride for the release version.")
             }
         }
     }
