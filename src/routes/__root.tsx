@@ -179,9 +179,15 @@ function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
     if (!isNativePlatform()) return;
 
     const syncStatusBar = () => {
-      const color = getComputedStyle(document.documentElement)
+      const tokenColor = getComputedStyle(document.documentElement)
         .getPropertyValue("--color-bg-canvas")
         .trim();
+      const bodyColor = getComputedStyle(document.body).backgroundColor;
+      const rgb = bodyColor.match(/^rgba?\\(\\s*(\\d+)\\s*,\\s*(\\d+)\\s*,\\s*(\\d+)/);
+      const bodyHex = rgb
+        ? `#${rgb.slice(1, 4).map((channel) => Number(channel).toString(16).padStart(2, "0")).join("")}`
+        : undefined;
+      const color = /^#[0-9a-f]{6}$/i.test(tokenColor) ? tokenColor : bodyHex;
       void ArowndSystemUi.setStatusBar({
         dark: resolved === "dark",
         color: color || (resolved === "dark" ? "#111827" : "#ffffff"),
