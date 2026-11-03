@@ -1,10 +1,8 @@
 name: Capacitor native bootstrap
-# Build native projects from main and publish the Android APK as a downloadable artifact.
+# Native builds are intentionally manual; do not build Android on pushes to main.
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 permissions:
   contents: write
