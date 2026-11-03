@@ -74,7 +74,14 @@ export function parseNativeRouteLink(rawUrl: string): string | null {
     }
 
     const route = safeRelativePath(url.pathname);
-    if (!route || route === "/") return null;
+    if (
+      !route ||
+      (route !== "/explore" &&
+        route !== "/stores" &&
+        !/^\/(products|stores)\/[A-Za-z0-9_-]+\/?$/.test(route))
+    ) {
+      return null;
+    }
     return route + url.search + url.hash;
   } catch {
     return null;
