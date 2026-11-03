@@ -59,10 +59,13 @@ public class ArowndSystemUiPlugin extends Plugin {
 
         Uri uri = Uri.parse(rawUrl);
         String scheme = uri.getScheme();
-        if (scheme == null ||
-            !(scheme.equalsIgnoreCase("https") || scheme.equalsIgnoreCase("http")) ||
-            uri.getHost() == null) {
-            call.reject("Only valid HTTP(S) links can be opened externally");
+        boolean webLink = "https".equalsIgnoreCase(scheme) || "http".equalsIgnoreCase(scheme);
+        boolean systemLink = "tel".equalsIgnoreCase(scheme) ||
+            "mailto".equalsIgnoreCase(scheme) || "sms".equalsIgnoreCase(scheme) ||
+            "geo".equalsIgnoreCase(scheme);
+        if (scheme == null || (!webLink && !systemLink) ||
+            (webLink && uri.getHost() == null)) {
+            call.reject("This external link type is not supported");
             return;
         }
 
