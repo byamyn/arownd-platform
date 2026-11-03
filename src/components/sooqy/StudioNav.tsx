@@ -26,7 +26,7 @@ export function StudioNav() {
 
   const navClass = (active: boolean) =>
     cn(
-      "flex min-h-[var(--nav-height)] min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-1 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
+      "flex min-h-[var(--nav-height)] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-0.5 text-[11px] leading-tight font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
       active ? "text-[var(--color-action-ink)]" : "text-muted-foreground active:bg-muted",
     );
 
@@ -38,7 +38,7 @@ export function StudioNav() {
       aria-label={t("studio_nav_aria")}
       className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-muted md:hidden"
     >
-      <div className="mx-auto flex h-[var(--nav-height)] w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
+      <div className="mx-auto flex h-[var(--nav-height)] w-full max-w-7xl items-stretch gap-0 px-2 pb-[env(safe-area-inset-bottom)]">
         {items.map(({ to, key, Icon }) => {
           const active = currentPath === to;
           return (
@@ -51,7 +51,7 @@ export function StudioNav() {
               <span className={iconClass(active)} aria-hidden="true">
                 <Icon className="size-5 shrink-0" />
               </span>
-              <span className="w-full truncate text-center">{t(key)}</span>
+              <span className="w-full text-center whitespace-normal break-words line-clamp-2">{t(key)}</span>
             </Link>
           );
         })}
@@ -65,7 +65,7 @@ export function StudioNav() {
             <span className={iconClass(isStoreActive)} aria-hidden="true">
               <Store className="size-5 shrink-0" />
             </span>
-            <span className="w-full truncate text-center">{t("studio_nav_store")}</span>
+            <span className="w-full text-center whitespace-normal break-words line-clamp-2">{t("studio_nav_store")}</span>
           </Link>
         ) : (
           <Link
@@ -76,7 +76,7 @@ export function StudioNav() {
             <span className={iconClass(currentPath === "/studio")} aria-hidden="true">
               <Store className="size-5 shrink-0" />
             </span>
-            <span className="w-full truncate text-center">{t("studio_nav_store")}</span>
+            <span className="w-full text-center whitespace-normal break-words line-clamp-2">{t("studio_nav_store")}</span>
           </Link>
         )}
       </div>

@@ -1,8 +1,7 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
-  ArrowRight,
   Clock,
   Eye,
   Facebook,
@@ -38,7 +37,6 @@ import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
 import { StoreCardSkeleton } from "@/components/sooqy/skeleton";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { goBackOrTo } from "@/lib/nav";
 import { telUrl, whatsappUrl } from "@/lib/contact";
 
 export const Route = createFileRoute("/stores/$storeId")({
@@ -58,7 +56,6 @@ function socialHref(url: string) {
 
 function StorePage() {
   const { storeId } = Route.useParams();
-  const router = useRouter();
   const { pos } = useGeo();
   const { user } = useAuth();
   const [tab, setTab] = useState<Tab>("products");
@@ -199,13 +196,6 @@ function StorePage() {
               className="size-full object-cover"
             />
           )}
-          <button
-            onClick={() => goBackOrTo(router, "/stores")}
-            aria-label="رجوع"
-            className="absolute top-4 start-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95  backdrop-blur transition active:scale-95"
-          >
-            <ArrowRight className="size-5" />
-          </button>
           <button
             onClick={share}
             aria-label="مشاركة المتجر"

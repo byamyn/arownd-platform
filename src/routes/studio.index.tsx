@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
+  BadgeCheck,
   Check,
   ChevronLeft,
   Clock,
@@ -576,7 +577,12 @@ function StudioPage() {
               <p className="text-caption font-bold tracking-wide text-accent-ink">
                 {t("studio_store_on_arownd")}
               </p>
-              <h2 className="mt-1 truncate text-xl font-black sm:text-2xl">{store.data?.name}</h2>
+              <div className="mt-1 flex min-w-0 items-center gap-1.5">
+                <h2 className="min-w-0 truncate text-xl font-black sm:text-2xl">{store.data?.name}</h2>
+                {store.data?.is_verified && (
+                  <BadgeCheck className="size-4 shrink-0 text-accent-ink" aria-label="متجر موثق" />
+                )}
+              </div>
               <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
                 <MapPin className="size-3 shrink-0" />
                 {store.data?.commune || "الموقع قيد الإعداد"}

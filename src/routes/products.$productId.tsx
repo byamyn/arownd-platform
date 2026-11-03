@@ -299,7 +299,7 @@ function ProductPage() {
         keywords={t("product_keywords", { name: p.name, brand: p.brand || "" })}
         jsonLd={productJsonLd}
       />
-      <div className="pb-36">
+      <div className="pb-[calc(var(--nav-height)+env(safe-area-inset-bottom)+3rem)]">
         {/* Hero image */}
         <section className="relative bg-muted">
           <div
