@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { shareTextContent } from "@/lib/native-sharing";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import {
@@ -575,14 +576,15 @@ function SuccessScreen({
       typeof window !== "undefined" ? `${window.location.origin}/orders/${orderId}` : orderId;
     const text = `${t("checkout_success_title")} — ${trackCode}`;
     try {
-      if (navigator.share) {
-        await navigator.share({ title: text, url });
-        return;
+      const shared = await shareTextContent({ title: text, text, url });
+      if (!shared) {
+        await navigator.clipboard.writeText(`${text}\n${url}`);
+        showSuccess(t("close_copied"));
       }
-      await navigator.clipboard.writeText(`${text}\n${url}`);
-      showSuccess(t("close_copied"));
-    } catch {
-      // ألغى المستخدم المشاركة — لا نُظهر خطأ.
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        // Sharing was unavailable; keep the order page intact.
+      }
     }
   };
 
