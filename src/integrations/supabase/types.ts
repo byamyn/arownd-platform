@@ -1119,6 +1119,15 @@ export type Database = {
           isSetofReturn: false;
         };
       };
+      submit_content_report: {
+        Args: {
+          _details?: string;
+          _reason: string;
+          _target_id: string;
+          _target_type: string;
+        };
+        Returns: string;
+      };
       link_order_shipment: {
         Args: {
           _delivery_method?: string;
