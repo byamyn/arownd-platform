@@ -133,7 +133,7 @@ function DeleteAccountPage() {
             <button
               type="button"
               onClick={() => void submitRequest()}
-              disabled={submitting || requests.isLoading || !!hasOpenRequest}
+              disabled={submitting || requests.isLoading || !!requests.error || !!hasOpenRequest}
               className="btn-primary mt-4 w-full disabled:cursor-not-allowed disabled:opacity-50"
             >
               {submitting ? "جارٍ تسجيل الطلب..." : hasOpenRequest ? "لديك طلب قيد المعالجة" : "إرسال طلب حذف الحساب"}
@@ -148,9 +148,14 @@ function DeleteAccountPage() {
             {requests.isLoading ? (
               <p className="text-sm text-muted-foreground">جارٍ تحميل الطلبات...</p>
             ) : requests.error ? (
-              <div className="flex items-start gap-2 rounded-xl border border-destructive/30 p-3 text-sm text-destructive">
-                <AlertCircle className="mt-0.5 size-4 shrink-0" />
-                <span>تعذّر تحميل الطلبات. قد لا تكون خدمة الطلبات مفعّلة بعد؛ حاول لاحقًا أو تواصل مع الدعم.</span>
+              <div className="space-y-3 rounded-xl border border-destructive/30 p-3 text-sm">
+                <div className="flex items-start gap-2 text-destructive">
+                  <AlertCircle className="mt-0.5 size-4 shrink-0" />
+                  <span>خدمة تسجيل الطلبات غير مفعّلة حاليًا على الخادم. لم يتم إرسال طلبك.</span>
+                </div>
+                <a href="mailto:arownddz@gmail.com?subject=%D8%B7%D9%84%D8%A8%20%D8%AD%D8%B0%D9%81%20%D8%AD%D8%B3%D8%A7%D8%A8%20Arownd" className="inline-flex min-h-10 items-center font-bold text-accent-ink underline">
+                  إرسال طلب الحذف إلى الدعم
+                </a>
               </div>
             ) : requests.data?.length ? (
               requests.data.map((request) => (
