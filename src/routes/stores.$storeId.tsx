@@ -62,7 +62,7 @@ function StorePage() {
   const [tab, setTab] = useState<Tab>("products");
   const favs = useFavorites();
   const store = useQuery({ queryKey: ["store", storeId], queryFn: () => getStore(storeId) });
-  useRealtimeSubscription({ table: "offers", filter: "store_id=eq." + storeId, queryKeys: [["store", storeId], ["store-offers", storeId]] });
+  useRealtimeSubscription({ table: "store_offers", filter: "store_id=eq." + storeId, queryKeys: [["store", storeId], ["store-offers", storeId]] });
   const offers = useQuery({
     queryKey: ["store-offers", storeId],
     queryFn: () => getStoreOffers(storeId),
