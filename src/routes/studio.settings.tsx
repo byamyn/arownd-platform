@@ -219,7 +219,7 @@ function StoreSettingsPage() {
         longitude: hasCoords ? form.longitude : null,
         opening_hours: { open: form.open, close: form.close, closed_days: closedDays },
         ...(logoUrl ? { logo_url: logoUrl } : {}),
-        cover_url: logoUrl,
+        cover_url: logoUrl ?? undefined,
         instagram_url: form.instagram.trim() || null,
         facebook_url: form.facebook.trim() || null,
         category: form.category,
