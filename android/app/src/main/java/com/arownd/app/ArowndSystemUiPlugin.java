@@ -83,7 +83,7 @@ public class ArowndSystemUiPlugin extends Plugin {
         String url = call.getString("url");
         String payload = text == null ? "" : text.trim();
         if (url != null && !url.trim().isEmpty()) {
-            payload = payload.isEmpty() ? url : payload + "\\n" + url;
+            payload = payload.isEmpty() ? url : payload + "\n" + url;
         }
         if (payload.isEmpty()) {
             call.reject("Share text or URL is required");
