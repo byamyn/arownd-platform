@@ -436,226 +436,226 @@ export interface RootRouteChildren {
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
     '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/';
+      path: '/';
+      fullPath: '/';
+      preLoaderRoute: typeof IndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/about': {
-      id: '/about'
-      path: '/about'
-      fullPath: '/about'
-      preLoaderRoute: typeof AboutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/about';
+      path: '/about';
+      fullPath: '/about';
+      preLoaderRoute: typeof AboutRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/auth';
+      path: '/auth';
+      fullPath: '/auth';
+      preLoaderRoute: typeof AuthRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/bag': {
-      id: '/bag'
-      path: '/bag'
-      fullPath: '/bag'
-      preLoaderRoute: typeof BagRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/bag';
+      path: '/bag';
+      fullPath: '/bag';
+      preLoaderRoute: typeof BagRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/checkout': {
-      id: '/checkout'
-      path: '/checkout'
-      fullPath: '/checkout'
-      preLoaderRoute: typeof CheckoutRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/checkout';
+      path: '/checkout';
+      fullPath: '/checkout';
+      preLoaderRoute: typeof CheckoutRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/create-store': {
-      id: '/create-store'
-      path: '/create-store'
-      fullPath: '/create-store'
-      preLoaderRoute: typeof CreateStoreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/create-store';
+      path: '/create-store';
+      fullPath: '/create-store';
+      preLoaderRoute: typeof CreateStoreRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/delivery-dashboard': {
-      id: '/delivery-dashboard'
-      path: '/delivery-dashboard'
-      fullPath: '/delivery-dashboard'
-      preLoaderRoute: typeof DeliveryDashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/delivery-dashboard';
+      path: '/delivery-dashboard';
+      fullPath: '/delivery-dashboard';
+      preLoaderRoute: typeof DeliveryDashboardRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/delivery-register': {
-      id: '/delivery-register'
-      path: '/delivery-register'
-      fullPath: '/delivery-register'
-      preLoaderRoute: typeof DeliveryRegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/delivery-register';
+      path: '/delivery-register';
+      fullPath: '/delivery-register';
+      preLoaderRoute: typeof DeliveryRegisterRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/explore': {
-      id: '/explore'
-      path: '/explore'
-      fullPath: '/explore'
-      preLoaderRoute: typeof ExploreRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/explore';
+      path: '/explore';
+      fullPath: '/explore';
+      preLoaderRoute: typeof ExploreRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/favorites': {
-      id: '/favorites'
-      path: '/favorites'
-      fullPath: '/favorites'
-      preLoaderRoute: typeof FavoritesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/favorites';
+      path: '/favorites';
+      fullPath: '/favorites';
+      preLoaderRoute: typeof FavoritesRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/latest': {
-      id: '/latest'
-      path: '/latest'
-      fullPath: '/latest'
-      preLoaderRoute: typeof LatestRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/latest';
+      path: '/latest';
+      fullPath: '/latest';
+      preLoaderRoute: typeof LatestRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/help': {
-      id: '/help'
-      path: '/help'
-      fullPath: '/help'
-      preLoaderRoute: typeof HelpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/help';
+      path: '/help';
+      fullPath: '/help';
+      preLoaderRoute: typeof HelpRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/map': {
-      id: '/map'
-      path: '/map'
-      fullPath: '/map'
-      preLoaderRoute: typeof MapRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/map';
+      path: '/map';
+      fullPath: '/map';
+      preLoaderRoute: typeof MapRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/notifications': {
-      id: '/notifications'
-      path: '/notifications'
-      fullPath: '/notifications'
-      preLoaderRoute: typeof NotificationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/notifications';
+      path: '/notifications';
+      fullPath: '/notifications';
+      preLoaderRoute: typeof NotificationsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/privacy': {
-      id: '/privacy'
-      path: '/privacy'
-      fullPath: '/privacy'
-      preLoaderRoute: typeof PrivacyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/privacy';
+      path: '/privacy';
+      fullPath: '/privacy';
+      preLoaderRoute: typeof PrivacyRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/profile': {
-      id: '/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof ProfileRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/profile';
+      path: '/profile';
+      fullPath: '/profile';
+      preLoaderRoute: typeof ProfileRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/reservations/': {
-      id: '/reservations/'
-      path: '/reservations'
-      fullPath: '/reservations/'
-      preLoaderRoute: typeof ReservationsIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/reservations/';
+      path: '/reservations';
+      fullPath: '/reservations/';
+      preLoaderRoute: typeof ReservationsIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/settings';
+      path: '/settings';
+      fullPath: '/settings';
+      preLoaderRoute: typeof SettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/terms';
+      path: '/terms';
+      fullPath: '/terms';
+      preLoaderRoute: typeof TermsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/wallet': {
-      id: '/wallet'
-      path: '/wallet'
-      fullPath: '/wallet'
-      preLoaderRoute: typeof WalletRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-      parentRoute: typeof rootRouteImport
-    }
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/wallet';
+      path: '/wallet';
+      fullPath: '/wallet';
+      preLoaderRoute: typeof WalletRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
+      parentRoute: typeof rootRouteImport;
+    };
+      parentRoute: typeof rootRouteImport;
+    };
     '/auth_/callback': {
-      id: '/auth_/callback'
-      path: '/auth/callback'
-      fullPath: '/auth/callback'
-      preLoaderRoute: typeof AuthCallbackRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/auth_/callback';
+      path: '/auth/callback';
+      fullPath: '/auth/callback';
+      preLoaderRoute: typeof AuthCallbackRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/category/$catId': {
-      id: '/category/$catId'
-      path: '/category/$catId'
-      fullPath: '/category/$catId'
-      preLoaderRoute: typeof CategoryCatIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/category/$catId';
+      path: '/category/$catId';
+      fullPath: '/category/$catId';
+      preLoaderRoute: typeof CategoryCatIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/orders/': {
-      id: '/orders/'
-      path: '/orders'
-      fullPath: '/orders/'
-      preLoaderRoute: typeof OrdersIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/orders/';
+      path: '/orders';
+      fullPath: '/orders/';
+      preLoaderRoute: typeof OrdersIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/orders/$orderId': {
-      id: '/orders/$orderId'
-      path: '/orders/$orderId'
-      fullPath: '/orders/$orderId'
-      preLoaderRoute: typeof OrdersOrderIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/orders/$orderId';
+      path: '/orders/$orderId';
+      fullPath: '/orders/$orderId';
+      preLoaderRoute: typeof OrdersOrderIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/products/$productId': {
-      id: '/products/$productId'
-      path: '/products/$productId'
-      fullPath: '/products/$productId'
-      preLoaderRoute: typeof ProductsProductIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/products/$productId';
+      path: '/products/$productId';
+      fullPath: '/products/$productId';
+      preLoaderRoute: typeof ProductsProductIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/stores/': {
-      id: '/stores/'
-      path: '/stores'
-      fullPath: '/stores/'
-      preLoaderRoute: typeof StoresIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/stores/';
+      path: '/stores';
+      fullPath: '/stores/';
+      preLoaderRoute: typeof StoresIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/stores/$storeId': {
-      id: '/stores/$storeId'
-      path: '/stores/$storeId'
-      fullPath: '/stores/$storeId'
-      preLoaderRoute: typeof StoresStoreIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/stores/$storeId';
+      path: '/stores/$storeId';
+      fullPath: '/stores/$storeId';
+      preLoaderRoute: typeof StoresStoreIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/studio/': {
-      id: '/studio/'
-      path: '/studio'
-      fullPath: '/studio/'
-      preLoaderRoute: typeof StudioIndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/studio/';
+      path: '/studio';
+      fullPath: '/studio/';
+      preLoaderRoute: typeof StudioIndexRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/studio/settings': {
-      id: '/studio/settings'
-      path: '/studio/settings'
-      fullPath: '/studio/settings'
-      preLoaderRoute: typeof StudioSettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/studio/settings';
+      path: '/studio/settings';
+      fullPath: '/studio/settings';
+      preLoaderRoute: typeof StudioSettingsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/studio/shipments': {
-      id: '/studio/shipments'
-      path: '/studio/shipments'
-      fullPath: '/studio/shipments'
-      preLoaderRoute: typeof StudioShipmentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/studio/shipments';
+      path: '/studio/shipments';
+      fullPath: '/studio/shipments';
+      preLoaderRoute: typeof StudioShipmentsRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/studio/orders/$orderId': {
-      id: '/studio/orders/$orderId'
-      path: '/studio/orders/$orderId'
-      fullPath: '/studio/orders/$orderId'
-      preLoaderRoute: typeof StudioOrdersOrderIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
+      id: '/studio/orders/$orderId';
+      path: '/studio/orders/$orderId';
+      fullPath: '/studio/orders/$orderId';
+      preLoaderRoute: typeof StudioOrdersOrderIdRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
   }
 }
 
