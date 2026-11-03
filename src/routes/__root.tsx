@@ -315,12 +315,16 @@ function NativeDeepLinkListener() {
         const listener = await App.addListener("appUrlOpen", ({ url }) => {
           void handleUrl(url);
         });
+        if (disposed) {
+          void listener.remove();
+          return;
+        }
         removeListener = () => {
           void listener.remove();
         };
 
         const launch = await App.getLaunchUrl();
-        if (launch?.url) await handleUrl(launch.url);
+        if (!disposed && launch?.url) await handleUrl(launch.url);
       })
       .catch((error: unknown) => {
         console.error("[native] Capacitor App plugin failed to initialize", error);
