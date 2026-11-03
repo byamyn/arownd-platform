@@ -6,7 +6,6 @@ import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { Bell, Star } from "lucide-react";
 import { useGeo } from "@/lib/geo";
 import { fetchUnreadNotificationCount, searchProducts, searchStores } from "@/lib/sooqy";
-import { MAIN_CATEGORIES } from "@/lib/taxonomy";
 import { ProductCard, StoreRailCard } from "@/components/sooqy/cards";
 import { SearchField } from "@/components/sooqy/search-field";
 import { SectionHeader, SeeAllLink } from "@/components/sooqy/section-header";
@@ -145,24 +144,6 @@ function Home() {
             </Link>
           </div>
         </header>
-
-        {/* التصنيفات */}
-        <section className="space-y-2" aria-label={t("home_browse_categories")}>
-          <SectionHeader title={t("home_browse_categories")} />
-          <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1">
-            {MAIN_CATEGORIES.map((c) => (
-              <Link
-                key={c.id}
-                to="/category/$catId"
-                params={{ catId: c.id }}
-                className="card-premium flex min-h-11 shrink-0 items-center gap-2 !rounded-full px-4 py-2 text-sm font-semibold text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-              >
-                <span aria-hidden="true">{c.emoji}</span>
-                {c.label}
-              </Link>
-            ))}
-          </div>
-        </section>
 
         {/* متاجر قريبة منك */}
         {(nearbyStores.isLoading || nearbyStores.isError || stores.length > 0) && (
