@@ -282,6 +282,70 @@ function UnsavedFormGuard() {
   return null;
 }
 
+
+function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
+  const [pullDistance, setPullDistance] = useState(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const startY = useRef<number | null>(null);
+  const distanceRef = useRef(0);
+  const active = useRef(false);
+  const threshold = 84;
+
+  useEffect(() => {
+    let disposed = false;
+    const onStart = (event: TouchEvent) => {
+      if (refreshing || event.touches.length !== 1) return;
+      const target = event.target;
+      if (target instanceof Element && target.closest("input, textarea, select, [contenteditable='true'], [data-no-pull-refresh]")) return;
+      if ((document.scrollingElement?.scrollTop ?? window.scrollY) > 0) return;
+      startY.current = event.touches[0]?.clientY ?? null;
+      active.current = startY.current !== null;
+    };
+    const onMove = (event: TouchEvent) => {
+      if (!active.current || startY.current === null || refreshing || event.touches.length !== 1) return;
+      const delta = (event.touches[0]?.clientY ?? startY.current) - startY.current;
+      distanceRef.current = delta > 0 ? Math.min(threshold, delta * 0.55) : 0;
+      setPullDistance(distanceRef.current);
+    };
+    const reset = () => {
+      active.current = false;
+      startY.current = null;
+      distanceRef.current = 0;
+      setPullDistance(0);
+    };
+    const onEnd = () => {
+      if (!active.current) return;
+      const shouldRefresh = distanceRef.current >= threshold * 0.72;
+      reset();
+      if (!shouldRefresh || refreshing) return;
+      setRefreshing(true);
+      void queryClient.invalidateQueries({ refetchType: "active" })
+        .catch((error: unknown) => console.warn("[refresh] Could not refresh active queries", error))
+        .finally(() => { if (!disposed) setRefreshing(false); });
+    };
+    document.addEventListener("touchstart", onStart, { passive: true });
+    document.addEventListener("touchmove", onMove, { passive: true });
+    document.addEventListener("touchend", onEnd, { passive: true });
+    document.addEventListener("touchcancel", reset, { passive: true });
+    return () => {
+      disposed = true;
+      document.removeEventListener("touchstart", onStart);
+      document.removeEventListener("touchmove", onMove);
+      document.removeEventListener("touchend", onEnd);
+      document.removeEventListener("touchcancel", reset);
+    };
+  }, [queryClient, refreshing]);
+
+  if (pullDistance === 0 && !refreshing) return null;
+  return (
+    <div className="pointer-events-none fixed inset-x-0 top-[env(safe-area-inset-top)] z-[100] flex justify-center" role="status" aria-live="polite">
+      <div className="rounded-full border border-border bg-background/95 px-4 py-2 text-sm text-foreground shadow-lg">
+        {refreshing ? "جارٍ تحديث المحتوى…" : pullDistance >= threshold * 0.72 ? "اترك للتحديث" : "اسحب للأسفل للتحديث"}
+      </div>
+    </div>
+  );
+}
+
 function NativeBackButtonHandler() {
   const router = useRouter();
   const location = useLocation();
@@ -458,6 +522,7 @@ function RootComponent() {
           <NativeDeepLinkListener />
           <NativeBackButtonHandler />
           <UnsavedFormGuard />
+          <PullToRefresh queryClient={queryClient} />
           <NativeExternalLinkHandler />
           <BagProvider>
             <div
