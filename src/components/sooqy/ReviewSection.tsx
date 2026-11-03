@@ -7,6 +7,7 @@ import { useAuth } from "@/lib/auth";
 import { formatDate as formatMarketDate } from "@/lib/market";
 import { fetchMyReview, fetchReviews, submitReview, type Review } from "@/lib/sooqy";
 import { RatingSelector } from "@/components/sooqy/RatingSelector";
+import { ReportContentButton } from "@/components/moderation/ReportContentButton";
 import { cn } from "@/lib/utils";
 
 function averageRating(reviews: Review[]) {
@@ -111,9 +112,16 @@ export function ReviewSection({
                   />
                 ))}
               </div>
-              <span className="text-[11px] text-muted-foreground">
-                {formatDate(review.created_at)}
-              </span>
+              <div className="flex items-center gap-1">
+                <span className="text-[11px] text-muted-foreground">
+                  {formatDate(review.created_at)}
+                </span>
+                <ReportContentButton
+                  targetType="review"
+                  targetId={review.id}
+                  label="إبلاغ"
+                />
+              </div>
             </div>
             {review.comment && (
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{review.comment}</p>
