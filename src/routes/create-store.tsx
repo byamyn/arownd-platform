@@ -5,6 +5,7 @@ import { useAuth } from "@/lib/auth";
 import { fetchMyStore, merchantCreateStore } from "@/lib/sooqy";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
+import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 import {
   MerchantOnboarding,
   type StoreForm,
@@ -47,15 +48,7 @@ function CreateStorePage() {
   }
 
   if (myStore.isLoading) {
-    return (
-      <div
-        className="flex min-h-[50vh] items-center justify-center"
-        role="status"
-        aria-label="جارٍ التحقق من المتجر"
-      >
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <DashboardLoadingSkeleton cards={1} />;
   }
 
   if (myStore.isError) {
