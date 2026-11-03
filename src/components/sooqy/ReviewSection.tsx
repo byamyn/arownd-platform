@@ -116,11 +116,7 @@ export function ReviewSection({
                 <span className="text-[11px] text-muted-foreground">
                   {formatDate(review.created_at)}
                 </span>
-                <ReportContentButton
-                  targetType="review"
-                  targetId={review.id}
-                  label="إبلاغ"
-                />
+                <ReportContentButton targetType="review" targetId={review.id} label="إبلاغ" />
               </div>
             </div>
             {review.comment && (
