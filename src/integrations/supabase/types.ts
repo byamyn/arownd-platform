@@ -1026,6 +1026,14 @@ export type Database = {
       };
     };
     Functions: {
+      request_account_deletion: {
+        Args: Record<PropertyKey, never>;
+        Returns: string;
+      };
+      cancel_account_deletion_request: {
+        Args: { _request_id: string };
+        Returns: boolean;
+      };
       collect_merchant_order_cod: {
         Args: { _merchant_order_id: string };
         Returns: Database["public"]["Tables"]["merchant_order_cod_collections"]["Row"];

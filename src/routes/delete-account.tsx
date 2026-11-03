@@ -54,16 +54,10 @@ function DeleteAccountPage() {
     if (!user || submitting) return;
     setSubmitting(true);
     try {
-      const { error } = await supabase
-        .from("account_deletion_requests")
-        .insert({ user_id: user.id });
-      if (error && error.code !== "23505") throw error;
+      const { error } = await supabase.rpc("request_account_deletion");
+      if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["account-deletion-requests", user.id] });
-      toast.success(
-        error?.code === "23505"
-          ? "لديك طلب حذف قيد المعالجة بالفعل."
-          : "تم تسجيل طلب حذف الحساب. يمكنك متابعة حالته هنا.",
-      );
+      toast.success("تم تسجيل طلب حذف الحساب. يمكنك متابعة حالته هنا.");
     } catch (error) {
       showError(error);
     } finally {
@@ -74,6 +68,23 @@ function DeleteAccountPage() {
   const hasOpenRequest = requests.data?.some((request) =>
     ["pending", "under_review", "blocked"].includes(request.status),
   );
+
+  const cancelRequest = async (requestId: string) => {
+    if (!user || submitting) return;
+    setSubmitting(true);
+    try {
+      const { data, error } = await supabase.rpc("cancel_account_deletion_request", {
+        _request_id: requestId,
+      });
+      if (error) throw error;
+      if (!data) throw new Error("لا يمكن إلغاء الطلب بعد بدء التنفيذ.");
+      await queryClient.invalidateQueries({ queryKey: ["account-deletion-requests", user.id] });
+    } catch (error) {
+      showError(error);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   return (
     <div className="app-page mx-auto max-w-xl space-y-5 pb-8 pt-4">
@@ -173,6 +184,16 @@ function DeleteAccountPage() {
                   </div>
                   {request.retention_note && (
                     <p className="mt-2 text-sm leading-6 text-muted-foreground">{request.retention_note}</p>
+                  )}
+                  {["pending", "under_review", "blocked"].includes(request.status) && (
+                    <button
+                      type="button"
+                      disabled={submitting}
+                      onClick={() => void cancelRequest(request.id)}
+                      className="btn-secondary mt-3 w-full disabled:opacity-50"
+                    >
+                      {submitting ? "جارٍ التنفيذ..." : "إلغاء طلب الحذف"}
+                    </button>
                   )}
                 </article>
               ))
