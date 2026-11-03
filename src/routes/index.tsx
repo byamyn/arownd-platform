@@ -9,7 +9,7 @@ import { fetchUnreadNotificationCount, searchProducts, searchStores } from "@/li
 import { ProductCard, StoreRailCard } from "@/components/sooqy/cards";
 import { SearchField } from "@/components/sooqy/search-field";
 import { SectionHeader, SeeAllLink } from "@/components/sooqy/section-header";
-import { ProductGridSkeleton } from "@/components/sooqy/skeleton";
+import { ProductGridSkeleton, StoreRailSkeleton } from "@/components/sooqy/skeleton";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { Reveal } from "@/components/sooqy/reveal";
@@ -155,7 +155,7 @@ function Home() {
               }
               action={<SeeAllLink to="/stores">{t("home_explore_stores")}</SeeAllLink>}
             />
-            {nearbyStores.isLoading && <ProductGridSkeleton count={2} />}
+            {nearbyStores.isLoading && <StoreRailSkeleton count={3} />}
             {nearbyStores.isError && (
               <ErrorState
                 scope="home:nearby-stores"
