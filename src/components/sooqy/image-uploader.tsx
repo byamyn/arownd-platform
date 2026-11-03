@@ -1,10 +1,11 @@
 "use client";
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Plus, Trash2, Pin, Image as ImageIcon, ImageOff } from "lucide-react";
+import { Plus, Trash2, Pin, Share2 } from "lucide-react";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
+import { shareLocalFile } from "@/lib/native-sharing";
 
 const MAX_FILES = 10;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -162,6 +163,18 @@ export function ImageUploader({
     [items, onSetPrimary, onChange],
   );
 
+  const shareItem = async (item: ImageUploaderItem) => {
+    if (!item.file) return;
+    try {
+      const shared = await shareLocalFile(item.file);
+      if (!shared) toast.error("مشاركة الملفات غير متاحة على هذا المتصفح.");
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        toast.error("تعذّرت مشاركة الصورة.");
+      }
+    }
+  };
+
   const isOverLimit = items.length >= maxFiles;
 
   const triggerFileInput = () => {
@@ -248,6 +261,17 @@ export function ImageUploader({
                 >
                   <Trash2 className="size-4" />
                 </button>
+                {/* مشاركة الصورة المحددة */}
+                {item.file && (
+                  <button
+                    type="button"
+                    onClick={() => void shareItem(item)}
+                    aria-label="مشاركة الصورة"
+                    className="absolute bottom-2 end-2 flex size-11 shrink-0 items-center justify-center rounded-full bg-background/90 text-foreground transition hover:bg-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                  >
+                    <Share2 className="size-4" />
+                  </button>
+                )}
                 {/* زر تحديد أساسي */}
                 {!item.isPrimary && (
                   <button
