@@ -21,6 +21,7 @@ import { StoreLocationPicker } from "@/components/sooqy/StoreLocationPicker";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
+import { StoreSettingsSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/studio/settings")({
   head: () => ({
@@ -126,11 +127,7 @@ function StoreSettingsPage() {
       </div>
     );
   if (roles.isLoading || accountType.isLoading) {
-    return (
-      <div className="flex min-h-[50vh] items-center justify-center" role="status">
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <StoreSettingsSkeleton />;
   }
   if (roles.isError || accountType.isError) {
     return (
@@ -158,15 +155,7 @@ function StoreSettingsPage() {
   }
 
   if (store.isLoading) {
-    return (
-      <div
-        className="flex min-h-[50vh] items-center justify-center"
-        role="status"
-        aria-label={t("studio_store_loading")}
-      >
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <StoreSettingsSkeleton />;
   }
 
   if (store.isError) {
