@@ -13,7 +13,7 @@ import {
 import { useEffect, type ReactNode } from "react";
 
 // صائد أخطاء الشاشة — يجب أن يُستورد أولًا ليعتمد قبل أي طبقة أخرى (يتجاهل SSR)
-import "@/lib/screen-error";
+import { reportScreenError } from "@/lib/screen-error";
 import appCss from "../styles.css?url";
 import { AuthProvider } from "@/lib/auth";
 import { ENGLISH_ENABLED, ogLocale, translate, useTranslation } from "@/lib/i18n";
@@ -50,7 +50,9 @@ function NotFoundComponent() {
 }
 
 function ErrorComponent({ error, reset }: ErrorComponentProps) {
-  console.error(error);
+  useEffect(() => {
+    reportScreenError(error, "TanStack Router root error boundary");
+  }, [error]);
   const router = useRouter();
   const { t } = useTranslation();
 
