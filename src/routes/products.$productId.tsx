@@ -48,6 +48,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
 import { telUrl, whatsappUrl } from "@/lib/contact";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
+import { shareRemoteImage } from "@/lib/native-sharing";
 
 export const Route = createFileRoute("/products/$productId")({
   head: () => ({}),
@@ -225,6 +226,21 @@ function ProductPage() {
       } catch {
         // الحافظة غير متاحة أو مرفوضة — لا نُظهر نجاحًا زائفًا.
         toast.error(t("product_link_copy_failed"));
+      }
+    }
+  };
+
+  const shareImage = async () => {
+    if (!zoomSrc) return;
+    try {
+      const shared = await shareRemoteImage(zoomSrc, p.name);
+      if (!shared) {
+        await navigator.clipboard.writeText(zoomSrc);
+        toast.success(t("product_link_copied"));
+      }
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
+        toast.error("تعذّرت مشاركة الصورة. يمكنك حفظها من الصورة المفتوحة.");
       }
     }
   };
@@ -676,6 +692,15 @@ function ProductPage() {
         >
           {zoomSrc && (
             <img src={zoomSrc} alt={p.name} className="max-h-[85vh] w-full object-contain" />
+          )}
+          {zoomSrc && (
+            <button
+              onClick={() => void shareImage()}
+              className="absolute top-3 start-3 flex size-10 items-center justify-center rounded-full bg-card/90 text-foreground backdrop-blur"
+              aria-label={t("aria_share")}
+            >
+              <Share2 className="size-4" />
+            </button>
           )}
           <button
             onClick={() => setZoomSrc(null)}
