@@ -20,6 +20,7 @@ import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useState } from "react";
+import { MerchantOrderDetailSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/studio/orders/$orderId")({
   component: StudioOrderDetailPage,
@@ -67,15 +68,7 @@ function StudioOrderDetailPage() {
   }
 
   if (store.isLoading || orderQuery.isLoading) {
-    return (
-      <div
-        className="flex min-h-[50vh] items-center justify-center"
-        role="status"
-        aria-label={t("studio_order_details_loading")}
-      >
-        <span className="size-8 animate-spin rounded-full border-2 border-accent-ink border-t-transparent" />
-      </div>
-    );
+    return <MerchantOrderDetailSkeleton />;
   }
 
   if (store.isError) {
