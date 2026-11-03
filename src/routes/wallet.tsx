@@ -270,25 +270,13 @@ function WalletPage() {
           )}
         </section>
 
-        {/* الإجراءات */}
-        <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => {
-              setShowTopup((v) => !v);
-              setShowWithdraw(false);
-            }}
-            className="btn-primary"
-          >
-            شحن الرصيد
+        {/* الخدمات المالية معطّلة حتى الإطلاق الرسمي */}
+        <div className="grid grid-cols-2 gap-3" aria-describedby="wallet-preview-notice">
+          <button type="button" disabled className="btn-primary cursor-not-allowed opacity-55">
+            شحن الرصيد · قريبًا
           </button>
-          <button
-            onClick={() => {
-              setShowWithdraw((v) => !v);
-              setShowTopup(false);
-            }}
-            className="btn-secondary"
-          >
-            طلب سحب
+          <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-55">
+            طلب سحب · قريبًا
           </button>
         </div>
 
