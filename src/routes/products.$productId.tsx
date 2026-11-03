@@ -347,15 +347,15 @@ function ProductPage() {
             >
               <ArrowRight className="size-5" />
             </button>
-            <button
-              onClick={share}
-              aria-label={t("aria_share")}
-              className="absolute top-4 end-4 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
-            >
-              <Share2 className="size-5" />
-            </button>
-            <div className="absolute top-16 end-4 z-10">
-              <FavoriteButton kind="products" id={p.id} />
+            <div className="absolute top-4 end-4 z-10 flex items-center gap-2">
+              <button
+                onClick={share}
+                aria-label={t("aria_share")}
+                className="flex size-11 items-center justify-center rounded-full bg-card/90 text-foreground backdrop-blur transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-95"
+              >
+                <Share2 className="size-5" />
+              </button>
+              <FavoriteButton kind="products" id={p.id} className="static size-11 shrink-0" />
             </div>
 
             {images.length > 1 && (
