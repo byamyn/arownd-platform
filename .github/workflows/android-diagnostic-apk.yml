@@ -1,27 +1,8 @@
 name: Android diagnostic APK
 
+# APK generation is manual-only until the Android work is explicitly resumed.
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
-    paths:
-      - "src/**"
-      - "android/**"
-      - "capacitor.config.json"
-      - "package.json"
-      - "package-lock.json"
-      - "vite.config.ts"
-      - ".github/workflows/android-diagnostic-apk.yml"
-  pull_request:
-    branches: [main]
-    paths:
-      - "src/**"
-      - "android/**"
-      - "capacitor.config.json"
-      - "package.json"
-      - "package-lock.json"
-      - "vite.config.ts"
-      - ".github/workflows/android-diagnostic-apk.yml"
 
 permissions:
   contents: read
