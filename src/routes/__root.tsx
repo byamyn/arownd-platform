@@ -115,8 +115,6 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       // appCss يreference "" في بيئة الاختبار فقط — تجاهله حتى لا يُرسم <link> بـhref فارغ
       ...(appCss ? [{ rel: "stylesheet", href: appCss }] : []),
       { rel: "icon", href: "/favicon.svg", type: "image/svg+xml" },
-      { rel: "icon", href: "/icon-192.png", sizes: "192x192", type: "image/png" },
-      { rel: "apple-touch-icon", href: "/icon-192.png" },
       { rel: "manifest", href: "/manifest.webmanifest" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
