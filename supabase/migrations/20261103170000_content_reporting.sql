@@ -86,7 +86,7 @@ begin
     select count(*)
     from public.content_reports cr
     where cr.reporter_id = _reporter_id
-      and cr.created_at > now() - interval '24 hours'
+      and cr.created_at > pg_catalog.now() - interval '24 hours'
   ) >= 10 then
     raise exception 'report_rate_limit_exceeded' using errcode = 'P0001';
   end if;
