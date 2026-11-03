@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, PackagePlus } from "lucide-react";
 import { toast } from "sonner";
@@ -16,7 +16,6 @@ import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ImageUploader } from "@/components/sooqy/image-uploader";
-import { AuthGate } from "@/components/sooqy/auth-gate";
 import {
   DEFAULT_CATEGORY_ID,
   MAIN_CATEGORIES,
@@ -73,7 +72,7 @@ function AddProductPage() {
   useRealtimeSubscription({ table: "offers", filter: store.data?.id ? `store_id=eq.${store.data.id}` : undefined, queryKeys: [["my-store-offers", store.data?.id]], enabled: !!store.data?.id });
 
   if (!ready) return null;
-  if (!user) return <AuthGate onLogin={() => navigate({ to: "/auth", search: { redirect: "/studio/add-product" } })} />;
+  if (!user) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><div className="rounded-[var(--radius-card)] border border-border bg-card p-5 text-center"><p className="text-sm text-muted-foreground">سجّل الدخول بحساب التاجر لإضافة منتجاتك.</p><Link to="/auth" search={{ redirect: "/studio/add-product" }} className="btn-primary mt-4 inline-flex px-5 py-3">تسجيل الدخول</Link></div></div>;
   if (store.isLoading || roles.isLoading || accountType.isLoading) return <DashboardLoadingSkeleton cards={2} />;
   if (store.isError || roles.isError || accountType.isError) return <div className="mx-auto max-w-xl px-4 pt-6"><ErrorState scope="studio:add-product" error={store.error ?? roles.error ?? accountType.error} onRetry={() => { void store.refetch(); void roles.refetch(); void accountType.refetch(); }} /></div>;
   if (accountType.data !== "merchant" || !roles.data?.includes("merchant")) return <div className="mx-auto max-w-xl px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">هذه الصفحة مخصصة لحسابات التجار.</p></div>;
