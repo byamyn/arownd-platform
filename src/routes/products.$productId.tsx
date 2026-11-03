@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   ArrowRight,
@@ -18,7 +18,6 @@ import {
 import { toast } from "sonner";
 import { formatDA, formatKm, useGeo, isOpenNow } from "@/lib/geo";
 import {
-  createReservation,
   getProduct,
   getProductComparisonOffers,
   incrementProductView,
@@ -27,7 +26,6 @@ import {
   stockLevel,
   storeDistance,
   type OfferFull,
-  type Reservation,
 } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
 import { useBag } from "@/lib/bag";
@@ -37,7 +35,6 @@ import { StockBadge, OpenBadge, VerifiedBadge } from "@/components/sooqy/badges"
 import { QtyStepper } from "@/components/sooqy/qty-stepper";
 import { FavoriteButton, ProductCard } from "@/components/sooqy/cards";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { useCountdown } from "@/components/sooqy/DynamicIsland";
 import { ReviewSection } from "@/components/sooqy/ReviewSection";
 import { ReportContentButton } from "@/components/moderation/ReportContentButton";
 import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
@@ -65,7 +62,6 @@ function ProductPage() {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const router = useRouter();
-  const qc = useQueryClient();
 
   const product = useQuery({
     queryKey: ["product", productId],
@@ -102,8 +98,6 @@ function ProductPage() {
   const [size, setSize] = useState<string>("");
   const [color, setColor] = useState<string>("");
   const [qty, setQty] = useState(1);
-  const [reservation, setReservation] = useState<Reservation | null>(null);
-  const [busy, setBusy] = useState(false);
   const [zoomSrc, setZoomSrc] = useState<string | null>(null);
   const [bagPulse, setBagPulse] = useState(0);
 
@@ -232,24 +226,6 @@ function ProductPage() {
         // الحافظة غير متاحة أو مرفوضة — لا نُظهر نجاحًا زائفًا.
         toast.error(t("product_link_copy_failed"));
       }
-    }
-  };
-
-  const reserve = async (o: OfferFull) => {
-    if (!user) {
-      navigate({ to: "/auth", search: { redirect: window.location.pathname } });
-      return;
-    }
-    setBusy(true);
-    try {
-      const r = await createReservation(o.id, o.store_id, 3, qty, chosen);
-      setReservation(r);
-      qc.invalidateQueries({ queryKey: ["offers", productId] });
-      qc.invalidateQueries({ queryKey: ["my-reservations"] });
-    } catch (e) {
-      toast.error((e as Error).message);
-    } finally {
-      setBusy(false);
     }
   };
 
@@ -659,15 +635,6 @@ function ProductPage() {
                         </div>
                         <button
                           type="button"
-                          disabled={!selected || level === "out" || busy}
-                          onClick={() => selected && reserve(selected)}
-                          className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
-                          aria-label={t("product_reserve")}
-                        >
-                          <Timer className="size-4" />
-                        </button>
-                        <button
-                          type="button"
                           disabled={!selected || level === "out"}
                           onClick={addToBag}
                           className="flex size-11 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
@@ -701,13 +668,6 @@ function ProductPage() {
       </div>
 
 
-
-      <ReservationDialog
-        reservation={reservation}
-        storeName={selected?.store.name ?? ""}
-        productName={p.name}
-        onClose={() => setReservation(null)}
-      />
 
       <Dialog open={!!zoomSrc} onOpenChange={(o) => !o && setZoomSrc(null)}>
         <DialogContent
@@ -773,7 +733,6 @@ function SpecRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-function ReservationDialog({
   reservation,
   storeName,
   productName,
