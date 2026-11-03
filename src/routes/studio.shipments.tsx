@@ -13,6 +13,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { formatDate } from "@/lib/market";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { EmptyState } from "@/components/sooqy/empty-state";
+import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/studio/shipments")({
@@ -76,12 +77,7 @@ function StudioShipmentsPage() {
   }
 
   if (isLoading) {
-    return (
-      <div className="p-6 text-center">
-        <PageHeader title={t("studio_shipments")} back="/studio" />
-        <div className="animate-pulse text-muted-foreground">{t("studio_loading")}</div>
-      </div>
-    );
+    return <DashboardLoadingSkeleton cards={2} />;
   }
 
   if (!storeId) {
