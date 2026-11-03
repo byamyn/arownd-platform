@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/market";
 import {
   archiveMyActivity,
   cancelMyOrder,
+  cancelMyMerchantOrder,
   customerRespondToMerchantOrder,
   fetchMyOrders,
 } from "@/lib/sooqy";
@@ -56,6 +57,7 @@ function OrdersPage() {
   const [tab, setTab] = useState<Tab>("all");
   const [cancellingOrderId, setCancellingOrderId] = useState<string | null>(null);
   const [respondingQuoteId, setRespondingQuoteId] = useState<string | null>(null);
+  const [cancellingMerchantOrderId, setCancellingMerchantOrderId] = useState<string | null>(null);
   const [pendingConfirmation, setPendingConfirmation] = useState<PendingConfirmation | null>(null);
   const [confirmationBusy, setConfirmationBusy] = useState(false);
   const orders = useQuery({
@@ -325,6 +327,32 @@ function OrdersPage() {
                           </button>
                         </div>
                       </>
+                    )}
+                    {suborder.status === "pending" && (
+                      <button
+                        type="button"
+                        disabled={cancellingMerchantOrderId === suborder.id}
+                        onClick={() =>
+                          setPendingConfirmation({
+                            title: "إلغاء طلب هذا المتجر",
+                            message: "هل تريد إلغاء طلب هذا المتجر فقط؟ ستُعاد المنتجات إلى مخزونه، وتبقى طلبات المتاجر الأخرى مستقلة.",
+                            action: async () => {
+                              setCancellingMerchantOrderId(suborder.id);
+                              try {
+                                await cancelMyMerchantOrder(suborder.id);
+                                await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
+                                showSuccess("تم إلغاء طلب هذا المتجر.");
+                              } finally {
+                                setCancellingMerchantOrderId(null);
+                              }
+                            },
+                          })
+                        }
+                        className="inline-flex min-h-[var(--control-height)] w-full items-center justify-center gap-2 rounded-full border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
+                      >
+                        <XCircle className="size-4" />
+                        {cancellingMerchantOrderId === suborder.id ? "جارٍ إلغاء الطلب..." : "إلغاء طلب هذا المتجر"}
+                      </button>
                     )}
                   </div>
                 ))}
