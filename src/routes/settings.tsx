@@ -23,14 +23,12 @@ import { useAuth } from "@/lib/auth";
 import {
   fetchMyProfile,
   fetchMyAccountType,
-  fetchMyRoles,
   setMyProfileVisibility,
 } from "@/lib/sooqy";
 import { useTheme, type Theme } from "@/lib/theme";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
-import { AdminMfaSetup } from "@/components/sooqy/admin-mfa-setup";
 import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
@@ -52,11 +50,6 @@ function SettingsPage() {
   const accountType = useQuery({
     queryKey: ["my-account-type", user?.id],
     queryFn: fetchMyAccountType,
-    enabled: !!user,
-  });
-  const roles = useQuery({
-    queryKey: ["my-roles", user?.id],
-    queryFn: fetchMyRoles,
     enabled: !!user,
   });
   const [visibilityBusy, setVisibilityBusy] = useState(false);
@@ -218,7 +211,6 @@ function SettingsPage() {
         </section>
       )}
 
-      {roles.data?.includes("admin") && <AdminMfaSetup />}
 
       {/* مجموعة: الحساب */}
       <section className="space-y-2">
