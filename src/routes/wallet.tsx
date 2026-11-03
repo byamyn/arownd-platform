@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import {
   ArrowDownLeft,
+  Info,
   ArrowUpRight,
   ReceiptText,
   RotateCcw,
@@ -210,6 +211,20 @@ function WalletPage() {
           subtitle="رصيدك وعملياتك المالية في مكان واحد"
           back="/profile"
         />
+
+        <aside
+          role="note"
+          className="flex items-start gap-3 rounded-[var(--radius-card)] border border-info/25 bg-info-soft px-4 py-3 text-start"
+        >
+          <Info className="mt-0.5 size-5 shrink-0 text-info" aria-hidden="true" />
+          <div className="min-w-0">
+            <p className="text-sm font-extrabold text-foreground">معاينة فقط</p>
+            <p className="mt-1 text-xs leading-5 text-muted-foreground">
+              صفحة المحفظة قيد التطوير حاليًا. الأرصدة والعمليات المعروضة تجريبية، ولن تتوفر
+              خدمات الشحن والسحب والدفع حتى الإعلان عن إطلاقها رسميًا.
+            </p>
+          </div>
+        </aside>
 
         {/* بطاقة الرصيد — تعرض الأرقام بعد تحميل بيانات Supabase فقط */}
         <section className="relative overflow-hidden rounded-[var(--radius-card)] bg-primary p-5 text-primary-foreground  sm:p-6">
