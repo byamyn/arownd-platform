@@ -366,6 +366,10 @@ const channel = (name: string) => ({
 
 export const fakeSupabase = {
   from: (t: string) => makeBuilder(t),
+  removeChannel: async (subscription: { unsubscribe?: () => void }) => {
+    subscription.unsubscribe?.();
+    return "ok";
+  },
   rpc,
   auth,
   storage: { from: storageFrom },
