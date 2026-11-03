@@ -258,7 +258,6 @@ export interface FileRoutesByTo {
   '/stores/$storeId': typeof StoresStoreIdRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
-  '/admin': typeof AdminIndexRoute
   '/orders': typeof OrdersIndexRoute
   '/stores': typeof StoresIndexRoute
   '/studio': typeof StudioIndexRoute
@@ -321,7 +320,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/terms'
     | '/wallet'
-    | '/admin/delivery-companies'
     | '/auth/callback'
     | '/category/$catId'
     | '/orders/$orderId'
@@ -329,7 +327,6 @@ export interface FileRouteTypes {
     | '/stores/$storeId'
     | '/studio/settings'
     | '/studio/shipments'
-    | '/admin/'
     | '/orders/'
     | '/stores/'
     | '/studio/'
@@ -356,7 +353,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/terms'
     | '/wallet'
-    | '/admin/delivery-companies'
     | '/auth/callback'
     | '/category/$catId'
     | '/orders/$orderId'
@@ -364,7 +360,6 @@ export interface FileRouteTypes {
     | '/stores/$storeId'
     | '/studio/settings'
     | '/studio/shipments'
-    | '/admin'
     | '/orders'
     | '/stores'
     | '/studio'
@@ -391,7 +386,6 @@ export interface FileRouteTypes {
     | '/settings'
     | '/terms'
     | '/wallet'
-    | '/admin/delivery-companies'
     | '/auth_/callback'
     | '/category/$catId'
     | '/orders/$orderId'
@@ -399,7 +393,6 @@ export interface FileRouteTypes {
     | '/stores/$storeId'
     | '/studio/settings'
     | '/studio/shipments'
-    | '/admin/'
     | '/orders/'
     | '/stores/'
     | '/studio/'
@@ -582,18 +575,8 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/admin'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/admin/delivery-companies': {
-      id: '/admin/delivery-companies'
-      path: '/admin/delivery-companies'
-      fullPath: '/admin/delivery-companies'
-      preLoaderRoute: typeof AdminDeliveryCompaniesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth_/callback': {
@@ -697,14 +680,12 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
-  AdminDeliveryCompaniesRoute:   AuthCallbackRoute: AuthCallbackRoute,
   CategoryCatIdRoute: CategoryCatIdRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   StoresStoreIdRoute: StoresStoreIdRoute,
   StudioSettingsRoute: StudioSettingsRoute,
   StudioShipmentsRoute: StudioShipmentsRoute,
-  AdminIndexRoute:   OrdersIndexRoute: OrdersIndexRoute,
   StoresIndexRoute: StoresIndexRoute,
   StudioIndexRoute: StudioIndexRoute,
   StudioOrdersOrderIdRoute: StudioOrdersOrderIdRoute,
