@@ -230,8 +230,6 @@ export interface FileRoutesByFullPath {
   '/products/$productId': typeof ProductsProductIdRoute
   '/stores/$storeId': typeof StoresStoreIdRoute
   '/studio/add-product': typeof StudioAddProductRoute
-  '/studio/add-product': typeof StudioAddProductRoute
-  '/studio/add-product': typeof StudioAddProductRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
   '/orders/': typeof OrdersIndexRoute
@@ -265,6 +263,7 @@ export interface FileRoutesByTo {
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/stores/$storeId': typeof StoresStoreIdRoute
+  '/studio/add-product': typeof StudioAddProductRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
   '/orders': typeof OrdersIndexRoute
@@ -299,6 +298,7 @@ export interface FileRoutesById {
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/stores/$storeId': typeof StoresStoreIdRoute
+  '/studio/add-product': typeof StudioAddProductRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
   '/orders/': typeof OrdersIndexRoute
@@ -336,6 +336,7 @@ export interface FileRouteTypes {
     | '/stores/$storeId'
     | '/studio/add-product'
     | '/studio/add-product'
+    | '/studio/add-product'
     | '/studio/settings'
     | '/studio/shipments'
     | '/orders/'
@@ -369,7 +370,6 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/products/$productId'
     | '/stores/$storeId'
-    | '/studio/add-product'
     | '/studio/settings'
     | '/studio/shipments'
     | '/orders'
@@ -403,7 +403,6 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/products/$productId'
     | '/stores/$storeId'
-    | '/studio/add-product'
     | '/studio/settings'
     | '/studio/shipments'
     | '/orders/'
