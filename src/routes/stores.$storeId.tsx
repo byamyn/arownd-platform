@@ -214,7 +214,9 @@ function StorePage() {
           {/* الاسم والحالة */}
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h1 className="text-h1 text-foreground">{s.name}</h1>
-            {!isOwner && <ReportContentButton targetType="store" targetId={s.id} label="الإبلاغ عن المتجر" />}
+            {!isOwner && (
+              <ReportContentButton targetType="store" targetId={s.id} label="الإبلاغ عن المتجر" />
+            )}
           </div>
           <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2 text-xs">
