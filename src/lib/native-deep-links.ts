@@ -13,7 +13,9 @@ function safeRelativePath(value: string | null): string | undefined {
     !value.startsWith("/") ||
     value.startsWith("//") ||
     value.startsWith("/\\") ||
-    value.includes("\\")
+    value.includes("\\") ||
+    /%(?:2f|5c|00)/i.test(value) ||
+    /[\\u0000-\\u001f\\u007f]/.test(value)
   ) {
     return undefined;
   }
@@ -68,6 +70,8 @@ export function parseNativeRouteLink(rawUrl: string): string | null {
       !url.pathname.startsWith("/") ||
       url.pathname.startsWith("//") ||
       url.pathname.includes("\\") ||
+      /%(?:2f|5c|00)/i.test(url.pathname) ||
+      /[\\u0000-\\u001f\\u007f]/.test(url.pathname) ||
       url.pathname.length > 1024
     ) {
       return null;
