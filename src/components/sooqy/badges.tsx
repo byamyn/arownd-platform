@@ -17,12 +17,12 @@ export function StockBadge({ level, className }: { level: StockLevel; className?
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-caption font-semibold",
+        "inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] leading-4 font-semibold",
         map.cls,
         className,
       )}
     >
-      <Check className="size-3" aria-hidden="true" />
+      <Check className="size-2.5" aria-hidden="true" />
       {t(map.key)}
     </span>
   );
@@ -127,7 +127,7 @@ export function OpenBadge({
     return (
       <span
         className={cn(
-          "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-semibold",
+          "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] leading-4 font-semibold",
           config.bgClass,
           className,
         )}
@@ -143,7 +143,7 @@ export function OpenBadge({
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-caption font-bold",
+        "inline-flex items-center gap-1 rounded-full px-1.5 py-0.5 text-[10px] leading-4 font-bold",
         open ? "bg-success-soft text-success" : "bg-neutral-200 text-muted-foreground",
         className,
       )}
