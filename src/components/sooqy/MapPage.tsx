@@ -1,6 +1,6 @@
 import { ClientOnly, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { lazy, Suspense, useState, useRef } from "react";
+import { lazy, Suspense, useState, useRef, useEffect } from "react";
 import * as maplibregl from "maplibre-gl";
 import { Crosshair, Filter, Navigation, Search, X } from "lucide-react";
 import { toast } from "sonner";
@@ -12,13 +12,15 @@ import { InAppNavigation } from "@/components/sooqy/InAppNavigation";
 import { RatingStars } from "@/components/sooqy/rating-stars";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
+import { useRealtimeSubscription } from "@/hooks/use-realtime";
 
 const StoreMap = lazy(() => import("@/components/sooqy/StoreMap"));
 
 type Sort = "near" | "rating";
 
 export function MapPage() {
-  const { pos, locating, ask } = useGeo();
+  const { pos, locating, ask, request } = useGeo();
+  useRealtimeSubscription({ table: "stores", queryKeys: [["near-stores"]] });
   const { t } = useTranslation();
   const [active, setActive] = useState<string | null>(null);
   const [q, setQ] = useState("");
@@ -36,6 +38,11 @@ export function MapPage() {
   } | null>(null);
   const [center, setCenter] = useState(ALGIERS);
   const mapRef = useRef<maplibregl.Map | null>(null);
+
+  // إذا انتهت صلاحية الموقع المؤقت، حاول تحديده مجددًا عند فتح الخريطة.
+  useEffect(() => {
+    if (!pos) void request();
+  }, [pos, request]);
 
   const stores = useQuery({
     queryKey: ["near-stores", null, pos?.lat, pos?.lng],
