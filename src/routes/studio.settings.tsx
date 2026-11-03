@@ -110,7 +110,6 @@ function StoreSettingsPage() {
     });
     setClosedDays(oh.closed_days ?? []);
     setLogoPreview(s.logo_url ?? null);
-    setCoverPreview(s.logo_url ?? null);
     setLoaded(true);
   }, [store.data, loaded]);
 
