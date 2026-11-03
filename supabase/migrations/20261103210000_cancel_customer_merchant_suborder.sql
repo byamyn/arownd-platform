@@ -8,9 +8,22 @@ set search_path = public
 as $function$
 declare
   mo public.merchant_orders;
+  parent_order_id uuid;
 begin
   if auth.uid() is null then
     raise exception 'not_authenticated';
+  end if;
+
+  -- Lock the parent first, matching merchant quote/rejection lock order.
+  select mo.order_id into parent_order_id
+  from public.merchant_orders mo
+  join public.orders o on o.id = mo.order_id
+  where mo.id = _merchant_order_id
+    and mo.customer_id = auth.uid()
+  for update of o;
+
+  if not found then
+    raise exception 'merchant_order_not_found';
   end if;
 
   select * into mo
