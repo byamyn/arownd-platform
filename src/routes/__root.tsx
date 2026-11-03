@@ -283,11 +283,18 @@ function NativeExternalLinkHandler() {
     if (!isNativePlatform()) return;
 
     const handleClick = (event: MouseEvent) => {
-      if (event.defaultPrevented || event.button !== 0) return;
+      if (
+        event.defaultPrevented ||
+        event.button !== 0 ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.shiftKey ||
+        event.altKey
+      ) return;
       const target = event.target;
       if (!(target instanceof Element)) return;
       const anchor = target.closest("a[href]");
-      if (!(anchor instanceof HTMLAnchorElement)) return;
+      if (!(anchor instanceof HTMLAnchorElement) || anchor.hasAttribute("download")) return;
 
       let url: URL;
       try {
@@ -295,12 +302,10 @@ function NativeExternalLinkHandler() {
       } catch {
         return;
       }
-      if (
-        (url.protocol !== "https:" && url.protocol !== "http:") ||
-        url.origin === window.location.origin
-      ) {
-        return;
-      }
+      const isWebLink = url.protocol === "https:" || url.protocol === "http:";
+      const isSystemLink = ["tel:", "mailto:", "sms:", "geo:"].includes(url.protocol);
+      if (!isWebLink && !isSystemLink) return;
+      if (isWebLink && url.origin === window.location.origin) return;
 
       event.preventDefault();
       event.stopPropagation();
