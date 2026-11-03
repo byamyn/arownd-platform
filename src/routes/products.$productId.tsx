@@ -39,6 +39,7 @@ import { FavoriteButton, ProductCard } from "@/components/sooqy/cards";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useCountdown } from "@/components/sooqy/DynamicIsland";
 import { ReviewSection } from "@/components/sooqy/ReviewSection";
+import { ReportContentButton } from "@/components/moderation/ReportContentButton";
 import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
 import { cn } from "@/lib/utils";
 import { categoryLabel } from "@/lib/taxonomy";
@@ -430,7 +431,10 @@ function ProductPage() {
                   {p.name}
                 </h1>
               </div>
-              <StockBadge level={level} />
+              <div className="flex items-center gap-2">
+                <StockBadge level={level} />
+                <ReportContentButton targetType="product" targetId={p.id} label="إبلاغ" />
+              </div>
             </div>
             {selected && (
               <div className="mt-4 flex flex-wrap items-end justify-between gap-3 border-t border-border pt-4">
