@@ -144,12 +144,39 @@ export async function shareRemoteImage(value: string, fileName = "arownd-image.j
   if (declaredSize > 15 * 1024 * 1024) {
     throw new Error("The image is larger than 15 MB");
   }
-  const blob = await response.blob();
-  if (blob.size > 15 * 1024 * 1024) {
-    throw new Error("The image is larger than 15 MB");
-  }
-  if (!blob.type.startsWith("image/")) {
+  const contentType = (response.headers.get("content-type") || "").split(";")[0].trim().toLowerCase();
+  if (!contentType.startsWith("image/")) {
     throw new Error("The selected resource is not an image");
+  }
+
+  // Enforce the limit while streaming so a missing or misleading
+  // Content-Length header cannot cause an unbounded Blob allocation.
+  const reader = response.body?.getReader();
+  if (!reader) {
+    throw new Error("Streaming image downloads are not supported");
+  }
+
+  const chunks: Uint8Array[] = [];
+  let received = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      received += value.byteLength;
+      if (received > 15 * 1024 * 1024) {
+        await reader.cancel();
+        throw new Error("The image is larger than 15 MB");
+      }
+      chunks.push(value);
+    }
+  } catch (error) {
+    await reader.cancel().catch(() => undefined);
+    throw error;
+  }
+
+  const blob = new Blob(chunks, { type: contentType });
+  if (blob.size === 0) {
+    throw new Error("The image is empty");
   }
 
   const extension = blob.type === "image/png" ? "png" :
