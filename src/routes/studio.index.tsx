@@ -997,21 +997,21 @@ function StudioPage() {
             <h2 className="mb-3 flex items-center gap-2 font-bold">
               <PackagePlus className="size-5 text-accent-ink" /> إضافة منتج في 30 ثانية
             </h2>
-            <div className="grid gap-3">
+            <div className="grid min-w-0 gap-3">
               <input
                 value={productForm.name}
                 onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
                 placeholder={t("studio_product_name_ph")}
-                className="h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                className="h-[var(--control-height)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
               />
-              <div className="grid grid-cols-2 gap-2">
+              <div className="grid min-w-0 grid-cols-2 gap-2">
                 <input
                   value={productForm.price}
                   onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
                   placeholder={t("studio_price_dzd_ph")}
                   type="number"
                   min="0"
-                  className="h-[var(--control-height)] rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                  className="h-[var(--control-height)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
                 />
                 <input
                   value={productForm.stock}
@@ -1019,7 +1019,7 @@ function StudioPage() {
                   placeholder={t("studio_quantity_ph")}
                   type="number"
                   min="0"
-                  className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
               </div>
               <CategorySelect
@@ -1036,20 +1036,20 @@ function StudioPage() {
                 value={productForm.sizes}
                 onChange={(e) => setProductForm({ ...productForm, sizes: e.target.value })}
                 placeholder={t("studio_sizes_ph")}
-                className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <input
                 value={productForm.colors}
                 onChange={(e) => setProductForm({ ...productForm, colors: e.target.value })}
                 placeholder={t("studio_colors_ph")}
-                className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <textarea
                 value={productForm.description}
                 onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
                 placeholder={t("studio_description_ph")}
                 rows={2}
-                className="min-h-24 rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                className="min-h-24 w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
               />
               <ImageUploader
                 initialItems={[]}
@@ -1097,21 +1097,21 @@ function StudioPage() {
                 </button>
               }
             >
-              <div className="grid gap-3">
+              <div className="grid min-w-0 gap-3">
                 <input
                   value={editForm.name}
                   onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
                   placeholder={t("studio_product_name_ph")}
-                  className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                  className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                 />
-                <div className="grid grid-cols-2 gap-2">
+                <div className="grid min-w-0 grid-cols-2 gap-2">
                   <input
                     value={editForm.price}
                     onChange={(e) => setEditForm({ ...editForm, price: e.target.value })}
                     placeholder={t("studio_price_dzd_ph")}
                     type="number"
                     min="0"
-                    className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                    className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                   />
                   <input
                     value={editForm.stock}
@@ -1119,7 +1119,7 @@ function StudioPage() {
                     placeholder={t("studio_quantity_ph")}
                     type="number"
                     min="0"
-                    className="h-[var(--control-height-compact)] rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                    className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
                   />
                 </div>
                 <CategorySelect
@@ -1137,7 +1137,7 @@ function StudioPage() {
                   onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
                   placeholder={t("studio_description_ph")}
                   rows={2}
-                  className="min-h-24 rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
+                  className="min-h-24 w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
                 />
                 <ImageUploader
                   initialItems={editExistingImages}
@@ -1547,7 +1547,7 @@ function CategorySelect({ value, onChange }: { value: string; onChange: (id: str
 
   return (
     <div className="space-y-1.5">
-      <div className="grid grid-cols-2 gap-2">
+      <div className="grid min-w-0 grid-cols-2 gap-2">
         <select
           value={main}
           aria-label={t("studio_main_category_aria")}
