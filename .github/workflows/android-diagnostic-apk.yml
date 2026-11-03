@@ -12,6 +12,16 @@ on:
       - "package-lock.json"
       - "vite.config.ts"
       - ".github/workflows/android-diagnostic-apk.yml"
+  pull_request:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "android/**"
+      - "capacitor.config.json"
+      - "package.json"
+      - "package-lock.json"
+      - "vite.config.ts"
+      - ".github/workflows/android-diagnostic-apk.yml"
 
 permissions:
   contents: read
@@ -62,7 +72,7 @@ jobs:
 
       - name: Assemble diagnostic APK
         working-directory: android
-        run: ./gradlew assembleDebug --no-daemon
+        run: ./gradlew assembleDebug --no-daemon --stacktrace
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
