@@ -820,23 +820,6 @@ function StudioPage() {
             )}
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
           </button>
-<Link
-            to="/studio/settings"
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
-          >
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
-              <Clock className="size-5" />
-            </span>
-            <span className="min-w-0 flex-1">
-              <span className="block text-sm font-bold text-foreground">
-                {t("studio_location_hours")}
-              </span>
-              <span className="block text-xs text-muted-foreground">
-                {t("studio_manage_location_hours")}
-              </span>
-            </span>
-            <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
-          </Link>
 </div>
       </section>
 
