@@ -119,7 +119,14 @@ export async function shareRemoteImage(value: string, fileName = "arownd-image.j
 
   const response = await fetch(url, { credentials: "omit" });
   if (!response.ok) throw new Error("Could not retrieve the image");
+  const declaredSize = Number(response.headers.get("content-length") || 0);
+  if (declaredSize > 15 * 1024 * 1024) {
+    throw new Error("The image is larger than 15 MB");
+  }
   const blob = await response.blob();
+  if (blob.size > 15 * 1024 * 1024) {
+    throw new Error("The image is larger than 15 MB");
+  }
   if (!blob.type.startsWith("image/")) {
     throw new Error("The selected resource is not an image");
   }
