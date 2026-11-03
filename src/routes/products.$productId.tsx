@@ -48,7 +48,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
 import { telUrl, whatsappUrl } from "@/lib/contact";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
-import { shareRemoteImage } from "@/lib/native-sharing";
+import { shareRemoteImage, shareTextContent } from "@/lib/native-sharing";
 
 export const Route = createFileRoute("/products/$productId")({
   head: () => ({}),
@@ -213,18 +213,14 @@ function ProductPage() {
   const share = async () => {
     const url = window.location.href;
     const text = t("product_share_text", { name: p.name, price: formatDA(firstPrice) });
-    if (navigator.share) {
-      try {
-        await navigator.share({ title: p.name, text, url });
-      } catch {
-        /* user cancelled */
-      }
-    } else {
-      try {
+    try {
+      const shared = await shareTextContent({ title: p.name, text, url });
+      if (!shared) {
         await navigator.clipboard.writeText(`${text}\n${url}`);
         toast.success(t("product_link_copied"));
-      } catch {
-        // الحافظة غير متاحة أو مرفوضة — لا نُظهر نجاحًا زائفًا.
+      }
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
         toast.error(t("product_link_copy_failed"));
       }
     }
