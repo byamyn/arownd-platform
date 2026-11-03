@@ -528,8 +528,8 @@ function StudioPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-screen-2xl space-y-6 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
-      <header className="flex items-center justify-between gap-3">
+    <div className="mx-auto w-full min-w-0 max-w-screen-2xl space-y-6 overflow-x-clip px-4 pb-28 pt-5 sm:px-6 lg:pt-8">
+      <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <p className="text-caption font-extrabold uppercase tracking-[0.22em] text-accent-ink">
             AROWND · MERCHANT
