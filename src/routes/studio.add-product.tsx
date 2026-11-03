@@ -69,7 +69,7 @@ function AddProductPage() {
   const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
   const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
-  useRealtimeSubscription({ table: "offers", filter: store.data?.id ? `store_id=eq.${store.data.id}` : undefined, queryKeys: [["my-store-offers", store.data?.id]], enabled: !!store.data?.id });
+  useRealtimeSubscription({ table: "store_offers", filter: store.data?.id ? `store_id=eq.${store.data.id}` : undefined, queryKeys: [["my-store-offers", store.data?.id]], enabled: !!store.data?.id });
 
   if (!ready) return null;
   if (!user) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><div className="rounded-[var(--radius-card)] border border-border bg-card p-5 text-center"><p className="text-sm text-muted-foreground">سجّل الدخول بحساب التاجر لإضافة منتجاتك.</p><Link to="/auth" search={{ redirect: "/studio/add-product" }} className="btn-primary mt-4 inline-flex px-5 py-3">تسجيل الدخول</Link></div></div>;
