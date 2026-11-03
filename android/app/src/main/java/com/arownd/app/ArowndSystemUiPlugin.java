@@ -1,9 +1,13 @@
 package com.arownd.app;
 
-import android.graphics.Color;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
+import android.util.Base64;
+import android.graphics.Color;
 import android.view.Window;
 
+import androidx.core.content.FileProvider;
 import androidx.core.view.WindowCompat;
 import androidx.core.view.WindowInsetsControllerCompat;
 
@@ -11,6 +15,11 @@ import com.getcapacitor.Plugin;
 import com.getcapacitor.PluginCall;
 import com.getcapacitor.PluginMethod;
 import com.getcapacitor.annotation.CapacitorPlugin;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Locale;
 
 @CapacitorPlugin(name = "ArowndSystemUi")
 public class ArowndSystemUiPlugin extends Plugin {
@@ -38,5 +47,95 @@ public class ArowndSystemUiPlugin extends Plugin {
             }
             call.resolve();
         });
+    }
+
+    @PluginMethod
+    public void openExternal(PluginCall call) {
+        String rawUrl = call.getString("url");
+        if (rawUrl == null) {
+            call.reject("A URL is required");
+            return;
+        }
+
+        Uri uri = Uri.parse(rawUrl);
+        String scheme = uri.getScheme();
+        if (scheme == null ||
+            !(scheme.equalsIgnoreCase("https") || scheme.equalsIgnoreCase("http")) ||
+            uri.getHost() == null) {
+            call.reject("Only valid HTTP(S) links can be opened externally");
+            return;
+        }
+
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            getContext().startActivity(intent);
+            call.resolve();
+        } catch (Exception error) {
+            call.reject("No application can open this link", error);
+        }
+    }
+
+    @PluginMethod
+    public void shareFile(PluginCall call) {
+        String encoded = call.getString("data");
+        String requestedName = call.getString("fileName", "arownd-share");
+        String mimeType = call.getString("mimeType", "application/octet-stream");
+        if (encoded == null || encoded.isEmpty()) {
+            call.reject("File data is required");
+            return;
+        }
+        if (mimeType == null || !(mimeType.startsWith("image/") ||
+            mimeType.equals("application/pdf") || mimeType.equals("text/plain"))) {
+            call.reject("This file type cannot be shared");
+            return;
+        }
+
+        byte[] bytes;
+        try {
+            bytes = Base64.decode(encoded, Base64.DEFAULT);
+        } catch (IllegalArgumentException error) {
+            call.reject("Invalid file data", error);
+            return;
+        }
+        if (bytes.length == 0 || bytes.length > 15 * 1024 * 1024) {
+            call.reject("File must be between 1 byte and 15 MB");
+            return;
+        }
+
+        String safeName = requestedName == null ? "arownd-share" :
+            requestedName.replaceAll("[^A-Za-z0-9._-]", "_");
+        if (safeName.isEmpty() || safeName.equals(".") || safeName.equals("..")) {
+            safeName = "arownd-share";
+        }
+
+        try {
+            File directory = new File(getContext().getCacheDir(), "shared");
+            if (!directory.exists() && !directory.mkdirs()) {
+                call.reject("Could not prepare a temporary share folder");
+                return;
+            }
+            File output = new File(directory, safeName);
+            try (FileOutputStream stream = new FileOutputStream(output)) {
+                stream.write(bytes);
+            }
+
+            Uri contentUri = FileProvider.getUriForFile(
+                getContext(),
+                getContext().getPackageName() + ".fileprovider",
+                output
+            );
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType(mimeType.toLowerCase(Locale.ROOT));
+            intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            intent.setClipData(android.content.ClipData.newUri(
+                getContext().getContentResolver(), "Arownd file", contentUri
+            ));
+            startActivity(Intent.createChooser(intent, "Share with"));
+            call.resolve();
+        } catch (IOException | RuntimeException error) {
+            call.reject("Could not prepare the file for sharing", error);
+        }
     }
 }
