@@ -56,10 +56,9 @@ export function StudioNav() {
           );
         })}
         <Link
-          to="/studio"
-          hash="quick-add-product"
+          to="/studio/add-product"
           aria-label={t("studio_nav_add_product")}
-          className={cn(navClass(currentPath === "/studio"), "text-primary")}
+          className={cn(navClass(currentPath === "/studio/add-product"), "text-primary")}
         >
           <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm" aria-hidden="true">
             <Plus className="size-5 shrink-0" />
