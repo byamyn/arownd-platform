@@ -14,6 +14,7 @@ import {
   User,
   Wallet,
   Settings,
+  ShoppingBag,
 } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
@@ -90,6 +91,7 @@ function ProfilePage() {
     enabled: !!user && !public_id,
   });
   const isAdmin = roleQuery.data?.includes("admin") ?? false;
+  const isMerchant = accountTypeQuery.data === "merchant" && (roleQuery.data?.includes("merchant") ?? false);
   const wilayas = useQuery(wilayasQuery);
   const favorites = useFavorites();
 
@@ -200,7 +202,7 @@ function ProfilePage() {
       <AppShell className="mx-auto max-w-xl space-y-5 pb-24 pt-6">
         <PageHeader
           title={t("profile_hub_title")}
-          subtitle={t("profile_hub_subtitle")}
+          subtitle={isMerchant ? undefined : t("profile_hub_subtitle")}
           back={
             accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant")
               ? "/studio"
@@ -208,6 +210,16 @@ function ProfilePage() {
           }
           action={
             <div className="flex items-center gap-2">
+              {isMerchant && (
+                <Link
+                  to="/bag"
+                  aria-label="سلة التسوق"
+                  title="سلة التسوق"
+                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95"
+                >
+                  <ShoppingBag className="size-5" />
+                </Link>
+              )}
               <Link
                 to="/settings"
                 aria-label="الإعدادات"
