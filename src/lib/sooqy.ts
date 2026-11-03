@@ -1479,22 +1479,6 @@ export async function merchantUpdateStore(
   if (error) throw error;
 }
 
-export async function adminFetchStores() {
-  const { data, error } = await supabase
-    .from("stores")
-    .select("*, wilaya:wilayas(name_ar)")
-    .order("created_at", { ascending: false });
-  if (error) throw error;
-  return data;
-}
-
-export async function adminSetVerified(storeId: string, verified: boolean) {
-  const { error } = await supabase
-    .from("stores")
-    .update({ is_verified: verified })
-    .eq("id", storeId);
-  if (error) throw error;
-}
 
 // ---------- Wallet ----------
 
