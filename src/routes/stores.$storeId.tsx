@@ -34,7 +34,7 @@ import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { ReviewSection } from "@/components/sooqy/ReviewSection";
 import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
-import { StoreCardSkeleton } from "@/components/sooqy/skeleton";
+import { StoreDetailSkeleton } from "@/components/sooqy/skeleton";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { telUrl, whatsappUrl } from "@/lib/contact";
@@ -66,14 +66,7 @@ function StorePage() {
     queryFn: () => getStoreOffers(storeId),
   });
 
-  if (store.isLoading)
-    return (
-      <div className="space-y-3 p-4">
-        <StoreCardSkeleton className="h-44" />
-        <StoreCardSkeleton className="h-24" />
-        <StoreCardSkeleton className="h-64" />
-      </div>
-    );
+  if (store.isLoading) return <StoreDetailSkeleton />;
 
   const s = store.data;
   // فشل الشبكة ≠ متجر غير موجود: الأول يُعاد جلبه، والثاني يعرض بدائل
