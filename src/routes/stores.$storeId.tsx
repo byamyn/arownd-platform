@@ -243,13 +243,13 @@ function StorePage() {
                 toast.success(nowFollowing ? "أُضيف المتجر إلى مفضلتك" : "أُزيل المتجر من المفضلة");
               }}
               className={cn(
-                "flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] border text-sm font-bold transition active:scale-95",
+                "flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border px-2 text-xs font-semibold transition active:scale-95",
                 followed
                   ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
                   : "border-border bg-card text-foreground",
               )}
             >
-              <Heart className={cn("size-4", followed && "fill-accent-ink text-accent-ink")} />
+              <Heart className={cn("size-3.5 shrink-0", followed && "fill-accent-ink text-accent-ink")} />
               {followed ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
             </button>
             <DirectionsButton
@@ -258,7 +258,7 @@ function StorePage() {
               label={s.name}
               className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border border-border bg-card px-2 text-xs font-semibold text-foreground transition active:scale-95"
             >
-              <Navigation className="size-4" />
+              <Navigation className="size-3.5 shrink-0" />
               الاتجاهات
             </DirectionsButton>
             {whatsappUrl(s.whatsapp) ? (
@@ -268,7 +268,7 @@ function StorePage() {
                 rel="noreferrer"
                 className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] bg-success-soft px-2 text-xs font-semibold text-success transition active:scale-95"
               >
-                <MessageCircle className="size-4" />
+                <MessageCircle className="size-3.5 shrink-0" />
                 واتساب
               </a>
             ) : telUrl(s.phone) ? (
@@ -276,7 +276,7 @@ function StorePage() {
                 href={telUrl(s.phone)!}
                 className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] bg-success-soft px-2 text-xs font-semibold text-success transition active:scale-95"
               >
-                <Phone className="size-4" />
+                <Phone className="size-3.5 shrink-0" />
                 اتصال
               </a>
             ) : (
