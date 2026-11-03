@@ -3,6 +3,7 @@ import { toast } from "sonner";
 import { directionsUrl, geoErrorMessage, useGeo } from "@/lib/geo";
 import { cn } from "@/lib/utils";
 import { InAppNavigation } from "./InAppNavigation";
+import { openExternalUrl } from "@/lib/native-sharing";
 import * as maplibregl from "maplibre-gl";
 
 /**
@@ -34,7 +35,11 @@ export function DirectionsButton({
 
   const handleOpen = async () => {
     if (external && lat != null && lng != null) {
-      window.open(directionsUrl(lat, lng, label), "_blank", "noopener,noreferrer");
+      try {
+        await openExternalUrl(directionsUrl(lat, lng, label));
+      } catch {
+        toast.error("تعذّر فتح تطبيق الخرائط.");
+      }
       return;
     }
     if (busy) return;
@@ -54,7 +59,11 @@ export function DirectionsButton({
       } else if (lat != null && lng != null) {
         // fallback: open Google Maps if no user position
         const q = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
-        window.open(q, "_blank", "noopener,noreferrer");
+        try {
+          await openExternalUrl(q);
+        } catch {
+          toast.error("تعذّر فتح تطبيق الخرائط.");
+        }
       }
     } finally {
       setBusy(false);
