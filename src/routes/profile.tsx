@@ -38,6 +38,7 @@ import { PageHeader } from "@/components/sooqy/page-header";
 import { SectionTitle } from "@/components/sooqy/list-menu";
 import { AppShell } from "@/components/sooqy/app-shell";
 import { SideSheet } from "@/components/sooqy/side-sheet";
+import { ReportContentButton } from "@/components/moderation/ReportContentButton";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
@@ -269,7 +270,18 @@ function ProfilePage() {
 
             <div className="mt-3 min-w-0">
               <h2 className="truncate text-xl font-extrabold text-foreground">{displayName}</h2>
-              <p className="truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
+              {!public_id && (
+                <p className="truncate text-sm text-muted-foreground">{user?.email ?? ""}</p>
+              )}
+              {public_id && user?.id !== public_id && (
+                <div className="mt-2">
+                  <ReportContentButton
+                    targetType="user"
+                    targetId={public_id}
+                    label="الإبلاغ عن هذا الحساب"
+                  />
+                </div>
+              )}
             </div>
 
             <div className="mt-3 flex flex-wrap items-center gap-2">
