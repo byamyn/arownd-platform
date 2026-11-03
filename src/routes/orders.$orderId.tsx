@@ -19,6 +19,7 @@ import { translate, useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
+import { OrderTrackingSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/orders/$orderId")({
   head: () => ({
@@ -81,9 +82,7 @@ function TrackPage() {
     );
   }
   if (orders.isLoading && !order) {
-    return (
-      <div className="m-4 h-64 animate-pulse rounded-[var(--radius-card)] border border-border bg-card" />
-    );
+    return <OrderTrackingSkeleton />;
   }
   if (!order) {
     return (
