@@ -162,7 +162,7 @@ function MerchantSection() {
       <FeatureCard
         icon={<ClipboardCheck className="size-5" />}
         title="تأكيد الحجوزات"
-        desc="أدخل رمز الحجز (SQ-XXXX) لتأكيد استلام العميل، أو أكّد مباشرة من قائمة الحجوزات."
+        desc="أدخل رمز الحجز بصيغة AR-XXXX-00 لتأكيد استلام العميل، أو أكّد مباشرة من قائمة الحجوزات."
       />
       <FeatureCard
         icon={<Truck className="size-5" />}
