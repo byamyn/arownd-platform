@@ -626,6 +626,33 @@ export async function cancelMyOrder(orderId: string): Promise<void> {
   throw new Error(friendlyError(error));
 }
 
+/** إلغاء طلب متجر فرعي قيد الانتظار وإعادة مخزونه ذريًا. */
+export async function cancelMyMerchantOrder(merchantOrderId: string): Promise<void> {
+  const { data: auth } = await supabase.auth.getUser();
+  if (!auth.user) throw new Error("يجب تسجيل الدخول لإلغاء الطلب.");
+
+  const call = supabase.rpc.bind(supabase) as unknown as (
+    fn: string,
+    vars?: Record<string, unknown>,
+  ) => Promise<{ data: unknown; error: { message?: string; code?: string } | null }>;
+  const { error } = await call("cancel_my_merchant_order", {
+    _merchant_order_id: merchantOrderId,
+  });
+  if (!error) return;
+
+  const message = error.message ?? "";
+  if (message.includes("merchant_order_not_found")) {
+    throw new Error("لم نعثر على طلب هذا المتجر في حسابك.");
+  }
+  if (message.includes("merchant_order_not_cancellable")) {
+    throw new Error("لا يمكن إلغاء طلب المتجر بعد إرسال عرض السعر أو بدء معالجته.");
+  }
+  if (message.includes("PGRST202") || message.includes("Could not find the function")) {
+    throw new Error("خدمة إلغاء طلب المتجر غير متاحة بعد. حدّث الصفحة وحاول مجددًا.");
+  }
+  throw new Error(friendlyError(error));
+}
+
 export async function fetchMyReservations() {
   const { data: u } = await supabase.auth.getUser();
   if (!u.user) return [];
