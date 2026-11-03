@@ -801,14 +801,6 @@ function StudioPage() {
         </section>
       )}
 
-      {/* زر الإجراء الأساسي */}
-      <Link
-        to="/studio/add-product"
-        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-card)] bg-primary py-3.5 font-bold text-primary-foreground transition active:scale-[var(--scale-pressed)]"
-      >
-        <Package className="size-5" /> إضافة منتج
-      </Link>
-
       {/* قائمة إدارة المتجر */}
       <section className="space-y-2">
         <h2 className="px-1 text-section text-muted-foreground">{t("studio_manage_store")}</h2>
