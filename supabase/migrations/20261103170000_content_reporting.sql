@@ -22,6 +22,9 @@ create index if not exists content_reports_pending_created_idx
   on public.content_reports (created_at desc)
   where status = 'pending';
 
+create index if not exists content_reports_reporter_created_idx
+  on public.content_reports (reporter_id, created_at desc);
+
 alter table public.content_reports enable row level security;
 revoke all on table public.content_reports from anon, authenticated;
 grant all on table public.content_reports to service_role;
@@ -77,6 +80,15 @@ begin
     ))
   ) then
     raise exception 'report_target_not_found' using errcode = '22023';
+  end if;
+
+  if (
+    select count(*)
+    from public.content_reports cr
+    where cr.reporter_id = _reporter_id
+      and cr.created_at > now() - interval '24 hours'
+  ) >= 10 then
+    raise exception 'report_rate_limit_exceeded' using errcode = 'P0001';
   end if;
 
   insert into public.content_reports (reporter_id, target_type, target_id, reason, details)
