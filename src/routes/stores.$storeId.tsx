@@ -363,6 +363,11 @@ function StorePage() {
                             level={stockLevel(o)}
                             className="absolute top-2 start-2 bg-card/95"
                           />
+                          {isOwner && (
+                            <span className="absolute top-2 end-2 rounded-full bg-card/95 px-2.5 py-1 text-[11px] font-bold text-accent-ink shadow-sm">
+                              منتجك
+                            </span>
+                          )}
                         </div>
                         <div className="p-3">
                           <p className="line-clamp-1 text-sm font-semibold">{o.product.name}</p>
