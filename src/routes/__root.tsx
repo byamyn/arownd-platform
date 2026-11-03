@@ -230,6 +230,54 @@ function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
   return null;
 }
 
+function NativeBackButtonHandler() {
+  const router = useRouter();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    let disposed = false;
+    let removeListener: (() => void) | undefined;
+
+    void import("@capacitor/app")
+      .then(async ({ App }) => {
+        if (disposed) return;
+        const listener = await App.addListener("backButton", ({ canGoBack }) => {
+          if (canGoBack || window.history.length > 1) {
+            router.history.back();
+            return;
+          }
+
+          if (location.pathname !== "/") {
+            void router.navigate({ to: "/" });
+            return;
+          }
+
+          void App.exitApp();
+        });
+
+        if (disposed) {
+          void listener.remove();
+        } else {
+          removeListener = () => {
+            void listener.remove();
+          };
+        }
+      })
+      .catch((error: unknown) => {
+        console.warn("[native] Could not subscribe to Android back button", error);
+      });
+
+    return () => {
+      disposed = true;
+      removeListener?.();
+    };
+  }, [router, location.pathname]);
+
+  return null;
+}
+
 function NativeExternalLinkHandler() {
   useEffect(() => {
     if (!isNativePlatform()) return;
@@ -346,6 +394,7 @@ function RootComponent() {
         <AuthProvider>
           <NativeRuntimeSync queryClient={queryClient} />
           <NativeDeepLinkListener />
+          <NativeBackButtonHandler />
           <NativeExternalLinkHandler />
           <BagProvider>
             <div
