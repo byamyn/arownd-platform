@@ -46,3 +46,7 @@ opt/
 # Supabase CLI local metadata (never commit local project state)
 .temp/
 supabase/.temp/
+
+# Android signing material (never commit)
+*.keystore
+*.jks
