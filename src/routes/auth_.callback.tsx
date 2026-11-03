@@ -60,25 +60,40 @@ function CallbackPage() {
   useEffect(() => {
     let done = false;
 
-    const go = () => {
+    const go = async () => {
       if (done) return;
-      done = true;
 
       if (reset) {
+        done = true;
         navigate({ to: "/auth", search: { reset: true }, replace: true });
         return;
       }
 
-      if (intent === "merchant") {
+      // The URL intent is authoritative when present. Fall back to signup
+      // metadata because some email providers/native clients may omit query
+      // parameters while returning from the confirmation link.
+      let resolvedIntent = intent;
+      if (!resolvedIntent) {
+        const { data } = await supabase.auth.getUser();
+        const accountType = data.user?.user_metadata?.account_type;
+        if (accountType === "merchant") resolvedIntent = "merchant";
+        else if (accountType === "delivery") resolvedIntent = "delivery";
+        else if (accountType === "customer") resolvedIntent = "customer";
+      }
+
+      if (done) return;
+      done = true;
+
+      if (resolvedIntent === "merchant") {
         navigate({ to: "/create-store", replace: true });
         return;
       }
-      if (intent === "delivery") {
+      if (resolvedIntent === "delivery") {
         navigate({ to: "/delivery-register", replace: true });
         return;
       }
 
-      if (intent === "customer") {
+      if (resolvedIntent === "customer") {
         navigate({ to: "/profile", search: { setup: true }, replace: true });
         return;
       }
@@ -96,13 +111,13 @@ function CallbackPage() {
       if (isNativePlatform() && code) {
         const { error } = await supabase.auth.exchangeCodeForSession(code);
         if (error) throw error;
-        go();
+        await go();
         return;
       }
 
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
-      if (data.session) go();
+      if (data.session) await go();
     };
 
     void run().catch((error) => {
@@ -112,7 +127,7 @@ function CallbackPage() {
     });
 
     const { data: subscription } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (session) go();
+      if (session) void go();
     });
     const timeout = window.setTimeout(() => {
       if (!done) navigate({ to: "/auth", replace: true });

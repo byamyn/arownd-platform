@@ -80,6 +80,13 @@ function AuthPage() {
 
   useEffect(() => {
     if (user && screen === "signin" && !reset) {
+      // Merchant registrations must always complete store onboarding before
+      // entering the personal area. Existing stores are redirected to /studio
+      // by the create-store route.
+      if (user.user_metadata?.account_type === "merchant") {
+        navigate({ to: "/create-store", replace: true });
+        return;
+      }
       navigate({ to: (redirect ?? "/profile") as "/", replace: true });
     }
   }, [user, screen, redirect, navigate, reset]);
@@ -142,7 +149,9 @@ function AuthPage() {
               intent: accountType,
               redirect,
             }),
-            data: { full_name: name.trim() },
+            // Preserve the selected account intent through email confirmation
+            // so the callback can enforce merchant onboarding on any device.
+            data: { full_name: name.trim(), account_type: accountType },
           },
         });
         if (error) throw error;
