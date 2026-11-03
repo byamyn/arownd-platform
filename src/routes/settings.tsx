@@ -111,17 +111,6 @@ function SettingsPage() {
     }
   };
 
-  // لا توجد واجهة خادم لحذف المستخدم من العميل؛ الطلب يُرسل للدعم عبر البريد
-  // المذكور في سياسة الخصوصية، ولا نُظهر نجاح حذف لم يحدث.
-  const requestAccountDeletion = () => {
-    const subject = encodeURIComponent("طلب حذف حساب Arownd");
-    const body = encodeURIComponent(
-      `أرغب في حذف حسابي وبياناتي نهائيًا.\nالبريد المسجّل: ${user?.email ?? ""}`,
-    );
-    window.location.href = `mailto:arownddz@gmail.com?subject=${subject}&body=${body}`;
-    setConfirmDelete(false);
-  };
-
   if (!user) {
     return (
       <div className="app-page mx-auto max-w-xl pb-6 pt-4">
