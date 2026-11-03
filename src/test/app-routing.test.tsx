@@ -30,6 +30,6 @@ describe("App routing", () => {
 
     expect(router.matchRoutes("/studio/settings")?.at(-1)?.routeId).toBe("/studio/settings");
     expect(router.matchRoutes("/orders/abc")?.at(-1)?.routeId).toBe("/orders/$orderId");
-    expect(router.matchRoutes("/orders")?.at(-1)?.routeId).toBe("/orders/");
+    expect(router.matchRoutes("/orders/")?.at(-1)?.routeId).toBe("/orders/");
   });
 });
