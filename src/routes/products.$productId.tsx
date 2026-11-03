@@ -89,7 +89,7 @@ function ProductPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // لا نعرض عروض المتجر المملوك للمستخدم ضمن خيارات الشراء أو الحجز.
   const purchasableOffers = sorted.filter((o) => !user || o.store.owner_id !== user.id);
-  const isOwnProduct = !!user && sorted.some((o) => o.store.owner_id === user.id);
+  const isOwnProduct = !!user && sorted.some((o) => o.store.owner_id === user.id) && purchasableOffers.length === 0;
   const selected =
     purchasableOffers.find((o) => o.id === selectedId) ?? purchasableOffers[0];
   const [imgIdx, setImgIdx] = useState(0);
