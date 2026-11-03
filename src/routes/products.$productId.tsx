@@ -25,6 +25,7 @@ import {
   searchProducts,
   stockLevel,
   storeDistance,
+  type OfferFull,
 } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
 import { useBag } from "@/lib/bag";
