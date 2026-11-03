@@ -27,6 +27,7 @@ import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as ReservationsIndexRouteImport } from './routes/reservations.index'
 import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as DeleteAccountRouteImport } from './routes/delete-account'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WalletRouteImport } from './routes/wallet'
 import { Route as AuthCallbackRouteImport } from './routes/auth_.callback'
@@ -132,6 +133,11 @@ const SettingsRoute = SettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DeleteAccountRoute = DeleteAccountRouteImport.update({
+  id: '/delete-account',
+  path: '/delete-account',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
   path: '/terms',
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/profile': typeof ProfileRoute
   '/reservations/': typeof ReservationsIndexRoute
   '/settings': typeof SettingsRoute
+  '/delete-account': typeof DeleteAccountRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -327,6 +334,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reservations/'
     | '/settings'
+    | '/delete-account'
     | '/terms'
     | '/wallet'
     | '/auth/callback'
@@ -430,6 +438,7 @@ export interface RootRouteChildren {
   ProfileRoute: typeof ProfileRoute
   ReservationsIndexRoute: typeof ReservationsIndexRoute
   SettingsRoute: typeof SettingsRoute
+  DeleteAccountRoute: typeof DeleteAccountRoute
   TermsRoute: typeof TermsRoute
   WalletRoute: typeof WalletRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
@@ -574,6 +583,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SettingsRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    '/delete-account': {
+      id: '/delete-account';
+      path: '/delete-account';
+      fullPath: '/delete-account';
+      preLoaderRoute: typeof DeleteAccountRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/terms': {
       id: '/terms';
       path: '/terms';
@@ -694,6 +710,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProfileRoute: ProfileRoute,
   ReservationsIndexRoute: ReservationsIndexRoute,
   SettingsRoute: SettingsRoute,
+  DeleteAccountRoute: DeleteAccountRoute,
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
   CategoryCatIdRoute: CategoryCatIdRoute,
