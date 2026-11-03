@@ -28,7 +28,6 @@ import {
 import { useTheme, type Theme } from "@/lib/theme";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
-import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
@@ -44,7 +43,6 @@ function SettingsPage() {
   const qc = useQueryClient();
   const { theme, setTheme } = useTheme();
   const [signingOut, setSigningOut] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
   const profile = useQuery({ queryKey: ["my-profile"], queryFn: fetchMyProfile, enabled: !!user });
   const accountType = useQuery({
@@ -262,9 +260,9 @@ function SettingsPage() {
           <MenuRow
             icon={Trash2}
             label="طلب حذف الحساب"
-            hint="يُرسل الطلب إلى الدعم"
+            hint="إرسال الطلب ومتابعة حالته"
             danger
-            onClick={() => setConfirmDelete(true)}
+            to="/delete-account"
           />
         </MenuCard>
       </section>
@@ -272,15 +270,6 @@ function SettingsPage() {
       {/* أسفل الصفحة */}
       <p className="pt-2 text-center text-xs text-muted-foreground">Arownd · الإصدار التجريبي</p>
 
-      <ConfirmDialog
-        open={confirmDelete}
-        title="طلب حذف الحساب"
-        message="سيُفتح بريدك لإرسال طلب حذف حسابك وبياناتك إلى فريق الدعم. يُنفَّذ الحذف نهائيًا بعد التحقق من الطلب ولا يمكن التراجع عنه."
-        confirmLabel="إرسال الطلب"
-        tone="danger"
-        onCancel={() => setConfirmDelete(false)}
-        onConfirm={requestAccountDeletion}
-      />
       {/* الأمان: تغيير كلمة المرور */}
       <SideSheet
         open={showSecurity}
