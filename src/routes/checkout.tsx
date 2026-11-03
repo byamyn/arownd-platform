@@ -212,6 +212,7 @@ function CheckoutPage() {
       <SuccessScreen
         orderId={orderId}
         orderIds={orderIds}
+        remainingCount={bag.items.length}
         snapshot={snapshot}
         onReorder={() => {
           // «اطلب مجددًا» — نعيد العناصر نفسها إلى السلة بنقرة واحدة.
@@ -536,7 +537,7 @@ function buildOrderSnapshot(
   const firstRow = rows.find((row) => row.offerId === firstItem?.offerId);
   const total = items.reduce(
     (sum, item) =>
-      sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price) * item.quantity,
+      sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price ?? 0) * item.quantity,
     0,
   );
   return {
@@ -556,11 +557,13 @@ function buildOrderSnapshot(
 function SuccessScreen({
   orderId,
   orderIds,
+  remainingCount,
   snapshot,
   onReorder,
 }: {
   orderId: string;
   orderIds: string[];
+  remainingCount: number;
   snapshot: OrderSnapshot | null;
   onReorder: () => void;
 }) {
@@ -594,6 +597,11 @@ function SuccessScreen({
           {t("checkout_success_hint")}
         </p>
       </div>
+      {remainingCount > 0 && (
+        <p className="w-full max-w-xs rounded-xl border border-warning/30 bg-warning-soft p-3 text-sm font-semibold text-warning">
+          تم إنشاء {orderIds.length} طلب بنجاح. بقيت {remainingCount} منتجات في سلتك لإتمام شرائها لاحقًا.
+        </p>
+      )}
 
       {/* رمز التتبع */}
       <div className="w-full max-w-xs space-y-2 rounded-[var(--radius-card)] border border-border bg-card px-4 py-4 ">
