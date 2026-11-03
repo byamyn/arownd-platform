@@ -21,6 +21,7 @@ import { showError, showSuccess } from "@/lib/feedback";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { goBackOrTo } from "@/lib/nav";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
+import { OrderListSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/orders/")({
   head: () => ({}),
@@ -175,14 +176,7 @@ function OrdersPage() {
         </div>
 
         {orders.isLoading && (
-          <div className="space-y-3">
-            {[0, 1, 2].map((i) => (
-              <div
-                key={i}
-                className="h-40 animate-pulse rounded-[var(--radius-card)] border border-border bg-card"
-              />
-            ))}
-          </div>
+          <OrderListSkeleton />
         )}
 
         {orders.isError && (
