@@ -40,6 +40,7 @@ import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { telUrl, whatsappUrl } from "@/lib/contact";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
+import { shareTextContent } from "@/lib/native-sharing";
 
 export const Route = createFileRoute("/stores/$storeId")({
   head: () => ({}),
@@ -108,16 +109,15 @@ function StorePage() {
   const share = async () => {
     const url = window.location.href;
     try {
-      if (typeof navigator.share === "function") {
-        await navigator.share({ title: s.name, text: s.name, url });
-      } else {
+      const shared = await shareTextContent({ title: s.name, text: s.name, url });
+      if (!shared) {
         await navigator.clipboard.writeText(url);
         toast.success("تم نسخ رابط المتجر");
       }
-    } catch (e) {
-      // إلغاء المشاركة من المستخدم ليس خطأ؛ غيره نُبلغ عنه
-      if (!(e instanceof DOMException && e.name === "AbortError"))
+    } catch (error) {
+      if (!(error instanceof DOMException && error.name === "AbortError")) {
         toast.error("تعذّر مشاركة الرابط");
+      }
     }
   };
 
