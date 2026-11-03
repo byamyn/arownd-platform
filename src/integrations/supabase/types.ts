@@ -974,7 +974,6 @@ export type Database = {
           },
         ];
       };
-    };
       account_deletion_requests: {
         Row: {
           id: string;
@@ -1005,6 +1004,7 @@ export type Database = {
         };
         Relationships: [];
       };
+    };
     Views: {
       approved_delivery_companies: {
         Row: {
