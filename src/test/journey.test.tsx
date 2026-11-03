@@ -14,7 +14,7 @@ vi.mock("@/integrations/supabase/client", async () => {
 vi.mock("@/components/sooqy/Splash", () => ({ Splash: () => null }));
 vi.mock("@/components/sooqy/OnboardingGate", () => ({ OnboardingGate: () => null }));
 // طبقة تشخيص الشاشة — لا علاقة لها بمنطق التطبيق وحرّاسها يلوّثون DOM الاختبارات
-vi.mock("@/lib/screen-error", () => ({}));
+vi.mock("@/lib/screen-error", () => ({ reportScreenError: vi.fn() }));
 // WebGL غير متاح في jsdom — الخريطة تُستبدل بعنصر بسيط
 vi.mock("@/components/sooqy/StoreMap", () => ({
   default: () => <div>خريطة تجريبية</div>,
