@@ -794,7 +794,10 @@ function ReservationDialog({
           </p>
           <div className="rounded-2xl bg-card py-5 text-card-foreground">
             <p className="text-xs opacity-70">{t("product_pickup_code")}</p>
-            <p className="font-mono text-4xl font-bold tracking-widest text-primary">
+            <p
+              className="max-w-full break-all px-2 font-mono text-[clamp(1.25rem,6vw,2rem)] font-bold leading-tight tracking-[0.12em] text-primary"
+              dir="ltr"
+            >
               {reservation?.code}
             </p>
           </div>
