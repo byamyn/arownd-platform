@@ -69,7 +69,7 @@ function AddProductPage() {
   const roles = useQuery({ queryKey: ["my-roles"], queryFn: fetchMyRoles, enabled: !!user });
   const accountType = useQuery({ queryKey: ["my-account-type", user?.id], queryFn: fetchMyAccountType, enabled: !!user });
   const store = useQuery({ queryKey: ["my-store"], queryFn: fetchMyStore, enabled: !!user });
-  useRealtimeSubscription({ table: "store_offers", filter: store.data?.id ? `store_id=eq.${store.data.id}` : undefined, queryKeys: [["my-store-offers", store.data?.id]], enabled: !!store.data?.id });
+  useRealtimeSubscription({ table: "store_offers", filter: store.data?.id ? `store_id=eq.${store.data.id}` : undefined, queryKeys: [["my-store-offers", store.data?.id ?? ""]], enabled: !!store.data?.id });
 
   if (!ready) return null;
   if (!user) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><div className="rounded-[var(--radius-card)] border border-border bg-card p-5 text-center"><p className="text-sm text-muted-foreground">سجّل الدخول بحساب التاجر لإضافة منتجاتك.</p><Link to="/auth" search={{ redirect: "/studio/add-product" }} className="btn-primary mt-4 inline-flex px-5 py-3">تسجيل الدخول</Link></div></div>;
@@ -77,6 +77,7 @@ function AddProductPage() {
   if (store.isError || roles.isError || accountType.isError) return <div className="mx-auto max-w-xl px-4 pt-6"><ErrorState scope="studio:add-product" error={store.error ?? roles.error ?? accountType.error} onRetry={() => { void store.refetch(); void roles.refetch(); void accountType.refetch(); }} /></div>;
   if (accountType.data !== "merchant" || !roles.data?.includes("merchant")) return <div className="mx-auto max-w-xl px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">هذه الصفحة مخصصة لحسابات التجار.</p></div>;
   if (!store.data) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">أنشئ متجرك أولًا حتى تتمكن من إضافة المنتجات.</p></div>;
+  const storeId = store.data.id;
 
   const update = (key: keyof typeof form, value: string) => setForm((current) => ({ ...current, [key]: value }));
   const save = async () => {
@@ -90,7 +91,7 @@ function AddProductPage() {
       const sizes = form.sizes.split(/[،,]/).map((v) => v.trim()).filter(Boolean);
       const colors = form.colors.split(/[،,]/).map((v) => v.trim()).filter(Boolean);
       await merchantQuickAddProduct({
-        storeId: store.data.id,
+        storeId,
         name,
         price: Number(form.price),
         stock: Number(form.stock),
@@ -101,7 +102,7 @@ function AddProductPage() {
         ...(colors.length ? { colors } : {}),
       }, images.length ? images : null);
       showSuccess(t("studio_product_added"));
-      await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data.id] });
+      await qc.invalidateQueries({ queryKey: ["my-store-offers", storeId] });
       await qc.invalidateQueries({ queryKey: ["near-stores"] });
       setForm({ name: "", price: "", stock: "", category: DEFAULT_CATEGORY_ID, brand: "", description: "", sizes: "", colors: "" });
       setImages([]);
