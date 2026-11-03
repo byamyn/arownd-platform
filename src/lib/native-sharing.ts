@@ -3,6 +3,7 @@ import { isNativePlatform } from "@/lib/platform";
 
 interface ArowndSystemUiPlugin {
   openExternal(options: { url: string }): Promise<void>;
+  shareText(options: { title: string; text: string; url?: string }): Promise<void>;
   shareFile(options: {
     data: string;
     fileName: string;
@@ -55,6 +56,23 @@ function fileToBase64(file: File): Promise<string> {
     };
     reader.readAsDataURL(file);
   });
+}
+
+/** Shares text and links through the native Android Sharesheet when available. */
+export async function shareTextContent(options: {
+  title: string;
+  text: string;
+  url?: string;
+}): Promise<boolean> {
+  if (isNativePlatform()) {
+    await ArowndSystemUi.shareText(options);
+    return true;
+  }
+  if (typeof navigator.share === "function") {
+    await navigator.share(options);
+    return true;
+  }
+  return false;
 }
 
 /**
