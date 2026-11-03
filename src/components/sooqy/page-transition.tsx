@@ -1,14 +1,17 @@
 import type { ReactNode } from "react";
 import { useLocation } from "@tanstack/react-router";
+import { isNativePlatform } from "@/lib/platform";
 
 /**
- * Wraps routed content and re-mounts it on navigation so the fade-up
- * entrance animation plays on every page change (transform/opacity only).
+ * Web routes use a light entrance transition. Native WebViews avoid remounting
+ * the entire route wrapper and skip the extra animation to reduce visual flash.
  */
 export function PageTransition({ children }: { children: ReactNode }) {
   const { pathname } = useLocation();
+  const native = isNativePlatform();
+
   return (
-    <div key={pathname} className="animate-fade-up">
+    <div key={native ? undefined : pathname} className={native ? undefined : "animate-fade-up"}>
       {children}
     </div>
   );
