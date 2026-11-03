@@ -213,6 +213,7 @@ function WalletPage() {
         />
 
         <aside
+          id="wallet-preview-notice"
           role="note"
           className="flex items-start gap-3 rounded-[var(--radius-card)] border border-info/25 bg-info-soft px-4 py-3 text-start"
         >
