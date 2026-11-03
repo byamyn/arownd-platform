@@ -333,6 +333,7 @@
 @layer base {
   * { border-color: var(--color-border); }
   html {
+    min-height: 100%;
     font-family: var(--font-family-latin);
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
@@ -348,6 +349,8 @@
   html[lang="ar"] .text-caption,
   html[lang="ar"] .text-xs { font-size: var(--font-size-caption-ar); line-height: var(--line-height-caption); }
   body {
+    min-height: 100vh;
+    min-height: 100dvh;
     margin: 0;
     background: var(--color-bg-canvas);
     color: var(--color-text-primary);
@@ -365,6 +368,7 @@
     outline-offset: var(--focus-offset);
   }
   button, input, textarea, select { font: inherit; }
+  input, textarea, select, [contenteditable="true"] { scroll-margin-block: 6rem; }
 }
 
 @utility text-display {
