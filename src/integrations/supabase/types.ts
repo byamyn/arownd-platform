@@ -1004,10 +1004,6 @@ export type Database = {
         Args: { _merchant_order_id: string; _reason?: string | null };
         Returns: Database["public"]["Tables"]["merchant_orders"]["Row"];
       };
-      admin_set_delivery_company_approval: {
-        Args: { _company_id: string; _is_approved: boolean };
-        Returns: undefined;
-      };
       cancel_reservation: {
         Args: { _reservation_id: string };
         Returns: undefined;
@@ -1207,7 +1203,7 @@ export type Database = {
     };
     Enums: {
       account_type: "personal" | "merchant" | "delivery_company";
-      app_role: "customer" | "merchant" | "admin" | "delivery_company";
+      app_role: "customer" | "merchant" | "delivery_company";
     };
     CompositeTypes: {
       [_ in never]: never;
@@ -1330,7 +1326,7 @@ export const Constants = {
   public: {
     Enums: {
       account_type: ["personal", "merchant", "delivery_company"],
-      app_role: ["customer", "merchant", "admin", "delivery_company"],
+      app_role: ["customer", "merchant", "delivery_company"],
     },
   },
 } as const;
