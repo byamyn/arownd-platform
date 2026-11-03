@@ -263,6 +263,7 @@ export interface FileRoutesByTo {
   '/profile': typeof ProfileRoute
   '/reservations': typeof ReservationsIndexRoute
   '/settings': typeof SettingsRoute
+  '/delete-account': typeof DeleteAccountRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/auth/callback': typeof AuthCallbackRoute
@@ -298,6 +299,7 @@ export interface FileRoutesById {
   '/profile': typeof ProfileRoute
   '/reservations/': typeof ReservationsIndexRoute
   '/settings': typeof SettingsRoute
+  '/delete-account': typeof DeleteAccountRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
   '/auth_/callback': typeof AuthCallbackRoute
@@ -369,6 +371,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reservations'
     | '/settings'
+    | '/delete-account'
     | '/terms'
     | '/wallet'
     | '/auth/callback'
@@ -403,6 +406,7 @@ export interface FileRouteTypes {
     | '/profile'
     | '/reservations/'
     | '/settings'
+    | '/delete-account'
     | '/terms'
     | '/wallet'
     | '/auth_/callback'
