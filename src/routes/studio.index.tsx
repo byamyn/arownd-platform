@@ -11,7 +11,6 @@ import {
   Package,
   PackagePlus,
   Settings,
-  ShieldCheck,
   ShoppingBag,
   Star,
   Store,
@@ -116,6 +115,7 @@ function StudioPage() {
     sizes: "",
     colors: "",
   });
+  const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const [images, setImages] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   // الطلب قيد التحديث — يمنع الإرسال المزدوج ويعرف أي بطاقة تُعطّل.
@@ -582,7 +582,27 @@ function StudioPage() {
                   {store.data?.name}
                 </h2>
                 {store.data?.is_verified && (
-                  <BadgeCheck className="size-4 shrink-0 text-accent-ink" aria-label="متجر موثق" />
+                  <span className="relative inline-flex shrink-0">
+                    <button
+                      type="button"
+                      aria-label="معلومات توثيق المتجر"
+                      aria-expanded={showVerificationInfo}
+                      aria-describedby={showVerificationInfo ? "studio-verification-tooltip" : undefined}
+                      onClick={() => setShowVerificationInfo((open) => !open)}
+                      className="inline-flex size-7 items-center justify-center rounded-full text-accent-ink transition hover:bg-primary/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+                    >
+                      <BadgeCheck className="size-5" />
+                    </button>
+                    {showVerificationInfo && (
+                      <span
+                        id="studio-verification-tooltip"
+                        role="status"
+                        className="absolute start-1/2 top-full z-50 mt-2 w-max max-w-[min(14rem,80vw)] -translate-x-1/2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground shadow-lg"
+                      >
+                        هذا المتجر موثق
+                      </span>
+                    )}
+                  </span>
                 )}
               </div>
               <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
@@ -604,11 +624,6 @@ function StudioPage() {
                     </span>
                   );
                 })()}
-                {store.data?.is_verified && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2.5 py-1 text-caption font-bold text-accent-ink">
-                    <ShieldCheck className="size-3" /> متجر موثق
-                  </span>
-                )}
               </div>
             </div>
           </div>
