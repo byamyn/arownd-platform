@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Camera, Eye, ImagePlus, MapPin, Save, Store } from "lucide-react";
+import { Camera, Eye, MapPin, Save, Store } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
@@ -81,13 +81,10 @@ function StoreSettingsPage() {
   });
   const [closedDays, setClosedDays] = useState<number[]>([]);
   const [logo, setLogo] = useState<File | null>(null);
-  const [cover, setCover] = useState<File | null>(null);
   const [logoPreview, setLogoPreview] = useState<string | null>(null);
-  const [coverPreview, setCoverPreview] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [loaded, setLoaded] = useState(false);
   const logoInputRef = useRef<HTMLInputElement>(null);
-  const coverInputRef = useRef<HTMLInputElement>(null);
 
   // تعبئة النموذج من بيانات المتجر الحالية — مرة واحدة
   useEffect(() => {
@@ -113,7 +110,7 @@ function StoreSettingsPage() {
     });
     setClosedDays(oh.closed_days ?? []);
     setLogoPreview(s.logo_url ?? null);
-    setCoverPreview(s.cover_url ?? null);
+    setCoverPreview(s.logo_url ?? null);
     setLoaded(true);
   }, [store.data, loaded]);
 
@@ -202,14 +199,9 @@ function StoreSettingsPage() {
       </div>
     );
 
-  const pickFile = (kind: "logo" | "cover") => (f: File | null) => {
-    if (kind === "logo") {
-      setLogo(f);
-      setLogoPreview(f ? URL.createObjectURL(f) : (store.data?.logo_url ?? null));
-    } else {
-      setCover(f);
-      setCoverPreview(f ? URL.createObjectURL(f) : (store.data?.cover_url ?? null));
-    }
+  const pickLogo = (file: File | null) => {
+    setLogo(file);
+    setLogoPreview(file ? URL.createObjectURL(file) : (store.data?.logo_url ?? null));
   };
 
   const toggleDay = (i: number) =>
@@ -226,9 +218,7 @@ function StoreSettingsPage() {
       // الإحداثيات تُحفظ فقط إذا اكتمل الزوج (خط عرض + خط طول)
       const hasCoords = form.latitude != null && form.longitude != null;
       let logoUrl = store.data.logo_url ?? null;
-      let coverUrl = store.data.cover_url ?? null;
       if (logo) logoUrl = await uploadImageToBucket(logo, "store-media");
-      if (cover) coverUrl = await uploadImageToBucket(cover, "store-media");
       await merchantUpdateStore(store.data.id, {
         name: form.name.trim(),
         description: form.description.trim() || null,
@@ -241,7 +231,7 @@ function StoreSettingsPage() {
         longitude: hasCoords ? form.longitude : null,
         opening_hours: { open: form.open, close: form.close, closed_days: closedDays },
         ...(logoUrl ? { logo_url: logoUrl } : {}),
-        ...(coverUrl ? { cover_url: coverUrl } : {}),
+        cover_url: logoUrl,
         instagram_url: form.instagram.trim() || null,
         facebook_url: form.facebook.trim() || null,
         category: form.category,
@@ -285,22 +275,13 @@ function StoreSettingsPage() {
       {/* بطاقة الهوية: الغلاف + الشعار + الاسم */}
       <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
         <div className="relative h-40 bg-muted/40">
-          {coverPreview ? (
-            <img src={coverPreview} alt="غلاف المتجر" className="size-full object-cover" />
+          {logoPreview ? (
+            <img src={logoPreview} alt="غلاف المتجر" className="size-full object-cover" />
           ) : (
-            <div className="flex size-full flex-col items-center justify-center gap-1 text-muted-foreground">
-              <ImagePlus className="size-6" />
-              <span className="text-xs font-bold">{t("studio_cover")}</span>
+            <div className="flex size-full items-center justify-center bg-primary-soft text-4xl font-extrabold text-accent-ink">
+              {form.name.trim() ? form.name.trim()[0] : "؟"}
             </div>
           )}
-          <button
-            type="button"
-            onClick={() => coverInputRef.current?.click()}
-            className="absolute bottom-2 end-2 flex items-center gap-1 rounded-full bg-card/90 px-3 py-1.5 text-xs font-bold text-foreground backdrop-blur transition active:scale-95"
-            aria-label={t("studio_change_store_cover")}
-          >
-            <Camera className="size-3.5" /> تغيير الغلاف
-          </button>
         </div>
         <div className="flex items-end gap-3 px-4 pb-4">
           <button
@@ -331,14 +312,7 @@ function StoreSettingsPage() {
           ref={logoInputRef}
           type="file"
           accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/heic,image/heif"
-          onChange={(e) => pickFile("logo")(e.target.files?.[0] ?? null)}
-          className="hidden"
-        />
-        <input
-          ref={coverInputRef}
-          type="file"
-          accept="image/jpeg,image/png,image/webp,image/avif,image/gif,image/heic,image/heif"
-          onChange={(e) => pickFile("cover")(e.target.files?.[0] ?? null)}
+          onChange={(e) => pickLogo(e.target.files?.[0] ?? null)}
           className="hidden"
         />
       </section>
