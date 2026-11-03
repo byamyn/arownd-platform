@@ -17,6 +17,16 @@ const ArowndSystemUi = registerPlugin<ArowndSystemUiPlugin>("ArowndSystemUi");
 function safeHttpUrl(value: string): string | null {
   try {
     const url = new URL(value);
+    if ((url.protocol !== "https:" && url.protocol !== "http:") || !url.hostname) return null;
+    return url.toString();
+  } catch {
+    return null;
+  }
+}
+
+function safeExternalUrl(value: string): string | null {
+  try {
+    const url = new URL(value);
     if (!["https:", "http:", "tel:", "mailto:", "sms:", "geo:"].includes(url.protocol)) {
       return null;
     }
@@ -36,7 +46,7 @@ export async function syncNativeStatusBar(dark: boolean, color: string): Promise
 
 /** Opens a validated web link in the operating system's default handler. */
 export async function openExternalUrl(value: string): Promise<boolean> {
-  const url = safeHttpUrl(value);
+  const url = safeExternalUrl(value);
   if (!url) return false;
 
   if (isNativePlatform()) {
