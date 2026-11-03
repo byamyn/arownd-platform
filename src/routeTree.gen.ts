@@ -575,10 +575,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WalletRouteImport;
       parentRoute: typeof rootRouteImport;
     };
-      parentRoute: typeof rootRouteImport;
-    };
-      parentRoute: typeof rootRouteImport;
-    };
     '/auth_/callback': {
       id: '/auth_/callback';
       path: '/auth/callback';
