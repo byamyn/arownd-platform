@@ -4,7 +4,7 @@ create or replace function public.cancel_my_merchant_order(_merchant_order_id uu
 returns void
 language plpgsql
 security definer
-set search_path = public
+set search_path = ''
 as $function$
 declare
   mo public.merchant_orders;
@@ -42,8 +42,8 @@ begin
 
   update public.merchant_orders
   set status = 'cancelled',
-      responded_at = now(),
-      updated_at = now()
+      responded_at = pg_catalog.now(),
+      updated_at = pg_catalog.now()
   where id = mo.id;
 
   update public.store_offers so
@@ -63,7 +63,7 @@ begin
   insert into public.notifications (user_id, type, title, body, data)
   select st.owner_id, 'order', 'ألغى المشتري طلبه',
          'ألغى المشتري طلب هذا المتجر قبل إرسال عرض السعر.',
-         jsonb_build_object(
+         pg_catalog.jsonb_build_object(
            'order_id', mo.order_id,
            'merchant_order_id', mo.id,
            'status', 'cancelled'
