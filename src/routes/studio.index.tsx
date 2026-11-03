@@ -1008,7 +1008,7 @@ function StudioPage() {
             </button>
           </div>
 
-          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4  sm:p-5">
+          <div id="quick-add-product" className="scroll-mt-24 rounded-[var(--radius-card)] border border-border bg-card p-4  sm:p-5">
             <h2 className="mb-3 flex items-center gap-2 font-bold">
               <PackagePlus className="size-5 text-accent-ink" /> إضافة منتج في 30 ثانية
             </h2>
