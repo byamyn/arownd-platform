@@ -9,7 +9,6 @@ import {
   Eye,
   MapPin,
   Package,
-  PackagePlus,
   Settings,
   ShoppingBag,
   Star,
@@ -34,7 +33,6 @@ import {
   merchantDeleteOffer,
   merchantArchiveReservation,
   merchantArchiveOrderItems,
-  merchantQuickAddProduct,
   merchantRemoveOfferImage,
   merchantReplaceOfferImage,
   merchantSetPrimaryImage,
@@ -106,18 +104,7 @@ function StudioPage() {
     category: null as string | null,
     subcategories: [] as string[],
   });
-  const [productForm, setProductForm] = useState({
-    name: "",
-    price: "",
-    stock: "",
-    category: DEFAULT_CATEGORY_ID,
-    brand: "",
-    description: "",
-    sizes: "",
-    colors: "",
-  });
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
-  const [images, setImages] = useState<File[]>([]);
   const [busy, setBusy] = useState(false);
   // الطلب قيد التحديث — يمنع الإرسال المزدوج ويعرف أي بطاقة تُعطّل.
   const [busyOrder, setBusyOrder] = useState<string | null>(null);
@@ -273,59 +260,6 @@ function StudioPage() {
       await qc.invalidateQueries({ queryKey: ["store-reservations", store.data?.id] });
     } catch (error) {
       showError(error);
-    }
-  };
-
-  const addProduct = async () => {
-    if (!store.data) return;
-    const clean = productForm.name.trim();
-    if (!clean || !productForm.price || !Number(productForm.stock)) {
-      toast.error(t("studio_product_required_fields"));
-      return;
-    }
-    setBusy(true);
-    try {
-      const sizes = productForm.sizes
-        .split(/[،,]/)
-        .map((v) => v.trim())
-        .filter(Boolean);
-      const colors = productForm.colors
-        .split(/[،,]/)
-        .map((v) => v.trim())
-        .filter(Boolean);
-      await merchantQuickAddProduct(
-        {
-          storeId: store.data.id,
-          name: clean,
-          price: Number(productForm.price),
-          stock: Number(productForm.stock),
-          category: productForm.category,
-          ...(productForm.brand.trim() ? { brand: productForm.brand.trim() } : {}),
-          ...(productForm.description.trim()
-            ? { description: productForm.description.trim() }
-            : {}),
-          ...(sizes.length ? { sizes } : {}),
-          ...(colors.length ? { colors } : {}),
-        },
-        images.length ? images : null,
-      );
-      showSuccess(t("studio_product_added"));
-      setProductForm({
-        name: "",
-        price: "",
-        stock: "",
-        category: DEFAULT_CATEGORY_ID,
-        brand: "",
-        description: "",
-        sizes: "",
-        colors: "",
-      });
-      setImages([]);
-      await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data.id] });
-    } catch (error) {
-      showError(error);
-    } finally {
-      setBusy(false);
     }
   };
 
@@ -862,12 +796,12 @@ function StudioPage() {
       )}
 
       {/* زر الإجراء الأساسي */}
-      <button
-        onClick={() => setMode("offers")}
-        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-card)] bg-primary py-3.5 font-bold text-primary-foreground  transition active:scale-[var(--scale-pressed)]"
+      <Link
+        to="/studio/add-product"
+        className="flex w-full items-center justify-center gap-2 rounded-[var(--radius-card)] bg-primary py-3.5 font-bold text-primary-foreground transition active:scale-[var(--scale-pressed)]"
       >
-        <PackagePlus className="size-5" /> إضافة منتج
-      </button>
+        <Package className="size-5" /> إضافة منتج
+      </Link>
 
       {/* قائمة إدارة المتجر */}
       <section className="space-y-2">
@@ -886,7 +820,7 @@ function StudioPage() {
                 {t("studio_my_products")}
               </span>
               <span className="block text-xs text-muted-foreground">
-                إضافة المنتجات وتعديلها وحذفها
+                عرض المنتجات وتعديلها وحذفها
               </span>
             </span>
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
@@ -999,79 +933,6 @@ function StudioPage() {
             >
               تحديث كل المنتجات اليوم
             </button>
-          </div>
-
-          <div id="quick-add-product" className="scroll-mt-24 rounded-[var(--radius-card)] border border-border bg-card p-4  sm:p-5">
-            <h2 className="mb-3 flex items-center gap-2 font-bold">
-              <PackagePlus className="size-5 text-accent-ink" /> إضافة منتج في 30 ثانية
-            </h2>
-            <div className="grid min-w-0 gap-3">
-              <input
-                value={productForm.name}
-                onChange={(e) => setProductForm({ ...productForm, name: e.target.value })}
-                placeholder={t("studio_product_name_ph")}
-                className="h-[var(--control-height)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
-              />
-              <div className="grid min-w-0 grid-cols-2 gap-2">
-                <input
-                  value={productForm.price}
-                  onChange={(e) => setProductForm({ ...productForm, price: e.target.value })}
-                  placeholder={t("studio_price_dzd_ph")}
-                  type="number"
-                  min="0"
-                  className="h-[var(--control-height)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
-                />
-                <input
-                  value={productForm.stock}
-                  onChange={(e) => setProductForm({ ...productForm, stock: e.target.value })}
-                  placeholder={t("studio_quantity_ph")}
-                  type="number"
-                  min="0"
-                  className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
-                />
-              </div>
-              <CategorySelect
-                value={productForm.category}
-                onChange={(category) => setProductForm({ ...productForm, category })}
-              />
-              <input
-                value={productForm.brand}
-                onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
-                placeholder={t("studio_brand_ph")}
-                className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
-              />
-              <input
-                value={productForm.sizes}
-                onChange={(e) => setProductForm({ ...productForm, sizes: e.target.value })}
-                placeholder={t("studio_sizes_ph")}
-                className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
-              />
-              <input
-                value={productForm.colors}
-                onChange={(e) => setProductForm({ ...productForm, colors: e.target.value })}
-                placeholder={t("studio_colors_ph")}
-                className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
-              />
-              <textarea
-                value={productForm.description}
-                onChange={(e) => setProductForm({ ...productForm, description: e.target.value })}
-                placeholder={t("studio_description_ph")}
-                rows={2}
-                className="min-h-24 w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/20"
-              />
-              <ImageUploader
-                initialItems={[]}
-                onChange={(items) => setImages(items.map((i) => i.file).filter(Boolean))}
-                label={t("studio_add_product_images_label")}
-              />
-              <button
-                onClick={addProduct}
-                disabled={busy}
-                className="min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
-              >
-                {busy ? "جارٍ الحفظ..." : "حفظ المنتج"}
-              </button>
-            </div>
           </div>
 
           <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
