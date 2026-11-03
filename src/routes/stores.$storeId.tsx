@@ -250,13 +250,13 @@ function StorePage() {
               )}
             >
               <Heart className={cn("size-4", followed && "fill-accent-ink text-accent-ink")} />
-              {followed ? "إلغاء المتابعة" : "متابعة المتجر"}
+              {followed ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
             </button>
             <DirectionsButton
               lat={s.latitude}
               lng={s.longitude}
               label={s.name}
-              className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-border bg-card text-sm font-bold"
+              className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border border-border bg-card px-2 text-xs font-semibold text-foreground transition active:scale-95"
             >
               <Navigation className="size-4" />
               الاتجاهات
@@ -266,7 +266,7 @@ function StorePage() {
                 href={whatsappUrl(s.whatsapp)!}
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] bg-success text-success-foreground transition active:scale-95"
+                className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] bg-success-soft px-2 text-xs font-semibold text-success transition active:scale-95"
               >
                 <MessageCircle className="size-4" />
                 واتساب
@@ -274,7 +274,7 @@ function StorePage() {
             ) : telUrl(s.phone) ? (
               <a
                 href={telUrl(s.phone)!}
-                className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] bg-success text-success-foreground transition active:scale-95"
+                className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] bg-success-soft px-2 text-xs font-semibold text-success transition active:scale-95"
               >
                 <Phone className="size-4" />
                 اتصال
@@ -282,7 +282,7 @@ function StorePage() {
             ) : (
               <span
                 aria-disabled="true"
-                className="flex h-11 items-center justify-center gap-1.5 rounded-[var(--radius-control)] border border-border bg-muted text-sm font-bold text-muted-foreground"
+                className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border border-border bg-muted px-2 text-xs font-semibold text-muted-foreground"
               >
                 <MessageCircle className="size-4" />
                 لا يوجد رقم
