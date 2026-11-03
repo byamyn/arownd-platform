@@ -192,7 +192,7 @@ function ReservationsPage() {
                 <div className="rounded-[var(--radius-card)] border border-dashed border-primary/40 bg-primary-soft p-4 text-center">
                   <p className="text-caption font-semibold text-muted-foreground">رمز الحجز</p>
                   <p
-                    className="mt-1 font-mono text-3xl font-black tracking-[0.18em] text-foreground"
+                    className="mt-1 max-w-full break-all font-mono text-[clamp(1.25rem,6vw,1.875rem)] font-black leading-tight tracking-[0.12em] text-foreground"
                     dir="ltr"
                   >
                     {reservation.code}
