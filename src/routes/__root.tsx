@@ -10,7 +10,7 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useRef, useState, type ReactNode } from "react";
 
 // صائد أخطاء الشاشة — يجب أن يُستورد أولًا ليعتمد قبل أي طبقة أخرى (يتجاهل SSR)
 import { reportScreenError } from "@/lib/screen-error";
@@ -227,6 +227,58 @@ function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
     };
   }, [queryClient]);
 
+  return null;
+}
+
+
+const dirtyForms = new Set<HTMLFormElement>();
+const hasUnsavedFormChanges = () => dirtyForms.size > 0;
+
+function UnsavedFormGuard() {
+  useEffect(() => {
+    const markDirty = (event: Event) => {
+      const target = event.target;
+      if (target instanceof HTMLElement) {
+        const form = target.closest("form");
+        if (form instanceof HTMLFormElement) dirtyForms.add(form);
+      }
+    };
+    const markSubmitted = (event: Event) => {
+      if (event.target instanceof HTMLFormElement) dirtyForms.delete(event.target);
+    };
+    const warnBeforeUnload = (event: BeforeUnloadEvent) => {
+      if (!hasUnsavedFormChanges()) return;
+      event.preventDefault();
+      event.returnValue = "";
+    };
+    const confirmNavigation = (event: MouseEvent) => {
+      if (!hasUnsavedFormChanges() || event.defaultPrevented || event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const anchor = target.closest("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement) || anchor.target === "_blank" || anchor.hasAttribute("download")) return;
+      const destination = new URL(anchor.href, window.location.href);
+      if (destination.origin !== window.location.origin || destination.href === window.location.href) return;
+      if (!window.confirm("لديك تغييرات غير محفوظة. هل تريد مغادرة الصفحة وفقدانها؟")) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      } else {
+        dirtyForms.clear();
+      }
+    };
+    document.addEventListener("input", markDirty, true);
+    document.addEventListener("change", markDirty, true);
+    document.addEventListener("submit", markSubmitted, true);
+    document.addEventListener("click", confirmNavigation, true);
+    window.addEventListener("beforeunload", warnBeforeUnload);
+    return () => {
+      document.removeEventListener("input", markDirty, true);
+      document.removeEventListener("change", markDirty, true);
+      document.removeEventListener("submit", markSubmitted, true);
+      document.removeEventListener("click", confirmNavigation, true);
+      window.removeEventListener("beforeunload", warnBeforeUnload);
+    };
+  }, []);
   return null;
 }
 
