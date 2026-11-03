@@ -10,7 +10,6 @@ import {
   Package,
   Pencil,
   Phone,
-  Shield,
   User,
   Wallet,
   Settings,
@@ -78,8 +77,6 @@ function ProfilePage() {
     queryFn: fetchMyReservations,
     enabled: !!user && !public_id,
   });
-  // user_roles يقبل عدة صفوف لكل مستخدم (customer/merchant/admin) —
-  // نقرأها كمصفوفة؛ الاستعلام بـ.single() كان يفشل بخطأ 406 عند أكثر من صف
   const roleQuery = useQuery({
     queryKey: ["my-role", user?.id],
     queryFn: fetchMyRoles,
@@ -90,7 +87,6 @@ function ProfilePage() {
     queryFn: fetchMyAccountType,
     enabled: !!user && !public_id,
   });
-  const isAdmin = roleQuery.data?.includes("admin") ?? false;
   const isMerchant = accountTypeQuery.data === "merchant" && (roleQuery.data?.includes("merchant") ?? false);
   const wilayas = useQuery(wilayasQuery);
   const favorites = useFavorites();
@@ -228,15 +224,6 @@ function ProfilePage() {
               >
                 <Settings className="size-5" />
               </Link>
-              {isAdmin && (
-                <Link
-                  to="/admin"
-                  aria-label={t("profile_admin_dashboard")}
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full bg-warning text-warning-foreground transition hover:brightness-95 active:scale-95"
-                >
-                  <Shield className="size-4.5" />
-                </Link>
-              )}
             </div>
           }
         />
@@ -326,11 +313,6 @@ function ProfilePage() {
               {profile.data?.is_phone_verified && (
                 <span className="flex items-center gap-1.5 rounded-full bg-success-soft px-3 py-1 text-xs font-bold text-success">
                   <BadgeCheck className="size-3.5" /> {t("profile_phone_verified")}
-                </span>
-              )}
-              {isAdmin && (
-                <span className="flex items-center gap-1.5 rounded-full bg-warning-soft px-3 py-1 text-xs font-bold text-warning">
-                  <Shield className="size-3.5" /> {t("profile_admin_role")}
                 </span>
               )}
             </div>
