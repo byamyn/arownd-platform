@@ -2,6 +2,7 @@ import { registerPlugin } from "@capacitor/core";
 import { isNativePlatform } from "@/lib/platform";
 
 interface ArowndSystemUiPlugin {
+  setStatusBar(options: { dark: boolean; color: string }): Promise<void>;
   openExternal(options: { url: string }): Promise<void>;
   shareText(options: { title: string; text: string; url?: string }): Promise<void>;
   shareFile(options: {
@@ -20,6 +21,13 @@ function safeHttpUrl(value: string): string | null {
     return url.toString();
   } catch {
     return null;
+  }
+}
+
+/** Synchronizes the Android status bar with the active app theme. */
+export async function syncNativeStatusBar(dark: boolean, color: string): Promise<void> {
+  if (isNativePlatform()) {
+    await ArowndSystemUi.setStatusBar({ dark, color });
   }
 }
 
