@@ -54,3 +54,29 @@ export function parseNativeAuthCallback(rawUrl: string): NativeAuthCallback | nu
     return null;
   }
 }
+
+/**
+ * Parses app-owned content links only. The host must be "open", and the
+ * resulting destination is always a same-app relative route, never a URL.
+ */
+export function parseNativeRouteLink(rawUrl: string): string | null {
+  try {
+    const url = new URL(rawUrl);
+    if (
+      url.protocol !== "com.arownd.app:" ||
+      url.hostname !== "open" ||
+      !url.pathname.startsWith("/") ||
+      url.pathname.startsWith("//") ||
+      url.pathname.includes("\\") ||
+      url.pathname.length > 1024
+    ) {
+      return null;
+    }
+
+    const route = safeRelativePath(url.pathname);
+    if (!route || route === "/") return null;
+    return route + url.search + url.hash;
+  } catch {
+    return null;
+  }
+}
