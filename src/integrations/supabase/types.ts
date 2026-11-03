@@ -975,6 +975,36 @@ export type Database = {
         ];
       };
     };
+      account_deletion_requests: {
+        Row: {
+          id: string;
+          user_id: string | null;
+          status: string;
+          requested_at: string;
+          updated_at: string;
+          resolved_at: string | null;
+          retention_note: string | null;
+        };
+        Insert: {
+          id?: string;
+          user_id?: string | null;
+          status?: string;
+          requested_at?: string;
+          updated_at?: string;
+          resolved_at?: string | null;
+          retention_note?: string | null;
+        };
+        Update: {
+          id?: string;
+          user_id?: string | null;
+          status?: string;
+          requested_at?: string;
+          updated_at?: string;
+          resolved_at?: string | null;
+          retention_note?: string | null;
+        };
+        Relationships: [];
+      };
     Views: {
       approved_delivery_companies: {
         Row: {
