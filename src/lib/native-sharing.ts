@@ -92,3 +92,24 @@ export async function shareLocalFile(file: File): Promise<boolean> {
   }
   return false;
 }
+
+
+/** Fetches a public product image and shares it as an actual file. */
+export async function shareRemoteImage(value: string, fileName = "arownd-image.jpg"): Promise<boolean> {
+  const url = safeHttpUrl(value);
+  if (!url) throw new Error("Invalid image URL");
+
+  const response = await fetch(url, { credentials: "omit" });
+  if (!response.ok) throw new Error("Could not retrieve the image");
+  const blob = await response.blob();
+  if (!blob.type.startsWith("image/")) {
+    throw new Error("The selected resource is not an image");
+  }
+
+  const extension = blob.type === "image/png" ? "png" :
+    blob.type === "image/webp" ? "webp" :
+    blob.type === "image/jpeg" ? "jpg" : "img";
+  const normalizedName = fileName.replace(/\\.[^.]+$/, "");
+  const file = new File([blob], `${normalizedName}.${extension}`, { type: blob.type });
+  return shareLocalFile(file);
+}
