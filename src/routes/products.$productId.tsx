@@ -89,6 +89,7 @@ function ProductPage() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // لا نعرض عروض المتجر المملوك للمستخدم ضمن خيارات الشراء أو الحجز.
   const purchasableOffers = sorted.filter((o) => !user || o.store.owner_id !== user.id);
+  const isOwnProduct = !!user && sorted.some((o) => o.store.owner_id === user.id);
   const selected =
     purchasableOffers.find((o) => o.id === selectedId) ?? purchasableOffers[0];
   const [imgIdx, setImgIdx] = useState(0);
@@ -488,7 +489,7 @@ function ProductPage() {
             )}
           </section>
           {/* Options */}
-          <div className="space-y-4">
+          {!isOwnProduct && <div className="space-y-4">
             {opts.colors?.length ? (
               <OptionRow
                 label={t("product_color_option")}
@@ -514,10 +515,10 @@ function ProductPage() {
                 max={Math.min(selected?.stock_quantity ?? 10, 10)}
               />
             </div>
-          </div>
+          </div>}
 
           {/* Specs / delivery info */}
-          <section className="space-y-3">
+          {!isOwnProduct && <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_specs_title")}</h2>
             <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
               {p.brand && <SpecRow label={t("product_brand_label")} value={p.brand} />}
@@ -526,10 +527,11 @@ function ProductPage() {
               )}
               <SpecRow label={t("product_delivery_title")} value={t("product_delivery_desc")} />
             </div>
-          </section>
+          </section>}
 
-          <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} />
+          {!isOwnProduct && <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} /> }
 
+          {!isOwnProduct && (
           {/* Where to find */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_where_to_find")}</h2>
@@ -648,9 +650,11 @@ function ProductPage() {
               );
             })}
           </section>
+          )}
         </div>
       </div>
 
+      {!isOwnProduct && (
       {/* Sticky bottom bar */}
       <StickyActionBar>
         <div className="flex items-center gap-3">
@@ -688,6 +692,7 @@ function ProductPage() {
           </button>
         </div>
       </StickyActionBar>
+      )}
 
       <ReservationDialog
         reservation={reservation}
