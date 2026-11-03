@@ -33,6 +33,7 @@ import { OpenBadge, StockBadge, VerifiedBadge } from "@/components/sooqy/badges"
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { ReviewSection } from "@/components/sooqy/ReviewSection";
+import { ReportContentButton } from "@/components/moderation/ReportContentButton";
 import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
 import { StoreDetailSkeleton } from "@/components/sooqy/skeleton";
 import { cn } from "@/lib/utils";
@@ -211,8 +212,11 @@ function StorePage() {
 
         <div className="space-y-4 px-4 pt-11">
           {/* الاسم والحالة */}
-          <div className="space-y-1.5">
+          <div className="flex flex-wrap items-center justify-between gap-2">
             <h1 className="text-h1 text-foreground">{s.name}</h1>
+            {!isOwner && <ReportContentButton targetType="store" targetId={s.id} label="الإبلاغ عن المتجر" />}
+          </div>
+          <div className="space-y-1.5">
             <div className="flex flex-wrap items-center gap-2 text-xs">
               <OpenBadge open={open} />
               {s.is_verified && <VerifiedBadge />}
