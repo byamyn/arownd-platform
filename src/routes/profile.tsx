@@ -196,38 +196,22 @@ function ProfilePage() {
         ogType="website"
       />
       <AppShell className="mx-auto max-w-xl space-y-5 pb-24 pt-6">
-        <PageHeader
-          title={t("profile_hub_title")}
-          subtitle={isMerchant ? undefined : t("profile_hub_subtitle")}
-          back={
-            accountTypeQuery.data === "merchant" && roleQuery.data?.includes("merchant")
-              ? "/studio"
-              : undefined
-          }
-          action={
-            <div className="flex items-center gap-2">
-              {isMerchant && (
-                <Link
-                  to="/bag"
-                  aria-label="سلة التسوق"
-                  title="سلة التسوق"
-                  className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95"
-                >
-                  <ShoppingBag className="size-5" />
-                </Link>
-              )}
-              <Link
-                to="/settings"
-                aria-label="الإعدادات"
-                title="الإعدادات"
-                className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground  transition hover:bg-muted active:scale-95"
-              >
-                <Settings className="size-5" />
-              </Link>
-            </div>
-          }
-        />
-
+        {isMerchant ? (
+          <div className="flex min-h-11 items-center justify-end gap-2">
+            <Link to="/bag" aria-label="سلة التسوق" title="سلة التسوق" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
+              <ShoppingBag className="size-5" />
+            </Link>
+            <Link to="/settings" aria-label="الإعدادات" title="الإعدادات" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
+              <Settings className="size-5" />
+            </Link>
+          </div>
+        ) : (
+          <PageHeader title={t("profile_hub_title")} subtitle={t("profile_hub_subtitle")} action={
+            <Link to="/settings" aria-label="الإعدادات" title="الإعدادات" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
+              <Settings className="size-5" />
+            </Link>
+          } />
+        )}
         {profile.isError && (
           <ErrorState scope="profile" error={profile.error} onRetry={() => profile.refetch()} />
         )}
