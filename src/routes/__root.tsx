@@ -143,6 +143,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
         <HeadContent />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -236,7 +237,7 @@ function RootComponent() {
                 isAuth
                   ? "min-h-screen w-full max-w-none pb-0"
                   : isStudio
-                    ? "min-h-screen w-full max-w-none pb-28"
+                    ? "min-h-screen w-full min-w-0 max-w-none overflow-x-clip pb-28"
                     : "mx-auto min-h-screen w-full max-w-7xl pb-28"
               }
             >
