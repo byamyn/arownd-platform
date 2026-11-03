@@ -73,7 +73,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     { to: "/settings", expect: "الإعدادات" },
     { to: "/profile", expect: /سجّل الدخول|تسجيل الدخول|الملف الشخصي/ },
     { to: "/notifications", expect: "الإشعارات" },
-    { to: "/orders", expect: /سجّل الدخول|طلباتي/ },
+    { to: "/orders/", expect: /سجّل الدخول|طلباتي/ },
     { to: "/orders/$orderId", params: { orderId: "order-1" }, expect: /سجّل الدخول|طلب/ },
     { to: "/studio", expect: /استوديو Arownd|لوحة التاجر|أنشئ متجر/ },
     { to: "/studio/settings", expect: "معلومات المتجر" },
@@ -183,14 +183,14 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     await go(router, "/studio");
 
     await expectText("مساحة عمل متجرك");
-    fireEvent.click(await screen.findByRole("link", { name: /معلومات المتجر/ }));
+    fireEvent.click(await screen.findByRole("link", { name: /تخصيص المتجر/ }));
 
     await waitFor(() => expect(router.state.location.pathname).toBe("/studio/settings"));
     await expectText("هوية متجرك تظهر للعملاء في صفحته");
   });
 
   it("إتمام طلب كامل: سلة ← عنوان ← توصيل ← دفع ← تأكيد", async () => {
-    setSession({ id: "user-1", email: "malik@test.dz" });
+    setSession({ id: "customer-1", email: "customer@test.dz" });
     const router = renderApp();
 
     // نضيف منتجًا للسلة من صفحته
@@ -264,7 +264,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
   });
 
   it("إرسال تقييم لمنتج يظهر تأكيد «قمت بتقييم هذا العنصر»", async () => {
-    setSession({ id: "user-1", email: "malik@test.dz" });
+    setSession({ id: "customer-1", email: "customer@test.dz" });
     const router = renderApp();
     await go(router, "/products/$productId", { productId: "prod-1" });
 
