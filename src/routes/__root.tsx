@@ -11,7 +11,6 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
-import { registerPlugin } from "@capacitor/core";
 
 // صائد أخطاء الشاشة — يجب أن يُستورد أولًا ليعتمد قبل أي طبقة أخرى (يتجاهل SSR)
 import { reportScreenError } from "@/lib/screen-error";
@@ -31,14 +30,8 @@ import { PageTransition } from "@/components/sooqy/page-transition";
 import { Toaster } from "@/components/ui/sonner";
 import { isNativePlatform } from "@/lib/platform";
 import { parseNativeAuthCallback, parseNativeRouteLink } from "@/lib/native-deep-links";
-import { openExternalUrl } from "@/lib/native-sharing";
+import { openExternalUrl, syncNativeStatusBar } from "@/lib/native-sharing";
 import { useTheme } from "@/lib/theme";
-
-interface ArowndSystemUiPlugin {
-  setStatusBar(options: { dark: boolean; color: string }): Promise<void>;
-}
-
-const ArowndSystemUi = registerPlugin<ArowndSystemUiPlugin>("ArowndSystemUi");
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -189,10 +182,10 @@ function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
         ? `#${rgb.slice(1, 4).map((channel) => Number(channel).toString(16).padStart(2, "0")).join("")}`
         : undefined;
       const color = /^#[0-9a-f]{6}$/i.test(tokenColor) ? tokenColor : bodyHex;
-      void ArowndSystemUi.setStatusBar({
-        dark: resolved === "dark",
-        color: color || (resolved === "dark" ? "#111827" : "#ffffff"),
-      }).catch((error: unknown) => {
+      void syncNativeStatusBar(
+        resolved === "dark",
+        color || (resolved === "dark" ? "#111827" : "#ffffff"),
+      ).catch((error: unknown) => {
         console.warn("[native] Could not synchronize status bar", error);
       });
     };
