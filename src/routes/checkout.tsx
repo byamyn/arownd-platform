@@ -64,6 +64,7 @@ function CheckoutPage() {
   const qc = useQueryClient();
   const [step, setStep] = useState(0);
   const [orderId, setOrderId] = useState<string | null>(null);
+  const [orderIds, setOrderIds] = useState<string[]>([]);
   const [snapshot, setSnapshot] = useState<OrderSnapshot | null>(null);
   const [deliveryType, setDeliveryType] = useState<DeliveryType>("home");
   const [wilayaId, setWilayaId] = useState<number | null>(null);
@@ -151,31 +152,52 @@ function CheckoutPage() {
     submittingRef.current = true;
     setSubmitting(true);
     try {
-      const id = await createOrderWithDelivery(
-        bag.items,
-        deliveryType,
-        wilayaId!,
-        commune.trim(),
-        paymentMethod,
-        { fullName: fullName.trim(), phone: normalizePhone(phone.trim()), address: address.trim() },
-      );
-      setOrderId(id);
-      // لقطة الطلب تُلتقط قبل إفراغ السلة — تغذّي شاشة الإغلاق (إعادة الطلب، التقييم).
-      setSnapshot({
-        orderId: id,
-        total,
-        itemCount: bag.items.length,
-        storeName: rows.find((r) => r.offer)?.offer?.store.name ?? null,
-        productId: rows.find((r) => r.offer)?.offer?.product.id ?? null,
-        items: bag.items.map((i) => ({
-          offerId: i.offerId,
-          quantity: i.quantity,
-          options: i.options,
-        })),
-      });
+      // كل منتج يُنشأ كطلب مستقل، حتى عند وجود منتجات من متاجر مختلفة.
+      // ننفذ الطلبات بالتتابع حتى لا تتكرر أو تختلط عمليات حجز المخزون.
+      const requestedItems = [...bag.items];
+      const successfulItems: typeof bag.items = [];
+      const createdOrderIds: string[] = [];
+      const contact = {
+        fullName: fullName.trim(),
+        phone: normalizePhone(phone.trim()),
+        address: address.trim(),
+      };
+      try {
+        for (const item of requestedItems) {
+          const id = await createOrderWithDelivery(
+            [item],
+            deliveryType,
+            wilayaId!,
+            commune.trim(),
+            paymentMethod,
+            contact,
+          );
+          createdOrderIds.push(id);
+          successfulItems.push(item);
+        }
+      } catch (error) {
+        if (createdOrderIds.length === 0) throw error;
+        // أبقِ المنتجات التي لم تُنشأ طلباتها في السلة، ولا تعِد إرسال الطلبات الناجحة.
+        bag.clear();
+        requestedItems.slice(successfulItems.length).forEach((item) => bag.add(item));
+        setOrderIds(createdOrderIds);
+        setOrderId(createdOrderIds[0]!);
+        setSnapshot(buildOrderSnapshot(createdOrderIds, successfulItems, rows));
+        showError(error, "feedback_generic_error");
+        return;
+      }
+
+      setOrderIds(createdOrderIds);
+      setOrderId(createdOrderIds[0]!);
+      setSnapshot(buildOrderSnapshot(createdOrderIds, successfulItems, rows));
       bag.clear();
       qc.clear();
-      track("place_order", { total, paymentMethod, deliveryType, wilayaId });
+      const submittedTotal = successfulItems.reduce(
+        (sum, item) =>
+          sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price) * item.quantity,
+        0,
+      );
+      track("place_order", { total: submittedTotal, count: successfulItems.length, paymentMethod, deliveryType, wilayaId });
     } catch (error) {
       showError(error, "feedback_generic_error");
     } finally {
@@ -188,6 +210,7 @@ function CheckoutPage() {
     return (
       <SuccessScreen
         orderId={orderId}
+        orderIds={orderIds}
         snapshot={snapshot}
         onReorder={() => {
           // «اطلب مجددًا» — نعيد العناصر نفسها إلى السلة بنقرة واحدة.
@@ -503,12 +526,40 @@ type OrderSnapshot = {
   items: { offerId: string; quantity: number; options: Record<string, string> }[];
 };
 
+function buildOrderSnapshot(
+  orderIds: string[],
+  items: typeof import("@/lib/bag").BagItem[],
+  rows: { offerId: string; offer?: { price: number; store: { name: string }; product: { id: string } } }[],
+): OrderSnapshot {
+  const firstItem = items[0];
+  const firstRow = rows.find((row) => row.offerId === firstItem?.offerId);
+  const total = items.reduce(
+    (sum, item) =>
+      sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price) * item.quantity,
+    0,
+  );
+  return {
+    orderId: orderIds[0]!,
+    total,
+    itemCount: items.length,
+    storeName: firstRow?.offer?.store.name ?? null,
+    productId: firstRow?.offer?.product.id ?? null,
+    items: items.map((item) => ({
+      offerId: item.offerId,
+      quantity: item.quantity,
+      options: item.options,
+    })),
+  };
+}
+
 function SuccessScreen({
   orderId,
+  orderIds,
   snapshot,
   onReorder,
 }: {
   orderId: string;
+  orderIds: string[];
   snapshot: OrderSnapshot | null;
   onReorder: () => void;
 }) {
@@ -544,11 +595,23 @@ function SuccessScreen({
       </div>
 
       {/* رمز التتبع */}
-      <div className="w-full max-w-xs rounded-[var(--radius-card)] border border-border bg-card px-4 py-5 ">
-        <p className="text-caption opacity-70 text-muted-foreground">
-          {t("checkout_tracking_code")}
+      <div className="w-full max-w-xs space-y-2 rounded-[var(--radius-card)] border border-border bg-card px-4 py-4 ">
+        <p className="text-caption text-muted-foreground">
+          {orderIds.length > 1 ? "رموز تتبع الطلبات المستقلة" : t("checkout_tracking_code")}
         </p>
-        <p className="font-mono text-2xl font-bold tracking-[0.3em] text-accent-ink">{trackCode}</p>
+        {orderIds.map((id) => (
+          <Link
+            key={id}
+            to="/orders/$orderId"
+            params={{ orderId: id }}
+            className="flex items-center justify-between gap-3 rounded-xl bg-background px-3 py-2"
+          >
+            <span className="font-mono text-lg font-bold tracking-[0.2em] text-accent-ink">
+              {id.replace(/-/g, "").slice(0, 8).toUpperCase()}
+            </span>
+            <span className="text-xs font-semibold text-muted-foreground">تتبع</span>
+          </Link>
+        ))}
       </div>
 
       {/* ملخّص الطلب — المتجر والقطع والإجمالي */}
