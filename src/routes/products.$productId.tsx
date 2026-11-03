@@ -45,7 +45,7 @@ import { categoryLabel } from "@/lib/taxonomy";
 import { formatDistanceToNow } from "date-fns";
 import { ar } from "date-fns/locale";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { ProductCardSkeleton } from "@/components/sooqy/skeleton";
+import { ProductDetailSkeleton } from "@/components/sooqy/skeleton";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
 import { telUrl, whatsappUrl } from "@/lib/contact";
@@ -128,14 +128,7 @@ function ProductPage() {
 
   const touchStartX = useRef<number | null>(null);
 
-  if (product.isLoading || offers.isLoading)
-    return (
-      <div className="m-4 space-y-4">
-        <ProductCardSkeleton className="h-80" />
-        <ProductCardSkeleton className="h-80" />
-        <ProductCardSkeleton className="h-80" />
-      </div>
-    );
+  if (product.isLoading || offers.isLoading) return <ProductDetailSkeleton />;
   if (product.isError)
     return (
       <div className="p-8 text-center">
