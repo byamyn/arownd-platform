@@ -1030,7 +1030,7 @@ function StudioPage() {
                 value={productForm.brand}
                 onChange={(e) => setProductForm({ ...productForm, brand: e.target.value })}
                 placeholder={t("studio_brand_ph")}
-                className="h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
+                className="h-[var(--control-height-compact)] w-full min-w-0 max-w-full box-border rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
               <input
                 value={productForm.sizes}
