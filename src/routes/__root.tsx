@@ -11,6 +11,7 @@ import {
   type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
+import { registerPlugin } from "@capacitor/core";
 
 // صائد أخطاء الشاشة — يجب أن يُستورد أولًا ليعتمد قبل أي طبقة أخرى (يتجاهل SSR)
 import { reportScreenError } from "@/lib/screen-error";
@@ -30,6 +31,13 @@ import { PageTransition } from "@/components/sooqy/page-transition";
 import { Toaster } from "@/components/ui/sonner";
 import { isNativePlatform } from "@/lib/platform";
 import { parseNativeAuthCallback } from "@/lib/native-deep-links";
+import { useTheme } from "@/lib/theme";
+
+interface ArowndSystemUiPlugin {
+  setStatusBar(options: { dark: boolean; color: string }): Promise<void>;
+}
+
+const ArowndSystemUi = registerPlugin<ArowndSystemUiPlugin>("ArowndSystemUi");
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -163,6 +171,65 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
+  const { resolved } = useTheme();
+
+  // Keep Android's native status bar synchronized with the app's resolved theme.
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    const syncStatusBar = () => {
+      const color = getComputedStyle(document.documentElement)
+        .getPropertyValue("--color-bg-canvas")
+        .trim();
+      void ArowndSystemUi.setStatusBar({
+        dark: resolved === "dark",
+        color: color || (resolved === "dark" ? "#111827" : "#ffffff"),
+      }).catch((error: unknown) => {
+        console.warn("[native] Could not synchronize status bar", error);
+      });
+    };
+
+    syncStatusBar();
+  }, [resolved]);
+
+  // Refresh active queries after returning from the background without
+  // introducing a second app-state source of truth.
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    let disposed = false;
+    let removeListener: (() => void) | undefined;
+
+    void import("@capacitor/app")
+      .then(async ({ App }) => {
+        if (disposed) return;
+        const listener = await App.addListener("appStateChange", ({ isActive }) => {
+          if (isActive) {
+            void queryClient.invalidateQueries({ refetchType: "active" });
+          }
+        });
+        if (disposed) {
+          void listener.remove();
+        } else {
+          removeListener = () => {
+            void listener.remove();
+          };
+        }
+      })
+      .catch((error: unknown) => {
+        console.warn("[native] Could not subscribe to app lifecycle", error);
+      });
+
+    return () => {
+      disposed = true;
+      removeListener?.();
+    };
+  }, [queryClient]);
+
+  return null;
+}
+
 function NativeDeepLinkListener() {
   const navigate = useNavigate();
 
@@ -230,6 +297,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <ThemeProvider>
         <AuthProvider>
+          <NativeRuntimeSync queryClient={queryClient} />
           <NativeDeepLinkListener />
           <BagProvider>
             <div
