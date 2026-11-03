@@ -77,6 +77,35 @@ public class ArowndSystemUiPlugin extends Plugin {
     }
 
     @PluginMethod
+    public void shareText(PluginCall call) {
+        String title = call.getString("title", "Share with");
+        String text = call.getString("text", "");
+        String url = call.getString("url");
+        String payload = text == null ? "" : text.trim();
+        if (url != null && !url.trim().isEmpty()) {
+            payload = payload.isEmpty() ? url : payload + "\\n" + url;
+        }
+        if (payload.isEmpty()) {
+            call.reject("Share text or URL is required");
+            return;
+        }
+
+        try {
+            Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            intent.putExtra(Intent.EXTRA_TEXT, payload);
+            intent.putExtra(Intent.EXTRA_SUBJECT, title == null ? "Share with" : title);
+            getContext().startActivity(
+                Intent.createChooser(intent, title == null ? "Share with" : title)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            );
+            call.resolve();
+        } catch (RuntimeException error) {
+            call.reject("Could not open the sharing menu", error);
+        }
+    }
+
+    @PluginMethod
     public void shareFile(PluginCall call) {
         String encoded = call.getString("data");
         String requestedName = call.getString("fileName", "arownd-share");
