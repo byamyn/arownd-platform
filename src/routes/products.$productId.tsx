@@ -86,7 +86,7 @@ function ProductPage() {
     [offers.data, pos],
   );
 
-  useRealtimeSubscription({ table: "offers", filter: "product_id=eq." + productId, queryKeys: [["offers", productId], ["product", productId]] });
+  useRealtimeSubscription({ table: "store_offers", filter: "product_id=eq." + productId, queryKeys: [["offers", productId], ["product", productId]] });
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // لا نعرض عروض المتجر المملوك للمستخدم ضمن خيارات الشراء أو الحجز.
