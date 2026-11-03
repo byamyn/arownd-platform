@@ -513,7 +513,6 @@ function ProductPage() {
 
 
           {!isOwnProduct && (
-          {/* Where to find */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_where_to_find")}</h2>
             {user && sorted.some((o) => o.store.owner_id === user.id) && purchasableOffers.length === 0 && (
@@ -669,7 +668,15 @@ function ProductPage() {
             </div>
           </section>
           )}
-                    {!isOwnProduct && <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} />}
+                    {isOwnProduct && (
+            <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground">
+              هذا منتجك في متجرك. يمكنك إدارته من استديو التاجر، ولا يمكنك طلبه من متجرك.
+              <Link to="/studio" className="ms-1 text-accent-ink underline underline-offset-2">
+                إدارة المنتج
+              </Link>
+            </div>
+          )}
+          {!isOwnProduct && <ReviewSection targetType="product" targetId={p.id} title={t("product_reviews_title")} />}
         </div>
       </div>
 
