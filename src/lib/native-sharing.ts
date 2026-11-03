@@ -17,7 +17,10 @@ const ArowndSystemUi = registerPlugin<ArowndSystemUiPlugin>("ArowndSystemUi");
 function safeHttpUrl(value: string): string | null {
   try {
     const url = new URL(value);
-    if (url.protocol !== "https:" && url.protocol !== "http:") return null;
+    if (!["https:", "http:", "tel:", "mailto:", "sms:", "geo:"].includes(url.protocol)) {
+      return null;
+    }
+    if ((url.protocol === "http:" || url.protocol === "https:") && !url.hostname) return null;
     return url.toString();
   } catch {
     return null;
