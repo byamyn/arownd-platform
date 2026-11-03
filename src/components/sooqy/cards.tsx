@@ -3,7 +3,7 @@ import { useTranslation } from "@/lib/i18n";
 import { BadgeCheck, ChevronLeft, MapPin, Navigation, ImageOff } from "lucide-react";
 import { formatDA, formatKm, getStoreStatus } from "@/lib/geo";
 import type { OfferFull, ProductGroup, Store } from "@/lib/sooqy";
-import { isFavorite, toggleFavorite } from "@/lib/favorites";
+import { toggleFavorite, useFavorites } from "@/lib/favorites";
 import { OpenBadge, VerifiedBadge } from "./badges";
 import { DirectionsButton } from "./DirectionsButton";
 import { RatingStars } from "./rating-stars";
@@ -21,7 +21,8 @@ const STORE_PLACEHOLDER =
 /* ═══════════════ زر المفضلة ═══════════════ */
 export function FavoriteButton({ kind, id, className }: { kind: "products" | "stores"; id: string; className?: string }) {
   const { t } = useTranslation();
-  const active = isFavorite(kind, id);
+  const favorites = useFavorites();
+  const active = favorites[kind].includes(id);
 
   return (
     <button
@@ -39,7 +40,7 @@ export function FavoriteButton({ kind, id, className }: { kind: "products" | "st
         viewBox="0 0 24 24"
         className={cn(
           "size-5 transition-colors duration-200",
-          active ? "fill-current text-accent-ink" : "fill-transparent text-muted-foreground",
+          active ? "fill-current text-rose-600" : "fill-transparent text-muted-foreground",
         )}
         stroke="currentColor"
         strokeWidth="2"
