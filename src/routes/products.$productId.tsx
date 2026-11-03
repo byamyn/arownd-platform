@@ -160,7 +160,17 @@ function ProductPage() {
   const chosen: Record<string, string> = {};
   if (size) chosen[t("product_size_option")] = size;
   if (color) chosen[t("product_color_option")] = color;
-  const level = selected ? stockLevel(selected) : "out";
+  // For the merchant's own listing, availability can be disabled to hide it from buyers.
+  // The detail page must still reflect the real inventory quantity, not that visibility flag.
+  const level = selected
+    ? isOwnProduct
+      ? selected.stock_quantity <= 0
+        ? "out"
+        : selected.stock_quantity <= 3
+          ? "low"
+          : "in"
+      : stockLevel(selected)
+    : "out";
 
   const availableOffers = purchasableOffers.filter((o) => stockLevel(o) !== "out");
   const pricePool = availableOffers.length ? availableOffers : purchasableOffers;
