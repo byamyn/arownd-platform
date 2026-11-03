@@ -37,6 +37,7 @@ import { Route as ProductsProductIdRouteImport } from './routes/products.$produc
 import { Route as StoresIndexRouteImport } from './routes/stores.index'
 import { Route as StoresStoreIdRouteImport } from './routes/stores.$storeId'
 import { Route as StudioIndexRouteImport } from './routes/studio.index'
+import { Route as StudioAddProductRouteImport } from './routes/studio.add-product'
 import { Route as StudioSettingsRouteImport } from './routes/studio.settings'
 import { Route as StudioShipmentsRouteImport } from './routes/studio.shipments'
 import { Route as StudioOrdersOrderIdRouteImport } from './routes/studio.orders.$orderId'
@@ -181,6 +182,11 @@ const StudioIndexRoute = StudioIndexRouteImport.update({
   path: '/studio/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StudioAddProductRoute = StudioAddProductRouteImport.update({
+  id: '/studio/add-product',
+  path: '/studio/add-product',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StudioSettingsRoute = StudioSettingsRouteImport.update({
   id: '/studio/settings',
   path: '/studio/settings',
@@ -223,6 +229,9 @@ export interface FileRoutesByFullPath {
   '/orders/$orderId': typeof OrdersOrderIdRoute
   '/products/$productId': typeof ProductsProductIdRoute
   '/stores/$storeId': typeof StoresStoreIdRoute
+  '/studio/add-product': typeof StudioAddProductRoute
+  '/studio/add-product': typeof StudioAddProductRoute
+  '/studio/add-product': typeof StudioAddProductRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
   '/orders/': typeof OrdersIndexRoute
@@ -325,6 +334,8 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/products/$productId'
     | '/stores/$storeId'
+    | '/studio/add-product'
+    | '/studio/add-product'
     | '/studio/settings'
     | '/studio/shipments'
     | '/orders/'
@@ -358,6 +369,7 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/products/$productId'
     | '/stores/$storeId'
+    | '/studio/add-product'
     | '/studio/settings'
     | '/studio/shipments'
     | '/orders'
@@ -391,6 +403,7 @@ export interface FileRouteTypes {
     | '/orders/$orderId'
     | '/products/$productId'
     | '/stores/$storeId'
+    | '/studio/add-product'
     | '/studio/settings'
     | '/studio/shipments'
     | '/orders/'
@@ -425,6 +438,7 @@ export interface RootRouteChildren {
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
   ProductsProductIdRoute: typeof ProductsProductIdRoute
   StoresStoreIdRoute: typeof StoresStoreIdRoute
+  StudioAddProductRoute: typeof StudioAddProductRoute
   StudioSettingsRoute: typeof StudioSettingsRoute
   StudioShipmentsRoute: typeof StudioShipmentsRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
@@ -631,6 +645,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StudioIndexRouteImport;
       parentRoute: typeof rootRouteImport;
     };
+    '/studio/add-product': {
+      id: '/studio/add-product';
+      path: '/studio/add-product';
+      fullPath: '/studio/add-product';
+      preLoaderRoute: typeof StudioAddProductRouteImport;
+      parentRoute: typeof rootRouteImport;
+    };
     '/studio/settings': {
       id: '/studio/settings';
       path: '/studio/settings';
@@ -680,6 +701,7 @@ const rootRouteChildren: RootRouteChildren = {
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   StoresStoreIdRoute: StoresStoreIdRoute,
+  StudioAddProductRoute: StudioAddProductRoute,
   StudioSettingsRoute: StudioSettingsRoute,
   StudioShipmentsRoute: StudioShipmentsRoute,
   StoresIndexRoute: StoresIndexRoute,
