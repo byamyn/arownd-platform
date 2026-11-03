@@ -31,6 +31,7 @@ import { PageTransition } from "@/components/sooqy/page-transition";
 import { Toaster } from "@/components/ui/sonner";
 import { isNativePlatform } from "@/lib/platform";
 import { parseNativeAuthCallback } from "@/lib/native-deep-links";
+import { openExternalUrl } from "@/lib/native-sharing";
 import { useTheme } from "@/lib/theme";
 
 interface ArowndSystemUiPlugin {
@@ -236,6 +237,44 @@ function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
   return null;
 }
 
+function NativeExternalLinkHandler() {
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    const handleClick = (event: MouseEvent) => {
+      if (event.defaultPrevented || event.button !== 0) return;
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      const anchor = target.closest("a[href]");
+      if (!(anchor instanceof HTMLAnchorElement)) return;
+
+      let url: URL;
+      try {
+        url = new URL(anchor.href, window.location.href);
+      } catch {
+        return;
+      }
+      if (
+        (url.protocol !== "https:" && url.protocol !== "http:") ||
+        url.origin === window.location.origin
+      ) {
+        return;
+      }
+
+      event.preventDefault();
+      event.stopPropagation();
+      void openExternalUrl(url.toString()).catch((error: unknown) => {
+        console.warn("[native] Could not open external link", error);
+      });
+    };
+
+    document.addEventListener("click", handleClick, true);
+    return () => document.removeEventListener("click", handleClick, true);
+  }, []);
+
+  return null;
+}
+
 function NativeDeepLinkListener() {
   const navigate = useNavigate();
 
@@ -305,6 +344,7 @@ function RootComponent() {
         <AuthProvider>
           <NativeRuntimeSync queryClient={queryClient} />
           <NativeDeepLinkListener />
+          <NativeExternalLinkHandler />
           <BagProvider>
             <div
               className={
