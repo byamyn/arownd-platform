@@ -33,6 +33,7 @@ afterEach(() => {
   if (REAL_SECURE) Object.defineProperty(window, "isSecureContext", REAL_SECURE);
   // عَلَم «سبق أن طلبنا الإذن» يُخزَّن محليًا، فنمسحه قبل كل اختبار
   window.localStorage.removeItem("sooqy:geo-asked");
+  window.sessionStorage.removeItem("arownd:last-position");
   vi.restoreAllMocks();
 });
 
