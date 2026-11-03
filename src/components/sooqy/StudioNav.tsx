@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Search, Sparkles, Store, User } from "lucide-react";
+import { Home, Search, Plus, Store, User } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyStore } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
@@ -19,7 +19,6 @@ export function StudioNav() {
   const items = [
     { to: "/", key: "home", Icon: Home },
     { to: "/explore", key: "explore", Icon: Search },
-    { to: "/latest", key: "studio_nav_latest", Icon: Sparkles },
   ] as const;
   const isStoreActive = !!store.data?.id && currentPath === `/stores/${store.data.id}`;
 
@@ -56,6 +55,19 @@ export function StudioNav() {
             </Link>
           );
         })}
+        <Link
+          to="/studio"
+          hash="quick-add-product"
+          aria-label={t("studio_nav_add_product")}
+          className={cn(navClass(currentPath === "/studio"), "text-primary")}
+        >
+          <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm" aria-hidden="true">
+            <Plus className="size-5 shrink-0" />
+          </span>
+          <span className="w-full text-center whitespace-normal break-words line-clamp-2">
+            {t("studio_nav_add_product")}
+          </span>
+        </Link>
         {store.data?.id ? (
           <Link
             to="/stores/$storeId"
