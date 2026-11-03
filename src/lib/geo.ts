@@ -49,6 +49,42 @@ export function geoErrorMessage(reason: GeoReason | null): string {
 export type GeoPermission = "granted" | "denied" | "prompt" | "unknown";
 
 const ASKED_KEY = "sooqy:geo-asked";
+const LAST_POSITION_KEY = "arownd:last-position";
+const LAST_POSITION_TTL = 15 * 60 * 1000;
+
+/** آخر موقع دقيق ضمن جلسة التصفح فقط؛ ينتهي تلقائيًا بعد 15 دقيقة. */
+function readLastPosition(): LatLng | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.sessionStorage.getItem(LAST_POSITION_KEY);
+    if (!raw) return null;
+    const cached = JSON.parse(raw) as { lat?: number; lng?: number; savedAt?: number };
+    if (
+      typeof cached.lat !== "number" ||
+      typeof cached.lng !== "number" ||
+      typeof cached.savedAt !== "number" ||
+      Date.now() - cached.savedAt > LAST_POSITION_TTL
+    ) {
+      window.sessionStorage.removeItem(LAST_POSITION_KEY);
+      return null;
+    }
+    return { lat: cached.lat, lng: cached.lng };
+  } catch {
+    return null;
+  }
+}
+
+function saveLastPosition(pos: LatLng): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.sessionStorage.setItem(
+      LAST_POSITION_KEY,
+      JSON.stringify({ ...pos, savedAt: Date.now() }),
+    );
+  } catch {
+    // التخزين المؤقت تحسين اختياري؛ لا نعطّل تحديد الموقع إذا تعذّر.
+  }
+}
 
 /** هل سبق أن طلبنا الإذن؟ يمنع تكرار النافذة عند كل تنقّل بين الصفحات */
 export function geoAskedBefore(): boolean {
@@ -108,7 +144,7 @@ export async function askPermission(): Promise<boolean> {
  *  لا ترمي استثناءً أبدًا: بعض بيئات WebView ترمي خطأ متزامنًا
  *  (سياق غير آمن) ولو تركناه لانقلب الوعد إلى رفض غير معالج. */
 export function useGeo() {
-  const [pos, setPos] = useState<LatLng | null>(null);
+  const [pos, setPos] = useState<LatLng | null>(() => readLastPosition());
   const [denied, setDenied] = useState(false);
   const [locating, setLocating] = useState(false);
   const [reason, setReason] = useState<GeoReason | null>(null);
@@ -144,6 +180,7 @@ export function useGeo() {
         setReason(why);
         if (next) {
           setPos(next);
+          saveLastPosition(next);
           setDenied(false);
         } else {
           setDenied(why === "denied");
