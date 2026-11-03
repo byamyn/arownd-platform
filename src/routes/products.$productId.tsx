@@ -87,7 +87,10 @@ function ProductPage() {
   );
 
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selected = sorted.find((o) => o.id === selectedId) ?? sorted[0];
+  // لا نعرض عروض المتجر المملوك للمستخدم ضمن خيارات الشراء أو الحجز.
+  const purchasableOffers = sorted.filter((o) => !user || o.store.owner_id !== user.id);
+  const selected =
+    purchasableOffers.find((o) => o.id === selectedId) ?? purchasableOffers[0];
   const [imgIdx, setImgIdx] = useState(0);
   const [size, setSize] = useState<string>("");
   const [color, setColor] = useState<string>("");
@@ -160,9 +163,9 @@ function ProductPage() {
   if (color) chosen[t("product_color_option")] = color;
   const level = selected ? stockLevel(selected) : "out";
 
-  const availableOffers = sorted.filter((o) => stockLevel(o) !== "out");
-  const pricePool = availableOffers.length ? availableOffers : sorted;
-  const firstPrice = sorted[0]?.price ?? 0;
+  const availableOffers = purchasableOffers.filter((o) => stockLevel(o) !== "out");
+  const pricePool = availableOffers.length ? availableOffers : purchasableOffers;
+  const firstPrice = purchasableOffers[0]?.price ?? 0;
   const lowPrice = pricePool.length ? Math.min(...pricePool.map((o) => o.price)) : 0;
   const highPrice = pricePool.length ? Math.max(...pricePool.map((o) => o.price)) : 0;
 
@@ -190,13 +193,13 @@ function ProductPage() {
     name: p.name,
     description: p.description || undefined,
     brand: p.brand ? { "@type": "Brand", name: p.brand } : undefined,
-    offers: sorted.length
+    offers: purchasableOffers.length
       ? {
           "@type": "AggregateOffer",
           priceCurrency: "DZD",
           lowPrice,
           highPrice,
-          offerCount: sorted.length,
+          offerCount: purchasableOffers.length,
         }
       : undefined,
     image: images.slice(0, 5),
@@ -452,12 +455,12 @@ function ProductPage() {
                     )}
                   </div>
                 </div>
-                {sorted.length > 1 && (
+                {purchasableOffers.length > 1 && (
                   <span className="rounded-xl bg-muted px-3 py-2 text-caption font-semibold text-muted-foreground">
                     {t("product_available_in", {
-                      count: sorted.length,
-                      min: formatDA(sorted[0]!.price),
-                      max: formatDA(sorted[sorted.length - 1]!.price),
+                      count: purchasableOffers.length,
+                      min: formatDA(purchasableOffers[0]!.price),
+                      max: formatDA(purchasableOffers[purchasableOffers.length - 1]!.price),
                     })}
                   </span>
                 )}
@@ -530,6 +533,14 @@ function ProductPage() {
           {/* Where to find */}
           <section className="space-y-3">
             <h2 className="text-lg font-bold text-foreground">{t("product_where_to_find")}</h2>
+            {user && sorted.some((o) => o.store.owner_id === user.id) && purchasableOffers.length === 0 && (
+              <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground">
+                هذا منتجك في متجرك. يمكنك إدارته من استديو التاجر، ولا يمكنك طلبه من متجرك.
+                <Link to="/studio" className="ms-1 text-accent-ink underline underline-offset-2">
+                  إدارة المنتج
+                </Link>
+              </div>
+            )}
             {offers.isError && (
               <ErrorState
                 scope="product:offers"
@@ -537,7 +548,7 @@ function ProductPage() {
                 onRetry={() => offers.refetch()}
               />
             )}
-            {sorted.map((o) => {
+            {purchasableOffers.map((o) => {
               const lv = stockLevel(o);
               return (
                 <div
