@@ -20,7 +20,6 @@ export function StudioNav() {
     { to: "/", key: "home", Icon: Home },
     { to: "/explore", key: "explore", Icon: Search },
     { to: "/latest", key: "studio_nav_latest", Icon: Sparkles },
-    { to: "/profile", key: "profile", Icon: User },
   ] as const;
   const isStoreActive = !!store.data?.id && currentPath === `/stores/${store.data.id}`;
 
@@ -85,6 +84,18 @@ export function StudioNav() {
             </span>
           </Link>
         )}
+        <Link
+          to="/profile"
+          aria-current={currentPath === "/profile" ? "page" : undefined}
+          className={navClass(currentPath === "/profile")}
+        >
+          <span className={iconClass(currentPath === "/profile")} aria-hidden="true">
+            <User className="size-5 shrink-0" />
+          </span>
+          <span className="w-full text-center whitespace-normal break-words line-clamp-2">
+            {t("profile")}
+          </span>
+        </Link>
       </div>
     </nav>
   );
