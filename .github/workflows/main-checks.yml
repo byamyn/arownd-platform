@@ -52,15 +52,21 @@ jobs:
         run: npx tsc --noEmit
 
       - name: ESLint
+        id: lint
         run: npm run lint
 
+      # Keep collecting test/build diagnostics while the known formatting debt is resolved.
+      # A lint failure still fails the job; this only prevents it from skipping later checks.
       - name: Arownd UI design-system lint
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: npm run ui:check
 
       - name: Vitest
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: npm test
 
       - name: Vercel production build
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         # CI-only placeholders validate bundling; never used for a deployment.
         env:
           VITE_SUPABASE_URL: https://ci-placeholder.supabase.co
