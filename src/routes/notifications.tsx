@@ -27,6 +27,7 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { useState } from "react";
 import { showError, showSuccess } from "@/lib/feedback";
+import { NotificationListSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({}),
