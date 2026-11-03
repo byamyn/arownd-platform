@@ -132,7 +132,7 @@ public class ArowndSystemUiPlugin extends Plugin {
             intent.setClipData(android.content.ClipData.newUri(
                 getContext().getContentResolver(), "Arownd file", contentUri
             ));
-            startActivity(Intent.createChooser(intent, "Share with"));
+            getContext().startActivity(Intent.createChooser(intent, "Share with").addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
             call.resolve();
         } catch (IOException | RuntimeException error) {
             call.reject("Could not prepare the file for sharing", error);
