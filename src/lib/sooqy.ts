@@ -498,23 +498,6 @@ export function friendlyError(e: unknown) {
   return key ? ERRORS[key]! : msg;
 }
 
-export async function createReservation(
-  offerId: string,
-  _storeId: string,
-  hoursLimit = 3,
-  quantity = 1,
-  options: Record<string, string> = {},
-) {
-  const { data, error } = await supabase.rpc("create_reservation", {
-    _offer_id: offerId,
-    _quantity: quantity,
-    _hours: hoursLimit,
-    _options: options,
-  });
-  if (error) throw new Error(friendlyError(error));
-  return data as Reservation;
-}
-
 export async function cancelReservation(id: string) {
   const { error } = await supabase.rpc("cancel_reservation", { _reservation_id: id });
   if (error) throw new Error(friendlyError(error));
