@@ -120,6 +120,11 @@ public class ArowndSystemUiPlugin extends Plugin {
             return;
         }
 
+        if (encoded.length() > 21 * 1024 * 1024) {
+            call.reject("File must be 15 MB or smaller");
+            return;
+        }
+
         byte[] bytes;
         try {
             bytes = Base64.decode(encoded, Base64.DEFAULT);
@@ -144,7 +149,18 @@ public class ArowndSystemUiPlugin extends Plugin {
                 call.reject("Could not prepare a temporary share folder");
                 return;
             }
-            File output = new File(directory, safeName);
+            File[] cachedFiles = directory.listFiles();
+            if (cachedFiles != null) {
+                long expiry = System.currentTimeMillis() - 24L * 60L * 60L * 1000L;
+                for (File cached : cachedFiles) {
+                    if (cached.isFile() && cached.lastModified() < expiry) {
+                        // Old share payloads are no longer needed after a day.
+                        //noinspection ResultOfMethodCallIgnored
+                        cached.delete();
+                    }
+                }
+            }
+            File output = new File(directory, System.currentTimeMillis() + "-" + safeName);
             try (FileOutputStream stream = new FileOutputStream(output)) {
                 stream.write(bytes);
             }
