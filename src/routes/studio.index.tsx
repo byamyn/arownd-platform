@@ -1128,16 +1128,19 @@ function StudioPage() {
         <section className="space-y-4">
           <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <h2 className="mb-3 font-bold">{t("studio_confirm_reservation")}</h2>
-            <div className="flex gap-2">
+            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-2">
               <input
                 value={code}
-                onChange={(e) => setCode(e.target.value)}
-                placeholder="SQ-XXXX"
-                className="h-[var(--control-height-compact)] flex-1 rounded-[var(--radius-control)] border bg-background px-3 outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
+                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/\s/g, ""))}
+                placeholder="AR-XXXX-00"
+                maxLength={10}
+                autoCapitalize="characters"
+                dir="ltr"
+                className="h-[var(--control-height-compact)] w-full min-w-0 rounded-[var(--radius-control)] border bg-background px-3 text-start font-mono text-sm outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
               />
               <button
                 onClick={confirmReservation}
-                className="rounded-[var(--radius-control)] bg-primary px-4 font-bold text-primary-foreground  transition hover:brightness-95"
+                className="shrink-0 whitespace-nowrap rounded-[var(--radius-control)] bg-primary px-3 font-bold text-primary-foreground transition hover:brightness-95 sm:px-4"
               >
                 تأكيد
               </button>
