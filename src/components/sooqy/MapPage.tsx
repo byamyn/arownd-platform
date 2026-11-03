@@ -199,11 +199,11 @@ export function MapPage() {
               </p>
             </div>
           </div>
-          <div className="mt-4 grid grid-cols-2 gap-2.5">
+          <div className="mt-4 grid w-full grid-cols-2 gap-2.5">
             <Link
               to="/stores/$storeId"
               params={{ storeId: sel.id }}
-              className="!h-11 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-700 shadow-sm"
+              className="flex h-11 min-w-0 w-full items-center justify-center whitespace-nowrap rounded-2xl border border-slate-200 bg-white px-3 text-center text-sm font-bold leading-none text-slate-700 shadow-sm"
             >
               {t("map_view_store")}
             </Link>
@@ -226,9 +226,9 @@ export function MapPage() {
                   name: sel.name,
                 });
               }}
-              className="!h-11 rounded-2xl bg-primary text-sm font-extrabold text-primary-foreground shadow-md hover:bg-primary/90"
+              className="flex h-11 min-w-0 w-full items-center justify-center gap-2 whitespace-nowrap rounded-2xl bg-primary px-3 text-center text-sm font-extrabold leading-none text-primary-foreground shadow-md hover:bg-primary/90"
             >
-              <Navigation className="size-4" />
+              <Navigation className="size-4 shrink-0" />
               {t("map_directions")}
             </button>
           </div>
