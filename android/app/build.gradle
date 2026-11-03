@@ -55,7 +55,8 @@ android {
 
     tasks.configureEach { task ->
         def taskName = task.name.toLowerCase(Locale.ROOT)
-        if (taskName.contains("release") &&
+        if (task.name != "validateReleaseSigning" &&
+            taskName.contains("release") &&
             (taskName.startsWith("pre") ||
              taskName.startsWith("package") ||
              taskName.startsWith("assemble") ||
