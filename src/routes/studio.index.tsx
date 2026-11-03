@@ -168,10 +168,10 @@ function StudioPage() {
     },
     enabled: !!store.data,
   });
-  useRealtimeSubscription({ table: "store_offers", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["my-store-offers", store.data?.id]], enabled: !!store.data?.id });
-  useRealtimeSubscription({ table: "reservations", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["store-reservations", store.data?.id]], enabled: !!store.data?.id });
-  useRealtimeSubscription({ table: "order_items", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["store-orders", store.data?.id]], enabled: !!store.data?.id });
-  useRealtimeSubscription({ table: "merchant_orders", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["store-orders", store.data?.id]], enabled: !!store.data?.id });
+  useRealtimeSubscription({ table: "store_offers", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["my-store-offers", store.data?.id ?? ""]], enabled: !!store.data?.id });
+  useRealtimeSubscription({ table: "reservations", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["store-reservations", store.data?.id ?? ""]], enabled: !!store.data?.id });
+  useRealtimeSubscription({ table: "order_items", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["store-orders", store.data?.id ?? ""]], enabled: !!store.data?.id });
+  useRealtimeSubscription({ table: "merchant_orders", filter: store.data?.id ? "store_id=eq." + store.data.id : undefined, queryKeys: [["store-orders", store.data?.id ?? ""]], enabled: !!store.data?.id });
 
   const dashboardError = offers.error ?? reservations.error ?? orders.error;
 
