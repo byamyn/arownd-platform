@@ -103,11 +103,11 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     localStorage.clear();
   });
 
-  it("متابعة متجر من صفحته تُظهره في المفضلة", async () => {
+  it("إضافة متجر إلى المفضلة من صفحته تُظهره في قائمة المفضلة", async () => {
     const router = renderApp();
     await go(router, "/stores/$storeId", { storeId: "store-1" });
 
-    const follow = await screen.findByRole("button", { name: /متابعة المتجر/ });
+    const follow = await screen.findByRole("button", { name: /إضافة إلى المفضلة/ });
     fireEvent.click(follow);
 
     await waitFor(() => {
@@ -116,7 +116,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
       };
       expect(favs.stores).toContain("store-1");
     });
-    expect(await screen.findByRole("button", { name: /إلغاء المتابعة/ })).toBeInTheDocument();
+    expect(await screen.findByRole("button", { name: /إزالة من المفضلة/ })).toBeInTheDocument();
 
     await go(router, "/favorites");
     fireEvent.click(screen.getByRole("tab", { name: /المتاجر/ }));
