@@ -544,7 +544,7 @@ function buildOrderSnapshot(
     orderId: orderIds[0]!,
     total,
     itemCount: items.length,
-    storeName: firstRow?.offer?.store.name ?? null,
+    storeName: orderIds.length === 1 ? firstRow?.offer?.store.name ?? null : null,
     productId: firstRow?.offer?.product.id ?? null,
     items: items.map((item) => ({
       offerId: item.offerId,
