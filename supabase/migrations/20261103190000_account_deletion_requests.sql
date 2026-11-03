@@ -44,5 +44,27 @@ create policy "Users can submit their own deletion requests"
     and retention_note is null
   );
 
+create or replace function public.touch_account_deletion_request()
+returns trigger
+language plpgsql
+set search_path = public
+as $
+begin
+  new.updated_at := now();
+  if new.status in ('completed', 'rejected') and old.status is distinct from new.status then
+    new.resolved_at := coalesce(new.resolved_at, now());
+  end if;
+  return new;
+end;
+$;
+
+drop trigger if exists account_deletion_requests_touch_updated_at
+  on public.account_deletion_requests;
+create trigger account_deletion_requests_touch_updated_at
+  before update on public.account_deletion_requests
+  for each row execute function public.touch_account_deletion_request();
+
+revoke all on function public.touch_account_deletion_request() from public, anon, authenticated;
+
 comment on table public.account_deletion_requests is
   'Tracks verified account deletion requests. No client-side update/delete; completion is an audited admin operation.';
