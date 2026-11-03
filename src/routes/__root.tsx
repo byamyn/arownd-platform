@@ -296,6 +296,11 @@ function NativeBackButtonHandler() {
       .then(async ({ App }) => {
         if (disposed) return;
         const listener = await App.addListener("backButton", ({ canGoBack }) => {
+          if (hasUnsavedFormChanges()) {
+            const leave = window.confirm("لديك تغييرات غير محفوظة. هل تريد مغادرة الصفحة وفقدانها؟");
+            if (!leave) return;
+            dirtyForms.clear();
+          }
           if (canGoBack || window.history.length > 1) {
             router.history.back();
             return;
@@ -452,6 +457,7 @@ function RootComponent() {
           <NativeRuntimeSync queryClient={queryClient} />
           <NativeDeepLinkListener />
           <NativeBackButtonHandler />
+          <UnsavedFormGuard />
           <NativeExternalLinkHandler />
           <BagProvider>
             <div
