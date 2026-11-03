@@ -29,8 +29,6 @@ import { Route as ReservationsIndexRouteImport } from './routes/reservations.ind
 import { Route as SettingsRouteImport } from './routes/settings'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as WalletRouteImport } from './routes/wallet'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as AdminDeliveryCompaniesRouteImport } from './routes/admin.delivery-companies'
 import { Route as AuthCallbackRouteImport } from './routes/auth_.callback'
 import { Route as CategoryCatIdRouteImport } from './routes/category.$catId'
 import { Route as OrdersIndexRouteImport } from './routes/orders.index'
@@ -143,16 +141,6 @@ const WalletRoute = WalletRouteImport.update({
   path: '/wallet',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminDeliveryCompaniesRoute = AdminDeliveryCompaniesRouteImport.update({
-  id: '/admin/delivery-companies',
-  path: '/admin/delivery-companies',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth_/callback',
   path: '/auth/callback',
@@ -230,7 +218,6 @@ export interface FileRoutesByFullPath {
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
-  '/admin/delivery-companies': typeof AdminDeliveryCompaniesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/category/$catId': typeof CategoryCatIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
@@ -238,7 +225,6 @@ export interface FileRoutesByFullPath {
   '/stores/$storeId': typeof StoresStoreIdRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
-  '/admin/': typeof AdminIndexRoute
   '/orders/': typeof OrdersIndexRoute
   '/stores/': typeof StoresIndexRoute
   '/studio/': typeof StudioIndexRoute
@@ -265,7 +251,6 @@ export interface FileRoutesByTo {
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
-  '/admin/delivery-companies': typeof AdminDeliveryCompaniesRoute
   '/auth/callback': typeof AuthCallbackRoute
   '/category/$catId': typeof CategoryCatIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
@@ -301,7 +286,6 @@ export interface FileRoutesById {
   '/settings': typeof SettingsRoute
   '/terms': typeof TermsRoute
   '/wallet': typeof WalletRoute
-  '/admin/delivery-companies': typeof AdminDeliveryCompaniesRoute
   '/auth_/callback': typeof AuthCallbackRoute
   '/category/$catId': typeof CategoryCatIdRoute
   '/orders/$orderId': typeof OrdersOrderIdRoute
@@ -309,7 +293,6 @@ export interface FileRoutesById {
   '/stores/$storeId': typeof StoresStoreIdRoute
   '/studio/settings': typeof StudioSettingsRoute
   '/studio/shipments': typeof StudioShipmentsRoute
-  '/admin/': typeof AdminIndexRoute
   '/orders/': typeof OrdersIndexRoute
   '/stores/': typeof StoresIndexRoute
   '/studio/': typeof StudioIndexRoute
@@ -444,7 +427,6 @@ export interface RootRouteChildren {
   SettingsRoute: typeof SettingsRoute
   TermsRoute: typeof TermsRoute
   WalletRoute: typeof WalletRoute
-  AdminDeliveryCompaniesRoute: typeof AdminDeliveryCompaniesRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
   CategoryCatIdRoute: typeof CategoryCatIdRoute
   OrdersOrderIdRoute: typeof OrdersOrderIdRoute
@@ -452,7 +434,6 @@ export interface RootRouteChildren {
   StoresStoreIdRoute: typeof StoresStoreIdRoute
   StudioSettingsRoute: typeof StudioSettingsRoute
   StudioShipmentsRoute: typeof StudioShipmentsRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   OrdersIndexRoute: typeof OrdersIndexRoute
   StoresIndexRoute: typeof StoresIndexRoute
   StudioIndexRoute: typeof StudioIndexRoute
@@ -716,16 +697,14 @@ const rootRouteChildren: RootRouteChildren = {
   SettingsRoute: SettingsRoute,
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
-  AdminDeliveryCompaniesRoute: AdminDeliveryCompaniesRoute,
-  AuthCallbackRoute: AuthCallbackRoute,
+  AdminDeliveryCompaniesRoute:   AuthCallbackRoute: AuthCallbackRoute,
   CategoryCatIdRoute: CategoryCatIdRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   StoresStoreIdRoute: StoresStoreIdRoute,
   StudioSettingsRoute: StudioSettingsRoute,
   StudioShipmentsRoute: StudioShipmentsRoute,
-  AdminIndexRoute: AdminIndexRoute,
-  OrdersIndexRoute: OrdersIndexRoute,
+  AdminIndexRoute:   OrdersIndexRoute: OrdersIndexRoute,
   StoresIndexRoute: StoresIndexRoute,
   StudioIndexRoute: StudioIndexRoute,
   StudioOrdersOrderIdRoute: StudioOrdersOrderIdRoute,
