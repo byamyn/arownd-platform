@@ -51,7 +51,9 @@ export function StudioNav() {
               <span className={iconClass(active)} aria-hidden="true">
                 <Icon className="size-5 shrink-0" />
               </span>
-              <span className="w-full text-center whitespace-normal break-words line-clamp-2">{t(key)}</span>
+              <span className="w-full text-center whitespace-normal break-words line-clamp-2">
+                {t(key)}
+              </span>
             </Link>
           );
         })}
@@ -65,7 +67,9 @@ export function StudioNav() {
             <span className={iconClass(isStoreActive)} aria-hidden="true">
               <Store className="size-5 shrink-0" />
             </span>
-            <span className="w-full text-center whitespace-normal break-words line-clamp-2">{t("studio_nav_store")}</span>
+            <span className="w-full text-center whitespace-normal break-words line-clamp-2">
+              {t("studio_nav_store")}
+            </span>
           </Link>
         ) : (
           <Link
@@ -76,7 +80,9 @@ export function StudioNav() {
             <span className={iconClass(currentPath === "/studio")} aria-hidden="true">
               <Store className="size-5 shrink-0" />
             </span>
-            <span className="w-full text-center whitespace-normal break-words line-clamp-2">{t("studio_nav_store")}</span>
+            <span className="w-full text-center whitespace-normal break-words line-clamp-2">
+              {t("studio_nav_store")}
+            </span>
           </Link>
         )}
       </div>

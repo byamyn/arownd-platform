@@ -75,7 +75,7 @@ function CallbackPage() {
       let resolvedIntent = intent;
       if (!resolvedIntent) {
         const { data } = await supabase.auth.getUser();
-        const accountType = data.user?.user_metadata?.account_type;
+        const accountType = data.user?.user_metadata?.["account_type"];
         if (accountType === "merchant") resolvedIntent = "merchant";
         else if (accountType === "delivery") resolvedIntent = "delivery";
         else if (accountType === "customer") resolvedIntent = "customer";

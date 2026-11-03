@@ -83,7 +83,7 @@ function AuthPage() {
       // Merchant registrations must always complete store onboarding before
       // entering the personal area. Existing stores are redirected to /studio
       // by the create-store route.
-      if (user.user_metadata?.account_type === "merchant") {
+      if (user.user_metadata?.["account_type"] === "merchant") {
         navigate({ to: "/create-store", replace: true });
         return;
       }

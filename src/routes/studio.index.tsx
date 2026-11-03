@@ -578,7 +578,9 @@ function StudioPage() {
                 {t("studio_store_on_arownd")}
               </p>
               <div className="mt-1 flex min-w-0 items-center gap-1.5">
-                <h2 className="min-w-0 truncate text-xl font-black sm:text-2xl">{store.data?.name}</h2>
+                <h2 className="min-w-0 truncate text-xl font-black sm:text-2xl">
+                  {store.data?.name}
+                </h2>
                 {store.data?.is_verified && (
                   <BadgeCheck className="size-4 shrink-0 text-accent-ink" aria-label="متجر موثق" />
                 )}
