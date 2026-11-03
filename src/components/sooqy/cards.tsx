@@ -19,7 +19,7 @@ const STORE_PLACEHOLDER =
   "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlMmU4ZjAiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNDNkYzNkIiIHN0cm9rZS1vcGFjaXR5PSIwLjMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHJlY3QgeD0iNzAiIHk9Ijc1IiB3aWR0aD0iNjAiIGhlaWdodD0iNTAiIHJ4PSI0Ii8+PHBhdGggZD0iTTgwIDc1di0xMGgyMHYxMCIvPHJlY3QgeD0iODAiIHk9IjEyNSIgd2lkdGg9IjE2IiBoZWlnaHQ9IjMwIiBieD0iMiIvPjxyZWN0IHg9IjEwNCIgeT0iMTI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMzAiIHJ4PSIyIi8+PC9nPjwvc3ZnPg==";
 
 /* ═══════════════ زر المفضلة ═══════════════ */
-export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: string }) {
+export function FavoriteButton({ kind, id, className }: { kind: "products" | "stores"; id: string; className?: string }) {
   const { t } = useTranslation();
   const active = isFavorite(kind, id);
 
@@ -33,7 +33,7 @@ export function FavoriteButton({ kind, id }: { kind: "products" | "stores"; id: 
         e.stopPropagation();
         toggleFavorite(kind, id);
       }}
-      className="absolute end-3 top-3 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 text-foreground transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className={cn("absolute end-3 top-3 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 text-foreground transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}
     >
       <svg
         viewBox="0 0 24 24"
