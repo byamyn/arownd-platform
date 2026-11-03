@@ -44,6 +44,8 @@ const TYPE_ICON = {
 
 type NotificationData = {
   order_id?: string;
+  merchant_order_id?: string;
+  recipient_role?: "customer" | "merchant";
   reservation_id?: string;
   offer_id?: string;
   store_id?: string;
@@ -59,8 +61,13 @@ function navigateForNotification(
   const d = n.data as NotificationData;
   switch (n.type) {
     case "order":
-      if (d.order_id) navigate({ to: "/orders/$orderId", params: { orderId: d.order_id } });
-      else navigate({ to: "/orders" });
+      if (d.order_id && d.recipient_role === "merchant") {
+        navigate({ to: "/studio/orders/$orderId", params: { orderId: d.order_id } });
+      } else if (d.order_id) {
+        navigate({ to: "/orders/$orderId", params: { orderId: d.order_id } });
+      } else {
+        navigate({ to: "/orders" });
+      }
       break;
     case "reservation":
       // رقم الحجز ليس رقم طلب: نفتح المنتج أو المتجر إن توفّرا، وإلا قائمة الطلبات
