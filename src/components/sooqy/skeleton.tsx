@@ -181,3 +181,16 @@ export function MerchantOrderDetailSkeleton() {
     <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card"><div className="space-y-3 bg-primary-soft p-4"><div className="h-5 w-1/3 animate-pulse rounded-full bg-muted" /><div className="h-3 w-1/2 animate-pulse rounded-full bg-muted" /></div><div className="space-y-4 p-4">{Array.from({length:3}).map((_,i)=><div key={i} className="flex items-center gap-3 rounded-xl border border-border p-3"><div className="size-14 animate-pulse rounded-xl bg-muted" /><div className="flex-1 space-y-2"><div className="h-4 w-2/3 animate-pulse rounded-full bg-muted" /><div className="h-3 w-1/3 animate-pulse rounded-full bg-muted" /></div></div>)}<div className="h-24 animate-pulse rounded-xl bg-muted" /><div className="h-11 animate-pulse rounded-xl bg-muted" /></div></section>
   </div>;
 }
+
+
+/** هيكل قائمة الطلبات مع مساحة لملخص كل طلب وحالاته وعناصره. */
+export function OrderListSkeleton({ count = 3 }: { count?: number }) {
+  return <div className="space-y-3" role="status" aria-label="جارٍ تحميل الطلبات">
+    {Array.from({length:count}).map((_,i)=><section key={i} className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4"><div className="flex items-center justify-between gap-3"><div className="h-4 w-1/3 animate-pulse rounded-full bg-muted" /><div className="h-6 w-20 animate-pulse rounded-full bg-muted" /></div><div className="h-3 w-1/2 animate-pulse rounded-full bg-muted" /><div className="flex items-center gap-3 border-t border-border pt-3"><div className="size-14 animate-pulse rounded-xl bg-muted" /><div className="min-w-0 flex-1 space-y-2"><div className="h-4 w-3/4 animate-pulse rounded-full bg-muted" /><div className="h-3 w-1/3 animate-pulse rounded-full bg-muted" /></div></div><div className="flex justify-between border-t border-border pt-3"><div className="h-4 w-1/4 animate-pulse rounded-full bg-muted" /><div className="h-4 w-1/3 animate-pulse rounded-full bg-muted" /></div></section>)}
+  </div>;
+}
+
+/** هيكل تتبع الطلب: رأس الطلب ومسار الحالة وتفاصيل الشحنة. */
+export function OrderTrackingSkeleton() {
+  return <div className="space-y-4 px-4 pt-4" role="status" aria-label="جارٍ تحميل تتبع الطلب"><div className="h-8 w-2/3 animate-pulse rounded-full bg-muted" /><section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4"><div className="h-5 w-1/3 animate-pulse rounded-full bg-muted" /><div className="space-y-5 py-3">{Array.from({length:4}).map((_,i)=><div key={i} className="flex items-start gap-3"><div className="size-8 shrink-0 animate-pulse rounded-full bg-muted" /><div className="flex-1 space-y-2"><div className="h-4 w-1/3 animate-pulse rounded-full bg-muted" /><div className="h-3 w-2/3 animate-pulse rounded-full bg-muted" /></div></div>)}</div></section><section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4"><div className="h-5 w-1/3 animate-pulse rounded-full bg-muted" /><div className="h-20 animate-pulse rounded-xl bg-muted" /><div className="h-11 animate-pulse rounded-xl bg-muted" /></section></div>;
+}
