@@ -48,31 +48,43 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
-      - name: TypeScript, lint, and tests
-        run: |
-          npx tsc --noEmit
-          npm run lint
-          npm test
+      - name: TypeScript
+        run: npx tsc --noEmit
 
+      - name: ESLint
+        id: lint
+        run: npm run lint
+
+      - name: Tests
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
+        run: npm test
+
+      # Continue the native build after a lint-only failure so APK diagnostics remain available.
       - name: Build local Capacitor web bundle
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: npm run build:capacitor
 
       - name: Generate Android project when missing
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: |
           if [ ! -d android ]; then npx cap add android; fi
 
       - name: Register native auth deep links
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: node scripts/configure-capacitor-deeplinks.mjs
 
       - name: Sync native project
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: npx cap sync android
 
       - name: Build Android debug APK
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: |
           cd android
           ./gradlew assembleDebug
 
       - name: Upload Android APK
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: arownd-android-debug-apk
@@ -81,6 +93,7 @@ jobs:
           retention-days: 14
 
       - name: Commit generated Android project if needed
+        if: ${{ success() || steps.lint.outcome == 'failure' }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
