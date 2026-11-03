@@ -127,7 +127,7 @@ export async function shareRemoteImage(value: string, fileName = "arownd-image.j
   const extension = blob.type === "image/png" ? "png" :
     blob.type === "image/webp" ? "webp" :
     blob.type === "image/jpeg" ? "jpg" : "img";
-  const normalizedName = fileName.replace(/\\.[^.]+$/, "");
+  const normalizedName = fileName.replace(/\.[^.]+$/, "");
   const file = new File([blob], `${normalizedName}.${extension}`, { type: blob.type });
   return shareLocalFile(file);
 }
