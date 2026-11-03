@@ -697,6 +697,7 @@ const rootRouteChildren: RootRouteChildren = {
   TermsRoute: TermsRoute,
   WalletRoute: WalletRoute,
   CategoryCatIdRoute: CategoryCatIdRoute,
+  OrdersIndexRoute: OrdersIndexRoute,
   OrdersOrderIdRoute: OrdersOrderIdRoute,
   ProductsProductIdRoute: ProductsProductIdRoute,
   StoresStoreIdRoute: StoresStoreIdRoute,
