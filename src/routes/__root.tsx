@@ -30,7 +30,7 @@ import { DynamicIsland } from "@/components/sooqy/DynamicIsland";
 import { PageTransition } from "@/components/sooqy/page-transition";
 import { Toaster } from "@/components/ui/sonner";
 import { isNativePlatform } from "@/lib/platform";
-import { parseNativeAuthCallback } from "@/lib/native-deep-links";
+import { parseNativeAuthCallback, parseNativeRouteLink } from "@/lib/native-deep-links";
 import { openExternalUrl } from "@/lib/native-sharing";
 import { useTheme } from "@/lib/theme";
 
@@ -288,19 +288,24 @@ function NativeDeepLinkListener() {
     const handleUrl = async (rawUrl: string) => {
       if (disposed || rawUrl === lastHandledUrl) return;
       const callback = parseNativeAuthCallback(rawUrl);
-      if (!callback) return;
+      const route = callback ? null : parseNativeRouteLink(rawUrl);
+      if (!callback && !route) return;
 
       // The launch URL and appUrlOpen event can both report the same URL.
-      // Exchange the one-time PKCE code only once.
+      // Process only registered auth callbacks or validated app-owned routes.
       lastHandledUrl = rawUrl;
       try {
-        await navigate({
-          to: "/auth/callback",
-          search: callback,
-          replace: true,
-        });
+        if (callback) {
+          await navigate({
+            to: "/auth/callback",
+            search: callback,
+            replace: true,
+          });
+        } else if (route) {
+          await navigate({ to: route as never, replace: true });
+        }
       } catch (error) {
-        console.error("[native] Could not open authentication callback", error);
+        console.error("[native] Could not open validated app link", error);
       }
     };
 
