@@ -25,7 +25,6 @@ import {
   searchProducts,
   stockLevel,
   storeDistance,
-  type OfferFull,
 } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
 import { useBag } from "@/lib/bag";
@@ -34,7 +33,7 @@ import { track } from "@/lib/analytics";
 import { StockBadge, OpenBadge, VerifiedBadge } from "@/components/sooqy/badges";
 import { QtyStepper } from "@/components/sooqy/qty-stepper";
 import { FavoriteButton, ProductCard } from "@/components/sooqy/cards";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { ReviewSection } from "@/components/sooqy/ReviewSection";
 import { ReportContentButton } from "@/components/moderation/ReportContentButton";
 import { DirectionsButton } from "@/components/sooqy/DirectionsButton";
@@ -733,50 +732,3 @@ function SpecRow({ label, value }: { label: string; value: string }) {
   );
 }
 
-  reservation,
-  storeName,
-  productName,
-  onClose,
-}: {
-  reservation: Reservation | null;
-  storeName: string;
-  productName: string;
-  onClose: () => void;
-}) {
-  const cd = useCountdown(reservation?.expires_at ?? null);
-  const { t } = useTranslation();
-  return (
-    <Dialog open={!!reservation} onOpenChange={(o) => !o && onClose()}>
-      <DialogContent className="rounded-3xl">
-        <DialogHeader>
-          <DialogTitle className="text-center">{t("product_reserved_title")}</DialogTitle>
-        </DialogHeader>
-        <div className="space-y-4 text-center">
-          <p className="text-sm text-muted-foreground">
-            {t("product_reserved_body", { name: productName, store: storeName })}
-          </p>
-          <div className="rounded-2xl bg-card py-5 text-card-foreground">
-            <p className="text-xs opacity-70">{t("product_pickup_code")}</p>
-            <p
-              className="max-w-full break-all px-2 font-mono text-[clamp(1.25rem,6vw,2rem)] font-bold leading-tight tracking-[0.12em] text-primary"
-              dir="ltr"
-            >
-              {reservation?.code}
-            </p>
-          </div>
-          <div className="flex items-center justify-center gap-2 text-sm">
-            <Timer className="size-4 text-warning" /> {t("product_pickup_within")}{" "}
-            <span className="font-mono font-bold">{cd?.label}</span>
-          </div>
-          <p className="text-xs text-muted-foreground">{t("product_pickup_hint")}</p>
-          <button
-            onClick={onClose}
-            className="w-full min-h-[var(--control-height)] rounded-full bg-primary px-4 text-sm font-semibold text-primary-foreground"
-          >
-            {t("product_ok")}
-          </button>
-        </div>
-      </DialogContent>
-    </Dialog>
-  );
-}
