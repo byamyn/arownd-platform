@@ -49,6 +49,7 @@ import { ProductDetailSkeleton } from "@/components/sooqy/skeleton";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
 import { telUrl, whatsappUrl } from "@/lib/contact";
+import { useRealtimeSubscription } from "@/hooks/use-realtime";
 
 export const Route = createFileRoute("/products/$productId")({
   head: () => ({}),
@@ -85,12 +86,17 @@ function ProductPage() {
     [offers.data, pos],
   );
 
+  useRealtimeSubscription({ table: "offers", filter: "product_id=eq." + productId, queryKeys: [["offers", productId], ["product", productId]] });
+
   const [selectedId, setSelectedId] = useState<string | null>(null);
   // لا نعرض عروض المتجر المملوك للمستخدم ضمن خيارات الشراء أو الحجز.
+  const ownOffers = user ? sorted.filter((o) => o.store.owner_id === user.id) : [];
   const purchasableOffers = sorted.filter((o) => !user || o.store.owner_id !== user.id);
-  const isOwnProduct = !!user && sorted.some((o) => o.store.owner_id === user.id) && purchasableOffers.length === 0;
+  const isOwnProduct = ownOffers.length > 0 && purchasableOffers.length === 0;
   const selected =
-    purchasableOffers.find((o) => o.id === selectedId) ?? purchasableOffers[0];
+    purchasableOffers.find((o) => o.id === selectedId) ??
+    purchasableOffers[0] ??
+    (isOwnProduct ? ownOffers[0] : undefined);
   const [imgIdx, setImgIdx] = useState(0);
   const [size, setSize] = useState<string>("");
   const [color, setColor] = useState<string>("");
