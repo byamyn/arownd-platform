@@ -183,6 +183,7 @@ function CheckoutPage() {
         setOrderIds(createdOrderIds);
         setOrderId(createdOrderIds[0]!);
         setSnapshot(buildOrderSnapshot(createdOrderIds, successfulItems, rows));
+        void qc.invalidateQueries({ queryKey: ["my-orders"] });
         showError(error, "feedback_generic_error");
         return;
       }
@@ -194,7 +195,7 @@ function CheckoutPage() {
       qc.clear();
       const submittedTotal = successfulItems.reduce(
         (sum, item) =>
-          sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price) * item.quantity,
+          sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price ?? 0) * item.quantity,
         0,
       );
       track("place_order", { total: submittedTotal, count: successfulItems.length, paymentMethod, deliveryType, wilayaId });
@@ -528,7 +529,7 @@ type OrderSnapshot = {
 
 function buildOrderSnapshot(
   orderIds: string[],
-  items: typeof import("@/lib/bag").BagItem[],
+  items: import("@/lib/sooqy").BagItem[],
   rows: { offerId: string; offer?: { price: number; store: { name: string }; product: { id: string } } }[],
 ): OrderSnapshot {
   const firstItem = items[0];
