@@ -173,14 +173,14 @@ function NativeKeyboardSync() {
     let disposed = false;
     const handles: Array<{ remove: () => Promise<void> }> = [];
     const show = (height: number) => {
-      document.documentElement.dataset.keyboardVisible = "true";
+      document.documentElement.dataset["keyboardVisible"] = "true";
       document.documentElement.style.setProperty("--arownd-keyboard-height", `${Math.max(0, height)}px`);
       window.dispatchEvent(new CustomEvent("arownd:keyboard", {
         detail: { visible: true, height: Math.max(0, height) },
       }));
     };
     const hide = () => {
-      delete document.documentElement.dataset.keyboardVisible;
+      delete document.documentElement.dataset["keyboardVisible"];
       document.documentElement.style.removeProperty("--arownd-keyboard-height");
       window.dispatchEvent(new CustomEvent("arownd:keyboard", {
         detail: { visible: false, height: 0 },
