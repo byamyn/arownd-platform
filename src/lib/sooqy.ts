@@ -852,6 +852,7 @@ export async function createOrderWithDelivery(
   commune: string,
   paymentMethod: "cod",
   contact: { fullName: string; phone: string; address: string },
+  idempotencyKey: string,
 ) {
   if (paymentMethod !== "cod") throw new Error(ERRORS["invalid_payment_method"]);
 
@@ -868,6 +869,7 @@ export async function createOrderWithDelivery(
     _full_name: contact.fullName,
     _phone: contact.phone,
     _payment_method: "cod",
+    _idempotency_key: idempotencyKey,
   };
 
   // The checkout creates only the parent order and store suborders.
