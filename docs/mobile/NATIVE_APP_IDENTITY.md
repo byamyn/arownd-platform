@@ -1,35 +1,50 @@
-# Arownd Native App Identity
+# Arownd — Native app identity
 
-## Confirmed application identity
+> **Project:** Arownd  
+> **Owner:** byamyn  
+> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)  
+> **Status:** Configuration reference; verify platform project files and Supabase dashboard before release.
 
-- Android application ID: `com.arownd.app`
-- iOS bundle identifier: `com.arownd.app`
-- Capacitor application name: `Arownd`
-- Local web bundle directory: `dist/client`
-- Native authentication callback URI: `com.arownd.app://auth/callback`
+## Application identity
 
-The same reverse-domain identifier is used on both platforms so that Android and iOS builds share one stable application identity.
+- Android application ID: com.arownd.app
+- iOS bundle identifier: com.arownd.app
+- Capacitor application name: Arownd
+- Local web bundle directory: dist/client
+- Documented native auth callback: com.arownd.app://auth/callback
 
-## Implemented native callback flow
+Keep these identifiers stable after publishing. Changing an app ID generally creates a separate store application.
 
-The app now listens for Capacitor's launch URL and `appUrlOpen` event, accepts only `com.arownd.app://auth/callback`, and exchanges the one-time PKCE code on-device. Web callbacks continue to use Supabase's normal URL detection. Password recovery and account-type redirects are preserved, and external redirect destinations are rejected.
+## Authentication callback
 
-The Android activity is configured for warm-start deep links (`singleTask`), and the native bootstrap step registers the custom URL scheme in Android's manifest and iOS `Info.plist`.
+The intended native flow:
+1. Receive the launch URL or subsequent URL-open event.
+2. Accept only the expected scheme, host, and callback path.
+3. Exchange the one-time PKCE code using the Supabase client.
+4. Preserve only validated in-app intent and relative redirect values.
+5. Reject unrelated URLs and external redirect targets.
 
-## Supabase Auth redirect configuration
+Never put access tokens or refresh tokens in redirect URLs.
 
-Before native email confirmation or password recovery can complete, add this exact URI to the Supabase Auth URL Configuration redirect allow-list:
+## Supabase Auth configuration
 
-`com.arownd.app://auth/callback`
+Before native email confirmation or password recovery can complete, add the exact callback URI to the Supabase Auth redirect allow-list:
 
-Keep the existing HTTPS production callback and web redirect URLs. Do not replace the production Site URL with the native scheme. Configure the email templates to use the supplied redirect destination (`{{ .RedirectTo }}`) where the template currently hardcodes the Site URL.
+~~~text
+com.arownd.app://auth/callback
+~~~
 
-## Native callback requirements
+Keep existing HTTPS production and web redirect URLs. Do not replace the Supabase Site URL with the native scheme. Review email templates to ensure they use the supplied redirect destination where appropriate.
 
-The native runtime must register the `com.arownd.app` URL scheme on Android and iOS and consume launch URLs plus subsequent URL-open events. For PKCE, the app must exchange the one-time `code` query parameter using the Supabase client before navigating to the validated in-app destination. Never place access tokens or refresh tokens in a redirect URL.
+## Verification checklist
 
-The callback handler must also preserve the existing `reset`, `intent`, and safe relative `redirect` parameters. Only accept the expected scheme, host, and callback path. Reject unrelated URLs and external redirect targets.
+- [ ] Confirm Android manifest and iOS URL scheme registration.
+- [ ] Confirm cold-start and warm-start callback handling.
+- [ ] Test PKCE exchange, email confirmation, password recovery, sign-out, and refresh.
+- [ ] Confirm Supabase redirect allow-list settings.
+- [ ] Reject unexpected schemes and external redirect targets.
+- [ ] Test Android and iOS independently.
 
-## Build output
+## Verification boundary
 
-TanStack Start SPA mode emits its shell as `dist/client/index.html` for Capacitor. The regular web production build remains SSR and retains its existing output/deployment path.
+This document describes the expected identity and flow. It does not certify that dashboard settings, platform builds, or release artifacts have been verified.
