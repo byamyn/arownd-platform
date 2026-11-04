@@ -89,11 +89,42 @@ function CheckoutPage() {
   // Keep one key per cart line until the server confirms its order. If the
   // network drops after the database commit, retrying reuses the same key.
   const checkoutKeysRef = useRef(new Map<string, string>());
+  const checkoutKeyStorage = `arownd:checkout-idempotency:${user.id}`;
+  const persistCheckoutKeys = () => {
+    try {
+      if (checkoutKeysRef.current.size === 0) {
+        window.localStorage.removeItem(checkoutKeyStorage);
+      } else {
+        window.localStorage.setItem(
+          checkoutKeyStorage,
+          JSON.stringify(Object.fromEntries(checkoutKeysRef.current)),
+        );
+      }
+    } catch {
+      // The server remains authoritative; persistence is a retry enhancement.
+    }
+  };
   const getCheckoutKey = (offerId: string) => {
-    const existing = checkoutKeysRef.current.get(offerId);
-    if (existing) return existing;
+    const inMemory = checkoutKeysRef.current.get(offerId);
+    if (inMemory) return inMemory;
+    try {
+      const saved = window.localStorage.getItem(checkoutKeyStorage);
+      if (saved) {
+        const parsed = JSON.parse(saved) as Record<string, unknown>;
+        for (const [savedOfferId, savedKey] of Object.entries(parsed)) {
+          if (typeof savedKey === "string" && /^[0-9a-f-]{36}$/i.test(savedKey)) {
+            checkoutKeysRef.current.set(savedOfferId, savedKey);
+          }
+        }
+      }
+    } catch {
+      // Ignore malformed or unavailable local storage and create a fresh key.
+    }
+    const restored = checkoutKeysRef.current.get(offerId);
+    if (restored) return restored;
     const created = crypto.randomUUID();
     checkoutKeysRef.current.set(offerId, created);
+    persistCheckoutKeys();
     return created;
   };
   useEffect(() => {
@@ -187,6 +218,7 @@ function CheckoutPage() {
           createdOrderIds.push(id);
           successfulItems.push(item);
           checkoutKeysRef.current.delete(item.offerId);
+          persistCheckoutKeys();
         }
       } catch (error) {
         if (createdOrderIds.length === 0) throw error;
