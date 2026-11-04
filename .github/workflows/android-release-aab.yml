@@ -1,4 +1,4 @@
-name: Android signed release AAB
+name: Android signed release AAB and APK
 
 on:
   workflow_dispatch:
@@ -14,7 +14,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build-release-aab:
+  build-release:
     runs-on: ubuntu-latest
     timeout-minutes: 45
     steps:
@@ -81,10 +81,26 @@ jobs:
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
         run: ./gradlew bundleRelease --no-daemon -PversionCodeOverride=${{ github.run_number }}
 
+      - name: Build signed release APK
+        working-directory: android
+        env:
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: ./gradlew assembleRelease --no-daemon -PversionCodeOverride=${{ github.run_number }}
+
       - name: Upload signed AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: arownd-release-aab-${{ github.run_number }}
           path: android/app/build/outputs/bundle/release/app-release.aab
+          if-no-files-found: error
+          retention-days: 30
+
+      - name: Upload signed APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: arownd-release-apk-${{ github.run_number }}
+          path: android/app/build/outputs/apk/release/app-release.apk
           if-no-files-found: error
           retention-days: 30
