@@ -62,6 +62,9 @@ jobs:
           @capacitor/preferences@latest
           @capawesome/capacitor-app-update@8.1.1
 
+      - name: Verify Google Play in-app update dependency
+        run: npm ls @capawesome/capacitor-app-update
+
       - name: Build Capacitor web assets (no APK)
         run: npm run build:capacitor
 
