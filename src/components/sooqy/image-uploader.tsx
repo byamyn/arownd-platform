@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
 import { shareLocalFile } from "@/lib/native-sharing";
 import { isNativePlatform } from "@/lib/platform";
+import { tapFeedback } from "@/lib/native-feedback";
 
 const MAX_FILES = 10;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -112,6 +113,7 @@ export function ImageUploader({
 
   const removeItem = useCallback(
     async (index: number) => {
+      void tapFeedback("light");
       const removed = items[index];
       const actionKey = "remove:" + (removed?.id ?? removed?.preview ?? index);
       if (pendingActions.current.has(actionKey)) return;
@@ -152,6 +154,7 @@ export function ImageUploader({
 
   const setPrimary = useCallback(
     async (index: number) => {
+      void tapFeedback("light");
       const item = items[index];
       const actionKey = "primary:" + (item?.id ?? item?.preview ?? index);
       if (pendingActions.current.has(actionKey)) return;
@@ -196,6 +199,7 @@ export function ImageUploader({
 
   const handleNativeCamera = async () => {
     if (!isNativePlatform() || isOverLimit) return;
+    void tapFeedback("medium");
     try {
       const { Camera, CameraResultType, CameraSource } = await import("@capacitor/camera");
       const photo = await Camera.getPhoto({
