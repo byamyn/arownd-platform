@@ -50,3 +50,4 @@ supabase/.temp/
 # Android signing material (never commit)
 *.keystore
 *.jks
+*-upload-key.base64
