@@ -9,7 +9,7 @@ import {
   registerServiceWorker,
 } from "@/lib/pwa";
 import { useTranslation } from "@/lib/i18n";
-import { isNativePlatform } from "@/lib/platform";
+import { isAndroidNativePlatform, isNativePlatform } from "@/lib/platform";
 
 /**
  * عنصر PWA ظاهر — يعرض:
@@ -113,7 +113,7 @@ export function NativeAppUpdatePrompt() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!isNativePlatform() || !window.Capacitor || window.Capacitor.getPlatform?.() !== "android") return;
+    if (!isAndroidNativePlatform()) return;
 
     let disposed = false;
     let listener: { remove: () => Promise<void> } | undefined;
