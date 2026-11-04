@@ -1,20 +1,21 @@
-# Arownd content-report operations
+# Arownd — Content report operations
 
-## Scope
+> **Project:** Arownd  
+> **Owner:** byamyn  
+> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)  
+> **Status:** Operational runbook; verify current schema and role permissions before executing SQL.
 
-The application lets authenticated users submit one report per target. Reports are stored in
-`public.content_reports`; the reporter cannot read or change the moderation queue. The queue is
-intended for review by the project owner through the Supabase Dashboard SQL Editor.
+## Scope and limitations
 
-This initial implementation records reports. It does **not** automatically hide or remove content,
-suspend accounts, or provide an in-app moderator console. Do not describe moderation as fully
-automated or complete until those controls and a documented response process are implemented.
+The application records authenticated user reports in public.content_reports. This workflow must not be described as automated moderation unless content hiding/removal, account restrictions, review tooling, and an accountable response process are implemented and tested.
+
+The earlier implementation notes describe a queue reviewed through the Supabase Dashboard SQL Editor by an authorized project operator. Re-check current RLS and schema before running any query.
 
 ## Review pending reports
 
-Run this query in the Supabase SQL Editor using an owner-level session:
+Use an authorized, audited operator session in the Supabase SQL Editor:
 
-```sql
+~~~sql
 select
   id,
   reporter_id,
@@ -27,43 +28,46 @@ select
 from public.content_reports
 where status = 'pending'
 order by created_at asc;
-```
+~~~
 
-Inspect the referenced content and any relevant context before taking action. Avoid sharing
-reporter identity or report details with the reported account.
+Limit access to reporter identity and report details. Do not disclose reporter information to the reported account unless a documented legal or operational requirement applies.
 
 ## Record a review decision
 
-When a report is being investigated:
+The following statements are examples from the earlier runbook, not a replacement for a reviewed moderation RPC or a current schema contract. Confirm allowed status values, audit fields, and permissions before executing them.
 
-```sql
+Mark a report under review:
+
+~~~sql
 update public.content_reports
 set status = 'under_review',
     reviewed_at = now()
 where id = '<report-uuid>'
   and status = 'pending';
-```
+~~~
 
-After the review, record the outcome:
+Record an outcome:
 
-```sql
+~~~sql
 update public.content_reports
 set status = 'actioned',
     reviewed_at = now(),
     review_note = '<brief internal decision>'
 where id = '<report-uuid>'
   and status in ('pending', 'under_review');
-```
+~~~
 
-Use `dismissed` instead of `actioned` when the report does not establish a policy violation.
-Keep internal notes factual and avoid copying unnecessary personal data.
+Use dismissed only when the report does not establish a policy violation. Keep notes factual and minimize personal data.
 
-## Operational requirements still outstanding
+## Outstanding operational requirements
 
-- Establish a response-time target and assign a responsible reviewer.
-- Add user blocking and ensure blocked users cannot continue direct interactions.
-- Add content visibility/removal controls for products and stores, not only review status.
-- Add an authenticated moderator workflow with a trusted server-side role model before exposing
-  moderation actions in the client.
-- Define an appeal path and retention period for reports.
-- Test the flow with separate reporter and target accounts before public release.
+- Assign a responsible reviewer and response-time target.
+- Define escalation, appeal, and retention procedures.
+- Add safe content visibility/removal controls where required.
+- Use a trusted server-side authorization model for moderation actions.
+- Test with separate reporter and target accounts.
+- Audit every moderation decision and restrict access to sensitive reports.
+
+## Safety
+
+Do not expose privileged SQL access or service-role credentials to the client. Do not run the example updates against production until the current schema, RLS, and audit requirements are verified.
