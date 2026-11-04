@@ -86,6 +86,16 @@ function CheckoutPage() {
   }, [profile.data, user]);
   const [submitting, setSubmitting] = useState(false);
   const submittingRef = useRef(false);
+  // Keep one key per cart line until the server confirms its order. If the
+  // network drops after the database commit, retrying reuses the same key.
+  const checkoutKeysRef = useRef(new Map<string, string>());
+  const getCheckoutKey = (offerId: string) => {
+    const existing = checkoutKeysRef.current.get(offerId);
+    if (existing) return existing;
+    const created = crypto.randomUUID();
+    checkoutKeysRef.current.set(offerId, created);
+    return created;
+  };
   useEffect(() => {
     if (bag.items.length > 0) track("begin_checkout", { count: bag.items.length });
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -172,9 +182,11 @@ function CheckoutPage() {
             commune.trim(),
             paymentMethod,
             contact,
+            getCheckoutKey(item.offerId),
           );
           createdOrderIds.push(id);
           successfulItems.push(item);
+          checkoutKeysRef.current.delete(item.offerId);
         }
       } catch (error) {
         if (createdOrderIds.length === 0) throw error;
