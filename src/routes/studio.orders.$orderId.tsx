@@ -21,6 +21,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useState } from "react";
 import { MerchantOrderDetailSkeleton } from "@/components/sooqy/skeleton";
+import { MerchantOrderTracking } from "@/components/sooqy/merchant-order-tracking";
 
 export const Route = createFileRoute("/studio/orders/$orderId")({
   component: StudioOrderDetailPage,
@@ -354,9 +355,7 @@ function StudioOrderDetailPage() {
                 </p>
               )}
               {merchantOrderStatus === "confirmed" && order.delivery_type === "home" && (
-                <p className="rounded-[var(--radius-control)] bg-primary-soft p-3 text-xs leading-relaxed text-muted-foreground">
-                  {t("studio_order_approved_wait_delivery")}
-                </p>
+                <MerchantOrderTracking merchantOrderId={merchantOrder.id} onCompleted={refreshOrder} />
               )}
             </div>
           </div>
