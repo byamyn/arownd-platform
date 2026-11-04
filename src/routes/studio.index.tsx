@@ -794,6 +794,7 @@ function StudioPage() {
       {/* تبويب المنتجات */}
       {mode === "offers" && (
         <section className="space-y-5">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <h2 className="font-extrabold">{t("studio_current_products")}</h2>
