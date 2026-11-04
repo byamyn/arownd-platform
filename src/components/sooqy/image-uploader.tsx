@@ -112,35 +112,36 @@ export function ImageUploader({
   const removeItem = useCallback(
     async (index: number) => {
       const removed = items[index];
-      const actionKey = 'remove:' + (removed?.id ?? removed?.preview ?? index);
+      const actionKey = "remove:" + (removed?.id ?? removed?.preview ?? index);
       if (pendingActions.current.has(actionKey)) return;
       pendingActions.current.add(actionKey);
-      try {
-      // إذا كانت صورة موجودة من الخادم، احذفها من الخادم أولاً
-      if (removed && !removed.file && onRemove) {
-        try {
-          await onRemove(removed);
-        } catch {
-          toast.error("تعذر حذف الصورة من الخادم.");
-          return;
-        }
-      }
 
-      setItems((prev) => {
-        const next = prev.filter((_, i) => i !== index);
-        // إذا حُذفت الصورة الأساسية، اجعل أول صورة متبقية أساسية
-        if (next.length > 0 && !next.some((i) => i.isPrimary)) {
-          next[0]!.isPrimary = true;
+      try {
+        // אם الصورة موجودة من الخادم، احذفها من الخادم أولاً
+        if (removed && !removed.file && onRemove) {
+          try {
+            await onRemove(removed);
+          } catch {
+            toast.error("تعذر حذف الصورة من الخادم.");
+            return;
+          }
         }
-        // إلغاء كائنات URL المحذوفة لتحرير الذاكرة
-        const removedItem = prev[index];
-        if (removedItem && removedItem.file) {
-          URL.revokeObjectURL(removedItem.preview);
-          ownedPreviewUrls.current.delete(removedItem.preview);
-        }
-        onChange(next);
-        return next;
-      });
+
+        setItems((prev) => {
+          const next = prev.filter((_, i) => i !== index);
+          // إذا حُذفت الصورة الأساسية، اجعل أول صورة متبقية أساسية
+          if (next.length > 0 && !next.some((i) => i.isPrimary)) {
+            next[0]!.isPrimary = true;
+          }
+          // إلغاء كائنات URL المحذوفة لتحرير الذاكرة
+          const removedItem = prev[index];
+          if (removedItem && removedItem.file) {
+            URL.revokeObjectURL(removedItem.preview);
+            ownedPreviewUrls.current.delete(removedItem.preview);
+          }
+          onChange(next);
+          return next;
+        });
       } finally {
         pendingActions.current.delete(actionKey);
       }
@@ -151,27 +152,28 @@ export function ImageUploader({
   const setPrimary = useCallback(
     async (index: number) => {
       const item = items[index];
-      const actionKey = 'primary:' + (item?.id ?? item?.preview ?? index);
+      const actionKey = "primary:" + (item?.id ?? item?.preview ?? index);
       if (pendingActions.current.has(actionKey)) return;
       pendingActions.current.add(actionKey);
-      try {
-      // إذا كانت صورة موجودة من الخادم، حددها أساسية في الخادم أولاً
-      if (item && !item.file && onSetPrimary) {
-        try {
-          await onSetPrimary(item);
-        } catch {
-          toast.error("تعذر تحديد الصورة الأساسية في الخادم.");
-          return;
-        }
-      }
 
-      setItems((prev) => {
-        const next = [...prev];
-        next.forEach((i) => (i.isPrimary = false));
-        next[index]!.isPrimary = true;
-        onChange(next);
-        return next;
-      });
+      try {
+        // إذا كانت صورة موجودة من الخادم، حددها أساسية في الخادم أولاً
+        if (item && !item.file && onSetPrimary) {
+          try {
+            await onSetPrimary(item);
+          } catch {
+            toast.error("تعذر تحديد الصورة الأساسية في الخادم.");
+            return;
+          }
+        }
+
+        setItems((prev) => {
+          const next = [...prev];
+          next.forEach((i) => (i.isPrimary = false));
+          next[index]!.isPrimary = true;
+          onChange(next);
+          return next;
+        });
       } finally {
         pendingActions.current.delete(actionKey);
       }
