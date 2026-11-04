@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { formatMoney, getMarket, zonedParts } from "./market";
+import { isNativePlatform } from "./platform";
 
 export type LatLng = { lat: number; lng: number };
 
@@ -149,13 +150,51 @@ export function useGeo() {
   const [locating, setLocating] = useState(false);
   const [reason, setReason] = useState<GeoReason | null>(null);
 
-  const request = useCallback((): Promise<GeoResult> => {
+  const request = useCallback(async (): Promise<GeoResult> => {
     const bail = (why: GeoReason): GeoResult => {
       setReason(why);
       setDenied(why === "denied");
       setLocating(false);
       return { pos: null, reason: why };
     };
+
+    // On Android/iOS use the native permission and location APIs. This path is
+    // entered only from the existing explicit user action (request/ask).
+    if (isNativePlatform()) {
+      setLocating(true);
+      try {
+        const { Geolocation } = await import("@capacitor/geolocation");
+        let permission = await Geolocation.checkPermissions();
+        if (permission.location !== "granted") {
+          permission = await Geolocation.requestPermissions({ permissions: ["location"] });
+        }
+        if (permission.location !== "granted") return bail("denied");
+
+        const nativePosition = await Geolocation.getCurrentPosition({
+          enableHighAccuracy: false,
+          timeout: 8000,
+        });
+        const nativePos = {
+          lat: nativePosition.coords.latitude,
+          lng: nativePosition.coords.longitude,
+        };
+        setPos(nativePos);
+        saveLastPosition(nativePos);
+        setReason(null);
+        setDenied(false);
+        setLocating(false);
+        return { pos: nativePos, reason: null };
+      } catch (error) {
+        const message = error instanceof Error ? error.message.toLowerCase() : "";
+        const why: GeoReason =
+          message.includes("denied") || message.includes("permission")
+            ? "denied"
+            : message.includes("timeout")
+              ? "timeout"
+              : "unavailable";
+        return bail(why);
+      }
+    }
 
     if (typeof navigator === "undefined" || !navigator.geolocation) {
       return Promise.resolve(bail("unsupported"));
