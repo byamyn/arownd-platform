@@ -79,8 +79,8 @@ function SettingsPage() {
       const pushToken = typeof window !== "undefined" ? window.localStorage.getItem("arownd-push-token") : null;
       if (pushToken) {
         const { error: unregisterError } = await supabase.rpc("unregister_my_push_device", { _token: pushToken });
-        if (unregisterError) console.warn("[push] Could not unregister device before sign-out", unregisterError);
-        else window.localStorage.removeItem("arownd-push-token");
+        if (unregisterError) throw unregisterError;
+        window.localStorage.removeItem("arownd-push-token");
       }
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
