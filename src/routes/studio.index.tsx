@@ -28,7 +28,6 @@ import {
   fetchStoreOrderItems,
   fetchStoreReservations,
   merchantAddOfferImages,
-  merchantConfirmAll,
   merchantConfirmReservation,
   merchantCreateStore,
   merchantDeleteOffer,
