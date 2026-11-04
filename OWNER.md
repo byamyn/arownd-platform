@@ -1,18 +1,30 @@
 # Mohamed
 
-**Founder & Project Owner | المؤسس ومالك المشروع**
+### Founder & Project Owner
+### المؤسس ومالك المشروع
 
-| English | العربية |
-|---|---|
-| **Name:** Mohamed | **الاسم:** Mohamed |
-| **Role:** Founder & Project Owner | **الصفة:** المؤسس ومالك المشروع |
-| **Location:** Algeria | **الموقع:** الجزائر |
-| **GitHub:** [@byamyn](https://github.com/byamyn) | **GitHub:** [@byamyn](https://github.com/byamyn) |
-| **Email:** [arownddz@gmail.com](mailto:arownddz@gmail.com) | **البريد الإلكتروني:** [arownddz@gmail.com](mailto:arownddz@gmail.com) |
-| **Languages:** Arabic, English | **اللغات:** العربية، الإنجليزية |
+Building ideas into meaningful digital experiences.
+
+أحوّل الأفكار إلى تجارب رقمية ذات قيمة.
 
 ---
 
-*Building Arownd.*
+### Profile | الملف الشخصي
 
-*أعمل على بناء Arownd.*
+| English | العربية |
+|---|---|
+| **Name** · Mohamed | **الاسم** · Mohamed |
+| **Role** · Founder & Project Owner | **الصفة** · المؤسس ومالك المشروع |
+| **Based in** · Algeria | **الموقع** · الجزائر |
+| **Languages** · Arabic & English | **اللغات** · العربية والإنجليزية |
+
+### Connect | التواصل
+
+- **GitHub:** [@byamyn](https://github.com/byamyn)
+- **Email:** [arownddz@gmail.com](mailto:arownddz@gmail.com)
+
+---
+
+<sub>INDEPENDENT THINKING. PURPOSEFUL BUILDING.</sub>
+
+<sub>فكر مستقل. بناء هادف.</sub>
