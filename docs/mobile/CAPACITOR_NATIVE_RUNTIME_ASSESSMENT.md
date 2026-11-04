@@ -56,3 +56,31 @@ Verify the callback implementation and Supabase redirect allow-list in the curre
 ## Security boundary
 
 Do not add a production remote-WebView shortcut, broad CSRF bypass, permissive CORS rule, or placeholder callback scheme as a workaround. Any native transport change requires server-side authentication, authorization, and tests.
+
+---
+
+## النسخة العربية | تقييم بيئة Capacitor الأصلية
+
+### النطاق
+يحتوي المستودع على تطبيق ويب ومشروعي Android وiOS مع إعداد Capacitor. وجود الملفات لا يثبت نجاح البناء أو المصادقة أو الإشعارات أو النشر على المتاجر.
+
+### ضوابط المصادقة والنقل
+- لا تعطّل CSRF أو تفتح CORS بشكل واسع لتجاوز مشاكل WebView.
+- لا تثق في user ID أو Origin يرسله العميل.
+- تحقق من access token والصلاحيات على الخادم للعمليات المحمية.
+- اختبر PKCE وتأكيد البريد واستعادة كلمة المرور وتسجيل الخروج وتجديد الجلسة على Android وiOS كلٌ على حدة.
+- تحقق من deep links وارفض schemes والتحويلات غير المتوقعة.
+- لا تضع access أو refresh tokens داخل URL.
+
+### بوابة الاختبار الأصلي
+- [ ] بناء Android من commit تمت مراجعته.
+- [ ] بناء iOS في بيئة macOS/Xcode مدعومة.
+- [ ] اختبار cold-start وwarm-start للروابط.
+- [ ] اختبار دورة الجلسة والمصادقة على المنصتين.
+- [ ] اختبار رفض الأذونات وحالات غياب إمكانات الجهاز.
+- [ ] اختبار تسجيل وإلغاء تسجيل push tokens.
+- [ ] مراجعة التوقيع والخصوصية ومتطلبات المتاجر.
+- [ ] قياس الأداء على أجهزة حقيقية.
+
+**تحذير أمني:** لا تضف remote-WebView shortcut أو CSRF bypass أو CORS مفتوحًا كحل سريع. أي تغيير في النقل يحتاج مصادقة وتفويضًا من جهة الخادم واختبارات.
+
