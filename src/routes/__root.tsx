@@ -166,6 +166,52 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function NativeKeyboardSync() {
+  useEffect(() => {
+    if (!isNativePlatform()) return;
+
+    let disposed = false;
+    const handles: Array<{ remove: () => Promise<void> }> = [];
+    const show = (height: number) => {
+      document.documentElement.dataset.keyboardVisible = "true";
+      document.documentElement.style.setProperty("--arownd-keyboard-height", `${Math.max(0, height)}px`);
+      window.dispatchEvent(new CustomEvent("arownd:keyboard", {
+        detail: { visible: true, height: Math.max(0, height) },
+      }));
+    };
+    const hide = () => {
+      delete document.documentElement.dataset.keyboardVisible;
+      document.documentElement.style.removeProperty("--arownd-keyboard-height");
+      window.dispatchEvent(new CustomEvent("arownd:keyboard", {
+        detail: { visible: false, height: 0 },
+      }));
+    };
+
+    void import("@capacitor/keyboard")
+      .then(async ({ Keyboard }) => {
+        if (disposed) return;
+        handles.push(await Keyboard.addListener("keyboardWillShow", (info) => show(info.keyboardHeight)));
+        handles.push(await Keyboard.addListener("keyboardDidShow", (info) => show(info.keyboardHeight)));
+        handles.push(await Keyboard.addListener("keyboardWillHide", hide));
+        handles.push(await Keyboard.addListener("keyboardDidHide", hide));
+        if (disposed) {
+          for (const handle of handles) void handle.remove();
+        }
+      })
+      .catch((error: unknown) => {
+        console.warn("[native] Could not subscribe to keyboard events", error);
+      });
+
+    return () => {
+      disposed = true;
+      for (const handle of handles) void handle.remove();
+      hide();
+    };
+  }, []);
+
+  return null;
+}
+
 function NativeRuntimeSync({ queryClient }: { queryClient: QueryClient }) {
   const { resolved } = useTheme();
 
@@ -533,6 +579,7 @@ function RootComponent() {
       <ThemeProvider>
         <AuthProvider>
           <NativeRuntimeSync queryClient={queryClient} />
+          <NativeKeyboardSync />
           <NativePushNotifications />
           <NativeDeepLinkListener />
           <NativeBackButtonHandler />
