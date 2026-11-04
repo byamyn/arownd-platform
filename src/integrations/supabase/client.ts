@@ -2,6 +2,7 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 import { isNativePlatform } from "@/lib/platform";
+import { supabaseAuthStorage } from "./native-auth-storage";
 
 function isNewSupabaseApiKey(value: string): boolean {
   return value.startsWith("sb_publishable_") || value.startsWith("sb_secret_");
@@ -78,6 +79,7 @@ function createSupabaseClient() {
     auth: {
       persistSession: true,
       autoRefreshToken: true,
+      storage: supabaseAuthStorage,
       // Native callback URLs are exchanged by the Capacitor URL listener.
       // Keep Supabase automatic URL detection enabled for ordinary web callbacks.
       detectSessionInUrl: !isNativePlatform(),
