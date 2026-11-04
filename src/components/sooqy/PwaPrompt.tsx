@@ -111,6 +111,7 @@ export function NativeAppUpdatePrompt() {
   const [downloaded, setDownloaded] = useState(false);
   const [progress, setProgress] = useState<number | null>(null);
   const [busy, setBusy] = useState(false);
+  const [updateMode, setUpdateMode] = useState<"flexible" | "immediate" | null>(null);
 
   useEffect(() => {
     if (!isAndroidNativePlatform()) return;
@@ -144,7 +145,15 @@ export function NativeAppUpdatePrompt() {
         try {
           const info = await AppUpdate.getAppUpdateInfo();
           if (!disposed && info.updateAvailability === AppUpdateAvailability.UPDATE_AVAILABLE) {
-            setAvailable(Boolean(info.flexibleUpdateAllowed || info.immediateUpdateAllowed));
+            if (info.flexibleUpdateAllowed) {
+              setUpdateMode("flexible");
+              setAvailable(true);
+            } else if (info.immediateUpdateAllowed) {
+              setUpdateMode("immediate");
+              setAvailable(true);
+            }
+          } else if (!disposed && info.updateAvailability === AppUpdateAvailability.UPDATE_IN_PROGRESS) {
+            setDownloading(true);
           }
         } catch {
           // Play Store installs only; sideloaded builds and unavailable Play services
@@ -168,9 +177,13 @@ export function NativeAppUpdatePrompt() {
     setBusy(true);
     try {
       const { AppUpdate } = await import("@capawesome/capacitor-app-update");
-      await AppUpdate.startFlexibleUpdate();
-      setAvailable(false);
-      setDownloading(true);
+      if (updateMode === "immediate") {
+        await AppUpdate.performImmediateUpdate();
+      } else {
+        await AppUpdate.startFlexibleUpdate();
+        setAvailable(false);
+        setDownloading(true);
+      }
     } catch (error) {
       console.warn("[native-update] Could not start flexible update", error);
       // An update may only be offered by Play during an eligible install session.
