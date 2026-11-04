@@ -1,5 +1,9 @@
 # Arownd — account deletion and retention policy (implementation baseline)
 
+> **Project:** Arownd  
+> **Owner:** byamyn  
+> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)
+
 **Status:** engineering baseline for legal review. This document is not a legal opinion and must be approved by Algerian counsel and Arownd's data-protection owner before publication or production activation.
 
 ## 1. User-facing deletion request
@@ -34,7 +38,7 @@ The Algerian Commercial Code (Article 12) and the Directorate General of Taxes g
 
 Before final deletion, verify that the account has no open orders, merchant suborders, shipments, COD collection records, unsettled balances, or store ownership that must be transferred. Never cascade-delete transaction or accounting evidence to make an Auth deletion succeed.
 
-The current schema has restrictive foreign keys around `merchant_order_cod_collections`, `merchant_orders`, and `stores`. A separate reviewed migration is required to preserve accounting history while replacing personal actor references with a non-identifying audit actor where lawful. Do not change those constraints with a blind cascade.
+The current schema has restrictive foreign keys around merchant_order_cod_collections, merchant_orders, and stores. A separate reviewed migration is required to preserve accounting history while replacing personal actor references with a non-identifying audit actor where lawful. Do not change those constraints with a blind cascade.
 
 ## 5. Operational checklist
 
