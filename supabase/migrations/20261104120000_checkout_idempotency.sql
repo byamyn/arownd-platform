@@ -34,9 +34,9 @@ create or replace function public.create_order_with_delivery(
   _full_name text,
   _phone text,
   _payment_method text,
-  _receipt_url text,
-  _delivery_company_id uuid,
-  _idempotency_key uuid
+  _receipt_url text default null,
+  _delivery_company_id uuid default null,
+  _idempotency_key uuid default null
 )
 returns uuid
 language plpgsql
