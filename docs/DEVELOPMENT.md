@@ -125,3 +125,45 @@ Each change should include:
 6. Database migration and RLS notes if schema or authorization changed.
 
 Keep pull requests focused. Do not combine broad formatting, dependency upgrades and business-logic changes without a clear reason.
+
+---
+
+## النسخة العربية | دليل التطوير
+
+### بيئة العمل المعتمدة
+
+إصدار Node.js المعتمد هو **26.x**، ويجب أن يتطابق محليًا مع `package.json` وGitHub Actions وVercel. استخدم `npm ci` للحفاظ على توافق lockfile.
+
+### تشغيل المشروع
+
+```bash
+node --version
+npm ci
+cp .env.example .env
+npm run dev
+```
+
+تأكد من أن إصدار Node الرئيسي هو 26، ثم أضف إعدادات Supabase المحلية. لا ترفع ملف `.env` أو أي أسرار إلى المستودع.
+
+### بوابات الجودة
+
+```bash
+npx tsc --noEmit
+npm run lint
+npm run ui:check
+npm test
+npm run build
+```
+
+### معايير المساهمة
+
+- أضف اختبارات Vitest لأي منطق أعمال جديد أو معدل.
+- استخدم مفاتيح الترجمة، وحافظ على تطابق القواميس العربية والإنجليزية.
+- صمّم حالات التحميل والفراغ والخطأ والنجاح.
+- لا تعرض نجاحًا قبل تأكيد الخادم.
+- لا تكرر منطق الأسعار أو السلة.
+- استخدم CSS logical properties لدعم RTL/LTR.
+- افصل أسرار الخادم عن متغيرات الواجهة.
+
+**ملاحظة:** لا تعتبر الفحوصات المحلية بديلًا عن اختبار تدفقات الطلبات والصلاحيات على بيئة آمنة.
+
