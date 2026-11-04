@@ -230,7 +230,7 @@ export function NativeAppUpdatePrompt() {
           </button>
         ) : !downloading ? (
           <button type="button" disabled={busy} onClick={() => void startUpdate()} className="min-h-10 rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground disabled:opacity-50">
-            تحديث
+            {t("native_update_cta")}
           </button>
         ) : null}
       </div>
