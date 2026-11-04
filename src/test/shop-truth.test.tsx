@@ -10,6 +10,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 import { routeTree } from "@/routeTree.gen";
 import { resetSupabaseFake, setSession, state } from "./supabase-fake";
 import { evaluateBag } from "@/lib/bag-check";
+import { bagItemKey, sanitizeBagItems } from "@/lib/bag";
 import { pickBestOffer, type BagItem, type OfferFull, type Product, type Store } from "@/lib/sooqy";
 
 // استبدال عميل Supabase الحقيقي بالـfake (لا شبكة، بيانات ثابتة)
@@ -46,6 +47,7 @@ function makeOffer(over: Partial<OfferFull> = {}): OfferFull {
     old_price: null,
     stock_quantity: 5,
     is_available: true,
+    is_merchant_hidden: false,
     options: {},
     created_at: "2026-01-01T00:00:00Z",
     last_confirmed_at: "2026-01-01T00:00:00Z",
@@ -67,6 +69,35 @@ function makeItem(over: Partial<BagItem> = {}): BagItem {
     ...over,
   };
 }
+
+describe("هوية عناصر السلة — المنتج وخياراته", () => {
+  it("يحافظ على المقاسات والألوان المختلفة كعناصر مستقلة", () => {
+    const rows = sanitizeBagItems([
+      makeItem({ options: { color: "أسود", size: "M" } }),
+      makeItem({ options: { color: "أبيض", size: "L" }, quantity: 2 }),
+    ]);
+
+    expect(rows).toHaveLength(2);
+    expect(rows.map((row) => row.quantity)).toEqual([1, 2]);
+    expect(rows.map((row) => row.options)).toEqual([
+      { color: "أسود", size: "M" },
+      { color: "أبيض", size: "L" },
+    ]);
+  });
+
+  it("يدمج تكرار الخيار نفسه حتى لو اختلف ترتيب مفاتيح الخيارات", () => {
+    const rows = sanitizeBagItems([
+      makeItem({ options: { color: "أسود", size: "M" }, quantity: 2 }),
+      makeItem({ options: { size: "M", color: "أسود" }, quantity: 3 }),
+    ]);
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0]?.quantity).toBe(5);
+    expect(bagItemKey(rows[0]!)).toBe(
+      bagItemKey(makeItem({ options: { size: "M", color: "أسود" } })),
+    );
+  });
+});
 
 // ---------- اختيار العرض الأفضل ----------
 
@@ -134,6 +165,19 @@ describe("تقييم السلة — evaluateBag", () => {
   it("الكمية الأكبر من المتاح تمنع الشراء", () => {
     const res = evaluateBag([makeItem({ quantity: 5 })], [makeOffer({ stock_quantity: 2 })]);
     expect(res.rows[0]?.issue?.kind).toBe("over_stock");
+    expect(res.hasBlocking).toBe(true);
+  });
+
+  it("يجمع كميات خيارات العرض نفسه عند التحقق من المخزون", () => {
+    const res = evaluateBag(
+      [
+        makeItem({ quantity: 6, options: { size: "M" } }),
+        makeItem({ quantity: 6, options: { size: "L" } }),
+      ],
+      [makeOffer({ stock_quantity: 10 })],
+    );
+
+    expect(res.rows.every((row) => row.issue?.kind === "over_stock")).toBe(true);
     expect(res.hasBlocking).toBe(true);
   });
 

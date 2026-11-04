@@ -2,12 +2,11 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import { AlertTriangle, ArrowLeft, ShoppingBag, Store, Trash2 } from "lucide-react";
-import { useBag } from "@/lib/bag";
+import { bagItemKey, useBag } from "@/lib/bag";
 import { translate, useTranslation } from "@/lib/i18n";
 import { evaluateBag } from "@/lib/bag-check";
 import { formatDA } from "@/lib/geo";
 import { getOffersByIds, primaryImage } from "@/lib/sooqy";
-import { getShippingFee } from "@/lib/shipping";
 import { QtyStepper } from "@/components/sooqy/qty-stepper";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
@@ -50,15 +49,9 @@ function BagPage() {
   }
 
   const subtotal = evaluation.subtotal;
-  let wilayaId: number | null = null;
-  try {
-    const n = Number(localStorage.getItem("sooqy:wilaya"));
-    if (Number.isInteger(n) && n >= 1 && n <= 58) wilayaId = n;
-  } catch {
-    /* تجاهل */
-  }
-  const delivery = wilayaId ? getShippingFee(wilayaId, "home") : null;
-  const total = subtotal + (delivery ?? 0);
+  // رسوم التوصيل النهائية يحددها كل متجر بعد مراجعة الطلب؛ لا نعرض تقديراً مضللاً.
+  const delivery = null;
+  const total = subtotal;
   const blocked = evaluation.hasBlocking;
 
   return (
@@ -130,9 +123,24 @@ function BagPage() {
                 const image = r.offer ? primaryImage(r.offer.images) : null;
                 const name = r.offer?.product.name ?? r.item.name ?? t("bag_item_removed");
                 const priceChanged = r.issues.find((i) => i.kind === "price_changed");
+                const otherVariantQuantity = bag.items.reduce(
+                  (sum, item) =>
+                    item.offerId === r.item.offerId &&
+                    bagItemKey(item) !== bagItemKey(r.item)
+                      ? sum + item.quantity
+                      : sum,
+                  0,
+                );
+                const availableForLine = Math.max(
+                  1,
+                  (r.offer?.stock_quantity ?? 10) - otherVariantQuantity,
+                );
+                const lineMax = Math.max(r.item.quantity, Math.min(10, availableForLine));
+                const quantityBlocked =
+                  !!r.issue && r.issue.kind !== "over_stock";
                 return (
                   <div
-                    key={r.item.offerId}
+                    key={bagItemKey(r.item)}
                     className={
                       "card-premium flex gap-3 p-3 " + (r.issue ? "!border-danger/50" : "")
                     }
@@ -178,7 +186,7 @@ function BagPage() {
                         aria-label={t("bag_remove_aria")}
                         onClick={() => {
                           const removed = r.item;
-                          bag.remove(removed.offerId);
+                          bag.remove(bagItemKey(removed));
                           toast(t("bag_removed_toast", { name }), {
                             action: { label: t("bag_undo"), onClick: () => bag.add(removed) },
                           });
@@ -189,9 +197,9 @@ function BagPage() {
                       </button>
                       <QtyStepper
                         value={r.item.quantity}
-                        onChange={(v) => bag.setQty(r.item.offerId, v)}
-                        max={Math.min(10, r.offer?.stock_quantity ?? 10)}
-                        disabled={!!r.issue}
+                        onChange={(v) => bag.setQty(bagItemKey(r.item), v)}
+                        max={lineMax}
+                        disabled={quantityBlocked}
                       />
                     </div>
                   </div>

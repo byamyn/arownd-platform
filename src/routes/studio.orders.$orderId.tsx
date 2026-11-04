@@ -22,6 +22,7 @@ import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useState } from "react";
 import { MerchantOrderDetailSkeleton } from "@/components/sooqy/skeleton";
 import { MerchantOrderTracking } from "@/components/sooqy/merchant-order-tracking";
+import { fetchShipmentByMerchantOrderId } from "@/lib/delivery";
 
 export const Route = createFileRoute("/studio/orders/$orderId")({
   component: StudioOrderDetailPage,
@@ -43,6 +44,17 @@ function StudioOrderDetailPage() {
     queryKey: ["store-order", orderId],
     queryFn: () => fetchOrder(orderId),
     enabled: !!orderId && !!user,
+  });
+  const merchantOrderForShipment = orderQuery.data?.merchant_orders?.find(
+    (item) => item.store_id === store.data?.id,
+  );
+  const merchantOrderShipment = useQuery({
+    queryKey: ["merchant-order-shipment", merchantOrderForShipment?.id],
+    queryFn: () => fetchShipmentByMerchantOrderId(merchantOrderForShipment!.id),
+    enabled:
+      !!merchantOrderForShipment?.id &&
+      orderQuery.data?.delivery_type === "home" &&
+      merchantOrderForShipment.status === "delivered",
   });
 
   useRealtimeSubscription({
@@ -135,6 +147,12 @@ function StudioOrderDetailPage() {
 
   const storeOrderItems = (order.items ?? []).filter((item) => item.store_id === storeData.id);
   const merchantOrderStatus = merchantOrder.status;
+  const merchantCanCollectCod =
+    order.delivery_type === "desk" ||
+    (order.delivery_type === "home" &&
+      !merchantOrderShipment.isLoading &&
+      !merchantOrderShipment.isError &&
+      (!merchantOrderShipment.data || !merchantOrderShipment.data.company_id));
 
   const refreshOrder = async () => {
     await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
@@ -332,8 +350,8 @@ function StudioOrderDetailPage() {
                 </button>
               )}
               {merchantOrderStatus === "delivered" &&
-                order.delivery_type === "desk" &&
-                merchantOrder.payment_status !== "paid" && (
+                merchantOrder.payment_status !== "paid" &&
+                merchantCanCollectCod && (
                   <div className="space-y-2 rounded-[var(--radius-control)] border border-border bg-background p-3">
                     <p className="text-sm font-semibold">{t("studio_cod_due")}</p>
                     <p className="text-price font-black">
@@ -348,6 +366,15 @@ function StudioOrderDetailPage() {
                       {savingDecision ? t("studio_saving") : t("studio_cod_collect")}
                     </button>
                   </div>
+                )}
+              {order.delivery_type === "home" &&
+                merchantOrderStatus === "delivered" &&
+                merchantOrderShipment.isError && (
+                  <ErrorState
+                    scope="studio:order:shipment-check"
+                    error={merchantOrderShipment.error}
+                    onRetry={() => void merchantOrderShipment.refetch()}
+                  />
                 )}
               {merchantOrder.payment_status === "paid" && (
                 <p className="rounded-[var(--radius-control)] bg-primary-soft p-3 text-sm font-semibold text-foreground">

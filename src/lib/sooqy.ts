@@ -65,8 +65,17 @@ export function primaryImage(images: ProductImage[] | undefined) {
 }
 
 export type StockLevel = "in" | "low" | "out";
+
+/** Buyer-facing saleability: hidden and out-of-stock offers cannot be purchased. */
 export function stockLevel(o: Pick<Offer, "is_available" | "stock_quantity">): StockLevel {
   if (!o.is_available || o.stock_quantity <= 0) return "out";
+  if (o.stock_quantity <= 3) return "low";
+  return "in";
+}
+
+/** Merchant-facing physical inventory: visibility is a separate business decision. */
+export function inventoryLevel(o: Pick<Offer, "stock_quantity">): StockLevel {
+  if (o.stock_quantity <= 0) return "out";
   if (o.stock_quantity <= 3) return "low";
   return "in";
 }
@@ -944,9 +953,13 @@ export async function merchantCreateStore(input: {
 }
 
 export async function merchantToggleAvailability(offerId: string, isAvailable: boolean) {
+  const patch = {
+    is_merchant_hidden: !isAvailable,
+    last_confirmed_at: new Date().toISOString(),
+  };
   const { error } = await supabase
     .from("store_offers")
-    .update({ is_available: isAvailable, last_confirmed_at: new Date().toISOString() })
+.update(patch)
     .eq("id", offerId);
   if (error) throw error;
 }
@@ -957,10 +970,11 @@ export async function merchantUpdateOffer(
 ) {
   const { error } = await supabase
     .from("store_offers")
+    // Database trigger derives is_available from stock_quantity and the
+    // merchant's independent visibility choice.
     .update({
       ...patch,
       last_confirmed_at: new Date().toISOString(),
-      ...(patch.stock_quantity != null ? { is_available: patch.stock_quantity > 0 } : {}),
     })
     .eq("id", offerId);
   if (error) throw error;

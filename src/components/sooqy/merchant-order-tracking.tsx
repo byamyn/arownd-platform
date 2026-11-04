@@ -4,6 +4,7 @@ import { fetchMerchantOrderTracking, merchantUpdateOrderTracking, type MerchantT
 import { formatDate } from "@/lib/market";
 import { showError, showSuccess } from "@/lib/feedback";
 import { ErrorState } from "@/components/sooqy/error-state";
+import { useRealtimeSubscription } from "@/hooks/use-realtime";
 
 const steps: { status: MerchantTrackingStatus; label: string }[] = [
   { status: "preparing", label: "قيد تجهيز الطلب" },
@@ -64,6 +65,12 @@ export function CustomerOrderTracking({ merchantOrderId }: { merchantOrderId: st
   const query = useQuery({
     queryKey: ["merchant-order-tracking", merchantOrderId],
     queryFn: () => fetchMerchantOrderTracking(merchantOrderId),
+  });
+  useRealtimeSubscription({
+    table: "merchant_order_tracking_events",
+    filter: `merchant_order_id=eq.${merchantOrderId}`,
+    queryKeys: [["merchant-order-tracking", merchantOrderId]],
+    enabled: !!merchantOrderId,
   });
   const events = query.data ?? [];
   if (query.isLoading || (!query.isError && events.length === 0)) return null;

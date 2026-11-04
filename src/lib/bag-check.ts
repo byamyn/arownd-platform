@@ -86,6 +86,15 @@ export function evaluateBag(
 ): BagEvaluation {
   const loaded = offers != null;
   const list = offers ?? [];
+  // Stock is tracked per store offer, not per selected size/color line.
+  // Validate the combined demand across all variants of that same offer.
+  const requestedByOffer = new Map<string, number>();
+  for (const item of items) {
+    requestedByOffer.set(
+      item.offerId,
+      (requestedByOffer.get(item.offerId) ?? 0) + item.quantity,
+    );
+  }
 
   const rows: EvaluatedBagRow[] = items.map((item) => {
     const offer = list.find((o) => o.id === item.offerId) ?? null;
@@ -99,9 +108,17 @@ export function evaluateBag(
         issues.push(issue("unavailable", true, {}, lang));
       } else if (stockLevel(offer) === "out" || offer.stock_quantity <= 0) {
         issues.push(issue("out_of_stock", true, {}, lang));
-      } else if (offer.stock_quantity < item.quantity) {
+      } else if (offer.stock_quantity < (requestedByOffer.get(item.offerId) ?? item.quantity)) {
         issues.push(
-          issue("over_stock", true, { stock: offer.stock_quantity, quantity: item.quantity }, lang),
+          issue(
+            "over_stock",
+            true,
+            {
+              stock: offer.stock_quantity,
+              quantity: requestedByOffer.get(item.offerId) ?? item.quantity,
+            },
+            lang,
+          ),
         );
       }
 

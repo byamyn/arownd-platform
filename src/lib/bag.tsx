@@ -15,8 +15,9 @@ type BagCtx = {
   items: BagItem[];
   count: number;
   add: (item: BagItem) => void;
-  setQty: (offerId: string, qty: number) => void;
-  remove: (offerId: string) => void;
+  setQty: (lineKey: string, qty: number) => void;
+  remove: (lineKey: string) => void;
+  removeOffer: (offerId: string) => void;
   clear: () => void;
 };
 
@@ -27,10 +28,18 @@ const SYNC_EVENT = "sooqy:bag-sync";
 
 const MAX_QTY = 10;
 
-/** يُنظّف عناصر السلة القادمة من التخزين: يُسقط التالف ويقيّد الكمية 1..10 ويدمج المكرر. */
+/** Stable identity for one purchasable variant in the cart. */
+export function bagItemKey(item: Pick<BagItem, "offerId" | "options">): string {
+  const options = Object.entries(item.options ?? {})
+    .filter(([key, value]) => typeof key === "string" && typeof value === "string")
+    .sort(([a], [b]) => a.localeCompare(b));
+  return `${item.offerId}::${JSON.stringify(options)}`;
+}
+
+/** Clean stored cart rows while preserving different variants of the same offer. */
 export function sanitizeBagItems(input: unknown): BagItem[] {
   if (!Array.isArray(input)) return [];
-  const byOffer = new Map<string, BagItem>();
+  const byLine = new Map<string, BagItem>();
   for (const raw of input) {
     if (!raw || typeof raw !== "object") continue;
     const r = raw as Partial<BagItem>;
@@ -38,20 +47,28 @@ export function sanitizeBagItems(input: unknown): BagItem[] {
     const qty = Math.max(1, Math.min(MAX_QTY, Math.floor(Number(r.quantity)) || 1));
     const options =
       r.options && typeof r.options === "object" && !Array.isArray(r.options)
-        ? (r.options as Record<string, string>)
+        ? Object.fromEntries(
+            Object.entries(r.options).filter(
+              ([key, value]) => typeof key === "string" && typeof value === "string",
+            ),
+          )
         : {};
-    const price = typeof r.price === "number" && Number.isFinite(r.price) ? r.price : undefined;
-    const prev = byOffer.get(r.offerId);
-    byOffer.set(r.offerId, {
+    const item: BagItem = {
       offerId: r.offerId,
-      quantity: prev ? Math.min(MAX_QTY, prev.quantity + qty) : qty,
+      quantity: qty,
       options,
-      price,
+      price: typeof r.price === "number" && Number.isFinite(r.price) ? r.price : undefined,
       name: typeof r.name === "string" ? r.name : undefined,
       productId: typeof r.productId === "string" ? r.productId : undefined,
+    };
+    const key = bagItemKey(item);
+    const prev = byLine.get(key);
+    byLine.set(key, {
+      ...item,
+      quantity: prev ? Math.min(MAX_QTY, prev.quantity + qty) : qty,
     });
   }
-  return [...byOffer.values()];
+  return [...byLine.values()];
 }
 
 function readStorage(): BagItem[] {
@@ -125,15 +142,15 @@ export function BagProvider({ children }: { children: ReactNode }) {
       add: (item) => {
         const current = itemsRef.current;
         const addQty = Math.max(1, Math.floor(Number(item.quantity)) || 1);
-        const existing = current.find((i) => i.offerId === item.offerId);
+        const key = bagItemKey(item);
+        const existing = current.find((i) => bagItemKey(i) === key);
         persist(
           existing
             ? current.map((i) =>
-                i.offerId === item.offerId
+                bagItemKey(i) === key
                   ? {
                       ...i,
                       quantity: Math.min(MAX_QTY, i.quantity + addQty),
-                      options: item.options,
                       // نُحدّث لقطة السعر بأحدث قيمة معروفة.
                       price: item.price ?? i.price,
                       name: item.name ?? i.name,
@@ -144,15 +161,18 @@ export function BagProvider({ children }: { children: ReactNode }) {
             : [...current, { ...item, quantity: Math.min(MAX_QTY, addQty) }],
         );
       },
-      setQty: (offerId, qty) =>
+      setQty: (lineKey, qty) =>
         persist(
           itemsRef.current.map((i) =>
-            i.offerId === offerId
+            bagItemKey(i) === lineKey
               ? { ...i, quantity: Math.max(1, Math.min(MAX_QTY, Math.floor(Number(qty)) || 1)) }
               : i,
           ),
         ),
-      remove: (offerId) => persist(itemsRef.current.filter((i) => i.offerId !== offerId)),
+      remove: (lineKey) =>
+        persist(itemsRef.current.filter((i) => bagItemKey(i) !== lineKey)),
+      removeOffer: (offerId) =>
+        persist(itemsRef.current.filter((i) => i.offerId !== offerId)),
       clear: () => persist([]),
     }),
     [items, persist],

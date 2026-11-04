@@ -82,7 +82,18 @@ function AddProductPage() {
   const update = (key: keyof typeof form, value: string) => setForm((current) => ({ ...current, [key]: value }));
   const save = async () => {
     const name = form.name.trim();
-    if (!name || !form.price || Number(form.price) <= 0 || form.stock === "" || Number(form.stock) < 0) {
+    const price = Number(form.price);
+    const stock = Number(form.stock);
+    if (
+      !name ||
+      !form.price.trim() ||
+      !Number.isFinite(price) ||
+      price <= 0 ||
+      form.stock === "" ||
+      !Number.isInteger(stock) ||
+      stock < 0 ||
+      stock > 9999
+    ) {
       toast.error(t("studio_product_required_fields"));
       return;
     }
@@ -93,8 +104,8 @@ function AddProductPage() {
       await merchantQuickAddProduct({
         storeId,
         name,
-        price: Number(form.price),
-        stock: Number(form.stock),
+        price,
+        stock,
         category: form.category,
         ...(form.brand.trim() ? { brand: form.brand.trim() } : {}),
         ...(form.description.trim() ? { description: form.description.trim() } : {}),

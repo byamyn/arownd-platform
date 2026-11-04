@@ -518,6 +518,7 @@ export type Database = {
           created_at: string;
           id: string;
           is_available: boolean;
+          is_merchant_hidden: boolean;
           last_confirmed_at: string;
           old_price: number | null;
           options: Json;
@@ -530,6 +531,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           is_available?: boolean;
+          is_merchant_hidden?: boolean;
           last_confirmed_at?: string;
           old_price?: number | null;
           options?: Json;
@@ -542,6 +544,7 @@ export type Database = {
           created_at?: string;
           id?: string;
           is_available?: boolean;
+          is_merchant_hidden?: boolean;
           last_confirmed_at?: string;
           old_price?: number | null;
           options?: Json;

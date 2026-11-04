@@ -28,7 +28,7 @@ import {
   type OfferFull,
 } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
-import { useBag } from "@/lib/bag";
+import { bagItemKey, useBag } from "@/lib/bag";
 import { useTranslation } from "@/lib/i18n";
 import { track } from "@/lib/analytics";
 import { StockBadge, OpenBadge, VerifiedBadge } from "@/components/sooqy/badges";
@@ -259,7 +259,7 @@ function ProductPage() {
   const buyNow = () => {
     if (!selected) return;
     // "اشترِ الآن" يعني الكمية المختارة فقط — لا نجمعها فوق ما في السلة سابقًا.
-    bag.remove(selected.id);
+    bag.remove(bagItemKey({ offerId: selected.id, options: chosen }));
     bag.add({
       offerId: selected.id,
       quantity: qty,

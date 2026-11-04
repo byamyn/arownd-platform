@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { categoryLabel, primaryImage, stockLevel } from "./sooqy";
+import { categoryLabel, inventoryLevel, primaryImage, stockLevel } from "./sooqy";
 import type { ProductImage } from "./sooqy";
 
 describe("stockLevel", () => {
@@ -13,6 +13,14 @@ describe("stockLevel", () => {
   });
   it("متوفر عند أكثر من 3", () => {
     expect(stockLevel({ is_available: true, stock_quantity: 4 })).toBe("in");
+  });
+});
+
+describe("inventoryLevel", () => {
+  it("measures physical stock independently from listing visibility", () => {
+    expect(inventoryLevel({ stock_quantity: 5 })).toBe("in");
+    expect(inventoryLevel({ stock_quantity: 3 })).toBe("low");
+    expect(inventoryLevel({ stock_quantity: 0 })).toBe("out");
   });
 });
 

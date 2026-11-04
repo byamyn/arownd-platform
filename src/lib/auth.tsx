@@ -16,8 +16,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data } = supabase.auth.onAuthStateChange((event, session) => {
       setState({ user: session?.user ?? null, ready: true });
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
+
+      // Private queries such as ["my-orders"] are intentionally not reusable
+      // across identities. Clear them synchronously on every identity boundary
+      // to avoid briefly rendering the previous account's cached data.
+      if (event === "SIGNED_IN" || event === "SIGNED_OUT") {
+        qc.clear();
+      } else {
+        void qc.invalidateQueries();
+      }
       router.invalidate();
-      if (event !== "SIGNED_OUT") qc.invalidateQueries();
     });
     supabase.auth
       .getSession()

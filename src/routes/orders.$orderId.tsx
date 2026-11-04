@@ -60,6 +60,13 @@ function TrackPage() {
     enabled: !!user && !!orderId,
   });
 
+  useRealtimeSubscription({
+    table: "merchant_orders",
+    filter: user?.id ? `customer_id=eq.${user.id}` : undefined,
+    queryKeys: [["my-orders"]],
+    enabled: !!user,
+  });
+
   if (!ready) return null;
   const order = orders.data?.find((o) => o.id === orderId);
   const orderShipments = shipment.data?.shipments ?? [];

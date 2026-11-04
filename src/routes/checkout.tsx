@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
-import { useBag } from "@/lib/bag";
+import { bagItemKey, useBag } from "@/lib/bag";
 import { translate, useTranslation } from "@/lib/i18n";
 import { evaluateBag } from "@/lib/bag-check";
 import { track } from "@/lib/analytics";
@@ -104,26 +104,26 @@ function CheckoutPage() {
       // The server remains authoritative; persistence is a retry enhancement.
     }
   };
-  const getCheckoutKey = (offerId: string) => {
-    const inMemory = checkoutKeysRef.current.get(offerId);
+  const getCheckoutKey = (requestIdentity: string) => {
+    const inMemory = checkoutKeysRef.current.get(requestIdentity);
     if (inMemory) return inMemory;
     try {
       const saved = window.localStorage.getItem(checkoutKeyStorage);
       if (saved) {
         const parsed = JSON.parse(saved) as Record<string, unknown>;
-        for (const [savedOfferId, savedKey] of Object.entries(parsed)) {
+        for (const [savedIdentity, savedKey] of Object.entries(parsed)) {
           if (typeof savedKey === "string" && /^[0-9a-f-]{36}$/i.test(savedKey)) {
-            checkoutKeysRef.current.set(savedOfferId, savedKey);
+            checkoutKeysRef.current.set(savedIdentity, savedKey);
           }
         }
       }
     } catch {
       // Ignore malformed or unavailable local storage and create a fresh key.
     }
-    const restored = checkoutKeysRef.current.get(offerId);
+    const restored = checkoutKeysRef.current.get(requestIdentity);
     if (restored) return restored;
     const created = crypto.randomUUID();
-    checkoutKeysRef.current.set(offerId, created);
+    checkoutKeysRef.current.set(requestIdentity, created);
     persistCheckoutKeys();
     return created;
   };
@@ -186,65 +186,96 @@ function CheckoutPage() {
   }
 
   const placeOrder = async () => {
-    if (submitting || submittingRef.current) return; // منع الطلبات المكررة (ref متزامن لا ينتظر إعادة التصيير)
-    if (!stepValid[3]) {
+    if (submitting || submittingRef.current) return;
+    // Revalidate every customer-entered step at the final submission boundary;
+    // the UI's step navigation is not a substitute for server-call validation.
+    if (!stepValid[0] || !stepValid[1] || !stepValid[2]) {
       toast.error(t("checkout_fill_required"));
       return;
     }
+    // Recheck the live offer data before sending the entire cart as one atomic request.
+    if (
+      !offers.data ||
+      offers.isLoading ||
+      offers.isError ||
+      !evaluation.loaded ||
+      evaluation.hasBlocking
+    ) {
+      toast.error(t("checkout_out_of_stock"));
+      return;
+    }
+
     submittingRef.current = true;
     setSubmitting(true);
     try {
-      // كل منتج يُنشأ كطلب مستقل، حتى عند وجود منتجات من متاجر مختلفة.
-      // ننفذ الطلبات بالتتابع حتى لا تتكرر أو تختلط عمليات حجز المخزون.
       const requestedItems = [...bag.items];
-      const successfulItems: typeof bag.items = [];
-      const createdOrderIds: string[] = [];
       const contact = {
         fullName: fullName.trim(),
         phone: normalizePhone(phone.trim()),
         address: address.trim(),
       };
-      try {
-        for (const item of requestedItems) {
-          const id = await createOrderWithDelivery(
-            [item],
-            deliveryType,
-            wilayaId!,
-            commune.trim(),
-            paymentMethod,
-            contact,
-            getCheckoutKey(item.offerId),
-          );
-          createdOrderIds.push(id);
-          successfulItems.push(item);
-          checkoutKeysRef.current.delete(item.offerId);
-          persistCheckoutKeys();
-        }
-      } catch (error) {
-        if (createdOrderIds.length === 0) throw error;
-        // أبقِ المنتجات التي لم تُنشأ طلباتها في السلة، ولا تعِد إرسال الطلبات الناجحة.
-        bag.clear();
-        requestedItems.slice(successfulItems.length).forEach((item) => bag.add(item));
-        setOrderIds(createdOrderIds);
-        setOrderId(createdOrderIds[0]!);
-        setSnapshot(buildOrderSnapshot(createdOrderIds, successfulItems, rows));
-        void qc.invalidateQueries({ queryKey: ["my-orders"] });
-        showError(error, "feedback_generic_error");
-        return;
-      }
+      // One parent order contains every cart line. PostgreSQL creates one
+      // merchant suborder per store, so each store quotes delivery once.
+      // The key covers the complete request: a retry returns the same order,
+      // while changing address, quantities, or variants creates a new key.
+      const requestIdentity = JSON.stringify({
+        items: requestedItems
+          .map((item) => ({
+            key: bagItemKey(item),
+            offerId: item.offerId,
+            quantity: item.quantity,
+            options: Object.entries(item.options ?? {}).sort(([a], [b]) => a.localeCompare(b)),
+          }))
+          .sort((a, b) => a.key.localeCompare(b.key)),
+        deliveryType,
+        wilayaId,
+        commune: commune.trim(),
+        contact,
+        paymentMethod,
+      });
 
+      const id = await createOrderWithDelivery(
+        requestedItems,
+        deliveryType,
+        wilayaId!,
+        commune.trim(),
+        paymentMethod,
+        contact,
+        getCheckoutKey(requestIdentity),
+      );
+      checkoutKeysRef.current.delete(requestIdentity);
+      persistCheckoutKeys();
+
+      const createdOrderIds = [id];
       setOrderIds(createdOrderIds);
-      setOrderId(createdOrderIds[0]!);
-      setSnapshot(buildOrderSnapshot(createdOrderIds, successfulItems, rows));
+      setOrderId(id);
+      setSnapshot(buildOrderSnapshot(createdOrderIds, requestedItems, rows));
       bag.clear();
-      qc.clear();
-      const submittedTotal = successfulItems.reduce(
+
+      // Preserve cached account/session data; refresh only affected commerce data.
+      void qc.invalidateQueries({ queryKey: ["my-orders"] });
+      void qc.invalidateQueries({ queryKey: ["bag-offers"] });
+      void qc.invalidateQueries({ queryKey: ["checkout-offers"] });
+      void qc.invalidateQueries({ queryKey: ["offers"] });
+      void qc.invalidateQueries({ queryKey: ["product"] });
+
+      const submittedTotal = requestedItems.reduce(
         (sum, item) =>
-          sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price ?? 0) * item.quantity,
+          sum +
+          (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price ?? 0) *
+            item.quantity,
         0,
       );
-      track("place_order", { total: submittedTotal, count: successfulItems.length, paymentMethod, deliveryType, wilayaId });
+      track("place_order", {
+        total: submittedTotal,
+        count: requestedItems.length,
+        paymentMethod,
+        deliveryType,
+        wilayaId,
+      });
     } catch (error) {
+      // The cart and request key remain intact, so a retry is safe if the
+      // server committed but the network response was lost.
       showError(error, "feedback_generic_error");
     } finally {
       submittingRef.current = false;
@@ -580,6 +611,11 @@ function buildOrderSnapshot(
 ): OrderSnapshot {
   const firstItem = items[0];
   const firstRow = rows.find((row) => row.offerId === firstItem?.offerId);
+  const storeNames = new Set(
+    items
+      .map((item) => rows.find((row) => row.offerId === item.offerId)?.offer?.store.name)
+      .filter((name): name is string => !!name),
+  );
   const total = items.reduce(
     (sum, item) =>
       sum + (rows.find((row) => row.offerId === item.offerId)?.offer?.price ?? item.price ?? 0) * item.quantity,
@@ -589,7 +625,7 @@ function buildOrderSnapshot(
     orderId: orderIds[0]!,
     total,
     itemCount: items.length,
-    storeName: orderIds.length === 1 ? firstRow?.offer?.store.name ?? null : null,
+    storeName: storeNames.size === 1 ? [...storeNames][0]! : null,
     productId: firstRow?.offer?.product.id ?? null,
     items: items.map((item) => ({
       offerId: item.offerId,

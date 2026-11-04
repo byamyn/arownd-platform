@@ -3,7 +3,7 @@ import { StockBadge } from "@/components/sooqy/badges";
 import { QtyStepper } from "@/components/sooqy/qty-stepper";
 import { formatDA } from "@/lib/geo";
 import { useTranslation } from "@/lib/i18n";
-import { primaryImage, stockLevel, type OfferFull } from "@/lib/sooqy";
+import { primaryImage, inventoryLevel, type OfferFull } from "@/lib/sooqy";
 import { cn } from "@/lib/utils";
 
 /**
@@ -30,7 +30,7 @@ export function StudioProductRow({
 }) {
   const { t } = useTranslation();
   const img = primaryImage(offer.images);
-  const level = stockLevel(offer);
+  const level = inventoryLevel(offer);
 
   return (
     <article className="card-premium space-y-3 p-3" aria-busy={busy}>
@@ -76,7 +76,7 @@ export function StudioProductRow({
         <button
           type="button"
           role="switch"
-          aria-checked={offer.is_available}
+          aria-checked={!offer.is_merchant_hidden}
           aria-label={t("studio_availability_label")}
           disabled={busy}
           onClick={onToggle}
@@ -85,13 +85,13 @@ export function StudioProductRow({
           <span
             className={cn(
               "relative h-7 w-12 shrink-0 rounded-full transition-colors",
-              offer.is_available ? "bg-success" : "bg-neutral-300",
+              !offer.is_merchant_hidden ? "bg-success" : "bg-neutral-300",
             )}
           >
             <span
               className={cn(
                 "absolute top-1 size-5 rounded-full bg-card  transition-all",
-                offer.is_available ? "end-1" : "start-1",
+                !offer.is_merchant_hidden ? "end-1" : "start-1",
               )}
             />
           </span>

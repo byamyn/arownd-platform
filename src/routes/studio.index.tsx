@@ -42,7 +42,7 @@ import {
   merchantUpdateProduct,
   fetchMyRoles,
   fetchMyAccountType,
-  stockLevel,
+  inventoryLevel,
   type OfferFull,
 } from "@/lib/sooqy";
 import { ImageUploader, type ImageUploaderItem } from "@/components/sooqy/image-uploader";
@@ -275,7 +275,18 @@ function StudioPage() {
   const saveEdit = async () => {
     if (!editing) return;
     const clean = editForm.name.trim();
-    if (!clean || !editForm.price || !Number(editForm.stock)) {
+    const price = Number(editForm.price);
+    const stock = Number(editForm.stock);
+    if (
+      !clean ||
+      !editForm.price.trim() ||
+      !Number.isFinite(price) ||
+      price <= 0 ||
+      !editForm.stock.trim() ||
+      !Number.isInteger(stock) ||
+      stock < 0 ||
+      stock > 9999
+    ) {
       toast.error(t("studio_product_required_fields"));
       return;
     }
@@ -288,8 +299,8 @@ function StudioPage() {
         category: editForm.category,
       });
       await merchantUpdateOffer(editing.id, {
-        price: Number(editForm.price),
-        stock_quantity: Number(editForm.stock),
+        price,
+        stock_quantity: stock,
       });
 
       // رفع الصور الجديدة (التي تحتوي على File) إن وجدت
@@ -383,12 +394,12 @@ function StudioPage() {
 
   // ——— قائمة المنتجات: بحث/فلترة محليان (بلا استدعاءات إضافية) وعمليات سريعة ———
   const allOffers = offers.data ?? [];
-  const lowCount = allOffers.filter((o) => stockLevel(o) === "low").length;
-  const outCount = allOffers.filter((o) => stockLevel(o) === "out").length;
+  const lowCount = allOffers.filter((o) => inventoryLevel(o) === "low").length;
+  const outCount = allOffers.filter((o) => inventoryLevel(o) === "out").length;
   const normalizedQuery = productQuery.trim().toLowerCase();
   const visibleOffers = allOffers.filter(
     (o) =>
-      (productFilter === "all" || stockLevel(o) === productFilter) &&
+      (productFilter === "all" || inventoryLevel(o) === productFilter) &&
       (!normalizedQuery ||
         o.product.name.toLowerCase().includes(normalizedQuery) ||
         (o.product.brand ?? "").toLowerCase().includes(normalizedQuery)),
@@ -402,11 +413,9 @@ function StudioPage() {
     if (rowBusyId || clamped === o.stock_quantity) return;
     setRowBusyId(o.id);
     try {
-      // merchantUpdateOffer يجعل المنتج متوفرًا تلقائيًا عند كمية > 0؛
-      // إن كان التاجر قد أخفاه عمدًا نعيد إخفاءه حتى لا يظهر دون قصد.
-      const wasHidden = !o.is_available && o.stock_quantity > 0;
+      // The database derives availability while preserving the merchant's
+      // independent hidden/visible choice, including when stock is restored.
       await merchantUpdateOffer(o.id, { stock_quantity: clamped });
-      if (wasHidden && clamped > 0) await merchantToggleAvailability(o.id, false);
       await refreshOffers();
     } catch {
       toast.error(t("studio_stock_failed"));
@@ -419,7 +428,7 @@ function StudioPage() {
     if (rowBusyId) return;
     setRowBusyId(o.id);
     try {
-      await merchantToggleAvailability(o.id, !o.is_available);
+      await merchantToggleAvailability(o.id, !o.is_merchant_hidden);
       await refreshOffers();
     } catch {
       toast.error(t("studio_toggle_failed"));

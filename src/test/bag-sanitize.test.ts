@@ -5,7 +5,7 @@ describe("sanitizeBagItems", () => {
   it("يُسقط العناصر التالفة ويقيّد الكمية ويدمج المكرر", () => {
     const out = sanitizeBagItems([
       { offerId: "a", quantity: 3, options: { size: "M" }, price: 100 },
-      { offerId: "a", quantity: 9, options: {} },
+      { offerId: "a", quantity: 9, options: { size: "M" } },
       { offerId: "", quantity: 1 },
       { quantity: 2 },
       null,

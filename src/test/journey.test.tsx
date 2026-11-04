@@ -189,16 +189,34 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     await expectText("هوية متجرك تظهر للعملاء في صفحته");
   });
 
-  it("إتمام طلب كامل: سلة ← عنوان ← توصيل ← دفع ← تأكيد", async () => {
+  it("إتمام طلب كامل: كل السلة تنشأ في طلب رئيسي واحد", async () => {
     setSession({ id: "customer-1", email: "customer@test.dz" });
+    // نسختان من العرض نفسه بخيارات مختلفة يجب أن تبقيا منفصلتين داخل الطلب.
+    localStorage.setItem(
+      "sooqy:bag",
+      JSON.stringify([
+        {
+          offerId: "offer-1",
+          quantity: 1,
+          options: { color: "أسود", size: "M" },
+          price: 2500,
+          name: "حذاء رياضي",
+          productId: "prod-1",
+        },
+        {
+          offerId: "offer-1",
+          quantity: 1,
+          options: { color: "أبيض", size: "L" },
+          price: 2500,
+          name: "حذاء رياضي",
+          productId: "prod-1",
+        },
+      ]),
+    );
     const router = renderApp();
 
-    // نضيف منتجًا للسلة من صفحته
-    await go(router, "/products/$productId", { productId: "prod-1" });
-    fireEvent.click(await screen.findByRole("button", { name: /أضف للسلة/ }));
-
     await go(router, "/checkout");
-    await expectText("سلعك (1)");
+    await expectText("سلعك (2)");
 
     // الخطوة 1: العنوان والولاية
     fireEvent.click(screen.getByRole("button", { name: "متابعة" }));
@@ -232,7 +250,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     await expectText("تم إرسال طلبك إلى المتاجر");
     await expectText(/رمز التتبع/);
     await waitFor(() =>
-      expect(state.calls.some((c) => c.startsWith("rpc.create_order"))).toBe(true),
+      expect(state.calls.filter((c) => c === "rpc.create_order_with_delivery")).toHaveLength(1),
     );
     // السلة فُرشت بعد الطلب
     await go(router, "/bag");

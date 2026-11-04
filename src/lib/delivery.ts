@@ -148,6 +148,19 @@ export async function fetchShipmentById(id: string): Promise<Shipment | null> {
   return data;
 }
 
+/** Look up the optional carrier shipment for one merchant suborder. */
+export async function fetchShipmentByMerchantOrderId(
+  merchantOrderId: string,
+): Promise<Shipment | null> {
+  const { data, error } = await supabase
+    .from("shipments")
+    .select("*")
+    .eq("merchant_order_id", merchantOrderId)
+    .maybeSingle();
+  if (error) throw error;
+  return data;
+}
+
 /** جلب جميع شحنات الطلب؛ قد يحتوي الطلب الرئيسي على شحنة لكل متجر. */
 export async function fetchShipmentsByOrderId(orderId: string): Promise<Shipment[]> {
   const { data, error } = await supabase
