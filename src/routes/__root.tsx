@@ -32,6 +32,7 @@ import { isNativePlatform } from "@/lib/platform";
 import { parseNativeAuthCallback, parseNativeRouteLink } from "@/lib/native-deep-links";
 import { openExternalUrl, syncNativeStatusBar } from "@/lib/native-sharing";
 import { useTheme } from "@/lib/theme";
+import { NativePushNotifications } from "@/components/NativePushNotifications";
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -532,6 +533,7 @@ function RootComponent() {
       <ThemeProvider>
         <AuthProvider>
           <NativeRuntimeSync queryClient={queryClient} />
+          <NativePushNotifications />
           <NativeDeepLinkListener />
           <NativeBackButtonHandler />
           <UnsavedFormGuard />
