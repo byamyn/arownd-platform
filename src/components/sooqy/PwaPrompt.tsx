@@ -102,3 +102,120 @@ export function useServiceWorkerRegistration() {
     registerServiceWorker();
   }, []);
 }
+
+
+/** Android Google Play in-app updates. PWA update handling above remains web-only. */
+export function NativeAppUpdatePrompt() {
+  const [available, setAvailable] = useState(false);
+  const [downloading, setDownloading] = useState(false);
+  const [downloaded, setDownloaded] = useState(false);
+  const [progress, setProgress] = useState<number | null>(null);
+  const [busy, setBusy] = useState(false);
+
+  useEffect(() => {
+    if (!isNativePlatform() || !window.Capacitor || window.Capacitor.getPlatform?.() !== "android") return;
+
+    let disposed = false;
+    let listener: { remove: () => Promise<void> } | undefined;
+
+    void import("@capawesome/capacitor-app-update")
+      .then(async ({ AppUpdate, AppUpdateAvailability, FlexibleUpdateInstallStatus }) => {
+        if (disposed) return;
+        listener = await AppUpdate.addListener("onFlexibleUpdateStateChange", (state) => {
+          if (disposed) return;
+          if (state.installStatus === FlexibleUpdateInstallStatus.DOWNLOADING) {
+            setDownloading(true);
+            if (state.totalBytesToDownload && state.totalBytesToDownload > 0) {
+              setProgress(Math.min(100, Math.round((state.bytesDownloaded / state.totalBytesToDownload) * 100)));
+            }
+          } else if (state.installStatus === FlexibleUpdateInstallStatus.DOWNLOADED) {
+            setDownloading(false);
+            setDownloaded(true);
+            setProgress(100);
+          } else if (
+            state.installStatus === FlexibleUpdateInstallStatus.FAILED ||
+            state.installStatus === FlexibleUpdateInstallStatus.CANCELED
+          ) {
+            setDownloading(false);
+            setProgress(null);
+          }
+        });
+
+        try {
+          const info = await AppUpdate.getAppUpdateInfo();
+          if (!disposed && info.updateAvailability === AppUpdateAvailability.UPDATE_AVAILABLE) {
+            setAvailable(Boolean(info.flexibleUpdateAllowed || info.immediateUpdateAllowed));
+          }
+        } catch {
+          // Play Store installs only; sideloaded builds and unavailable Play services
+          // intentionally fall back silently without affecting app startup.
+        }
+      })
+      .catch((error: unknown) => {
+        console.warn("[native-update] Google Play update check unavailable", error);
+      });
+
+    return () => {
+      disposed = true;
+      if (listener) void listener.remove();
+    };
+  }, []);
+
+  if (!available && !downloaded) return null;
+
+  const startUpdate = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const { AppUpdate } = await import("@capawesome/capacitor-app-update");
+      await AppUpdate.startFlexibleUpdate();
+      setAvailable(false);
+      setDownloading(true);
+    } catch (error) {
+      console.warn("[native-update] Could not start flexible update", error);
+      // An update may only be offered by Play during an eligible install session.
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const finishUpdate = async () => {
+    if (busy) return;
+    setBusy(true);
+    try {
+      const { AppUpdate } = await import("@capawesome/capacitor-app-update");
+      await AppUpdate.completeFlexibleUpdate();
+    } catch (error) {
+      console.warn("[native-update] Could not complete flexible update", error);
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="pointer-events-none fixed inset-x-0 top-2 z-[60] flex justify-center px-4">
+      <div className="pointer-events-auto flex w-full max-w-md items-center gap-3 rounded-2xl border border-border bg-card/95 p-3 shadow-lg backdrop-blur">
+        <RefreshCw className="size-4 shrink-0 text-primary" />
+        <div className="min-w-0 flex-1">
+          <p className="text-xs font-bold text-foreground">
+            {downloaded ? "التحديث جاهز للتثبيت" : downloading ? "جارٍ تنزيل تحديث التطبيق" : "يتوفر تحديث جديد للتطبيق"}
+          </p>
+          {downloading && (
+            <p className="mt-1 text-[11px] text-muted-foreground">
+              {progress === null ? "يتم التنزيل في الخلفية…" : `اكتمل ${progress}%`}
+            </p>
+          )}
+        </div>
+        {downloaded ? (
+          <button type="button" disabled={busy} onClick={() => void finishUpdate()} className="min-h-10 rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground disabled:opacity-50">
+            إعادة التشغيل
+          </button>
+        ) : !downloading ? (
+          <button type="button" disabled={busy} onClick={() => void startUpdate()} className="min-h-10 rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground disabled:opacity-50">
+            تحديث
+          </button>
+        ) : null}
+      </div>
+    </div>
+  );
+}
