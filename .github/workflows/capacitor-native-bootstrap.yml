@@ -60,6 +60,7 @@ jobs:
           @capacitor/network@latest
           @capacitor/keyboard@latest
           @capacitor/preferences@latest
+          @capawesome/capacitor-app-update@8.1.1
 
       - name: Build Capacitor web assets (no APK)
         run: npm run build:capacitor
