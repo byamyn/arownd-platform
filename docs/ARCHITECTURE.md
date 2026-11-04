@@ -88,3 +88,30 @@ The Vercel configuration routes dynamic requests to the server entry and applies
 ## 8. Verification boundary
 
 This document is a map of repository structure, not a complete threat model or runtime certification. Confirm live Supabase configuration, Vercel project settings, deployed environment variables and native platform behavior independently.
+
+---
+
+## النسخة العربية | الملخص المعماري
+
+### الصورة العامة
+
+Arownd منصة تجارة واكتشاف محلي في الجزائر، وتخدم أربعة أدوار: المتسوق، التاجر، شركة التوصيل، وإدارة المنصة. وجود المسار أو الوحدة البرمجية لا يعني أن الميزة مفعّلة أو جاهزة للإنتاج؛ يجب التحقق من الواجهة والخادم وسياسات قاعدة البيانات معًا.
+
+### طبقات التشغيل
+
+- **Frontend:** React 19 وTypeScript مع TanStack Start وRouter، ويتم البناء عبر Vite 8.
+- **Server runtime:** وسيط TanStack Start في `src/start.ts`، ومعالجة الطلبات في `src/server.ts`، ونقطة Vercel في `api/index.ts`.
+- **Data layer:** Supabase وPostgreSQL، مع migrations ضمن `supabase/migrations/`.
+- **Native:** Capacitor مع مشروعي Android وiOS؛ وجود الملفات لا يثبت نجاح البناء أو اختبار الأجهزة.
+
+### ثوابت معمارية
+
+1. الصلاحيات تُفرض على الخادم وداخل RLS/RPC، لا بمجرد إخفاء عناصر الواجهة.
+2. الأسرار ذات الامتيازات لا تصل إلى المتصفح.
+3. الطلبات والحجوزات والمحفظة تحتاج معاملات ذرّية وعمليات idempotent.
+4. الهجرات المطبقة لا تُعدّل؛ يضاف migration جديد.
+5. الحفاظ على العربية وRTL ومفاتيح الترجمة.
+6. إعادة استخدام منطق العروض والسلة الموجود بدل تكراره.
+
+**حدود الوثيقة:** هذه خريطة للمستودع وليست تدقيقًا أمنيًا شاملًا أو شهادة جاهزية للإنتاج. يجب التحقق من إعدادات Supabase وVercel وسلوك تطبيقات الهاتف بشكل مستقل.
+
