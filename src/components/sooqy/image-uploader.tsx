@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { useTranslation } from "@/lib/i18n";
 import { shareLocalFile } from "@/lib/native-sharing";
+import { isNativePlatform } from "@/lib/platform";
 
 const MAX_FILES = 10;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -193,6 +194,35 @@ export function ImageUploader({
     }
   };
 
+  const handleNativeCamera = async () => {
+    if (!isNativePlatform() || isOverLimit) return;
+    try {
+      const { Camera, CameraResultType, CameraSource } = await import("@capacitor/camera");
+      const photo = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Prompt,
+      });
+      if (!photo.webPath) {
+        toast.error("تعذّر الوصول إلى الصورة المختارة.");
+        return;
+      }
+      const response = await fetch(photo.webPath);
+      if (!response.ok) throw new Error("Could not read the selected image");
+      const blob = await response.blob();
+      const extension = blob.type === "image/png" ? "png" : blob.type === "image/webp" ? "webp" : "jpg";
+      const file = new File([blob], `arownd-${Date.now()}.${extension}`, {
+        type: blob.type || "image/jpeg",
+      });
+      handleFiles([file] as unknown as FileList);
+    } catch (error) {
+      const message = error instanceof Error ? error.message.toLowerCase() : "";
+      if (message.includes("cancel") || message.includes("cancelled")) return;
+      toast.error("تعذّر فتح الكاميرا أو معرض الصور. تحقق من الأذونات ثم أعد المحاولة.");
+    }
+  };
+
   const isOverLimit = items.length >= maxFiles;
 
   const triggerFileInput = () => {
@@ -234,6 +264,19 @@ export function ImageUploader({
         <p className="text-xs text-muted-foreground">
           حتى {maxFiles} صورة · JPG, PNG, WEBP · حتى 10 ميغابايت للصورة
         </p>
+        {isNativePlatform() && (
+          <button
+            type="button"
+            disabled={isOverLimit}
+            onClick={(event) => {
+              event.stopPropagation();
+              void handleNativeCamera();
+            }}
+            className="mt-3 min-h-11 rounded-full border border-border bg-background px-4 text-sm font-bold text-foreground disabled:opacity-50"
+          >
+            فتح الكاميرا أو المعرض
+          </button>
+        )}
       </div>
 
       {/* معرض الصور المختارة */}
