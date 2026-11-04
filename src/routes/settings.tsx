@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Bell,
   FileText,
+  Fingerprint,
   Eye,
   EyeOff,
   Globe,
@@ -12,6 +13,7 @@ import {
   LogOut,
   Monitor,
   Moon,
+  RefreshCw,
   Shield,
   Sun,
   Trash2,
@@ -31,6 +33,9 @@ import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
 import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
+import { isAndroidNativePlatform } from "@/lib/platform";
+import { getNativeBiometricStatus, setNativeBiometricEnabled } from "@/lib/native-biometric";
+import { addNativeUpdateListener, checkNativeAppUpdate, completeNativeAppUpdate, startNativeAppUpdate } from "@/lib/native-app-update";
 
 export const Route = createFileRoute("/settings")({
   head: () => ({ meta: [{ title: "الإعدادات — Arownd" }] }),
@@ -68,6 +73,98 @@ function SettingsPage() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [savingPassword, setSavingPassword] = useState(false);
+  const [androidNative, setAndroidNative] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricBusy, setBiometricBusy] = useState(false);
+  const [nativeUpdateBusy, setNativeUpdateBusy] = useState(false);
+  const [nativeUpdateDownloaded, setNativeUpdateDownloaded] = useState(false);
+
+  useEffect(() => {
+    if (!isAndroidNativePlatform()) return;
+    setAndroidNative(true);
+    let disposed = false;
+    let removeUpdateListener: (() => Promise<void>) | undefined;
+
+    void getNativeBiometricStatus()
+      .then((status) => {
+        if (disposed) return;
+        setBiometricAvailable(status.available);
+        setBiometricEnabled(status.enabled);
+      })
+      .catch((error: unknown) => console.warn("[native] Could not read biometric settings", error));
+
+    void addNativeUpdateListener((state) => {
+      if (!disposed && state.downloaded) setNativeUpdateDownloaded(true);
+    })
+      .then((listener) => {
+        if (disposed) void listener.remove();
+        else removeUpdateListener = () => listener.remove();
+      })
+      .catch((error: unknown) => console.warn("[native] Could not subscribe to update state", error));
+
+    return () => {
+      disposed = true;
+      removeUpdateListener?.();
+    };
+  }, []);
+
+  const toggleNativeBiometric = async () => {
+    if (biometricBusy || (!biometricAvailable && !biometricEnabled)) return;
+    setBiometricBusy(true);
+    try {
+      await setNativeBiometricEnabled(!biometricEnabled);
+      const status = await getNativeBiometricStatus();
+      setBiometricAvailable(status.available);
+      setBiometricEnabled(status.enabled);
+      showSuccess(status.enabled
+        ? "تم تفعيل قفل Arownd بالبصمة أو التعرّف على الوجه."
+        : "تم إيقاف قفل التطبيق بالبصمة.");
+    } catch (error) {
+      showError(error);
+    } finally {
+      setBiometricBusy(false);
+    }
+  };
+
+  const checkAndInstallNativeUpdate = async () => {
+    if (nativeUpdateBusy) return;
+    setNativeUpdateBusy(true);
+    try {
+      const status = await checkNativeAppUpdate();
+      if (status.downloaded) {
+        setNativeUpdateDownloaded(true);
+        await completeNativeAppUpdate();
+        return;
+      }
+      if (!status.available) {
+        showSuccess("لا يوجد تحديث جديد متاح عبر Google Play حاليًا.");
+        return;
+      }
+
+      const updateType =
+        status.priority >= 4 && status.immediateAllowed
+          ? "immediate"
+          : status.flexibleAllowed
+            ? "flexible"
+            : status.immediateAllowed
+              ? "immediate"
+              : null;
+      if (!updateType) {
+        toast.error("التحديث متاح، لكن Google Play لا يسمح ببدء طريقة التحديث على هذا الجهاز.");
+        return;
+      }
+      await startNativeAppUpdate(updateType);
+      showSuccess(updateType === "immediate"
+        ? "بدأ إجراء التحديث الفوري من Google Play."
+        : "بدأ تنزيل التحديث في الخلفية. سيظهر خيار التثبيت عند اكتماله.");
+    } catch (error) {
+      console.warn("[native] In-app update check failed", error);
+      toast.error("تعذر التحقق من التحديث. تأكد من تثبيت التطبيق من Google Play ووجود إصدار أحدث في مسار التوزيع.");
+    } finally {
+      setNativeUpdateBusy(false);
+    }
+  };
 
   const themeLabel = theme === "system" ? "نظام" : theme === "dark" ? "داكن" : "فاتح";
 
@@ -218,6 +315,49 @@ function SettingsPage() {
           />
         </MenuCard>
       </section>
+
+      {androidNative && (
+        <section className="space-y-2">
+          <SectionTitle>حماية وتحديث Android</SectionTitle>
+          <MenuCard>
+            <div className="flex items-center justify-between gap-3 p-4">
+              <div className="min-w-0">
+                <p className="font-bold text-foreground">قفل التطبيق بالبصمة</p>
+                <p className="mt-1 text-sm text-muted-foreground">
+                  {biometricAvailable
+                    ? biometricEnabled ? "يتطلب التحقق عند فتح التطبيق والعودة إليه" : "متاح على هذا الجهاز"
+                    : "ميزة البصمة غير متاحة أو لم تُعدّ على هذا الجهاز"}
+                </p>
+                <p className="mt-1 text-xs text-muted-foreground">
+                  قفل محلي للجهاز، ولا يحل محل كلمة مرور حسابك.
+                </p>
+              </div>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={biometricEnabled}
+                onClick={() => void toggleNativeBiometric()}
+                disabled={biometricBusy || (!biometricAvailable && !biometricEnabled)}
+                className={cn(
+                  "min-h-11 shrink-0 rounded-full px-4 text-sm font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50",
+                  biometricEnabled ? "bg-primary text-accent-ink-foreground" : "border border-border text-foreground",
+                )}
+              >
+                {biometricBusy ? "جارٍ الحفظ..." : biometricEnabled ? "مفعّل" : "تفعيل"}
+              </button>
+            </div>
+            <MenuRow
+              icon={RefreshCw}
+              label={nativeUpdateDownloaded ? "تثبيت التحديث الذي تم تنزيله" : "التحقق من تحديث التطبيق"}
+              hint={nativeUpdateDownloaded ? "اكتمل التنزيل" : "عبر Google Play"}
+              onClick={() => void checkAndInstallNativeUpdate()}
+            />
+          </MenuCard>
+          <p className="px-1 text-xs leading-5 text-muted-foreground">
+            تحديثات Android داخل التطبيق تتطلب تثبيت Arownd من Google Play ونشر إصدار أحدث على مسار توزيع مناسب.
+          </p>
+        </section>
+      )}
 
       {/* مجموعة: تفضيلات التطبيق */}
       <section className="space-y-2">

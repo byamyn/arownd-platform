@@ -33,6 +33,7 @@ import { parseNativeAuthCallback, parseNativeRouteLink } from "@/lib/native-deep
 import { openExternalUrl, syncNativeStatusBar } from "@/lib/native-sharing";
 import { useTheme } from "@/lib/theme";
 import { NativePushNotifications } from "@/components/NativePushNotifications";
+import { NativeBiometricGate } from "@/components/NativeBiometricGate";
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -579,6 +580,7 @@ function RootComponent() {
       <ThemeProvider>
         <AuthProvider>
           <NativeRuntimeSync queryClient={queryClient} />
+          <NativeBiometricGate />
           <NativeKeyboardSync />
           <NativePushNotifications />
           <NativeDeepLinkListener />

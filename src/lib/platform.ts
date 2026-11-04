@@ -31,3 +31,11 @@ export function isNativePlatform(): boolean {
       runtime.Capacitor?.getPlatform?.() === "ios")
   );
 }
+
+
+/** True only inside the native Android runtime (never iOS or a regular browser). */
+export function isAndroidNativePlatform(): boolean {
+  if (typeof window === "undefined") return false;
+  const runtime = window as CapacitorWindow;
+  return runtime.Capacitor?.getPlatform?.() === "android" && isNativePlatform();
+}
