@@ -88,7 +88,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   head: () => ({
     meta: [
       { charSet: "utf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { name: "viewport", content: "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" },
       { name: "apple-mobile-web-app-capable", content: "yes" },
       { title: translate("root_title") },
       {
@@ -147,7 +147,7 @@ function RootShell({ children }: { children: ReactNode }) {
   return (
     <html lang={lang} dir={dir} suppressHydrationWarning>
       <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
         <HeadContent />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -338,12 +338,13 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
   const startX = useRef<number | null>(null);
   const distanceRef = useRef(0);
   const active = useRef(false);
+  const refreshInFlight = useRef(false);
   const threshold = 84;
 
   useEffect(() => {
     let disposed = false;
     const onStart = (event: TouchEvent) => {
-      if (refreshing || event.touches.length !== 1) return;
+      if (refreshInFlight.current || event.touches.length !== 1) return;
       const target = event.target;
       if (target instanceof Element) {
         if (target.closest("input, textarea, select, [contenteditable='true'], [data-no-pull-refresh]")) return;
@@ -360,7 +361,7 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
       active.current = startY.current !== null && startX.current !== null;
     };
     const onMove = (event: TouchEvent) => {
-      if (!active.current || startY.current === null || refreshing || event.touches.length !== 1) return;
+      if (!active.current || startY.current === null || refreshInFlight.current || event.touches.length !== 1) return;
       const touch = event.touches[0];
       const delta = (touch?.clientY ?? startY.current) - startY.current;
       const horizontalDelta = Math.abs((touch?.clientX ?? startX.current ?? 0) - (startX.current ?? 0));
@@ -378,11 +379,15 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
       if (!active.current) return;
       const shouldRefresh = distanceRef.current >= threshold * 0.72;
       reset();
-      if (!shouldRefresh || refreshing) return;
+      if (!shouldRefresh || refreshInFlight.current) return;
+      refreshInFlight.current = true;
       setRefreshing(true);
       void queryClient.invalidateQueries({ refetchType: "active" })
         .catch((error: unknown) => console.warn("[refresh] Could not refresh active queries", error))
-        .finally(() => { if (!disposed) setRefreshing(false); });
+        .finally(() => {
+          refreshInFlight.current = false;
+          if (!disposed) setRefreshing(false);
+        });
     };
     document.addEventListener("touchstart", onStart, { passive: true });
     document.addEventListener("touchmove", onMove, { passive: true });
@@ -395,7 +400,7 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
       document.removeEventListener("touchend", onEnd);
       document.removeEventListener("touchcancel", reset);
     };
-  }, [queryClient, refreshing]);
+  }, [queryClient]);
 
   if (pullDistance === 0 && !refreshing) return null;
   return (
