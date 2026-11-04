@@ -132,7 +132,6 @@ export async function shareLocalFile(file: File): Promise<boolean> {
   return false;
 }
 
-
 /** Fetches a public product image and shares it as an actual file. */
 export async function shareRemoteImage(value: string, fileName = "arownd-image.jpg"): Promise<boolean> {
   const url = safeHttpUrl(value);
@@ -156,7 +155,9 @@ export async function shareRemoteImage(value: string, fileName = "arownd-image.j
     throw new Error("Streaming image downloads are not supported");
   }
 
-  const chunks: Uint8Array[] = [];
+  // Copy each chunk into an owned ArrayBuffer. This avoids passing a
+  // potentially SharedArrayBuffer-backed view to BlobPart on newer TS libs.
+  const chunks: ArrayBuffer[] = [];
   let received = 0;
   try {
     while (true) {
@@ -167,7 +168,9 @@ export async function shareRemoteImage(value: string, fileName = "arownd-image.j
         await reader.cancel();
         throw new Error("The image is larger than 15 MB");
       }
-      chunks.push(value);
+      const chunk = new Uint8Array(value.byteLength);
+      chunk.set(value);
+      chunks.push(chunk.buffer);
     }
   } catch (error) {
     await reader.cancel().catch(() => undefined);
