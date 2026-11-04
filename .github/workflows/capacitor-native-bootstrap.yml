@@ -51,6 +51,16 @@ jobs:
       - name: Install dependencies
         run: npm ci --no-audit --no-fund
 
+      - name: Install official Capacitor 8 native plugins
+        run: >-
+          npm install --save-exact
+          @capacitor/geolocation@latest-8
+          @capacitor/camera@latest-8
+          @capacitor/haptics@latest-8
+          @capacitor/network@latest-8
+          @capacitor/keyboard@latest-8
+          @capacitor/preferences@latest-8
+
       - name: TypeScript
         run: npx tsc --noEmit
 
@@ -100,7 +110,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package-lock.json android
+          git add package.json package-lock.json android
           if git diff --cached --quiet; then
             echo "No generated Android changes."
             exit 0
