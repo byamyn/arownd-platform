@@ -38,3 +38,26 @@ The referenced implementation path was src/components/sooqy/map-style-versatiles
 ## Decision record
 
 Treat this as a prototype reference only. A production decision requires current source-code inspection, provider review, load testing, and explicit approval. Never infer building heights or geographic detail that is not present in source data.
+
+---
+
+## النسخة العربية | نموذج خرائط VersaTiles
+
+### النطاق
+
+تسجل هذه الوثيقة نموذجًا تجريبيًا يستخدم MapLibre وبيانات VersaTiles OpenStreetMap Shortbread. وجود النموذج لا يعني أنه مستخدم في الإنتاج أو أن مزود البلاطات مناسب لحركة إنتاجية.
+
+### عناصر النموذج
+
+- نمط Shortbread مع بديل OSM raster.
+- إظهار الأسماء المحلية العربية عند توفرها في البيانات.
+- تجميع المتاجر باستخدام GeoJSON عند مستويات التكبير البعيدة.
+- إظهار المباني ثلاثية الأبعاد فقط عند توفر ارتفاع موثق.
+- إمكانية استخدام Terrarium elevation للارتفاعات.
+
+### قبل اعتماد الإنتاج
+
+تحقق من المسار البرمجي النشط، وTileJSON، والتغطية في المدن الجزائرية المستهدفة، وشروط الإسناد والترخيص، وحدود CORS والتخزين المؤقت ومعدلات الطلبات. اختبر الأداء على الهواتف المتوسطة والمنخفضة.
+
+**القرار الحالي:** مرجع تجريبي فقط. لا تعتمد خدمة عامة تجريبية كاعتماد إنتاجي دون تقييم الاستقرار والتكلفة وشروط الاستخدام.
+
