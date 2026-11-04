@@ -90,12 +90,8 @@ public class ArowndSecureStoragePlugin extends Plugin {
             }
         }
         JSObject result = new JSObject();
-        try {
-            result.put("value", value == null ? org.json.JSONObject.NULL : value);
-            call.resolve(result);
-        } catch (org.json.JSONException error) {
-            call.reject("Could not read secure storage", error);
-        }
+        result.put("value", value == null ? org.json.JSONObject.NULL : value);
+        call.resolve(result);
     }
 
     @PluginMethod
