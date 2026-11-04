@@ -7,10 +7,9 @@ android {
         applicationId "com.arownd.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        // Use Groovy property assignment so Gradle does not resolve this as a
-        // dynamic method call while configuring defaultConfig.
+        // First public release. CI overrides these values for subsequent releases.
         versionCode = (project.findProperty("versionCodeOverride") ?: "1").toString().toInteger()
-        versionName = (project.findProperty("versionNameOverride") ?: "1.0").toString()
+        versionName = (project.findProperty("versionNameOverride") ?: "1.0.0").toString()
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
