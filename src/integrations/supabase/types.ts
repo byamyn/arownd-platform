@@ -1078,6 +1078,7 @@ export type Database = {
           _items: Json;
           _payment_method: string;
           _phone: string;
+          _idempotency_key: string;
           _receipt_url?: string | null;
           _wilaya_id: number;
         };
