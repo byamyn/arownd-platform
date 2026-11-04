@@ -7,7 +7,7 @@ export default defineConfig({
   test: {
     environment: "jsdom",
     // jsdom defaults to an opaque about:blank origin, where localStorage is unavailable.
-    // Set an explicit origin so browser storage behaves consistently under Node 26.
+    // Set an explicit origin so browser storage behaves consistently under Node 22.
     environmentOptions: {
       jsdom: {
         url: "http://localhost",
