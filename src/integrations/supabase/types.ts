@@ -1026,6 +1026,14 @@ export type Database = {
       };
     };
     Functions: {
+      register_my_push_device: {
+        Args: { _platform: string; _token: string };
+        Returns: undefined;
+      };
+      unregister_my_push_device: {
+        Args: { _token: string };
+        Returns: undefined;
+      };
       request_account_deletion: {
         Args: Record<PropertyKey, never>;
         Returns: string;
