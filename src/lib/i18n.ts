@@ -779,7 +779,14 @@ export function ogLocale(): "ar_DZ" | "en_DZ" {
 }
 
 export function useTranslation() {
-  const [lang, setLang] = useState<Lang>(() => getSavedLang());
+  // Keep the first client render identical to SSR. Restore the user preference
+  // only after hydration so localStorage / navigator cannot change the HTML tree.
+  const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
+
+  useEffect(() => {
+    const savedLang = getSavedLang();
+    if (savedLang !== lang) setLang(savedLang);
+  }, []);
 
   useEffect(() => {
     saveLang(lang);
