@@ -137,6 +137,11 @@ npm run build
 
 | الوثيقة | الغرض |
 |---|---|
+| [Architecture](./docs/ARCHITECTURE.md) | خريطة معمارية التطبيق وحدود التشغيل |
+| [Database](./docs/DATABASE.md) | إجراءات Supabase وRLS وRPC والهجرات |
+| [Security](./docs/SECURITY.md) | ضوابط الأمان ومراجعة الإطلاق |
+| [Development](./docs/DEVELOPMENT.md) | إعداد بيئة التطوير والفحوصات |
+| [Release](./docs/RELEASE.md) | قائمة جاهزية الإطلاق التجريبي |
 | [UI System](./docs/UI_SYSTEM.md) | الهوية البصرية وقواعد الواجهة |
 | [Account deletion policy](./docs/account-deletion-and-retention-policy.md) | خط أساس لسياسة الحذف والاحتفاظ؛ يتطلب مراجعة قانونية |
 | [Account deletion audit](./docs/account-deletion-audit.md) | ملاحظات فنية تاريخية يجب إعادة التحقق منها |
