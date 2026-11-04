@@ -784,8 +784,7 @@ export function useTranslation() {
   const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
 
   useEffect(() => {
-    const savedLang = getSavedLang();
-    if (savedLang !== lang) setLang(savedLang);
+    setLang(getSavedLang());
   }, []);
 
   useEffect(() => {
