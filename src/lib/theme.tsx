@@ -52,10 +52,18 @@ function readStoredTheme(): Theme {
 }
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>(readStoredTheme);
-  const [resolved, setResolved] = useState<Resolved>(() => resolve(theme));
+  // Use the same theme context for SSR and the first client render.
+  // Stored preferences are restored after hydration to avoid React #418.
+  const [theme, setThemeState] = useState<Theme>("system");
+  const [resolved, setResolved] = useState<Resolved>("dark");
 
   useEffect(() => {
+    const storedTheme = readStoredTheme();
+    if (storedTheme !== theme) {
+      setThemeState(storedTheme);
+      return;
+    }
+
     const update = () => {
       const next = resolve(theme);
       setResolved(next);
