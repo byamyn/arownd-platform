@@ -1,31 +1,38 @@
-# Account deletion implementation notes
+# Arownd — Account deletion technical audit
 
-## Current application behavior
+> **Project:** Arownd  
+> **Owner:** byamyn  
+> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)  
+> **Status:** Historical technical findings; revalidate against current migrations and live schema before implementation.
 
-The Settings screen currently opens a prefilled email request. It does not delete the authenticated account or its associated data, and it is not by itself a complete in-app plus external web deletion flow.
+## Purpose
 
-## Database dependency audit
+This document records database and product risks identified during an earlier read-only review. It is not proof that the same schema or UI behavior remains unchanged on the current deployment.
 
-A read-only inspection of the live Supabase foreign-key graph found deletion blockers that make a direct Auth user deletion unsafe to implement as a one-line Admin API call:
+## Previously identified database dependencies
 
-- `public.merchant_order_cod_collections.collected_by` references `auth.users.id` with `ON DELETE RESTRICT`.
-- `public.stores.owner_id` cascades from the user, but `public.merchant_orders.store_id` references stores with `ON DELETE RESTRICT`. A merchant account with merchant orders can therefore prevent its store (and user) from being deleted.
-- `public.merchant_order_cod_collections.merchant_order_id` and `order_id` both use `ON DELETE RESTRICT`, so collection records can prevent deletion of related merchant orders or customer orders.
-- Other account-linked records such as profiles, reviews, reservations, notifications, push tokens, and wallet transactions currently have cascading user references. Products created by the user use `ON DELETE SET NULL`.
+The earlier inspection reported these deletion blockers:
 
-## Required product and legal decisions before implementation
+- public.merchant_order_cod_collections.collected_by referenced auth.users.id with ON DELETE RESTRICT.
+- public.stores.owner_id cascaded from the user, while public.merchant_orders.store_id used ON DELETE RESTRICT.
+- public.merchant_order_cod_collections.merchant_order_id and order_id used restrictive references.
+- Other account-linked records included profiles, reviews, reservations, notifications, push tokens, wallet transactions, and products with differing delete behaviors.
 
-1. Define which transaction, collection, tax, fraud, and dispute records must be retained under applicable law and for how long.
-2. Decide how to anonymize personal identifiers in retained orders and collection records without corrupting audit history.
-3. Define what happens when a merchant has open orders, reservations, shipments, or COD collections. The system must not silently delete or orphan active transactions.
-4. Make the `collected_by` reference nullable or replace it with a non-identifying audit actor where appropriate, while preserving the collection record.
-5. Design a verified deletion-request flow that works both inside the app and from a public web page, with request status, completion tracking, and a documented retention exception.
-6. Test deletion using separate customer, merchant, and delivery-company accounts in a non-production environment before enabling it in production.
+These observations must be checked against the latest migrations and the actual Supabase schema before acting.
 
-## Safety rule
+## Required decisions
 
-Do not deploy an Edge Function that immediately calls `auth.admin.deleteUser` until the retention and foreign-key blockers above have been addressed. A failed delete or an over-broad cascade could damage order and accounting history.
+1. Define transaction, tax, accounting, fraud, and dispute records that must be retained, with legal review.
+2. Define how personal identifiers may be anonymized without corrupting transaction and audit history.
+3. Block final deletion while active orders, reservations, shipments, collections, or unsettled obligations remain unresolved.
+4. Preserve financial and operational history; do not use broad cascades to make account deletion succeed.
+5. Provide a verified request flow with status tracking and documented retention exceptions.
+6. Test customer, merchant, and delivery-company deletion cases in a non-production environment.
+
+## Safety boundary
+
+Do not call an administrative Auth deletion operation until the current foreign-key graph, retention obligations, ownership transfers, and anonymization behavior have been reviewed. Never expose service-role credentials to the client.
 
 ## Verification boundary
 
-The schema inspection was read-only. No production migration, user deletion, or other data mutation was performed as part of this audit.
+The original inspection was described as read-only. This document does not claim that the current production database has been re-inspected or modified.
