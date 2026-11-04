@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useState } from "react";
 import { formatMoney, getMarket, zonedParts } from "./market";
 
 export type LatLng = { lat: number; lng: number };
@@ -217,12 +217,6 @@ export function useGeo() {
       if (!ok) return { pos: null, reason: "denied" };
     }
     return request();
-  }, [request]);
-
-  useEffect(() => {
-    if (geoAskedBefore()) return;
-    markGeoAsked();
-    void request();
   }, [request]);
 
   return { pos, denied, locating, reason, request, ask };
