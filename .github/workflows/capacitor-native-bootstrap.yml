@@ -61,12 +61,15 @@ jobs:
           @capacitor/keyboard@latest
           @capacitor/preferences@latest
 
-      - name: Commit generated Android project if needed
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
+      - name: Sync Capacitor plugins into Android project
+        run: npx cap sync android
+
+      - name: Commit native dependency changes if needed
+        if: ${{ success() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add package.json package-lock.json
+          git add package.json package-lock.json android
           if git diff --cached --quiet; then
             echo "No generated Android changes."
             exit 0
