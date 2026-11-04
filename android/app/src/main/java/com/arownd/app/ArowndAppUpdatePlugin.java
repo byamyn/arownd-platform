@@ -1,6 +1,5 @@
 package com.arownd.app;
 
-import android.content.IntentSender;
 
 import com.getcapacitor.JSObject;
 import com.getcapacitor.Plugin;
@@ -78,21 +77,15 @@ public class ArowndAppUpdatePlugin extends Plugin {
                 call.reject("Google Play does not allow the requested update type");
                 return;
             }
-            try {
-                boolean started = updateManager.startUpdateFlowForResult(
-                    info, getActivity(), options, UPDATE_REQUEST_CODE
-                );
-                if (!started) {
-                    call.reject("Google Play did not start the update flow");
-                    return;
-                }
-                JSObject response = new JSObject();
-                response.put("started", true);
-                response.put("type", selectedUpdateType == AppUpdateType.IMMEDIATE ? "immediate" : "flexible");
-                call.resolve(response);
-            } catch (IntentSender.SendIntentException error) {
-                call.reject("Could not launch the Google Play update flow", error);
-            }
+            updateManager.startUpdateFlow(info, getActivity(), options)
+                .addOnSuccessListener(resultCode -> {
+                    JSObject response = new JSObject();
+                    response.put("started", true);
+                    response.put("accepted", resultCode == android.app.Activity.RESULT_OK);
+                    response.put("type", selectedUpdateType == AppUpdateType.IMMEDIATE ? "immediate" : "flexible");
+                    call.resolve(response);
+                })
+                .addOnFailureListener(error -> call.reject("Could not launch the Google Play update flow", error));
         }).addOnFailureListener(error -> call.reject("Could not prepare the Google Play update", error));
     }
 
