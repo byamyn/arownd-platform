@@ -35,11 +35,12 @@ export function NativePushNotifications() {
 
         // The server sends this channel ID in FCM messages.
         await PushNotifications.createChannel({
-          id: "arownd_updates",
+          id: "arownd_updates_v2",
           name: "تحديثات Arownd",
-          description: "إشعارات الطلبات والحجوزات وتحديثات الحساب",
+          description: "إشعارات الطلبات والرسائل وتحديثات الحساب من Arownd",
           importance: 4,
           vibration: true,
+          sound: "arownd_notification",
         }).catch((error: unknown) => {
           console.warn("[push] Could not create Android notification channel", error);
         });

@@ -213,7 +213,11 @@ Deno.serve(async (req: Request) => {
                 data,
                 android: {
                   priority: "high",
-                  notification: { channel_id: "arownd_updates" },
+                  notification: {
+                    channel_id: "arownd_updates_v2",
+                    icon: "ic_stat_arownd",
+                    sound: "arownd_notification",
+                  },
                 },
               },
             }),
