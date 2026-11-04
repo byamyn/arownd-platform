@@ -162,3 +162,58 @@ npm run build
 ---
 
 **Arownd — Built with purpose.**
+
+---
+
+## English — Project overview
+
+### Discover What's Around You
+
+**Arownd** is an Algeria-focused local commerce and discovery platform connecting shoppers, merchants, and delivery companies through one experience.
+
+**Platform roles**
+- **Shoppers** discover nearby stores, compare products and offers, manage their bag, and follow orders.
+- **Merchants** manage stores, products, offers, inventory, and incoming orders.
+- **Delivery partners** manage company profiles, service coverage, assigned shipments, and delivery progress.
+- **Platform administrators** oversee trusted operational and moderation workflows.
+
+### Technology baseline
+
+| Layer | Standard |
+|---|---|
+| Application | React 19, TypeScript 5.8, TanStack Start and Router |
+| Build and styling | Vite 8, Tailwind CSS 4, Radix UI, Lucide |
+| Data and validation | TanStack Query, React Hook Form, Zod |
+| Backend | Supabase Auth, PostgreSQL, RLS, Storage, Realtime |
+| Maps and charts | MapLibre, Leaflet, Recharts |
+| Quality and hosting | Vitest, Sentry, Vercel |
+| Runtime | Node.js 26.x |
+
+### Engineering principles
+
+- Arabic-first, RTL-first product experience with translation-key parity.
+- Enforce authorization in trusted server code and PostgreSQL RLS; never rely on UI visibility.
+- Keep privileged credentials server-side.
+- Use atomic, idempotent server operations for orders, reservations, and wallet movements.
+- Treat database migrations as append-only.
+- Preserve compatibility identifiers and existing domain services.
+- Document verified facts separately from assumptions and pending checks.
+
+### Documentation map
+
+Start with [Architecture](./docs/ARCHITECTURE.md), then review [Development](./docs/DEVELOPMENT.md), [Database](./docs/DATABASE.md), [Security](./docs/SECURITY.md), and [Release](./docs/RELEASE.md). Product UI standards live in [UI System](./docs/UI_SYSTEM.md).
+
+### Quality gates
+
+```bash
+npx tsc --noEmit
+npm run lint
+npm run ui:check
+npm test
+npm run build
+```
+
+A passing local check is not a substitute for production-like workflow, authorization, native-device, and recovery testing.
+
+**Arownd — Built with purpose.**
+
