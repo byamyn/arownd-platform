@@ -7,6 +7,13 @@ export type NativeAuthCallback = {
   redirect?: string;
 };
 
+function hasControlCharacters(value: string): boolean {
+  return Array.from(value).some((character) => {
+    const code = character.charCodeAt(0);
+    return code < 0x20 || code === 0x7f;
+  });
+}
+
 function safeRelativePath(value: string | null): string | undefined {
   if (
     !value ||
@@ -15,7 +22,7 @@ function safeRelativePath(value: string | null): string | undefined {
     value.startsWith("/\\") ||
     value.includes("\\") ||
     /%(?:2f|5c|00)/i.test(value) ||
-    /[\\u0000-\\u001f\\u007f]/.test(value)
+    hasControlCharacters(value)
   ) {
     return undefined;
   }
@@ -71,7 +78,7 @@ export function parseNativeRouteLink(rawUrl: string): string | null {
       url.pathname.startsWith("//") ||
       url.pathname.includes("\\") ||
       /%(?:2f|5c|00)/i.test(url.pathname) ||
-      /[\\u0000-\\u001f\\u007f]/.test(url.pathname) ||
+      hasControlCharacters(url.pathname) ||
       url.pathname.length > 1024
     ) {
       return null;
