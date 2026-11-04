@@ -1249,14 +1249,7 @@ function StudioPage() {
                         {t("studio_quote_pending_customer")}
                       </p>
                     )}
-                    {item.merchant_order.status === "confirmed" &&
-                      item.order.delivery_type === "home" && (
-                        <p className="w-full rounded-[var(--radius-control)] bg-primary-soft p-2 text-xs leading-relaxed text-muted-foreground">
-                          {t("studio_order_approved_wait_delivery")}
-                        </p>
-                      )}
-                    {item.merchant_order.status === "confirmed" &&
-                      item.order.delivery_type === "desk" && (
+                    {item.merchant_order.status === "confirmed" && (
                         <button
                           type="button"
                           disabled={busyOrder === item.merchant_order.id}
