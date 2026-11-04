@@ -769,19 +769,27 @@ export function t(key: string, lang: Lang, values?: TranslateValues): string {
  * ترجمة خارج مكوّن React — تُستخدم في `head` (وسوم الميتا) حيث لا تتوفر Hooks.
  * على الخادم تعيد العربية (السوق الافتراضي)؛ في المتصفح تتبع اللغة المحفوظة.
  */
+function getRenderLang(): Lang {
+  if (typeof document !== "undefined") {
+    const rendered = document.documentElement.lang;
+    if (rendered === "ar" || rendered === "en") return rendered;
+  }
+  return getSavedLang();
+}
+
 export function translate(key: string, values?: TranslateValues): string {
-  return t(key, getSavedLang(), values);
+  return t(key, getRenderLang(), values);
 }
 
 /** لغة Open Graph حسب اللغة النشطة (`ar_DZ` / `en_DZ`). */
 export function ogLocale(): "ar_DZ" | "en_DZ" {
-  return getSavedLang() === "en" ? "en_DZ" : "ar_DZ";
+  return getRenderLang() === "en" ? "en_DZ" : "ar_DZ";
 }
 
 export function useTranslation() {
-  // Keep the first client render identical to SSR. Restore the user preference
-  // only after hydration so localStorage / navigator cannot change the HTML tree.
-  const [lang, setLang] = useState<Lang>(DEFAULT_LANG);
+  // Reuse the server-rendered document language on the first client render.
+  // Restore local preferences only after hydration to prevent HTML divergence.
+  const [lang, setLang] = useState<Lang>(() => getRenderLang());
 
   useEffect(() => {
     setLang(getSavedLang());
