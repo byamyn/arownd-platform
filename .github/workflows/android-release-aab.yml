@@ -79,7 +79,10 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: ./gradlew bundleRelease --no-daemon -PversionCodeOverride=${{ github.run_number }}
+        run: |
+          ./gradlew bundleRelease --no-daemon \
+            -PversionCodeOverride=${{ github.run_number }} \
+            -PversionNameOverride="${{ github.ref_type == 'tag' && github.ref_name || format('1.0.{0}', github.run_number) }}"
 
       - name: Build signed release APK
         working-directory: android
@@ -87,7 +90,10 @@ jobs:
           ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
           ANDROID_KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
           ANDROID_KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
-        run: ./gradlew assembleRelease --no-daemon -PversionCodeOverride=${{ github.run_number }}
+        run: |
+          ./gradlew assembleRelease --no-daemon \
+            -PversionCodeOverride=${{ github.run_number }} \
+            -PversionNameOverride="${{ github.ref_type == 'tag' && github.ref_name || format('1.0.{0}', github.run_number) }}"
 
       - name: Upload signed AAB artifact
         uses: actions/upload-artifact@v4
