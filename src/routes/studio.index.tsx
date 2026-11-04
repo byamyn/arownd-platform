@@ -1062,6 +1062,8 @@ function StudioPage() {
 
       {mode === "orders" && (
         <section className="space-y-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
+            <h2 className="mb-3 font-bold">{t("studio_reservations")}</h2>
             <div className="space-y-2">
               {reservations.data?.map((r) => (
                 <div key={r.id} className="rounded-[var(--radius-card)] bg-background p-3">
