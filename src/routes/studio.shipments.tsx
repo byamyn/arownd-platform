@@ -258,7 +258,7 @@ function ShipmentRow({
       <div className="flex gap-2">
         {order?.id && (
           <Link
-            to="/orders/$orderId"
+            to="/studio/orders/$orderId"
             params={{ orderId: order.id }}
             className="flex min-h-[var(--control-height-compact)] flex-1 items-center justify-center rounded-[var(--radius-control)] bg-primary px-3 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
           >
