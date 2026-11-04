@@ -15,6 +15,16 @@ create index if not exists checkout_idempotency_created_at_idx
 alter table public.checkout_idempotency enable row level security;
 revoke all on table public.checkout_idempotency from public, anon, authenticated;
 
+-- Avoid PostgREST overload ambiguity: retain the previous implementation
+-- under a non-API name and expose one keyed checkout RPC.
+alter function public.create_order_with_delivery(
+  jsonb, text, integer, text, text, text, text, text, text, uuid
+) rename to create_order_with_delivery_unkeyed;
+
+revoke all on function public.create_order_with_delivery_unkeyed(
+  jsonb, text, integer, text, text, text, text, text, text, uuid
+) from public, anon, authenticated;
+
 create or replace function public.create_order_with_delivery(
   _items jsonb,
   _delivery_type text,
@@ -80,7 +90,7 @@ begin
     return previous_order_id;
   end if;
 
-  created_order_id := public.create_order_with_delivery(
+  created_order_id := public.create_order_with_delivery_unkeyed(
     _items, _delivery_type, _wilaya_id, _commune, _address_line,
     _full_name, _phone, _payment_method, _receipt_url, _delivery_company_id
   );
@@ -102,6 +112,3 @@ grant execute on function public.create_order_with_delivery(
   jsonb, text, integer, text, text, text, text, text, text, uuid, uuid
 ) to authenticated;
 
--- Expire old idempotency keys after 90 days without affecting order history.
-delete from public.checkout_idempotency
-where created_at < now() - interval '90 days';
