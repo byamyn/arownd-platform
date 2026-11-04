@@ -42,7 +42,7 @@
 | الاستضافة | Vercel |
 | تطبيقات الهاتف | Capacitor |
 
-إصدارات الأدوات الفعلية تُحسم من package.json وpackage-lock.json. يوجد اختلاف بين إصدار Node المحدد في package.json ومعيار Node 22 المعتمد في خطة المشروع؛ يجب حسم هذا التعارض قبل توحيد بيئات التطوير والنشر.
+**إصدار Node.js المعتمد للمشروع هو 26.x.** يجب استخدامه محليًا وفي CI وبيئة بناء Vercel. المصدر المرجعي هو `package.json`، مع مطابقة إعدادات GitHub Actions وVercel له. لا تغيّر الإصدار أو lockfile بشكل منفصل.
 
 ## بنية المستودع
 
@@ -76,9 +76,10 @@ arownd-platform/
 
 ## البدء محليًا
 
-راجع package.json أولًا لتحديد إصدار Node الفعلي. لا تغيّر إصدار Node أو lockfile بشكل منفصل.
+ثبّت Node.js 26.x قبل تثبيت الاعتماديات:
 
 ~~~bash
+node --version
 git clone https://github.com/byamyn/arownd-platform.git
 cd arownd-platform
 npm ci
@@ -86,7 +87,7 @@ cp .env.example .env
 npm run dev
 ~~~
 
-أضف إعدادات Supabase المطلوبة إلى ملف البيئة المحلي. لا ترفع .env إلى Git.
+يجب أن يعرض `node --version` إصدارًا رئيسيًا 26. أضف إعدادات Supabase المطلوبة إلى ملف البيئة المحلي. لا ترفع .env إلى Git.
 
 ## الأمان والبيانات
 
@@ -137,6 +138,11 @@ npm run build
 
 | الوثيقة | الغرض |
 |---|---|
+| [Architecture](./docs/ARCHITECTURE.md) | خريطة معمارية التطبيق وحدود التشغيل |
+| [Database](./docs/DATABASE.md) | إجراءات Supabase وRLS وRPC والهجرات |
+| [Security](./docs/SECURITY.md) | ضوابط الأمان ومراجعة الإطلاق |
+| [Development](./docs/DEVELOPMENT.md) | إعداد بيئة التطوير والفحوصات |
+| [Release](./docs/RELEASE.md) | قائمة جاهزية الإطلاق التجريبي |
 | [UI System](./docs/UI_SYSTEM.md) | الهوية البصرية وقواعد الواجهة |
 | [Account deletion policy](./docs/account-deletion-and-retention-policy.md) | خط أساس لسياسة الحذف والاحتفاظ؛ يتطلب مراجعة قانونية |
 | [Account deletion audit](./docs/account-deletion-audit.md) | ملاحظات فنية تاريخية يجب إعادة التحقق منها |
