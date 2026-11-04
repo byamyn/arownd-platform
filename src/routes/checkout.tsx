@@ -89,7 +89,7 @@ function CheckoutPage() {
   // Keep one key per cart line until the server confirms its order. If the
   // network drops after the database commit, retrying reuses the same key.
   const checkoutKeysRef = useRef(new Map<string, string>());
-  const checkoutKeyStorage = `arownd:checkout-idempotency:${user.id}`;
+  const checkoutKeyStorage = `arownd:checkout-idempotency:${user?.id ?? "anonymous"}`;
   const persistCheckoutKeys = () => {
     try {
       if (checkoutKeysRef.current.size === 0) {
