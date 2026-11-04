@@ -54,12 +54,12 @@ jobs:
       - name: Install official Capacitor 8 native plugins
         run: >-
           npm install --save-exact
-          @capacitor/geolocation@latest-8
-          @capacitor/camera@latest-8
-          @capacitor/haptics@latest-8
-          @capacitor/network@latest-8
-          @capacitor/keyboard@latest-8
-          @capacitor/preferences@latest-8
+          @capacitor/geolocation@latest
+          @capacitor/camera@latest
+          @capacitor/haptics@latest
+          @capacitor/network@latest
+          @capacitor/keyboard@latest
+          @capacitor/preferences@latest
 
       - name: TypeScript
         run: npx tsc --noEmit
