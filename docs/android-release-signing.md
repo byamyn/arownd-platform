@@ -67,3 +67,36 @@ Firebase/FCM configuration is separate from app signing. Use the Firebase config
 ## Verification boundary
 
 This guide does not confirm that Play Console registration, signing secrets, Firebase configuration, or a release build are complete. Verify those independently before publishing.
+
+---
+
+## النسخة العربية | توقيع إصدار Android
+
+### هوية التطبيق
+
+- `applicationId`: `com.arownd.app`
+- `namespace`: `com.arownd.app`
+- اسم التطبيق: Arownd
+
+يجب الحفاظ على Application ID بعد النشر؛ تغييره قد ينشئ تطبيقًا منفصلًا في المتجر.
+
+### إدارة مفتاح الرفع
+
+أنشئ upload keystore على جهاز موثوق، واحفظه وكلمات المرور خارج Git والمحادثات وبيئات CI المؤقتة. احتفظ بنسختين احتياطيتين محميتين، وسجل alias وسياسة تدوير المفاتيح في وثائق خاصة.
+
+### أسرار GitHub Actions
+
+تحقق من أسماء الأسرار بمقارنتها مع workflow الحالي. لا تطبع قيم الأسرار في logs، ولا تضع `SUPABASE_SERVICE_ROLE_KEY` في تطبيق الهاتف. مفتاح Supabase العام لا يعوض RLS.
+
+### بوابة الإصدار
+
+1. راجع الفرع والـ commit.
+2. تحقق من هوية التطبيق والتوقيع.
+3. تحقق من وجود الأسرار دون عرض قيمها.
+4. تحقق من version name وversion code.
+5. شغّل workflow وافحص نتيجته.
+6. اختبر artifact موقّعًا على أجهزة مدعومة.
+7. تحقق من النسخ الاحتياطي لمفتاح الرفع.
+
+**حدود الوثيقة:** لا تؤكد هذه الإرشادات اكتمال إعداد Play Console أو Firebase أو أسرار CI أو نجاح إصدار منشور.
+
