@@ -48,3 +48,32 @@ Keep existing HTTPS production and web redirect URLs. Do not replace the Supabas
 ## Verification boundary
 
 This document describes the expected identity and flow. It does not certify that dashboard settings, platform builds, or release artifacts have been verified.
+
+---
+
+## النسخة العربية | هوية تطبيق الهاتف
+
+### المعرفات المعتمدة
+- Android Application ID: `com.arownd.app`
+- iOS Bundle Identifier: `com.arownd.app`
+- Capacitor App Name: `Arownd`
+- Web bundle: `dist/client`
+- Auth callback المقصود: `com.arownd.app://auth/callback`
+
+حافظ على هذه المعرفات بعد النشر؛ تغييرها قد ينتج تطبيقًا مختلفًا لدى المتاجر.
+
+### تدفق المصادقة
+يجب استقبال callback والتحقق من scheme وhost وpath، ثم إتمام PKCE exchange باستخدام Supabase client. لا تقبل redirect خارجيًا أو URL غير متوقع، ولا تضع access/refresh tokens في الرابط.
+
+أضف callback الدقيق إلى Supabase Auth redirect allow-list مع الإبقاء على عناوين HTTPS الحالية. لا تستبدل Site URL بمخطط التطبيق الأصلي.
+
+### قائمة التحقق
+- [ ] تسجيل URL scheme في Android وiOS.
+- [ ] اختبار cold-start وwarm-start.
+- [ ] اختبار PKCE وتأكيد البريد واستعادة كلمة المرور وتسجيل الخروج وتجديد الجلسة.
+- [ ] التحقق من إعدادات redirect في Supabase.
+- [ ] رفض المخططات والتحويلات الخارجية غير المصرح بها.
+- [ ] اختبار كل منصة بصورة مستقلة.
+
+**حدود الوثيقة:** توضح الهوية المتوقعة ولا تؤكد أن إعدادات لوحة Supabase أو ملفات البناء أو artifacts قد تم التحقق منها.
+
