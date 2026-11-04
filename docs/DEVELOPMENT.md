@@ -3,46 +3,56 @@
 > **Project:** Arownd  
 > **Owner:** byamyn  
 > **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)  
-> **Status:** Local workflow guide; resolve the Node.js version discrepancy before standardizing developer machines.
+> **Status:** Node.js 26.x is the approved project baseline.
 
 ## 1. Prerequisites
 
-The current `package.json` declares Node.js `26.x`, and both primary GitHub Actions workflows currently use Node.js 26. The project engineering baseline supplied for Arownd specifies Node.js 22.
+Use **Node.js 26.x** for local development, GitHub Actions and Vercel builds.
 
-This is an unresolved configuration conflict. Do not silently change `package.json`, CI or Vercel runtime settings until Node 22 versus Node 26 is explicitly decided and the complete install, test and build workflow has been validated on the selected version.
+The repository and deployment configuration have been checked:
+- `package.json` declares `engines.node: 26.x`.
+- Both primary GitHub Actions workflows use Node.js 26.
+- The Vercel project `arownd` is configured with `nodeVersion: 26.x`.
 
-Use the package manager version compatible with the selected Node.js release and preserve `package-lock.json`.
+Check your local version before installing dependencies:
+
+~~~bash
+node --version
+npm --version
+~~~
+
+The Node.js major version must be 26. Use the npm version compatible with the selected Node.js release and preserve `package-lock.json`.
 
 ## 2. Clone and install
 
-```bash
+~~~bash
 git clone https://github.com/byamyn/arownd-platform.git
 cd arownd-platform
 npm ci
-```
+~~~
 
 Create a local environment file from the template:
 
-```bash
+~~~bash
 cp .env.example .env
-```
+~~~
 
 Set only the values required for the local environment. Do not commit `.env`. Keep server-only credentials out of browser-exposed `VITE_*` variables.
 
 ## 3. Run the application
 
-```bash
+~~~bash
 npm run dev
-```
+~~~
 
 The project also defines these build modes:
 
-```bash
+~~~bash
 npm run build
 npm run build:vercel
 npm run build:capacitor
 npm run preview
-```
+~~~
 
 The Vercel build runs the Vite build and then bundles the server entry for the Vercel deployment.
 
@@ -50,19 +60,19 @@ The Vercel build runs the Vite build and then bundles the server entry for the V
 
 Run the complete local verification sequence before submitting a change:
 
-```bash
+~~~bash
 npx tsc --noEmit
 npm run lint
 npm run ui:check
 npm test
 npm run build
-```
+~~~
 
 For a change affecting the Vercel server bundle, also run:
 
-```bash
+~~~bash
 npm run build:vercel
-```
+~~~
 
 Do not report a check as passing unless it was actually run against the changed revision.
 
@@ -82,12 +92,12 @@ For business-logic changes, add focused tests for:
 
 Local Supabase scripts are defined in `package.json`:
 
-```bash
+~~~bash
 npm run db:start
 npm run db:stop
 npm run db:reset
 npm run db:studio
-```
+~~~
 
 Use a new migration for every schema change. Never edit an already-applied migration. Read [DATABASE.md](./DATABASE.md) before changing schema, RLS or RPC behavior.
 
