@@ -1579,3 +1579,39 @@ export async function walletWithdraw(params: {
 }
 
 // ---------- Orders ----------
+
+
+export type MerchantTrackingStatus = "preparing" | "ready_for_dispatch" | "out_for_delivery" | "delivered";
+export type MerchantTrackingEvent = {
+  id: string;
+  merchant_order_id: string;
+  status: MerchantTrackingStatus;
+  note: string | null;
+  created_at: string;
+  created_by: string;
+};
+
+export async function fetchMerchantOrderTracking(merchantOrderId: string): Promise<MerchantTrackingEvent[]> {
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
+    fn: string, args: { _merchant_order_id: string }
+  ) => Promise<{ data: MerchantTrackingEvent[] | null; error: unknown }>;
+  const { data, error } = await rpc("fetch_merchant_order_tracking", { _merchant_order_id: merchantOrderId });
+  if (error) throw new Error(friendlyError(error));
+  return data ?? [];
+}
+
+export async function merchantUpdateOrderTracking(
+  merchantOrderId: string,
+  status: MerchantTrackingStatus,
+  note?: string,
+): Promise<MerchantTrackingEvent> {
+  const rpc = supabase.rpc.bind(supabase) as unknown as (
+    fn: string, args: { _merchant_order_id: string; _status: string; _note: string | null }
+  ) => Promise<{ data: MerchantTrackingEvent | null; error: unknown }>;
+  const { data, error } = await rpc("merchant_update_order_tracking", {
+    _merchant_order_id: merchantOrderId, _status: status, _note: note?.trim() || null,
+  });
+  if (error) throw new Error(friendlyError(error));
+  if (!data) throw new Error("تعذر حفظ تحديث التتبع");
+  return data;
+}
