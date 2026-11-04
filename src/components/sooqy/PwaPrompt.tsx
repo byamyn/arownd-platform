@@ -106,6 +106,7 @@ export function useServiceWorkerRegistration() {
 
 /** Android Google Play in-app updates. PWA update handling above remains web-only. */
 export function NativeAppUpdatePrompt() {
+  const { t } = useTranslation();
   const [available, setAvailable] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [downloaded, setDownloaded] = useState(false);
@@ -215,17 +216,17 @@ export function NativeAppUpdatePrompt() {
         <RefreshCw className="size-4 shrink-0 text-primary" />
         <div className="min-w-0 flex-1">
           <p className="text-xs font-bold text-foreground">
-            {downloaded ? "التحديث جاهز للتثبيت" : downloading ? "جارٍ تنزيل تحديث التطبيق" : "يتوفر تحديث جديد للتطبيق"}
+            {downloaded ? t("native_update_ready") : downloading ? t("native_update_downloading") : t("native_update_ready")}
           </p>
           {downloading && (
             <p className="mt-1 text-[11px] text-muted-foreground">
-              {progress === null ? "يتم التنزيل في الخلفية…" : `اكتمل ${progress}%`}
+              {progress === null ? t("native_update_background") : t("native_update_progress", { progress })}
             </p>
           )}
         </div>
         {downloaded ? (
           <button type="button" disabled={busy} onClick={() => void finishUpdate()} className="min-h-10 rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground disabled:opacity-50">
-            إعادة التشغيل
+            {t("native_update_restart")}
           </button>
         ) : !downloading ? (
           <button type="button" disabled={busy} onClick={() => void startUpdate()} className="min-h-10 rounded-full bg-primary px-3 text-xs font-semibold text-primary-foreground disabled:opacity-50">
