@@ -117,7 +117,7 @@ export function ImageUploader({
       pendingActions.current.add(actionKey);
 
       try {
-        // אם الصورة موجودة من الخادم، احذفها من الخادم أولاً
+        // إذا كانت صورة موجودة من الخادم، احذفها من الخادم أولاً
         if (removed && !removed.file && onRemove) {
           try {
             await onRemove(removed);
