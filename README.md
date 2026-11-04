@@ -134,6 +134,12 @@ npm run build
 - حافظ على ملفات التوافق القديمة.
 - لا تغيّر الوثائق القانونية أو بيانات حقوق الغير دون مراجعة موثقة.
 
+## مركز الوثائق | Documentation Hub
+
+ابدأ من [مركز الوثائق الثنائي اللغة](./docs/README.md) للوصول إلى الأدلة الهندسية والتشغيلية.
+
+Start with the [bilingual documentation hub](./docs/README.md) for engineering and operational guides.
+
 ## خريطة الوثائق
 
 | الوثيقة | الغرض |
