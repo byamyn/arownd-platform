@@ -27,10 +27,19 @@ export const supabaseAuthStorage = {
     if (stored.value !== null) return stored.value;
 
     // One-time migration for users upgrading from the previous WebView storage.
-    const legacy = window.localStorage.getItem(key);
+    let legacy: string | null = null;
+    try {
+      legacy = window.localStorage.getItem(key);
+    } catch {
+      // Secure storage remains usable even if WebView localStorage is blocked.
+    }
     if (legacy !== null) {
       await SecureStorage.set({ key, value: legacy });
-      window.localStorage.removeItem(key);
+      try {
+        window.localStorage.removeItem(key);
+      } catch {
+        // The encrypted copy is already durable; stale legacy cleanup is best-effort.
+      }
     }
     return legacy;
   },
@@ -50,6 +59,10 @@ export const supabaseAuthStorage = {
     }
     await SecureStorage.remove({ key });
     // Remove any stale pre-migration copy as well.
-    window.localStorage.removeItem(key);
+    try {
+      window.localStorage.removeItem(key);
+    } catch {
+      // Secure removal succeeded; inaccessible legacy storage is harmless.
+    }
   },
 };
