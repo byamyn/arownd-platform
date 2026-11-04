@@ -123,7 +123,7 @@ export function NativeAppUpdatePrompt() {
     void import("@capawesome/capacitor-app-update")
       .then(async ({ AppUpdate, AppUpdateAvailability, FlexibleUpdateInstallStatus }) => {
         if (disposed) return;
-        listener = await AppUpdate.addListener("onFlexibleUpdateStateChange", (state) => {
+        listener = await AppUpdate.addListener("onFlexibleUpdateStateChange", (state: any) => {
           if (disposed) return;
           if (state.installStatus === FlexibleUpdateInstallStatus.DOWNLOADING) {
             setDownloading(true);
