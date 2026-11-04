@@ -109,7 +109,6 @@ function StudioPage() {
   const [busy, setBusy] = useState(false);
   // الطلب قيد التحديث — يمنع الإرسال المزدوج ويعرف أي بطاقة تُعطّل.
   const [busyOrder, setBusyOrder] = useState<string | null>(null);
-  const [code, setCode] = useState("");
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [productQuery, setProductQuery] = useState("");
   const [productFilter, setProductFilter] = useState<"all" | "low" | "out">("all");
@@ -238,36 +237,6 @@ function StudioPage() {
       </div>
     );
   }
-
-  const refreshStock = async () => {
-    if (!store.data) return;
-    setBusy(true);
-    try {
-      const updated = await merchantConfirmAll(store.data.id);
-      showSuccess(`${updated} منتج تم تحديثه اليوم`);
-      await qc.invalidateQueries({ queryKey: ["my-store-offers", store.data.id] });
-    } catch (error) {
-      showError(error);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  const confirmReservation = async () => {
-    const clean = code.trim();
-    if (!clean) {
-      toast.error(t("studio_reservation_code_required"));
-      return;
-    }
-    try {
-      await merchantConfirmReservation(clean);
-      showSuccess(t("studio_reservation_received"));
-      setCode("");
-      await qc.invalidateQueries({ queryKey: ["store-reservations", store.data?.id] });
-    } catch (error) {
-      showError(error);
-    }
-  };
 
   const editDirty =
     !!editing &&
@@ -826,38 +795,6 @@ function StudioPage() {
       {/* تبويب المنتجات */}
       {mode === "offers" && (
         <section className="space-y-5">
-          <div className="rounded-[var(--radius-card)] border border-border bg-muted p-4 text-foreground  sm:p-5">
-            <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
-              AROWND · CATALOG
-            </p>
-            <h2 className="mt-1 text-xl font-black">{t("studio_catalog_heading")}</h2>
-            <p className="mt-1 text-xs text-muted-foreground">{t("studio_catalog_intro")}</p>
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              <div className="rounded-[var(--radius-control)] bg-card p-2.5">
-                <p className="text-lg font-black">{allOffers.length}</p>
-                <p className="text-caption text-muted-foreground">{t("studio_products_total")}</p>
-              </div>
-              <div className="rounded-[var(--radius-control)] bg-card p-2.5">
-                <p className="text-lg font-black text-accent-ink">{lowCount}</p>
-                <p className="text-caption text-muted-foreground">{t("studio_stock_low")}</p>
-              </div>
-              <div className="rounded-[var(--radius-control)] bg-card p-2.5">
-                <p className="text-lg font-black">{outCount}</p>
-                <p className="text-caption text-muted-foreground">{t("studio_stock_out")}</p>
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={refreshStock}
-              disabled={busy}
-              className="flex-1 rounded-[var(--radius-card)] bg-primary py-3 font-bold text-primary-foreground disabled:opacity-50"
-            >
-              تحديث كل المنتجات اليوم
-            </button>
-          </div>
-
-          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <h2 className="font-extrabold">{t("studio_current_products")}</h2>
@@ -1126,29 +1063,6 @@ function StudioPage() {
 
       {mode === "orders" && (
         <section className="space-y-4">
-          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
-            <h2 className="mb-3 font-bold">{t("studio_confirm_reservation")}</h2>
-            <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] gap-2">
-              <input
-                value={code}
-                onChange={(e) => setCode(e.target.value.toUpperCase().replace(/\s/g, ""))}
-                placeholder="AR-XXXX-00"
-                maxLength={10}
-                autoCapitalize="characters"
-                dir="ltr"
-                className="h-[var(--control-height-compact)] w-full min-w-0 rounded-[var(--radius-control)] border bg-background px-3 text-start font-mono text-sm outline-none transition focus:border-accent-ink focus:ring-2 focus:ring-primary/30"
-              />
-              <button
-                onClick={confirmReservation}
-                className="shrink-0 whitespace-nowrap rounded-[var(--radius-control)] bg-primary px-3 font-bold text-primary-foreground transition hover:brightness-95 sm:px-4"
-              >
-                تأكيد
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
-            <h2 className="mb-3 font-bold">{t("studio_reservations")}</h2>
             <div className="space-y-2">
               {reservations.data?.map((r) => (
                 <div key={r.id} className="rounded-[var(--radius-card)] bg-background p-3">
