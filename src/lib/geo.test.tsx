@@ -59,6 +59,9 @@ describe("useGeo.request", () => {
     stubGeo({ impl });
     const { result } = renderHook(() => useGeo());
 
+    await act(async () => {
+      await result.current.request();
+    });
     await waitFor(() => expect(result.current.pos).not.toBeNull());
     expect(result.current.pos?.lat).toBe(36.7538);
     expect(result.current.reason).toBeNull();
@@ -73,6 +76,9 @@ describe("useGeo.request", () => {
     });
     const { result } = renderHook(() => useGeo());
 
+    await act(async () => {
+      await result.current.request();
+    });
     await waitFor(() => expect(result.current.reason).toBe("denied"));
     expect(result.current.denied).toBe(true);
     expect(geoErrorMessage(result.current.reason)).toContain("رفض");
@@ -87,6 +93,9 @@ describe("useGeo.request", () => {
       },
     });
     const { result } = renderHook(() => useGeo());
+    await act(async () => {
+      await result.current.request();
+    });
 
     // الأهم: لا يوجد رفض للوعد (كان يظهر كطبقة خطأ فوق الشاشة)
     await waitFor(() => expect(result.current.reason).toBe("unavailable"));
@@ -98,6 +107,9 @@ describe("useGeo.request", () => {
     const spy = vi.fn();
     stubGeo({ secure: false, impl: { getCurrentPosition: spy } });
     const { result } = renderHook(() => useGeo());
+    await act(async () => {
+      await result.current.request();
+    });
 
     await waitFor(() => expect(result.current.reason).toBe("insecure"));
     expect(spy).not.toHaveBeenCalled();
@@ -107,6 +119,9 @@ describe("useGeo.request", () => {
   it("يصنّف غياب خدمة الموقع", async () => {
     stubGeo({ impl: null });
     const { result } = renderHook(() => useGeo());
+    await act(async () => {
+      await result.current.request();
+    });
 
     await waitFor(() => expect(result.current.reason).toBe("unsupported"));
   });
@@ -118,7 +133,6 @@ describe("useGeo.request", () => {
       },
     });
     const { result } = renderHook(() => useGeo());
-    await waitFor(() => expect(result.current.reason).not.toBeNull());
 
     let out: Awaited<ReturnType<typeof result.current.request>> | null = null;
     await act(async () => {
@@ -133,7 +147,10 @@ describe("useGeo.request", () => {
       err?.({ code: 1, message: "denied" }),
     );
     stubGeo({ impl: { getCurrentPosition: spy } });
-    renderHook(() => useGeo());
+    const { result } = renderHook(() => useGeo());
+    await act(async () => {
+      await result.current.ask();
+    });
     await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
     expect(window.localStorage.getItem("sooqy:geo-asked")).toBe("1");
     renderHook(() => useGeo());
@@ -147,6 +164,9 @@ describe("useGeo.request", () => {
     );
     stubGeo({ impl: { getCurrentPosition: spy } });
     const { result } = renderHook(() => useGeo());
+    await act(async () => {
+      await result.current.ask();
+    });
     await waitFor(() => expect(spy).toHaveBeenCalledTimes(1));
 
     const requestPerm = vi.fn(async () => ({ state: "granted" as const }));
