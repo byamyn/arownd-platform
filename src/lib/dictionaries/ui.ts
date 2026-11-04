@@ -52,6 +52,12 @@ export const ui: DictGroup = {
     pwa_update_now: "تحديث",
     pwa_install_hint: "ثبّت Arownd على جهازك للوصول السريع",
     pwa_install_cta: "تثبيت",
+    native_update_ready: "يتوفر تحديث جديد للتطبيق",
+    native_update_downloading: "جارٍ تنزيل تحديث التطبيق",
+    native_update_background: "يتم التنزيل في الخلفية…",
+    native_update_progress: "اكتمل {progress}%",
+    native_update_restart: "إعادة التشغيل",
+    native_update_cta: "تحديث",
 
     // الأخطاء
     error_unexpected_title: "حدث خطأ غير متوقع",
@@ -140,6 +146,12 @@ export const ui: DictGroup = {
     pwa_update_now: "Update",
     pwa_install_hint: "Install Arownd on your device for quick access",
     pwa_install_cta: "Install",
+    native_update_ready: "A new app update is available",
+    native_update_downloading: "Downloading app update",
+    native_update_background: "Downloading in the background…",
+    native_update_progress: "{progress}% complete",
+    native_update_restart: "Restart",
+    native_update_cta: "Update",
 
     error_unexpected_title: "An unexpected error occurred",
     error_unexpected_hint:
