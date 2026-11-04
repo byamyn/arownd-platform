@@ -61,6 +61,9 @@ jobs:
           @capacitor/keyboard@latest
           @capacitor/preferences@latest
 
+      - name: Build Capacitor web assets (no APK)
+        run: npm run build:capacitor
+
       - name: Sync Capacitor plugins into Android project
         run: npx cap sync android
 
