@@ -9,7 +9,7 @@ export interface NativeBiometricStatus {
 
 interface NativeBiometricPlugin {
   getStatus(): Promise<NativeBiometricStatus>;
-  setEnabled(options: { enabled: boolean }): Promise<{ success?: boolean; enabled?: boolean }>;
+  setEnabled(options: { enabled: boolean }): Promise<void>;
   authenticate(): Promise<{ success: boolean; enabled: boolean }>;
 }
 

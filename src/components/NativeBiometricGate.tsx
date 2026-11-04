@@ -25,6 +25,16 @@ export function NativeBiometricGate() {
     let needsUnlock = true;
     let authenticating = false;
     let removeAppListener: (() => void) | undefined;
+    const authState = supabase.auth.onAuthStateChange((event, session) => {
+      if (!session) {
+        needsUnlock = false;
+        if (!disposed) setGateState("unlocked");
+      } else if (event === "SIGNED_IN") {
+        // A successful password sign-in is already an explicit unlock.
+        needsUnlock = false;
+        if (!disposed) setGateState("unlocked");
+      }
+    });
 
     const attemptUnlock = async () => {
       if (disposed || !enabled || !needsUnlock || authenticating) return;
@@ -66,11 +76,11 @@ export function NativeBiometricGate() {
       })
       .catch((error: unknown) => console.warn("[native] Could not subscribe to biometric app lock lifecycle", error));
 
-    void getNativeBiometricStatus()
-      .then((status) => {
+    void Promise.all([getNativeBiometricStatus(), supabase.auth.getSession()])
+      .then(([status, sessionResult]) => {
         if (disposed) return;
         enabled = status.enabled;
-        if (!enabled) {
+        if (!enabled || !sessionResult.data.session) {
           needsUnlock = false;
           setGateState("unlocked");
           return;
@@ -91,6 +101,7 @@ export function NativeBiometricGate() {
       disposed = true;
       retryRef.current = null;
       removeAppListener?.();
+      authState.data.subscription.unsubscribe();
     };
   }, []);
 

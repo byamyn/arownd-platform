@@ -18,7 +18,6 @@ import com.google.android.play.core.install.model.UpdateAvailability;
 
 @CapacitorPlugin(name = "ArowndAppUpdate")
 public class ArowndAppUpdatePlugin extends Plugin {
-    private static final int UPDATE_REQUEST_CODE = 7408;
     private AppUpdateManager updateManager;
     private InstallStateUpdatedListener installStateListener;
 
