@@ -20,6 +20,7 @@ import { cn } from "@/lib/utils";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { goBackOrTo } from "@/lib/nav";
 import { OrderTrackingSkeleton } from "@/components/sooqy/skeleton";
+import { CustomerOrderTracking } from "@/components/sooqy/merchant-order-tracking";
 
 export const Route = createFileRoute("/orders/$orderId")({
   head: () => ({
@@ -238,6 +239,10 @@ function TrackPage() {
           <p className="mt-0.5 text-muted-foreground">{order.phone}</p>
         </div>
       </div>
+
+      {(order.merchant_orders ?? []).map((merchantOrder) => (
+        <CustomerOrderTracking key={merchantOrder.id} merchantOrderId={merchantOrder.id} />
+      ))}
 
       {shipment.isError && (
         <ErrorState
