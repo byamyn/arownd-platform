@@ -1,5 +1,5 @@
-name: Capacitor native bootstrap
-# Native builds are intentionally manual; do not build Android on pushes to main.
+name: Capacitor native dependency setup
+# Installs and links native plugins only. APK builds are deliberately deferred until app integration is complete.
 
 on:
   workflow_dispatch:
@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  generate-and-build-android:
+  install-native-dependencies:
     runs-on: ubuntu-latest
     timeout-minutes: 60
     steps:
@@ -61,49 +61,8 @@ jobs:
           @capacitor/keyboard@latest
           @capacitor/preferences@latest
 
-      - name: TypeScript
-        run: npx tsc --noEmit
-
-      - name: ESLint
-        id: lint
-        run: npm run lint
-
-      - name: Tests
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        run: npm test
-
-      # Continue the native build after a lint-only failure so APK diagnostics remain available.
-      - name: Build local Capacitor web bundle
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        run: npm run build:capacitor
-
-      - name: Generate Android project when missing
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        run: |
-          if [ ! -d android ]; then npx cap add android; fi
-
-      - name: Register native auth deep links
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        run: node scripts/configure-capacitor-deeplinks.mjs
-
-      - name: Sync native project
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        run: npx cap sync android
-
-      - name: Build Android debug APK
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        run: |
-          cd android
-          ./gradlew assembleDebug
-
-      - name: Upload Android APK
-        if: ${{ success() || steps.lint.outcome == 'failure' }}
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
-        with:
-          name: arownd-android-debug-apk
-          path: android/app/build/outputs/apk/debug/app-debug.apk
-          if-no-files-found: error
-          retention-days: 14
+      - name: Update Android native plugin dependencies
+        run: npx cap update android
 
       - name: Commit generated Android project if needed
         if: ${{ success() || steps.lint.outcome == 'failure' }}
@@ -115,5 +74,5 @@ jobs:
             echo "No generated Android changes."
             exit 0
           fi
-          git commit -m "chore(mobile): generate Android project [native-bootstrap]"
+          git commit -m "chore(mobile): install Capacitor native plugins"
           git push origin main
