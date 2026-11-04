@@ -1,40 +1,58 @@
-# Capacitor Native Runtime Assessment
+# Arownd — Capacitor native runtime assessment
 
-Status: native integration is implemented on `feat/capacitor-native`. Capacitor packages are pinned, PKCE callback handling is implemented, and native platform project generation/build validation is handled by the branch bootstrap workflow.
+> **Project:** Arownd  
+> **Owner:** byamyn  
+> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)  
+> **Status:** Architecture and risk assessment; native build/release status must be verified independently.
 
-## Confirmed repository architecture
+## Repository architecture
 
-- The web application is a TanStack Start SSR application.
-- `vite.config.ts` registers the TanStack Start server entry as `src/server.ts`.
-- `src/server.ts` forwards requests to the TanStack Start server entry and applies locale handling.
-- Vercel exposes one catch-all serverless handler at `api/index.ts`; `vercel.json` rewrites application routes to it.
-- `src/start.ts` installs Supabase bearer-token attachment as global function middleware and installs TanStack CSRF middleware for server-function requests.
-- The Supabase browser client persists sessions, refreshes tokens, and uses PKCE.
-- The current auth callback is a web route. It waits for the Supabase session to appear and then navigates within the web router.
-- `capacitor.config.json` now fixes the shared application ID to `com.arownd.app` and points Capacitor at `dist/client`.
-- No Android/iOS native projects or native Capacitor packages have been added yet.
+The repository contains web, Android, and iOS project directories and Capacitor configuration. The configured app identity is com.arownd.app, and the web bundle directory is dist/client.
 
-## Native transport decision gate
+Relevant integration points:
+- capacitor.config.json
+- src/server.ts and src/start.ts
+- api/index.ts and vercel.json
+- Supabase browser client and authentication callback routes
+- android/ and ios/ native projects
 
-Do not enable permissive CORS or disable CSRF to make a local WebView work.
+The presence of native project files does not prove that current Android/iOS builds, authentication flows, push notifications, or store submissions have passed validation.
 
-Before shipping a local-bundle Capacitor app, verify all of the following:
+## Authentication and transport constraints
 
-1. Enumerate every TanStack server function and server-only route used by the client, including generated RPC endpoints.
-2. Establish whether those calls can be replaced by direct Supabase client operations or require a dedicated native API transport.
-3. If a native API transport is required, enforce a narrow origin policy and validate the Supabase access token server-side for every protected operation. Never trust a client-supplied user ID or an arbitrary Origin header.
-4. Keep browser cookie/session behavior unchanged and test native PKCE code exchange, email confirmation, password recovery, sign-out, and token refresh.
-5. Test Android and iOS separately; do not assume their WebView origins or deep-link callbacks are identical.
+Do not weaken browser CSRF protections or enable permissive CORS to make a native WebView work.
 
-## Current safe implementation boundary
+Before shipping a local-bundle Capacitor app:
 
-The existing native runtime detection and PWA suppression can remain isolated from web behavior. Do not add a production `server.url` remote-WebView shortcut, permissive CSRF bypass, or placeholder deep-link scheme. Those would conceal rather than solve the local-bundle/native-auth integration.
+1. Enumerate all TanStack server functions and server-only routes used by the client.
+2. Decide which operations can use Supabase client APIs and which require a trusted server transport.
+3. Validate Supabase access tokens server-side for protected operations.
+4. Never trust a client-supplied user ID or arbitrary Origin header.
+5. Keep browser cookie/session behavior intact.
+6. Test native PKCE exchange, email confirmation, password recovery, sign-out, and token refresh separately on Android and iOS.
+7. Verify deep-link allow-lists and reject unexpected schemes and external redirect targets.
 
-## Next implementation slice
+## Native identity
 
-- The branch bootstrap workflow installs pinned Capacitor core, CLI, App, Android, and iOS packages and regenerates the npm lockfile.
-- The workflow verifies `dist/client/index.html`, generates both native projects, and compiles Android/iOS targets.
-- Implement deep-link handling using the official Capacitor App URL-open event and Supabase PKCE exchange.
-- Add and verify the Supabase redirect allow-list entry `com.arownd.app://auth/callback` without changing the production Site URL. This dashboard setting is not editable through the connected Supabase tools.
-- Add native push, geolocation, and lifecycle adapters behind platform-specific modules.
-- Generate Android/iOS projects and validate release builds on their respective toolchains.
+- App ID: com.arownd.app
+- App name: Arownd
+- Local web bundle: dist/client
+- Documented auth callback: com.arownd.app://auth/callback
+
+Verify the callback implementation and Supabase redirect allow-list in the current code and dashboard before release. Never place access or refresh tokens in redirect URLs.
+
+## Release gates
+
+- [ ] Build Android from the reviewed commit.
+- [ ] Build iOS on a supported macOS/Xcode environment.
+- [ ] Test cold-start and warm-start deep links.
+- [ ] Test PKCE and session lifecycle on both platforms.
+- [ ] Test permission denial and unavailable-device cases for native plugins.
+- [ ] Test push registration and token revocation.
+- [ ] Confirm signing identities and secure backup.
+- [ ] Verify privacy disclosures and store requirements.
+- [ ] Measure performance on representative mobile devices.
+
+## Security boundary
+
+Do not add a production remote-WebView shortcut, broad CSRF bypass, permissive CORS rule, or placeholder callback scheme as a workaround. Any native transport change requires server-side authentication, authorization, and tests.
