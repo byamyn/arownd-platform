@@ -45,6 +45,10 @@ A curated, bilingual documentation hub for the Arownd platform. Each engineering
 - Do not rewrite legal terms, third-party licenses, or generated files without explicit review.
 - Use concise headings, stable relative links, checklists for operational procedures, and explicit verification boundaries.
 
+## Owner profile | ملف المالك
+
+- [OWNER.md](../OWNER.md) — Owner identity, project vision, repository governance, contribution attribution, and intellectual-property boundaries.
+
 ## Ownership | الملكية
 
 - **Project:** Arownd
