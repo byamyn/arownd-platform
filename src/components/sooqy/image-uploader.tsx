@@ -52,6 +52,8 @@ export function ImageUploader({
   const [items, setItems] = useState<ImageUploaderItem[]>(initialItems);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const ownedPreviewUrls = useRef(new Set<string>());
+  // Prevent rapid repeated taps from dispatching the same async mutation twice.
+  const pendingActions = useRef(new Set<string>());
 
   useEffect(
     () => () => {
@@ -110,6 +112,10 @@ export function ImageUploader({
   const removeItem = useCallback(
     async (index: number) => {
       const removed = items[index];
+      const actionKey = 'remove:' + (removed?.id ?? removed?.preview ?? index);
+      if (pendingActions.current.has(actionKey)) return;
+      pendingActions.current.add(actionKey);
+      try {
       // إذا كانت صورة موجودة من الخادم، احذفها من الخادم أولاً
       if (removed && !removed.file && onRemove) {
         try {
@@ -135,6 +141,9 @@ export function ImageUploader({
         onChange(next);
         return next;
       });
+      } finally {
+        pendingActions.current.delete(actionKey);
+      }
     },
     [items, onRemove, onChange],
   );
@@ -142,6 +151,10 @@ export function ImageUploader({
   const setPrimary = useCallback(
     async (index: number) => {
       const item = items[index];
+      const actionKey = 'primary:' + (item?.id ?? item?.preview ?? index);
+      if (pendingActions.current.has(actionKey)) return;
+      pendingActions.current.add(actionKey);
+      try {
       // إذا كانت صورة موجودة من الخادم، حددها أساسية في الخادم أولاً
       if (item && !item.file && onSetPrimary) {
         try {
@@ -159,6 +172,9 @@ export function ImageUploader({
         onChange(next);
         return next;
       });
+      } finally {
+        pendingActions.current.delete(actionKey);
+      }
     },
     [items, onSetPrimary, onChange],
   );
