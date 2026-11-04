@@ -1,10 +1,20 @@
-# Arownd brand assets
+# Arownd — Brand assets
 
-- `arownd-icon.svg`: approved square brand mark (1024 × 1024).
-- `arownd-splash-animated.svg`: animated splash artwork (CSS keyframes, about 1.8 seconds) with a `prefers-reduced-motion` fallback.
+> **Project:** Arownd  
+> **Owner:** byamyn  
+> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)
+
+## Assets
+
+- arownd-icon.svg: square brand mark (1024 × 1024).
+- arownd-splash-animated.svg: animated splash artwork with a reduced-motion fallback.
 
 ## Web usage
 
-Both assets are served from `/brand/`. The app favicon and PWA icon now use the approved Arownd mark. The animated splash is staged as a public asset but is not forced over route transitions or repeat visits; integrate it through a dedicated first-load experience when that UX is implemented.
+The assets are served from /brand/. Keep the original SVG files as SVG for web use.
 
-Keep the original SVG files as SVG. Do not rasterize them for web use.
+The favicon and PWA icon should use the approved Arownd mark. The animated splash is a staged public asset; do not force it over route transitions or repeat visits without a deliberate first-load experience.
+
+## Maintenance
+
+Preserve source SVGs, validate accessibility and reduced-motion behavior, and verify that manifest references point to existing assets before release.
