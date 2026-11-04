@@ -57,3 +57,42 @@ export function MerchantOrderTracking({ merchantOrderId, onCompleted }: { mercha
     </section>
   );
 }
+
+
+/** عرض سجل مراحل المتجر للعميل دون أدوات تعديل. */
+export function CustomerOrderTracking({ merchantOrderId }: { merchantOrderId: string }) {
+  const query = useQuery({
+    queryKey: ["merchant-order-tracking", merchantOrderId],
+    queryFn: () => fetchMerchantOrderTracking(merchantOrderId),
+  });
+  const events = query.data ?? [];
+  if (query.isLoading || (!query.isError && events.length === 0)) return null;
+
+  return (
+    <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
+      <h2 className="font-bold text-foreground">تحديثات المتجر للتوصيل</h2>
+      {query.isError ? (
+        <ErrorState scope="customer-order-tracking" error={query.error} onRetry={() => query.refetch()} />
+      ) : (
+        <ol className="space-y-3">
+          {steps.map((step) => {
+            const event = events.find((item) => item.status === step.status);
+            return (
+              <li key={step.status} className="flex gap-3">
+                <span className={event ? "text-success" : "text-muted-foreground"}>{event ? "✓" : "○"}</span>
+                <div className="min-w-0">
+                  <p className={event ? "text-sm font-semibold text-foreground" : "text-sm text-muted-foreground"}>{step.label}</p>
+                  {event && (
+                    <p className="text-xs text-muted-foreground">
+                      {formatDate(event.created_at)}{event.note ? " — " + event.note : ""}
+                    </p>
+                  )}
+                </div>
+              </li>
+            );
+          })}
+        </ol>
+      )}
+    </section>
+  );
+}
