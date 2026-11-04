@@ -126,7 +126,11 @@ export function NativeAppUpdatePrompt() {
           if (disposed) return;
           if (state.installStatus === FlexibleUpdateInstallStatus.DOWNLOADING) {
             setDownloading(true);
-            if (state.totalBytesToDownload && state.totalBytesToDownload > 0) {
+            if (
+              typeof state.bytesDownloaded === "number" &&
+              typeof state.totalBytesToDownload === "number" &&
+              state.totalBytesToDownload > 0
+            ) {
               setProgress(Math.min(100, Math.round((state.bytesDownloaded / state.totalBytesToDownload) * 100)));
             }
           } else if (state.installStatus === FlexibleUpdateInstallStatus.DOWNLOADED) {
