@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { isNativePlatform } from "./platform";
 
 /**
  * الاتصال والشبكة — أدوات مشتركة لمعالجة أخطاء الاتصال (بند 2.5 من الخطة):
@@ -172,9 +173,35 @@ export function useOnline(): boolean {
     setOnline(!isOffline());
     const goOnline = () => setOnline(true);
     const goOffline = () => setOnline(false);
+    let disposed = false;
+    let removeNativeListener: (() => void) | undefined;
+
     window.addEventListener("online", goOnline);
     window.addEventListener("offline", goOffline);
+
+    if (isNativePlatform()) {
+      void import("@capacitor/network")
+        .then(async ({ Network }) => {
+          if (disposed) return;
+          const status = await Network.getStatus();
+          if (!disposed) setOnline(status.connected);
+          const listener = await Network.addListener("networkStatusChange", (next) => {
+            setOnline(next.connected);
+          });
+          if (disposed) {
+            void listener.remove();
+          } else {
+            removeNativeListener = () => void listener.remove();
+          }
+        })
+        .catch((error: unknown) => {
+          console.warn("[native] Could not subscribe to network status", error);
+        });
+    }
+
     return () => {
+      disposed = true;
+      removeNativeListener?.();
       window.removeEventListener("online", goOnline);
       window.removeEventListener("offline", goOffline);
     };
