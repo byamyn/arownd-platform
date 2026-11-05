@@ -170,10 +170,10 @@ begin
 end;
 $function$;
 
+-- Status completion must go through the tracking RPC so every handoff
+-- has an authenticated, ordered timeline event.
 revoke all on function public.merchant_update_merchant_order_status(uuid, text)
-  from public, anon;
-grant execute on function public.merchant_update_merchant_order_status(uuid, text)
-  to authenticated;
+  from public, anon, authenticated;
 
 
 -- Enforce the carrier boundary in the tracking RPC, not only in the UI.
