@@ -248,7 +248,11 @@ function TrackPage() {
       </div>
 
       {(order.merchant_orders ?? []).map((merchantOrder) => (
-        <CustomerOrderTracking key={merchantOrder.id} merchantOrderId={merchantOrder.id} />
+        <CustomerOrderTracking
+          key={merchantOrder.id}
+          merchantOrderId={merchantOrder.id}
+          deliveryType={order.delivery_type === "desk" ? "desk" : "home"}
+        />
       ))}
 
       {shipment.isError && (
