@@ -1,0 +1,1 @@
+- [TanStack route-tree generation](tanstack-route-tree.md) — Start/Vite regenerates the route tree and emits casts; edits to generated output are overwritten.
