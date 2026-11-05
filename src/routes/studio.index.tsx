@@ -38,7 +38,6 @@ import {
   merchantSetPrimaryImage,
   merchantToggleAvailability,
   merchantUpdateOffer,
-  merchantUpdateOrderStatus,
   merchantUpdateProduct,
   fetchMyRoles,
   fetchMyAccountType,
@@ -108,7 +107,6 @@ function StudioPage() {
   const [showVerificationInfo, setShowVerificationInfo] = useState(false);
   const [busy, setBusy] = useState(false);
   // الطلب قيد التحديث — يمنع الإرسال المزدوج ويعرف أي بطاقة تُعطّل.
-  const [busyOrder, setBusyOrder] = useState<string | null>(null);
   const [confirmDiscard, setConfirmDiscard] = useState(false);
   const [productQuery, setProductQuery] = useState("");
   const [productFilter, setProductFilter] = useState<"all" | "low" | "out">("all");
@@ -1163,7 +1161,8 @@ function StudioPage() {
                     <OrderStatusBadge status={item.merchant_order.status} />
                   </div>
                   <div className="mt-2 flex flex-wrap items-center gap-2">
-                    {item.merchant_order.status === "pending" && (
+                    {(item.merchant_order.status === "pending" ||
+                      item.merchant_order.status === "confirmed") && (
                       <Link
                         to="/studio/orders/$orderId"
                         params={{ orderId: item.order.id }}
@@ -1177,29 +1176,7 @@ function StudioPage() {
                         {t("studio_quote_pending_customer")}
                       </p>
                     )}
-                    {item.merchant_order.status === "confirmed" && (
-                        <button
-                          type="button"
-                          disabled={busyOrder === item.merchant_order.id}
-                          onClick={async () => {
-                            setBusyOrder(item.merchant_order.id);
-                            try {
-                              await merchantUpdateOrderStatus(item.order.id, "delivered");
-                              await qc.invalidateQueries({
-                                queryKey: ["store-orders", store.data?.id],
-                              });
-                            } catch (err) {
-                              toast.error(t("studio_status_update_failed"));
-                              logNetError("studio:order-status", err);
-                            } finally {
-                              setBusyOrder(null);
-                            }
-                          }}
-                          className="min-h-[var(--control-height-compact)] rounded-[var(--radius-control)] bg-primary px-4 py-2 text-xs font-bold text-primary-foreground disabled:opacity-50"
-                        >
-                          {t("studio_action_deliver")}
-                        </button>
-                      )}
+
                   </div>
                   {item.merchant_order.status === "delivered" && (
                     <button
