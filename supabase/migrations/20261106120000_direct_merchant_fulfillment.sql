@@ -286,3 +286,37 @@ revoke all on function public.merchant_update_order_tracking(uuid, text, text)
   from public, anon;
 grant execute on function public.merchant_update_order_tracking(uuid, text, text)
   to authenticated;
+
+-- Once a merchant starts the direct-fulfillment timeline on a legacy
+-- unassigned shipment, prevent a later admin assignment from switching
+-- the same order to a carrier halfway through fulfillment.
+create or replace function public.prevent_carrier_assignment_after_merchant_tracking()
+returns trigger
+language plpgsql
+set search_path = public
+as $function$
+begin
+  if new.company_id is not null
+     and new.company_id is distinct from old.company_id
+     and new.merchant_order_id is not null
+     and exists (
+       select 1
+       from public.merchant_order_tracking_events e
+       where e.merchant_order_id = new.merchant_order_id
+     ) then
+    raise exception 'merchant_fulfillment_already_started';
+  end if;
+
+  return new;
+end;
+$function$;
+
+revoke all on function public.prevent_carrier_assignment_after_merchant_tracking()
+  from public, anon, authenticated;
+
+drop trigger if exists prevent_carrier_assignment_after_merchant_tracking
+  on public.shipments;
+create trigger prevent_carrier_assignment_after_merchant_tracking
+before update of company_id on public.shipments
+for each row
+execute function public.prevent_carrier_assignment_after_merchant_tracking();
