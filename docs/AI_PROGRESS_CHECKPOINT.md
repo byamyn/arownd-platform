@@ -24,30 +24,30 @@
 
 ## Files changed for this repair
 
-- `artifacts/arownd/src/styles.css` — shared navigation frame, translucent surface, focus, active-state and safe-area design utilities.
-- `artifacts/arownd/src/components/sooqy/BottomNav.tsx` and `StudioNav.tsx` — align shopper and merchant navigation presentation while preserving role destinations.
-- `artifacts/arownd/src/components/sooqy/app-shell.tsx` — add a typed wide-workspace layout option to the shared page shell.
-- `artifacts/arownd/src/components/sooqy/page-header.tsx` — align shared sticky headers to the page gutters and unify their surface.
-- `artifacts/arownd/src/routes/studio.index.tsx`, `studio.add-product.tsx`, `studio.settings.tsx`, `studio.orders.$orderId.tsx`, `delivery-dashboard.tsx`, and `orders.index.tsx` — apply consistent content frames; use semantic status colors on delivery shipment labels.
-- `artifacts/arownd/src/routes/delivery-dashboard.tsx` — gate the pending queue on carrier approval.
-- `artifacts/arownd/src/routes/checkout.tsx` — stable per-variant React identity and visible variant values.
-- `artifacts/arownd/src/components/NativePushNotifications.tsx` — use the current user ID as the push-registration effect identity.
-- `artifacts/arownd/src/components/sooqy/StoreLocationPicker.tsx` — prevent stale map-load callbacks from reverting the selected location.
-- `artifacts/arownd/src/components/sooqy/StoreLocationPicker.test.tsx` — regression test for a selection changed before map load.
-- `artifacts/arownd/src/components/sooqy/StoreMap.tsx` — capture effect-owned markers for cleanup.
-- `artifacts/arownd/src/routes/category.$catId.tsx` — keep infinite-scroll callback dependencies current.
-- `artifacts/arownd/scripts/ui-lint.mjs` — avoid false-positive input attribute warnings from JSX arrow callbacks and detect missing telephone input mode.
-- `artifacts/arownd/src/routes/help.tsx` — add phone and email autofill metadata to the support form.
-- `artifacts/arownd/src/routes/profile.tsx`, `src/routes/stores.$storeId.tsx`, `src/routes/studio.index.tsx`, and `src/routes/studio.settings.tsx` — use suitable image loading/priority hints.
-- `artifacts/arownd/src/routes/products.$productId.tsx` — defer the product image zoom until opened and decode asynchronously.
+- `src/styles.css` — shared navigation frame, translucent surface, focus, active-state and safe-area design utilities.
+- `src/components/sooqy/BottomNav.tsx` and `StudioNav.tsx` — align shopper and merchant navigation presentation while preserving role destinations.
+- `src/components/sooqy/app-shell.tsx` — add a typed wide-workspace layout option to the shared page shell.
+- `src/components/sooqy/page-header.tsx` — align shared sticky headers to the page gutters and unify their surface.
+- `src/routes/studio.index.tsx`, `studio.add-product.tsx`, `studio.settings.tsx`, `studio.orders.$orderId.tsx`, `delivery-dashboard.tsx`, and `orders.index.tsx` — apply consistent content frames; use semantic status colors on delivery shipment labels.
+- `src/routes/delivery-dashboard.tsx` — gate the pending queue on carrier approval.
+- `src/routes/checkout.tsx` — stable per-variant React identity and visible variant values.
+- `src/components/NativePushNotifications.tsx` — use the current user ID as the push-registration effect identity.
+- `src/components/sooqy/StoreLocationPicker.tsx` — prevent stale map-load callbacks from reverting the selected location.
+- `src/components/sooqy/StoreLocationPicker.test.tsx` — regression test for a selection changed before map load.
+- `src/components/sooqy/StoreMap.tsx` — capture effect-owned markers for cleanup.
+- `src/routes/category.$catId.tsx` — keep infinite-scroll callback dependencies current.
+- `scripts/ui-lint.mjs` — avoid false-positive input attribute warnings from JSX arrow callbacks and detect missing telephone input mode.
+- `src/routes/help.tsx` — add phone and email autofill metadata to the support form.
+- `src/routes/profile.tsx`, `src/routes/stores.$storeId.tsx`, `src/routes/studio.index.tsx`, and `src/routes/studio.settings.tsx` — use suitable image loading/priority hints.
+- `src/routes/products.$productId.tsx` — defer the product image zoom until opened and decode asynchronously.
 - `docs/REAL_USER_TEST_REPORT.md` — record public real-browser outcomes against confirmed non-production data and distinguish them from fake-backed Vitest journeys.
-- `artifacts/arownd/src/test/supabase-fake.ts` — add local carrier and shipment fixtures for UI journey coverage.
-- `artifacts/arownd/src/test/journey.test.tsx` — cover approved-carrier queue rendering and variant visibility in checkout; isolate the WebGL picker in jsdom because its behavior has a dedicated component test. This file also contains pre-existing user changes.
+- `src/test/supabase-fake.ts` — add local carrier and shipment fixtures for UI journey coverage.
+- `src/test/journey.test.tsx` — cover approved-carrier queue rendering and variant visibility in checkout; isolate the WebGL picker in jsdom because its behavior has a dedicated component test. This file also contains pre-existing user changes.
 - `docs/ARCHITECTURE.md` — current architecture and product-state map.
 - `docs/RELEASE.md` — release readiness and pilot gates.
 - `docs/AI_PROGRESS_CHECKPOINT.md` — record findings, verification scope, and blockers.
 
-Pre-existing user edits preserved: `artifacts/arownd/src/routes/__root.tsx` and `artifacts/arownd/src/routes/wallet.tsx`, plus earlier edits within `artifacts/arownd/src/test/journey.test.tsx`.
+Pre-existing user edits preserved: `src/routes/__root.tsx` and `src/routes/wallet.tsx`, plus earlier edits within `src/test/journey.test.tsx`.
 
 ## Database and authorization review
 
@@ -89,4 +89,4 @@ npm test
 npm run build
 ```
 
-The carrier and checkout regression assertions are in `artifacts/arownd/src/test/journey.test.tsx`; run the Vitest suite with the command above. Do not point local tests at production Supabase.
+The carrier and checkout regression assertions are in `src/test/journey.test.tsx`; run the Vitest suite with the command above. Do not point local tests at production Supabase.
