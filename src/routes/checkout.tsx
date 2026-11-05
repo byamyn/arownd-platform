@@ -463,8 +463,15 @@ function CheckoutPage() {
         <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
           <div className="flex items-center gap-2">
             <MapPin className="size-5 text-accent-ink" />
-            <h2 className="text-section text-foreground">{t("checkout_address_heading")}</h2>
+            <h2 className="text-section text-foreground">
+              {t(deliveryType === "desk" ? "checkout_buyer_area_heading" : "checkout_address_heading")}
+            </h2>
           </div>
+          {deliveryType === "desk" && (
+            <p className="text-xs leading-relaxed text-muted-foreground">
+              {t("checkout_buyer_area_hint")}
+            </p>
+          )}
           <WilayaSelect
             value={wilayaId}
             onChange={(value) => {
