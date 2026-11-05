@@ -149,7 +149,7 @@ export const studio: DictGroup = {
     studio_order_deleted: "تم حذف الطلب بنجاح",
     studio_product_category_note: "تصنيف المنتج مستقل عن تصنيف متجرك.",
     studio_order_details: "تفاصيل الطلب",
-    studio_quote_shipping_fee: "رسوم التوصيل",
+    studio_quote_shipping_fee: "رسوم التوصيل بواسطة المتجر",
     studio_reject_unavailable: "رفض الطلب لعدم التوفر",
     studio_order_rejected: "تم رفض الطلب وإشعار المشتري",
     studio_cod_due: "المبلغ المستحق عند الاستلام",
@@ -157,12 +157,12 @@ export const studio: DictGroup = {
     studio_cod_collected: "تم تسجيل تحصيل المبلغ",
     studio_cod_paid: "تم تسجيل الدفع النقدي لهذا الطلب بمبلغ {amount}.",
     studio_quote_shipping_fee_hint:
-      "حدد رسوم توصيل هذا الطلب فقط. لن يبدأ التجهيز قبل موافقة المشتري على السعر النهائي.",
+      "حدد الرسوم التي سيتقاضاها متجرك مقابل توصيل هذا الطلب مباشرة. لن يبدأ التجهيز قبل موافقة المشتري على السعر النهائي.",
     studio_send_quote: "إرسال العرض للمشتري",
     studio_quote_sent: "تم إرسال عرض السعر للمشتري",
     studio_quote_pending_customer: "أرسلت السعر النهائي. انتظر موافقة المشتري قبل تجهيز الطلب.",
     studio_order_approved_wait_delivery:
-      "وافق المشتري على السعر. انتظر تعيين شركة التوصيل من Arownd قبل التسليم.",
+      "وافق المشتري على السعر. يمكنك الآن تجهيز الطلب وتوصيله بنفسك، أو متابعة خيار شركة التوصيل إذا تم تعيينها.",
     studio_quote_fee_required: "أدخل رسوم التوصيل، ويمكن إدخال صفر للاستلام من المتجر.",
     studio_quote_invalid_fee: "أدخل رسوم توصيل صحيحة غير سالبة.",
     studio_order_details_loading: "جارٍ تحميل تفاصيل الطلب",
@@ -405,7 +405,7 @@ export const studio: DictGroup = {
     studio_order_deleted: "Order deleted successfully",
     studio_product_category_note: "A product category is independent of your store category.",
     studio_order_details: "Order details",
-    studio_quote_shipping_fee: "Delivery fee",
+    studio_quote_shipping_fee: "Merchant delivery fee",
     studio_reject_unavailable: "Reject order — unavailable",
     studio_order_rejected: "Order rejected and customer notified",
     studio_cod_due: "Cash due on pickup",
@@ -413,13 +413,13 @@ export const studio: DictGroup = {
     studio_cod_collected: "Cash collection recorded",
     studio_cod_paid: "Cash payment of {amount} has been recorded for this order.",
     studio_quote_shipping_fee_hint:
-      "Set the delivery fee for this store order only. Do not prepare the order until the customer approves the final price.",
+      "Set the fee your store charges to deliver this order directly. Do not prepare the order until the customer approves the final price.",
     studio_send_quote: "Send offer to customer",
     studio_quote_sent: "Price offer sent to the customer",
     studio_quote_pending_customer:
       "Your final price has been sent. Wait for the customer’s approval before preparing the order.",
     studio_order_approved_wait_delivery:
-      "The customer approved the price. Wait for Arownd to assign a delivery company before handoff.",
+      "The customer approved the price. You can now prepare and deliver the order yourself, or follow the carrier workflow if one is assigned.",
     studio_quote_fee_required: "Enter a delivery fee. Use zero for store pickup.",
     studio_quote_invalid_fee: "Enter a valid non-negative delivery fee.",
     studio_order_details_loading: "Loading order details",
