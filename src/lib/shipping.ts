@@ -1,5 +1,10 @@
 export type DeliveryType = "home" | "desk";
 
+/** Home delivery needs a customer address; store pickup uses the store address. */
+export function requiresDeliveryAddress(deliveryType: DeliveryType): boolean {
+  return deliveryType === "home";
+}
+
 /** رسوم التوصيل حسب الولاية — نفس المنطق السابق، منقول للاستخدام المشترك بين السلة والدفع */
 export function getShippingFee(wilayaId: number, deliveryType: DeliveryType) {
   if (deliveryType === "desk") return 0;
