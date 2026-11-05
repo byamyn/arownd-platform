@@ -9,6 +9,7 @@ import { formatDate } from "@/lib/market";
 import { showError, showSuccess } from "@/lib/feedback";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
+import { fetchShipmentByMerchantOrderId } from "@/lib/delivery";
 import { useTranslation } from "@/lib/i18n";
 
 type DeliveryType = "home" | "desk";
@@ -151,6 +152,19 @@ export function CustomerOrderTracking({
 }) {
   const { t } = useTranslation();
   const shouldTrackProgress = orderStatus === "confirmed" || orderStatus === "delivered";
+  const shipmentQuery = useQuery({
+    queryKey: ["merchant-order-shipment", merchantOrderId],
+    queryFn: () => fetchShipmentByMerchantOrderId(merchantOrderId),
+    enabled: deliveryType === "home" && shouldTrackProgress,
+  });
+  useRealtimeSubscription({
+    table: "shipments",
+    filter: `merchant_order_id=eq.${merchantOrderId}`,
+    queryKeys: [["merchant-order-shipment", merchantOrderId]],
+    enabled: deliveryType === "home" && shouldTrackProgress,
+  });
+  const carrierManaged =
+    deliveryType === "home" && !!shipmentQuery.data?.company_id;
   const query = useQuery({
     queryKey: ["merchant-order-tracking", merchantOrderId],
     queryFn: () => fetchMerchantOrderTracking(merchantOrderId),
@@ -167,6 +181,25 @@ export function CustomerOrderTracking({
 
   if (!shouldTrackProgress && !(deliveryType === "desk" && storeName)) {
     return null;
+  }
+  if (deliveryType === "home" && shouldTrackProgress) {
+    if (shipmentQuery.isLoading) {
+      return (
+        <section className="rounded-[var(--radius-card)] border border-border bg-card p-4">
+          <p className="text-sm text-muted-foreground">{t("loading")}</p>
+        </section>
+      );
+    }
+    if (shipmentQuery.isError) {
+      return (
+        <ErrorState
+          scope="customer-order-shipment-check"
+          error={shipmentQuery.error}
+          onRetry={() => void shipmentQuery.refetch()}
+        />
+      );
+    }
+    if (carrierManaged) return null;
   }
 
   return (
