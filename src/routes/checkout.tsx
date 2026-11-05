@@ -30,7 +30,7 @@ import {
   fetchMyProfile,
   primaryImage,
 } from "@/lib/sooqy";
-import { type DeliveryType } from "@/lib/shipping";
+import { requiresDeliveryAddress, type DeliveryType } from "@/lib/shipping";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { AppShell } from "@/components/sooqy/app-shell";
@@ -156,7 +156,7 @@ function CheckoutPage() {
   const stepValid: Record<number, boolean> = {
     0: bag.items.length > 0 && !!offers.data && problems.length === 0,
     1: !!wilayaId && !!commune.trim() && !!fullName.trim() && isValidDzPhone(phone.trim()),
-    2: !!address.trim(),
+    2: !requiresDeliveryAddress(deliveryType) || !!address.trim(),
     3: true,
   };
 
@@ -212,7 +212,7 @@ function CheckoutPage() {
       const contact = {
         fullName: fullName.trim(),
         phone: normalizePhone(phone.trim()),
-        address: address.trim(),
+        address: requiresDeliveryAddress(deliveryType) ? address.trim() : "",
       };
       // One parent order contains every cart line. PostgreSQL creates one
       // merchant suborder per store, so each store quotes delivery once.
@@ -504,48 +504,85 @@ function CheckoutPage() {
       )}
 
       {step === 2 && (
-        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
+        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4">
           <div className="flex items-center gap-2">
             <Truck className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">{t("checkout_delivery_heading")}</h2>
           </div>
+
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              aria-pressed={deliveryType === "home"}
+              onClick={() => setDeliveryType("home")}
+              className={cn(
+                "min-h-28 rounded-2xl border p-4 text-start transition",
+                deliveryType === "home"
+                  ? "border-accent-ink bg-primary-soft"
+                  : "border-border bg-background",
+              )}
+            >
+              <span className="block font-bold text-foreground">{t("checkout_delivery_home")}</span>
+              <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">
+                {t("checkout_delivery_home_desc")}
+              </span>
+            </button>
+            <button
+              type="button"
+              aria-pressed={deliveryType === "desk"}
+              onClick={() => setDeliveryType("desk")}
+              className={cn(
+                "min-h-28 rounded-2xl border p-4 text-start transition",
+                deliveryType === "desk"
+                  ? "border-accent-ink bg-primary-soft"
+                  : "border-border bg-background",
+              )}
+            >
+              <span className="block font-bold text-foreground">{t("checkout_delivery_store")}</span>
+              <span className="mt-2 block text-xs leading-relaxed text-muted-foreground">
+                {t("checkout_delivery_store_desc")}
+              </span>
+            </button>
+          </div>
+
           <div className="rounded-2xl border border-border bg-background p-3 text-sm">
             <p className="mb-2 text-xs font-bold text-muted-foreground">
-              بيانات التوصيل من ملفك الشخصي
+              {t("checkout_buyer_data")}
             </p>
             <div className="flex justify-between gap-3">
-              <span className="text-muted-foreground">الاسم</span>
+              <span className="text-muted-foreground">{t("checkout_name_placeholder")}</span>
               <strong>{fullName || "—"}</strong>
             </div>
             <div className="mt-1 flex justify-between gap-3">
-              <span className="text-muted-foreground">رقم الهاتف</span>
+              <span className="text-muted-foreground">{t("checkout_phone_placeholder")}</span>
               <strong dir="ltr">{phone || "—"}</strong>
             </div>
             <div className="mt-1 flex justify-between gap-3">
-              <span className="text-muted-foreground">الولاية والبلدية</span>
-              <strong>
-                {[
-                  profile.data?.commune,
-                  profile.data?.wilaya_id != null
-                    ? String(profile.data.wilaya_id).padStart(2, "0")
-                    : "",
-                ]
-                  .filter(Boolean)
-                  .join("، ") || "—"}
-              </strong>
+              <span className="text-muted-foreground">{t("checkout_commune_placeholder")}</span>
+              <strong>{commune || "—"}</strong>
             </div>
           </div>
-          <textarea
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder={t("checkout_address_detail_placeholder")}
-            rows={3}
-            className="w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
-          />
-          <p className="flex items-start gap-2 rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
-            <Truck className="mt-0.5 size-4 shrink-0 text-accent-ink" />
-            {t("checkout_fee_note")}
-          </p>
+
+          {requiresDeliveryAddress(deliveryType) ? (
+            <>
+              <textarea
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder={t("checkout_address_detail_placeholder")}
+                rows={3}
+                required
+                className="w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
+              />
+              <p className="flex items-start gap-2 rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
+                <Truck className="mt-0.5 size-4 shrink-0 text-accent-ink" />
+                {t("checkout_fee_note")}
+              </p>
+            </>
+          ) : (
+            <p className="rounded-2xl bg-primary-soft/70 p-3 text-xs leading-relaxed text-muted-foreground">
+              {t("checkout_pickup_hint")}
+            </p>
+          )}
         </section>
       )}
 
