@@ -74,7 +74,7 @@ These are code-level repairs with local regression coverage, not confirmation of
 
 ## Validation results
 
-Run from `artifacts/arownd`, in the requested order:
+Run from `repository root`, in the requested order:
 
 | Command | Result |
 |---|---|
@@ -89,12 +89,12 @@ No test failure occurred. The successful local checks do not clear the live E2E 
 ## Files changed in this QA continuation
 
 - `docs/REAL_USER_TEST_REPORT.md` — records test provenance, simulated journeys, outcomes, untested flows, and release blockers.
-- `artifacts/arownd/src/styles.css`, `src/components/sooqy/BottomNav.tsx`, and `StudioNav.tsx` — align shopper and merchant navigation surface, active-state, focus, and safe-area styling across viewport sizes.
-- `artifacts/arownd/src/components/sooqy/app-shell.tsx` and `src/routes/studio.index.tsx`, `delivery-dashboard.tsx`, and `orders.index.tsx` — standardize content framing for core customer and operations dashboards.
-- `artifacts/arownd/src/components/sooqy/page-header.tsx`, `src/routes/studio.add-product.tsx`, `studio.settings.tsx`, and `studio.orders.$orderId.tsx` — standardize shared page headers and merchant content framing.
-- `artifacts/arownd/src/routes/explore.tsx` — replace the misplaced map screen with product discovery/search; map remains under `/map`.
-- `artifacts/arownd/src/lib/dictionaries/explore.ts` — clarify product-only search copy, localize category names, and add localized result count.
-- `artifacts/arownd/src/test/journey.test.tsx` — assert the discovery route queries products and synchronizes the entered term with the URL.
+- `src/styles.css`, `src/components/sooqy/BottomNav.tsx`, and `StudioNav.tsx` — align shopper and merchant navigation surface, active-state, focus, and safe-area styling across viewport sizes.
+- `src/components/sooqy/app-shell.tsx` and `src/routes/studio.index.tsx`, `delivery-dashboard.tsx`, and `orders.index.tsx` — standardize content framing for core customer and operations dashboards.
+- `src/components/sooqy/page-header.tsx`, `src/routes/studio.add-product.tsx`, `studio.settings.tsx`, and `studio.orders.$orderId.tsx` — standardize shared page headers and merchant content framing.
+- `src/routes/explore.tsx` — replace the misplaced map screen with product discovery/search; map remains under `/map`.
+- `src/lib/dictionaries/explore.ts` — clarify product-only search copy, localize category names, and add localized result count.
+- `src/test/journey.test.tsx` — assert the discovery route queries products and synchronizes the entered term with the URL.
 
 The earlier browser QA run made no application-code, database, or migration changes; the subsequent discovery-route repair and its test are documented above. No database or migration changes were made.
 

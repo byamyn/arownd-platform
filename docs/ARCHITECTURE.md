@@ -2,7 +2,7 @@
 
 ## Scope and evidence
 
-This map describes the checked-in application under `artifacts/arownd`. It is based on the current source, package scripts, local tests, and the historical Supabase migration snapshot under `.migration-backup/supabase/migrations`. There is no canonical top-level `supabase/` directory in this checkout. The snapshot cannot establish which schema, RLS policies, functions, or settings are deployed now.
+This map describes the checked-in application under `repository root`. It is based on the current source, package scripts, local tests, and the historical Supabase migration snapshot under `.migration-backup/supabase/migrations`. There is no canonical top-level `supabase/` directory in this checkout. The snapshot cannot establish which schema, RLS policies, functions, or settings are deployed now.
 
 ## Runtime and core technologies
 

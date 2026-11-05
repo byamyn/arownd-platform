@@ -19,7 +19,7 @@
 
 ## Verification run
 
-Run these commands from `artifacts/arownd` in order:
+Run these commands from `repository root` in order:
 
 ```sh
 npx tsc --noEmit
