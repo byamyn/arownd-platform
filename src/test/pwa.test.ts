@@ -77,6 +77,7 @@ describe("PWA — الـ manifest", () => {
 
 describe("PWA — Service Worker", () => {
   const sw = readFileSync(resolve(PUBLIC_DIR, "sw.js"), "utf8");
+  const pwaClient = readFileSync(resolve(process.cwd(), "src/lib/pwa.ts"), "utf8");
 
   it("موجود ويdefined", () => {
     expect(existsSync(resolve(PUBLIC_DIR, "sw.js"))).toBe(true);
@@ -94,12 +95,32 @@ describe("PWA — Service Worker", () => {
     expect(sw).toContain('caches.match("/")');
   });
 
-  it("يخزّن البيانات مع حدّ عمر ومقاس", () => {
-    expect(sw).toContain("DATA_TTL_MS");
-    expect(sw).toContain("MAX_DATA_ENTRIES");
-    expect(sw).toContain('headers.set("X-Arownd-Cached-At"');
-    expect(sw).toContain("Date.now() - cachedAt <= DATA_TTL_MS");
-    expect(sw).toContain("await cache.delete(request)");
+  it("لا يخزّن استجابات API أو Supabase", () => {
+    expect(sw).not.toContain("DATA_CACHE");
+    expect(sw).not.toContain("DATA_TTL_MS");
+    expect(sw).not.toContain("X-Arownd-Cached-At");
+    expect(sw).not.toContain('url.pathname.includes("/rest/v1/")');
+    expect(sw).toContain('if (!isPublicAsset(url)) return;');
+  });
+
+  it("لا يخزّن صفحات التنقل التي قد تحتوي بيانات SSR خاصة", () => {
+    expect(sw).toContain("HTML may contain user-specific SSR state");
+    expect(sw).toContain('caches.match("/offline.html")');
+    expect(sw).not.toContain('cache.put("/", fresh.clone())');
+    expect(sw).toContain('"/offline.html"');
+  });
+
+  it("يستخدم build ID لتدوير مساحة الكاش تلقائيًا", () => {
+    expect(sw).toContain('searchParams.get("build")');
+    expect(pwaClient).toContain('__AROWND_BUILD_ID__');
+    expect(pwaClient).toContain('searchParams.set("build", __AROWND_BUILD_ID__)');
+  });
+
+  it("يمسح كاش البيانات القديمة عند تسجيل الخروج", () => {
+    expect(sw).toContain('event.data === "CLEAR_USER_DATA"');
+    expect(sw).toContain('name.startsWith("arownd-data-")');
+    expect(pwaClient).toContain('worker.postMessage("CLEAR_USER_DATA")');
+    expect(pwaClient).toContain('worker.postMessage("CLEAR_DATA_CACHE")');
   });
 
   it("يحذف الكاش القديم عند التفعيل", () => {

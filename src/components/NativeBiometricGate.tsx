@@ -3,6 +3,7 @@ import { useNavigate } from "@tanstack/react-router";
 import { Fingerprint, LockKeyhole, LogOut, RefreshCw } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { isAndroidNativePlatform } from "@/lib/platform";
+import { clearUserScopedCaches } from "@/lib/pwa";
 import { authenticateNativeBiometric, getNativeBiometricStatus } from "@/lib/native-biometric";
 
 type GateState = "checking" | "locked" | "unlocked";
@@ -111,6 +112,7 @@ export function NativeBiometricGate() {
     try {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      await clearUserScopedCaches();
       setGateState("unlocked");
       await navigate({ to: "/auth", replace: true });
     } catch {

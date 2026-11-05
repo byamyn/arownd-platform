@@ -21,6 +21,12 @@ deriveClientEnv("VITE_SUPABASE_URL", "SUPABASE_URL");
 deriveClientEnv("VITE_SUPABASE_PUBLISHABLE_KEY", "SUPABASE_PUBLISHABLE_KEY");
 deriveClientEnv("VITE_SUPABASE_PROJECT_ID", "SUPABASE_PROJECT_ID");
 
+const buildId =
+  process.env["VERCEL_GIT_COMMIT_SHA"] ??
+  process.env["GITHUB_SHA"] ??
+  process.env["VITE_BUILD_ID"] ??
+  `local-${Date.now()}`;
+
 const isBuild = process.argv.includes("build");
 const rawPort = process.env["PORT"] ?? (isBuild ? "5173" : undefined);
 if (!rawPort) {
@@ -39,6 +45,7 @@ if (!basePath) {
 export default defineConfig(async ({ mode }): Promise<import("vite").UserConfig> => {
   const { tanstackStart } = await import("@tanstack/react-start/plugin/vite");
   return {
+    define: { __AROWND_BUILD_ID__: JSON.stringify(buildId) },
     base: basePath,
     plugins: [
       tanstackStart({

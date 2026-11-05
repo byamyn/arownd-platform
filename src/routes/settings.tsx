@@ -34,6 +34,7 @@ import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
 import { isAndroidNativePlatform } from "@/lib/platform";
+import { clearUserScopedCaches } from "@/lib/pwa";
 import { getNativeBiometricStatus, setNativeBiometricEnabled } from "@/lib/native-biometric";
 import { addNativeUpdateListener, checkNativeAppUpdate, completeNativeAppUpdate, startNativeAppUpdate } from "@/lib/native-app-update";
 
@@ -181,6 +182,7 @@ function SettingsPage() {
       }
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
+      await clearUserScopedCaches();
       await qc.invalidateQueries();
       navigate({ to: "/" });
     } catch (error) {

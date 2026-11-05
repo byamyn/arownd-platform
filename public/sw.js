@@ -1,31 +1,31 @@
 /**
  * Service Worker — Arownd
  *
- * الاستراتيجية:
- *  • هيكل التطبيق (HTML/JS/CSS): precache عند التثبيت + stale-while-revalidate
- *  • الأصول الثابتة (صور/خطوط/خريطة): cache-first مع حدّ عمر
- *  • البيانات (Supabase API): network-first مع fallback للنسخة المخزّنة
- *  • رسائل التطبيق: "update available" + "skip waiting" عند الطلب
- *
- * الهدف: التطبيق يفتح بسرعة ويعمل (بالقراءة) حتى دون اتصال.
+ * الخصوصية:
+ * - لا نخزّن استجابات API أو Supabase أو أي استجابة صفحة HTML.
+ * - الصفحة الوحيدة المتاحة دون اتصال ثابتة وعامة ولا تتضمن بيانات حساب.
+ * - ملفات التطبيق المجمّعة والأصول العامة فقط قابلة للتخزين.
+ * - تتغير مساحة الكاش تلقائيًا مع كل build عبر معرّف الإصدار في URL.
  */
 
-const VERSION = "v1";
+const VERSION =
+  new URL(self.location.href).searchParams.get("build")?.replace(/[^a-zA-Z0-9._-]/g, "").slice(0, 64) ||
+  "dev";
 const SHELL_CACHE = `arownd-shell-${VERSION}`;
 const ASSET_CACHE = `arownd-assets-${VERSION}`;
-const DATA_CACHE = `arownd-data-${VERSION}`;
 const MAX_ASSETS = 80;
-const MAX_DATA_ENTRIES = 40;
-const DATA_TTL_MS = 24 * 60 * 60 * 1000; // يوم
 
-/** أصول الهيكل — تُخزَّن مسبقًا عند التثبيت. */
-const SHELL_ASSETS = ["/", "/manifest.webmanifest", "/icon-192.png", "/icon-512.png"];
+const SHELL_ASSETS = [
+  "/offline.html",
+  "/manifest.webmanifest",
+  "/icon-192.png",
+  "/icon-512.png",
+];
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
     (async () => {
       const cache = await caches.open(SHELL_CACHE);
-      // نتجاهل فشل أي أصل منفرد حتى لا يفشل التثبيت كله.
       await Promise.allSettled(SHELL_ASSETS.map((url) => cache.add(url)));
     })(),
   );
@@ -34,45 +34,55 @@ self.addEventListener("install", (event) => {
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     (async () => {
-      const keep = new Set([SHELL_CACHE, ASSET_CACHE, DATA_CACHE]);
+      const keep = new Set([SHELL_CACHE, ASSET_CACHE]);
       const names = await caches.keys();
-      await Promise.all(names.filter((n) => !keep.has(n)).map((n) => caches.delete(n)));
+      await Promise.all(
+        names
+          .filter((name) => name.startsWith("arownd-") && !keep.has(name))
+          .map((name) => caches.delete(name)),
+      );
       await self.clients.claim();
     })(),
   );
 });
 
+async function clearLegacyUserCaches() {
+  const names = await caches.keys();
+  await Promise.all(
+    names
+      .filter((name) => name.startsWith("arownd-data-"))
+      .map((name) => caches.delete(name)),
+  );
+}
+
 self.addEventListener("message", (event) => {
-  if (event.data === "SKIP_WAITING") self.skipWaiting();
-  if (event.data === "CLEAR_DATA_CACHE") {
-    event.waitUntil(caches.delete(DATA_CACHE));
+  if (event.data === "SKIP_WAITING") {
+    self.skipWaiting();
+    return;
+  }
+
+  // Keep the old message name supported while older tabs/workers are replaced.
+  if (event.data === "CLEAR_USER_DATA" || event.data === "CLEAR_DATA_CACHE") {
+    event.waitUntil(clearLegacyUserCaches());
   }
 });
 
-/** يحذف أقدم المدخلات عندما يتجاوز الكاش الحدّ الأقصى. */
 async function trimCache(cacheName, max) {
   const cache = await caches.open(cacheName);
   const keys = await cache.keys();
   if (keys.length <= max) return;
-  for (const key of keys.slice(0, keys.length - max)) {
-    await cache.delete(key);
-  }
+
+  await Promise.all(keys.slice(0, keys.length - max).map((key) => cache.delete(key)));
 }
 
-function isAsset(url) {
-  return (
-    url.pathname.startsWith("/_build/") ||
-    url.pathname.startsWith("/assets/") ||
-    /\.(?:js|css|png|jpe?g|webp|svg|woff2?|ico)$/i.test(url.pathname)
-  );
+function isPublicAsset(url) {
+  return url.pathname.startsWith("/_build/") || url.pathname.startsWith("/assets/");
 }
 
-function isData(url) {
-  return (
-    url.pathname.includes("/rest/v1/") ||
-    url.pathname.includes("/auth/v1/") ||
-    url.pathname.includes("/functions/v1/")
-  );
+function isPublicCacheResponse(response) {
+  if (!response.ok || response.type === "opaque") return false;
+  const cacheControl = response.headers.get("Cache-Control") ?? "";
+  return !/private|no-store|no-cache/i.test(cacheControl);
 }
 
 self.addEventListener("fetch", (event) => {
@@ -80,26 +90,23 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
-
-  // لا نتدخل في النطاقات الخارجية (Supabase يُعالَج عبر isData إن كان على نفس النطاق).
   if (url.origin !== self.location.origin) return;
 
-  // 1) التنقّل: network-first مع fallback لنسخة الهيكل المخزّنة.
+  // Never intercept requests carrying explicit credentials or opting out of caching.
+  if (request.headers.has("authorization") || request.cache === "no-store") return;
+
   if (request.mode === "navigate") {
     event.respondWith(
       (async () => {
         try {
-          const fresh = await fetch(request);
-          const cache = await caches.open(SHELL_CACHE);
-          cache.put("/", fresh.clone());
-          return fresh;
+          // HTML may contain user-specific SSR state: always use the network and never cache it.
+          return await fetch(request);
         } catch {
-          const cached = await caches.match("/");
           return (
-            cached ||
-            new Response("<!doctype html><meta charset=utf-8><title>Arownd</title>", {
-              status: 200,
-              headers: { "Content-Type": "text/html; charset=utf-8" },
+            (await caches.match("/offline.html")) ||
+            new Response("الاتصال بالإنترنت غير متاح. أعد الاتصال وحاول مجددًا.", {
+              status: 503,
+              headers: { "Content-Type": "text/plain; charset=utf-8" },
             })
           );
         }
@@ -108,66 +115,27 @@ self.addEventListener("fetch", (event) => {
     return;
   }
 
-  // 2) البيانات: network-first، ثم الكاش (مع حدّ عمر).
-  if (isData(url)) {
-    event.respondWith(
-      (async () => {
-        const cache = await caches.open(DATA_CACHE);
-        try {
-          const fresh = await fetch(request);
-          if (fresh.ok) {
-            const cachedResponse = fresh.clone();
-            const headers = new Headers(cachedResponse.headers);
-            headers.set("X-Arownd-Cached-At", String(Date.now()));
-            const cacheableResponse = new Response(cachedResponse.body, {
-              status: cachedResponse.status,
-              statusText: cachedResponse.statusText,
-              headers,
-            });
-            await cache.put(request, cacheableResponse);
-            void trimCache(DATA_CACHE, MAX_DATA_ENTRIES);
-          }
-          return fresh;
-        } catch {
-          const cached = await cache.match(request);
-          if (cached) {
-            const cachedAt = Number(cached.headers.get("X-Arownd-Cached-At"));
-            const isFresh = Number.isFinite(cachedAt) && Date.now() - cachedAt <= DATA_TTL_MS;
-            if (isFresh) return cached;
-            await cache.delete(request);
-          }
-          return new Response(JSON.stringify({ error: "offline" }), {
-            status: 503,
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-      })(),
-    );
-    return;
-  }
+  if (!isPublicAsset(url)) return;
 
-  // 3) الأصول: cache-first مع تحديث في الخلفية.
-  if (isAsset(url)) {
-    event.respondWith(
-      (async () => {
-        const cache = await caches.open(ASSET_CACHE);
-        const cached = await cache.match(request);
-        const network = fetch(request)
-          .then((response) => {
-            if (response.ok) {
-              cache.put(request, response.clone());
-              void trimCache(ASSET_CACHE, MAX_ASSETS);
-            }
-            return response;
-          })
-          .catch(() => undefined);
-        return cached || (await network) || new Response("", { status: 504 });
-      })(),
-    );
-  }
+  event.respondWith(
+    (async () => {
+      const cache = await caches.open(ASSET_CACHE);
+      const cached = await cache.match(request);
+      const network = fetch(request)
+        .then((response) => {
+          if (isPublicCacheResponse(response)) {
+            void cache.put(request, response.clone());
+            void trimCache(ASSET_CACHE, MAX_ASSETS);
+          }
+          return response;
+        })
+        .catch(() => undefined);
+
+      return cached || (await network) || new Response("", { status: 504 });
+    })(),
+  );
 });
 
-// مزامنة في الخلفية: تُرسل المراجعات عندما تعود الشبكة.
 self.addEventListener("sync", (event) => {
   if (event.tag === "arownd-sync") {
     event.waitUntil(

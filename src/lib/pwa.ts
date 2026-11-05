@@ -1,3 +1,5 @@
+declare const __AROWND_BUILD_ID__: string;
+
 /**
  * طبقة PWA — تسجيل Service Worker + إشعار التحديث + زر التثبيت.
  *
@@ -60,6 +62,30 @@ function notifyUpdate() {
 }
 
 /** يفعّل التحديث فورًا (المستخدم اختار «تحديث»). */
+/**
+ * يمسح أي كاش بيانات قديم عند إنهاء الجلسة.
+ * تُرسل الرسالتان للتوافق مع Service Workers السابقة التي كانت تستخدم CLEAR_DATA_CACHE.
+ */
+export async function clearUserScopedCaches(): Promise<void> {
+  if (typeof navigator === "undefined" || !("serviceWorker" in navigator)) return;
+
+  try {
+    const registration = await navigator.serviceWorker.getRegistration("/");
+    const workers = new Set(
+      [navigator.serviceWorker.controller, registration?.active, registration?.waiting].filter(
+        (worker): worker is ServiceWorker => worker !== null && worker !== undefined,
+      ),
+    );
+
+    workers.forEach((worker) => {
+      worker.postMessage("CLEAR_USER_DATA");
+      worker.postMessage("CLEAR_DATA_CACHE");
+    });
+  } catch {
+    // Logout must not fail because a browser does not support Service Worker cache cleanup.
+  }
+}
+
 export function applyUpdate(): void {
   navigator.serviceWorker?.getRegistration().then((reg) => {
     reg?.waiting?.postMessage("SKIP_WAITING");
@@ -97,8 +123,11 @@ export function registerServiceWorker(): void {
       }
     });
 
+    const serviceWorkerUrl = new URL("/sw.js", window.location.origin);
+    serviceWorkerUrl.searchParams.set("build", __AROWND_BUILD_ID__);
+
     navigator.serviceWorker
-      .register("/sw.js", { scope: "/" })
+      .register(`${serviceWorkerUrl.pathname}${serviceWorkerUrl.search}`, { scope: "/" })
       .then((registration) => {
         // تحديث متاح الآن
         if (registration.waiting) notifyUpdate();
