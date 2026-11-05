@@ -161,14 +161,14 @@ export function CustomerOrderTracking({
   const events = query.data ?? [];
   const steps = getSteps(deliveryType, t);
 
-  if (query.isLoading) {
-    return (
-      <section className="rounded-[var(--radius-card)] border border-border bg-card p-4">
-        <p className="text-sm text-muted-foreground">{t("loading")}</p>
-      </section>
-    );
+  if (
+    !query.isLoading &&
+    !query.isError &&
+    events.length === 0 &&
+    !(deliveryType === "desk" && storeName)
+  ) {
+    return null;
   }
-  if (!query.isError && events.length === 0) return null;
 
   return (
     <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
@@ -182,13 +182,15 @@ export function CustomerOrderTracking({
           </p>
         </div>
       )}
-      {query.isError ? (
+      {query.isLoading ? (
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
+      ) : query.isError ? (
         <ErrorState
           scope="customer-order-tracking"
           error={query.error}
           onRetry={() => query.refetch()}
         />
-      ) : (
+      ) : events.length > 0 ? (
         <ol className="space-y-3">
           {steps.map((step) => {
             const event = events.find((item) => item.status === step.status);
@@ -218,7 +220,7 @@ export function CustomerOrderTracking({
             );
           })}
         </ol>
-      )}
+      ) : null}
     </section>
   );
 }
