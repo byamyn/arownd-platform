@@ -82,3 +82,11 @@ The remote GitHub API workflow cannot execute these local commands. Treat checks
 
 - GitHub Actions created a job for the restored gate but both initial attempts ended before a runner was assigned (`runner_id=0`, no steps recorded). This is not evidence of a TypeScript, lint, test, or build failure; the cause is not exposed in the available run metadata.
 - All five validation commands remain unverified until a runner executes them successfully.
+
+
+### Latest validation update
+
+- The release-gate run and full-history Gitleaks run triggered from the latest documentation commit both ended with failed jobs before a runner was assigned (`runner_id=0`, `runner_name` empty, and no executed steps).
+- The available GitHub Actions metadata exposes no runner error message or job log, so the cause remains undetermined.
+- This does **not** establish that a secret was found or that TypeScript, lint, UI checks, tests, or build failed; none of those steps started.
+- Treat all code checks and the history scan as pending. Do not approve Phase 0's CI gate until GitHub Actions can actually execute the jobs and produce results.
