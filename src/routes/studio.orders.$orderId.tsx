@@ -64,6 +64,18 @@ function StudioOrderDetailPage() {
     enabled: !!user && !!orderId,
   });
 
+  useRealtimeSubscription({
+    table: "shipments",
+    filter: merchantOrderForShipment?.id
+      ? `merchant_order_id=eq.${merchantOrderForShipment.id}`
+      : undefined,
+    queryKeys: [["merchant-order-shipment", merchantOrderForShipment?.id]],
+    enabled:
+      !!user &&
+      !!merchantOrderForShipment?.id &&
+      orderQuery.data?.delivery_type === "home",
+  });
+
   if (!ready) return null;
   if (!user) {
     return (
