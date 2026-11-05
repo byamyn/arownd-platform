@@ -361,7 +361,7 @@ function StudioOrderDetailPage() {
                   </div>
                 )}
               {order.delivery_type === "home" &&
-                merchantOrderStatus === "delivered" &&
+                (merchantOrderStatus === "confirmed" || merchantOrderStatus === "delivered") &&
                 merchantOrderShipment.isError && (
                   <ErrorState
                     scope="studio:order:shipment-check"
