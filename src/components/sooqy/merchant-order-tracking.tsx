@@ -137,9 +137,15 @@ export function MerchantOrderTracking({
 export function CustomerOrderTracking({
   merchantOrderId,
   deliveryType,
+  storeName,
+  storeAddress,
+  storeCommune,
 }: {
   merchantOrderId: string;
   deliveryType: DeliveryType;
+  storeName?: string | null;
+  storeAddress?: string | null;
+  storeCommune?: string | null;
 }) {
   const { t } = useTranslation();
   const query = useQuery({
@@ -167,6 +173,15 @@ export function CustomerOrderTracking({
   return (
     <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
       <h2 className="font-bold text-foreground">{t("customer_tracking_heading")}</h2>
+      {deliveryType === "desk" && storeName && (
+        <div className="rounded-xl bg-primary-soft/70 p-3">
+          <p className="text-xs font-semibold text-muted-foreground">{t("customer_pickup_location")}</p>
+          <p className="mt-1 font-bold text-foreground">{storeName}</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {[storeAddress, storeCommune].filter(Boolean).join(" · ") || t("customer_pickup_address_missing")}
+          </p>
+        </div>
+      )}
       {query.isError ? (
         <ErrorState
           scope="customer-order-tracking"
