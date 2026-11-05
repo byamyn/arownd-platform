@@ -137,36 +137,35 @@ export function MerchantOrderTracking({
 export function CustomerOrderTracking({
   merchantOrderId,
   deliveryType,
+  orderStatus,
   storeName,
   storeAddress,
   storeCommune,
 }: {
   merchantOrderId: string;
   deliveryType: DeliveryType;
+  orderStatus: string;
   storeName?: string | null;
   storeAddress?: string | null;
   storeCommune?: string | null;
 }) {
   const { t } = useTranslation();
+  const shouldTrackProgress = orderStatus === "confirmed" || orderStatus === "delivered";
   const query = useQuery({
     queryKey: ["merchant-order-tracking", merchantOrderId],
     queryFn: () => fetchMerchantOrderTracking(merchantOrderId),
+    enabled: shouldTrackProgress,
   });
   useRealtimeSubscription({
     table: "merchant_order_tracking_events",
     filter: `merchant_order_id=eq.${merchantOrderId}`,
     queryKeys: [["merchant-order-tracking", merchantOrderId]],
-    enabled: !!merchantOrderId,
+    enabled: shouldTrackProgress,
   });
   const events = query.data ?? [];
   const steps = getSteps(deliveryType, t);
 
-  if (
-    !query.isLoading &&
-    !query.isError &&
-    events.length === 0 &&
-    !(deliveryType === "desk" && storeName)
-  ) {
+  if (!shouldTrackProgress && !(deliveryType === "desk" && storeName)) {
     return null;
   }
 
@@ -193,7 +192,11 @@ export function CustomerOrderTracking({
           error={query.error}
           onRetry={() => query.refetch()}
         />
-      ) : events.length > 0 ? (
+      ) : orderStatus === "delivered" && events.length === 0 ? (
+        <p className="rounded-xl bg-primary-soft p-3 text-sm font-semibold">
+          {t("merchant_tracking_complete")}
+        </p>
+      ) : shouldTrackProgress ? (
         <ol className="space-y-3">
           {steps.map((step) => {
             const event = events.find((item) => item.status === step.status);
