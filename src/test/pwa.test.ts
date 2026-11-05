@@ -90,9 +90,10 @@ describe("PWA — Service Worker", () => {
     expect(sw).toContain('addEventListener("fetch"');
   });
 
-  it("يستخدم network-first للتنقّل (يضمن حداثة المحتوى) مع fallback", () => {
+  it("يجلب صفحات التنقّل من الشبكة ويستخدم صفحة عامة عند انقطاعها", () => {
     expect(sw).toContain('request.mode === "navigate"');
-    expect(sw).toContain('caches.match("/")');
+    expect(sw).toContain('caches.match("/offline.html")');
+    expect(sw).not.toContain('caches.match("/")');
   });
 
   it("لا يخزّن استجابات API أو Supabase", () => {
