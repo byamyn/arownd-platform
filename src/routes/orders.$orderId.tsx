@@ -237,7 +237,10 @@ function TrackPage() {
       <div className="flex items-start gap-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
         <MapPin className="mt-0.5 size-5 shrink-0 text-accent-ink" />
         <div className="text-sm">
-          <p className="font-bold text-foreground">{order.full_name}</p>
+          <p className="text-xs font-semibold text-muted-foreground">
+            {t(order.delivery_type === "desk" ? "track_buyer_info_heading" : "track_delivery_address_heading")}
+          </p>
+          <p className="mt-1 font-bold text-foreground">{order.full_name}</p>
           <p className="mt-0.5 text-muted-foreground">
             {order.wilaya?.name_ar ?? t("track_wilaya_fallback", { id: order.wilaya_id })} ·{" "}
             {order.commune}
