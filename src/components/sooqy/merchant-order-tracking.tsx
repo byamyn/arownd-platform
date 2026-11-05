@@ -13,7 +13,9 @@ import { useTranslation } from "@/lib/i18n";
 
 type DeliveryType = "home" | "desk";
 
-function getSteps(deliveryType: DeliveryType, t: (key: string) => string) {
+type TranslationFunction = ReturnType<typeof useTranslation>["t"];
+
+function getSteps(deliveryType: DeliveryType, t: TranslationFunction) {
   return [
     { status: "preparing" as const, label: t("merchant_tracking_preparing") },
     {
