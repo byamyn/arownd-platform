@@ -50,3 +50,35 @@ npm run build
 ```
 
 The remote GitHub API workflow cannot execute these local commands. Treat checks as pending until the restored CI run reports results. Do not claim a passing result without that evidence.
+
+
+## Execution log — current branch
+
+### B1 — source recovery completed; live verification blocked
+
+- Recovered the historical `supabase/` tree at the repository root: 68 SQL migrations, one Edge Function, and the historical CLI config.
+- Deliberately did not restore the historical `seed.sql` into the active `supabase/` directory because it contains demo records.
+- Added `supabase/RESTORATION_STATUS.md` explaining the provenance and the approval gate.
+- No Supabase project was linked or queried. No `db diff`, baseline migration, migration execution, seed execution, or database write was performed.
+- The project reference in the copied config is historical metadata only; the owner must explicitly confirm the authorized non-production project before any remote comparison.
+
+### B7 — partial
+
+- Restored root `.github/workflows/`, `android/`, `ios/`, and `capacitor.config.json`.
+- Added a single Node 22 + pnpm release-gate workflow. The old npm-based CI workflow and the legacy workflow that pushed generated changes directly to `main` were not restored.
+- Updated the three manual Android workflows to use Node 22 and pnpm. They now fail fast until `@capacitor/cli` and `@capacitor/android` are declared in the active manifest; the current root manifest does not declare either package. This prevents `npx` from silently downloading an unpinned CLI.
+- Static dependency review: MapLibre is actively imported; no active-source imports of Leaflet or React-Leaflet were found. `pg` is used by the separate `lib/db` workspace package. `nitro/vite` is imported by the active Vite config. The unused-looking package entries will not be pruned until the pnpm lockfile can be regenerated and the app is verified.
+- The active root `package.json` declares MIT while the backup contains proprietary-license drafts; the final licensing choice is explicitly an owner decision and has not been changed.
+
+### B8 — code change committed; runtime validation pending
+
+- Service Worker no longer caches API/Supabase responses or navigation HTML that may contain SSR user state.
+- Offline fallback now serves a static, non-personalized `/offline.html`.
+- Cache namespaces now rotate automatically from the build ID injected by Vite. Previous Arownd cache namespaces are deleted on worker activation.
+- Both normal settings logout and native biometric logout send cleanup messages for legacy user-data caches.
+- Added/updated Vitest source assertions. They have not been executed in this environment.
+
+### CI evidence
+
+- GitHub Actions created a job for the restored gate but both initial attempts ended before a runner was assigned (`runner_id=0`, no steps recorded). This is not evidence of a TypeScript, lint, test, or build failure; the cause is not exposed in the available run metadata.
+- All five validation commands remain unverified until a runner executes them successfully.

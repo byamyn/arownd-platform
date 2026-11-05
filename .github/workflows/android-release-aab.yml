@@ -85,11 +85,16 @@ jobs:
             fi
           done
 
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 26
-          cache: npm
+          node-version: 22
+          cache: pnpm
 
       - name: Setup Java
         uses: actions/setup-java@v4
@@ -97,17 +102,20 @@ jobs:
           distribution: temurin
           java-version: "21"
 
+      - name: Verify Capacitor CLI and Android platform dependencies
+        run: |
+          node -e "const p=require('./package.json'); const has=(name)=>Boolean(p.dependencies?.[name] || p.devDependencies?.[name]); const missing=['@capacitor/cli','@capacitor/android'].filter((name)=>!has(name)); if(missing.length){console.error('Missing declared native build dependencies: '+missing.join(', ')); process.exit(1)}"
       - name: Install dependencies
-        run: npm ci
+        run: pnpm install --frozen-lockfile
 
       - name: Build Capacitor web assets
         env:
           VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
           VITE_SUPABASE_PUBLISHABLE_KEY: ${{ secrets.VITE_SUPABASE_PUBLISHABLE_KEY }}
-        run: npm run build:capacitor
+        run: pnpm run build:capacitor
 
       - name: Sync Android project
-        run: npx cap sync android
+        run: pnpm exec cap sync android
 
       - name: Restore Android upload keystore
         env:
