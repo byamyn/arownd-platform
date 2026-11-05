@@ -307,21 +307,14 @@ begin
       and new.company_id is distinct from old.company_id;
   end if;
 
-  if company_changed and new.merchant_order_id is not null then
-    -- Serialize carrier assignment with the merchant tracking RPC, which
-    -- locks the same suborder before appending a timeline event.
-    perform 1
-    from public.merchant_orders mo
-    where mo.id = new.merchant_order_id
-    for update;
-
-    if exists (
-      select 1
-      from public.merchant_order_tracking_events e
-      where e.merchant_order_id = new.merchant_order_id
-    ) then
-      raise exception 'merchant_fulfillment_already_started';
-    end if;
+  if company_changed
+     and new.merchant_order_id is not null
+     and exists (
+       select 1
+       from public.merchant_order_tracking_events e
+       where e.merchant_order_id = new.merchant_order_id
+     ) then
+    raise exception 'merchant_fulfillment_already_started';
   end if;
 
   return new;
