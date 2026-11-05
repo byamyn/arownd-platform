@@ -1,117 +1,71 @@
-# Arownd — Architecture overview
+# Arownd architecture and product map
 
-> **Project:** Arownd  
-> **Owner:** byamyn  
-> **Repository:** [byamyn/arownd-platform](https://github.com/byamyn/arownd-platform)  
-> **Status:** Repository-level architecture map; verify implementation before changing runtime boundaries.
+## Scope and evidence
 
-## 1. Product boundaries
+This map describes the checked-in application under `artifacts/arownd`. It is based on the current source, package scripts, local tests, and the historical Supabase migration snapshot under `.migration-backup/supabase/migrations`. There is no canonical top-level `supabase/` directory in this checkout. The snapshot cannot establish which schema, RLS policies, functions, or settings are deployed now.
 
-Arownd is a local-commerce platform for Algeria. The repository models four platform roles:
+## Runtime and core technologies
 
-- **Shopper:** discovery, products, offers, bag, checkout, orders and reservations.
-- **Merchant:** store, products, inventory, offers and merchant orders.
-- **Delivery company:** delivery-company profile, coverage and shipment workflows where enabled.
-- **Platform administration:** privileged operational and moderation capabilities.
+- React 19 and TypeScript with Vite 8.
+- TanStack Start/Router for route generation, navigation, SSR, and client hydration.
+- TanStack Query for asynchronous data and invalidation.
+- Supabase JS for auth, Postgres/PostgREST, RPC, realtime, and storage.
+- Tailwind CSS 4 and Radix UI; shared primitives live in `src/components/ui`.
+- Vitest, Testing Library, and jsdom for unit and UI journey coverage.
+- Sentry initialization in `src/utils/sentry.ts`; native integrations are guarded through Capacitor.
+- No framework or package substitution is proposed.
 
-The presence of a route or database object does not prove that the workflow is enabled or production-ready. Check the current UI, server authorization and database policies together.
+## Application layers
 
-## 2. Runtime shape
+| Layer | Location | Responsibility |
+|---|---|---|
+| Route and page composition | `src/routes`, `src/routeTree.gen.ts` | Customer discovery, product, bag, checkout, orders, merchant studio, delivery, profile/settings, and static content. Route tree is generated; edit route source, not generated output. |
+| Shared product UI | `src/components/sooqy` | App shell, navigation, cards, maps, feedback states, uploaders, tracking, selectors, and mobile interactions. |
+| Primitive UI | `src/components/ui` | Radix-based controls and accessible primitive wrappers. |
+| Commerce/domain logic | `src/lib/sooqy.ts`, `bag.tsx`, `bag-check.ts`, `delivery.ts`, `shipping.ts` | Typed data access and reusable product/cart/order/delivery operations. `pickBestOffer()` is the shared offer selector; `evaluateBag()` is the shared current-price/stock evaluator used by bag and checkout. |
+| Cross-cutting state | `src/lib/auth.tsx`, `i18n.ts`, `theme.tsx`, `geo.ts`, `favorites.ts`, `conn.ts` | Session, locale, theme, location, favorites, and connectivity. |
+| Backend adapter | `src/integrations/supabase` | Supabase client, auth storage, and generated database typings. Client calls must not be treated as authorization; secure enforcement belongs in reviewed server/database policies and RPCs. |
+| Styles | `src/styles.css`, `src/styles/theme.css` | Tailwind entry and Arownd design tokens/component classes. |
+| Tests | `src/**/*.test.*`, `src/test` | Domain tests and UI journeys. `src/test/supabase-fake.ts` is test-only; never use its fixtures as production fallbacks. |
 
-The current application is a React 19 + TypeScript application built with Vite 8 and TanStack Start/Router.
+## Navigation, language, theme, and visual system
 
-- `src/router.tsx` and `src/routeTree.gen.ts` define the client routing setup and generated route tree.
-- `src/routes/` contains route-level application screens.
-- `src/start.ts` configures TanStack Start middleware, including the server-function CSRF middleware and Supabase auth attachment.
-- `src/server.ts` wraps the TanStack server entry and applies request locale handling and SSR error normalization.
-- `api/index.ts` is the Vercel Node serverless entry that serves client assets and forwards dynamic requests to the bundled server application.
-- `vite.config.ts` configures TanStack Start, React, Tailwind CSS and the Capacitor SPA build mode.
+- `__root.tsx` provides the app shell, providers, error handling, head metadata, service/native integrations, and responsive viewport.
+- `BottomNav`, `AccountBottomNav`, and `StudioNav` are role/context-aware variants. Shopper and merchant destinations remain role-specific, while the shared `app-bottom-nav*` utilities enforce one surface, active state, focus treatment, touch target and safe-area layout across mobile and desktop. Keep destinations and labels role-appropriate; do not fork the visual shell.
+- `AppShell` is the shared page frame. Use its standard content width for shopper/account pages and its `width="wide"` workspace frame for data-dense merchant and delivery dashboards; both share gutters, canvas and bottom-navigation clearance.
+- `PageHeader` is the shared sticky route header; it uses the same page gutter, translucent surface, border and focus-safe controls across feature areas.
+- `src/styles/theme.css` defines semantic CSS custom properties, typography, spacing, radii, touch targets, feedback colors, and light/dark palettes. Existing UI wrappers and shared components use these tokens. A remaining concern is uneven adoption: many route components still have route-local markup/classes and hardcoded Arabic copy.
+- `src/lib/i18n.ts` and `src/lib/dictionaries` provide the translation layer. Arabic is the default market language, with RTL direction set at the root; English availability is gated by `ENGLISH_ENABLED`. Run `i18n-parity` and locale tests when changing dictionaries or language behavior.
+- `ThemeProvider` supports system, light, and dark modes and preserves the legacy SooQy storage key.
+- Tailwind logical utilities (`start`/`end`, `ms`/`me`) are preferred for RTL. Phone numbers, map coordinates, and other inherently directional values should explicitly set their direction.
 
-Do not bypass the server middleware or create a second authorization path for convenience.
+## Product and role map
 
-## 3. Data and service boundaries
+| Role / area | Source entry points | Current implementation evidence | Release status |
+|---|---|---|---|
+| Shopper discovery | `index.tsx`, `explore.tsx`, `category.$catId.tsx`, `stores.index.tsx`, `stores.$storeId.tsx`, `map.tsx`, `latest.tsx` | `/explore` is the paginated, searchable product catalog; `/stores` searches stores; `/map` is the map/place discovery view. Uses `searchProducts`, variant-aware product cards, URL-backed search, sort and stock filters. | Product search now has Vitest and read-only non-production browser coverage; ranking, relevance, full store-name search, and live performance require further validation. |
+| Product and pricing | `products.$productId.tsx`, `lib/sooqy.ts`, `lib/bag-check.ts` | Offer comparison, stock badges, variants, current-price validation, shared `pickBestOffer()` and `evaluateBag()`. | Core client path present; inventory correctness is not proven without the live non-production RPC/schema. |
+| Bag and checkout | `bag.tsx`, `checkout.tsx`, `orders.index.tsx`, `orders.$orderId.tsx` | Variant-aware local bag, shared stock/price evaluation, COD UI, idempotency key and server RPC call, customer order/shipment views. | Mock UI journey verifies interaction only; no real checkout or persistence tested here. |
+| Merchant | `studio.index.tsx`, `studio.add-product.tsx`, `studio.settings.tsx`, `studio.orders.$orderId.tsx`, `studio.shipments.tsx` | Store setup, product management, inventory, order quote/rejection/completion, tracking and COD UI. | Source and some local journeys exist; merchant CRUD, authorization and cross-party updates remain unverified against non-production. |
+| Delivery carrier | `delivery-register.tsx`, `delivery-dashboard.tsx`, `lib/delivery.ts` | Company enrollment, approval gate, assigned shipment queue, status RPC, realtime and COD collection UI. | Pending-queue UI regression is covered with a fake; assignment, authorization, status transitions and location tracking need authorized backend validation. |
+| Administration | No admin route or dedicated admin dashboard is present in `src/routes`. Historical migration files mention administrative DB functions/policies. | Do not infer an operator interface or introduce new privileges from database artifacts. | No application admin UI verified; product owner must define and approve intended admin workflows and roles. |
+| Wallet | `wallet.tsx` | Preview UI and disabled deposit/withdraw actions in the existing user changes. | Keep money movement disabled until separately approved and independently reviewed. |
+| Cross-cutting | auth, profile, favorites, reviews, notifications, settings, deletion, help and static routes | Shared auth/i18n/theme, feedback, realtime and Sentry/native hooks; route smoke tests. | Coverage is mixed; external auth, notifications, telemetry and deletion require environment-specific verification. |
 
-Supabase is the backend platform used by the application. The repository includes:
+## Data flow and trust boundaries
 
-- `supabase/migrations/` — versioned PostgreSQL schema and policy changes.
-- `src/integrations/supabase/` — Supabase client integration.
-- `src/lib/` — application services and domain logic.
-- `src/hooks/use-realtime.ts` — realtime-related client hook.
+1. Route components call domain/data functions in `src/lib`; Supabase is accessed from that boundary rather than directly as a source of trusted state.
+2. TanStack Query keys cache data and invalidate related views after confirmed mutations. Realtime subscriptions may prompt refreshes but are not the source of authorization or durable truth.
+3. The bag is browser-local convenience state. Offer price, availability, inventory reservation, order status and role authorization must be revalidated on the server/database at mutation time.
+4. Checkout sends selected offer IDs, quantities, options, validated contact/address fields and an idempotency key to the RPC. The UI only shows success after the RPC returns an order identifier. The test fake's success response is not evidence of an actual order.
+5. Merchant suborders and carrier shipments are distinct concepts. The historical snapshot describes merchant-managed delivery and COD in addition to earlier carrier workflows; verify the deployed canonical RPC behavior before asserting a single end-to-end status model.
+6. Never add client-side role checks as a substitute for RLS/RPC authorization. Any required database change needs a separately reviewed, new migration; never execute it automatically.
 
-Treat browser Supabase credentials as public. Database authorization must be enforced by RLS and trusted server-side functions/RPCs, not by route visibility or client-side role checks alone.
+## Known structural risks / follow-up
 
-## 4. Important domain modules
-
-These paths are present in the current repository tree:
-
-| Area | Code location |
-|---|---|
-| Legacy-compatible data services | `src/lib/sooqy.ts` |
-| Authentication | `src/lib/auth.tsx` and `src/integrations/supabase/` |
-| Bag and validation | `src/lib/bag.tsx`, `src/lib/bag-check.ts` |
-| Delivery | `src/lib/delivery.ts`, `src/lib/shipping.ts` |
-| Localization | `src/lib/i18n.ts`, `src/lib/dictionaries/`, `src/lib/locale.ts` |
-| Maps and geospatial helpers | `src/lib/geo.ts` and map components |
-| Error monitoring | `src/lib/error-capture.ts`, `src/utils/sentry.ts` |
-
-Keep the legacy `sooqy` identifiers until all imports, persisted identifiers and compatibility requirements have been traced.
-
-## 5. Native applications
-
-Capacitor is configured in `capacitor.config.json` with:
-
-- App ID: `com.arownd.app`
-- App name: `Arownd`
-- Web directory: `dist/client`
-
-The repository contains Android and iOS projects. Their presence does not certify that native builds, deep links, authentication, push notifications or store releases have passed device testing.
-
-## 6. Build and hosting
-
-- Local web build: `npm run build`
-- Vercel build: `npm run build:vercel`
-- Vercel output directory: `dist/client`
-- Vercel serverless entry: `api/index.ts`
-
-The Vercel configuration routes dynamic requests to the server entry and applies response headers. Revalidate caching, headers and route behavior whenever the server architecture changes.
-
-## 7. Architecture invariants
-
-1. Keep secrets and privileged database credentials on trusted server infrastructure only.
-2. Enforce role and record ownership in RLS/RPC/server authorization.
-3. Implement sensitive order, reservation and wallet operations transactionally and idempotently on the server.
-4. Treat migrations as append-only; never rewrite an applied migration.
-5. Preserve Arabic-first RTL behavior and translation-key parity.
-6. Reuse the established offer and bag domain logic instead of duplicating price calculations.
-7. Add focused Vitest coverage when changing business logic.
-
-## 8. Verification boundary
-
-This document is a map of repository structure, not a complete threat model or runtime certification. Confirm live Supabase configuration, Vercel project settings, deployed environment variables and native platform behavior independently.
-
----
-
-## النسخة العربية | الملخص المعماري
-
-### الصورة العامة
-
-Arownd منصة تجارة واكتشاف محلي في الجزائر، وتخدم أربعة أدوار: المتسوق، التاجر، شركة التوصيل، وإدارة المنصة. وجود المسار أو الوحدة البرمجية لا يعني أن الميزة مفعّلة أو جاهزة للإنتاج؛ يجب التحقق من الواجهة والخادم وسياسات قاعدة البيانات معًا.
-
-### طبقات التشغيل
-
-- **Frontend:** React 19 وTypeScript مع TanStack Start وRouter، ويتم البناء عبر Vite 8.
-- **Server runtime:** وسيط TanStack Start في `src/start.ts`، ومعالجة الطلبات في `src/server.ts`، ونقطة Vercel في `api/index.ts`.
-- **Data layer:** Supabase وPostgreSQL، مع migrations ضمن `supabase/migrations/`.
-- **Native:** Capacitor مع مشروعي Android وiOS؛ وجود الملفات لا يثبت نجاح البناء أو اختبار الأجهزة.
-
-### ثوابت معمارية
-
-1. الصلاحيات تُفرض على الخادم وداخل RLS/RPC، لا بمجرد إخفاء عناصر الواجهة.
-2. الأسرار ذات الامتيازات لا تصل إلى المتصفح.
-3. الطلبات والحجوزات والمحفظة تحتاج معاملات ذرّية وعمليات idempotent.
-4. الهجرات المطبقة لا تُعدّل؛ يضاف migration جديد.
-5. الحفاظ على العربية وRTL ومفاتيح الترجمة.
-6. إعادة استخدام منطق العروض والسلة الموجود بدل تكراره.
-
-**حدود الوثيقة:** هذه خريطة للمستودع وليست تدقيقًا أمنيًا شاملًا أو شهادة جاهزية للإنتاج. يجب التحقق من إعدادات Supabase وVercel وسلوك تطبيقات الهاتف بشكل مستقل.
-
+- The repo currently has no canonical `supabase/` schema directory; `.migration-backup` is historical reference only.
+- No admin route is present. Defining admin tasks, access boundaries, approvals and audit requirements is a product/security decision, not a UI assumption.
+- Some role navigation and page copy remain distinct or hardcoded; a consistency project should be incremental and based on page-level review rather than mass replacement.
+- Shopper and merchant navigation now share the same design-system frame. Authenticated desktop workflows and route-by-route visual consistency have not yet been browser-reviewed; a shared navigation component does not prove that each role page is visually uniform.
+- ESLint reports thousands of formatting warnings and some Fast Refresh warnings. These do not all indicate runtime bugs; address them in scoped batches with snapshots/tests and avoid broad formatting churn.
+- Browser/device RTL, offline, storage, and map behavior need browser-level QA; jsdom does not implement WebGL or native plugins.
