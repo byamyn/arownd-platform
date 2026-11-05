@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import { fileURLToPath } from "node:url";
+import { nitro } from "nitro/vite";
 
 // قيم Supabase تُدمج داخل حزمة المتصفح وقت البناء. لو بُنِي الموقع بلا متغيرات
 // VITE_ يصل الرابط فارغًا إلى المتصفح فيرمي createClient الخطأ
@@ -49,6 +50,7 @@ export default defineConfig(async ({ mode }): Promise<import("vite").UserConfig>
           prerender: { outputPath: "/index.html" },
         },
       }),
+      nitro(),
       react(),
       tailwindcss(),
     ],
