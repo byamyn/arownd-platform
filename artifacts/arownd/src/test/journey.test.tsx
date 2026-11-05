@@ -103,6 +103,15 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     localStorage.clear();
   });
 
+  it("يعرض التسجيل لشركة توصيل لم تنشئ حسابًا بعد", async () => {
+    setSession({ id: "user-1", email: "courier@test.dz" });
+    renderApp("/delivery-dashboard");
+
+    expect(
+      await screen.findByRole("link", { name: "تسجيل شركة توصيل جديدة" }),
+    ).toHaveAttribute("href", "/delivery-register");
+  });
+
   it("إضافة متجر إلى المفضلة من صفحته تُظهره في قائمة المفضلة", async () => {
     const router = renderApp();
     await go(router, "/stores/$storeId", { storeId: "store-1" });

@@ -20,7 +20,8 @@ deriveClientEnv("VITE_SUPABASE_URL", "SUPABASE_URL");
 deriveClientEnv("VITE_SUPABASE_PUBLISHABLE_KEY", "SUPABASE_PUBLISHABLE_KEY");
 deriveClientEnv("VITE_SUPABASE_PROJECT_ID", "SUPABASE_PROJECT_ID");
 
-const rawPort = process.env["PORT"];
+const isBuild = process.argv.includes("build");
+const rawPort = process.env["PORT"] ?? (isBuild ? "5173" : undefined);
 if (!rawPort) {
   throw new Error("PORT environment variable is required but was not provided.");
 }
@@ -29,7 +30,7 @@ if (!Number.isInteger(port) || port <= 0) {
   throw new Error(`Invalid PORT value: "${rawPort}"`);
 }
 
-const basePath = process.env["BASE_PATH"];
+const basePath = process.env["BASE_PATH"] ?? (isBuild ? "/" : undefined);
 if (!basePath) {
   throw new Error("BASE_PATH environment variable is required but was not provided.");
 }

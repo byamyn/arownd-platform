@@ -78,7 +78,7 @@ export async function fetchMyDeliveryCompany(userId: string): Promise<DeliveryCo
     .from("delivery_companies")
     .select("*")
     .eq("user_id", userId)
-    .single();
+    .maybeSingle();
   if (error) throw error;
   return data;
 }
