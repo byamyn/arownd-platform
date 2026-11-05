@@ -1,25 +1,56 @@
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
-import { fetchMerchantOrderTracking, merchantUpdateOrderTracking, type MerchantTrackingStatus } from "@/lib/sooqy";
+import {
+  fetchMerchantOrderTracking,
+  merchantUpdateOrderTracking,
+  type MerchantTrackingStatus,
+} from "@/lib/sooqy";
 import { formatDate } from "@/lib/market";
 import { showError, showSuccess } from "@/lib/feedback";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
+import { useTranslation } from "@/lib/i18n";
 
-const steps: { status: MerchantTrackingStatus; label: string }[] = [
-  { status: "preparing", label: "قيد تجهيز الطلب" },
-  { status: "ready_for_dispatch", label: "جاهز للتسليم للمندوب" },
-  { status: "out_for_delivery", label: "خرج للتوصيل" },
-  { status: "delivered", label: "تم التسليم" },
-];
+type DeliveryType = "home" | "desk";
 
-export function MerchantOrderTracking({ merchantOrderId, onCompleted }: { merchantOrderId: string; onCompleted: () => Promise<void> }) {
+function getSteps(deliveryType: DeliveryType, t: (key: string) => string) {
+  return [
+    { status: "preparing" as const, label: t("merchant_tracking_preparing") },
+    {
+      status: "ready_for_dispatch" as const,
+      label:
+        deliveryType === "desk"
+          ? t("merchant_tracking_pickup_ready")
+          : t("merchant_tracking_ready"),
+    },
+    {
+      status: "out_for_delivery" as const,
+      label:
+        deliveryType === "desk"
+          ? t("merchant_tracking_pickup_waiting")
+          : t("merchant_tracking_outbound"),
+    },
+    { status: "delivered" as const, label: t("merchant_tracking_delivered") },
+  ] satisfies { status: MerchantTrackingStatus; label: string }[];
+}
+
+export function MerchantOrderTracking({
+  merchantOrderId,
+  deliveryType,
+  onCompleted,
+}: {
+  merchantOrderId: string;
+  deliveryType: DeliveryType;
+  onCompleted: () => Promise<void>;
+}) {
+  const { t } = useTranslation();
   const [saving, setSaving] = useState(false);
   const query = useQuery({
     queryKey: ["merchant-order-tracking", merchantOrderId],
     queryFn: () => fetchMerchantOrderTracking(merchantOrderId),
   });
   const events = query.data ?? [];
+  const steps = getSteps(deliveryType, t);
   const last = events.at(-1)?.status;
   const nextIndex = last ? steps.findIndex((step) => step.status === last) + 1 : 0;
   const next = steps[nextIndex];
@@ -27,41 +58,88 @@ export function MerchantOrderTracking({ merchantOrderId, onCompleted }: { mercha
   return (
     <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-background p-4">
       <div>
-        <h3 className="font-bold text-foreground">تحديث تتبع التوصيل</h3>
-        <p className="mt-1 text-xs text-muted-foreground">سجّل مراحل تجهيز الطلب وتوصيله ليتمكن العميل من متابعتها.</p>
+        <h3 className="font-bold text-foreground">{t("merchant_tracking_heading")}</h3>
+        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+          {deliveryType === "desk"
+            ? t("merchant_tracking_hint_pickup")
+            : t("merchant_tracking_hint_home")}
+        </p>
       </div>
-      {query.isError ? <ErrorState scope="merchant-order-tracking" error={query.error} onRetry={() => query.refetch()} /> : (
+
+      {query.isLoading ? (
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
+      ) : query.isError ? (
+        <ErrorState
+          scope="merchant-order-tracking"
+          error={query.error}
+          onRetry={() => query.refetch()}
+        />
+      ) : (
         <ol className="space-y-2">
           {steps.map((step) => {
             const event = events.find((item) => item.status === step.status);
-            return <li key={step.status} className={event ? "text-sm font-semibold text-foreground" : "text-sm text-muted-foreground"}>
-              {event ? "✓ " : "○ "}{step.label}
-              {event && <p className="ms-5 text-xs font-normal text-muted-foreground">{formatDate(event.created_at)}{event.note ? " — " + event.note : ""}</p>}
-            </li>;
+            return (
+              <li
+                key={step.status}
+                className={
+                  event ? "text-sm font-semibold text-foreground" : "text-sm text-muted-foreground"
+                }
+              >
+                {event ? "✓ " : "○ "}
+                {step.label}
+                {event && (
+                  <p className="ms-5 text-xs font-normal text-muted-foreground">
+                    {formatDate(event.created_at)}
+                    {event.note ? " — " + event.note : ""}
+                  </p>
+                )}
+              </li>
+            );
           })}
         </ol>
       )}
-      {next ? <button type="button" disabled={saving || query.isLoading || query.isError}
-        onClick={async () => {
-          setSaving(true);
-          try {
-            await merchantUpdateOrderTracking(merchantOrderId, next.status);
-            await query.refetch();
-            await onCompleted();
-            showSuccess("تم تحديث تتبع الطلب");
-          } catch (error) { showError(error); }
-          finally { setSaving(false); }
-        }}
-        className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50">
-        {saving ? "جارٍ الحفظ..." : "تحديث الحالة: " + next.label}
-      </button> : <p className="rounded-xl bg-primary-soft p-3 text-sm font-semibold">اكتمل توصيل الطلب.</p>}
+
+      {next ? (
+        <button
+          type="button"
+          disabled={saving || query.isLoading || query.isError}
+          onClick={async () => {
+            setSaving(true);
+            try {
+              await merchantUpdateOrderTracking(merchantOrderId, next.status);
+              await query.refetch();
+              await onCompleted();
+              showSuccess(t("success"));
+            } catch (error) {
+              showError(error);
+            } finally {
+              setSaving(false);
+            }
+          }}
+          className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground disabled:opacity-50"
+        >
+          {saving
+            ? t("merchant_tracking_saving")
+            : t("merchant_tracking_update") + ": " + next.label}
+        </button>
+      ) : (
+        <p className="rounded-xl bg-primary-soft p-3 text-sm font-semibold">
+          {t("merchant_tracking_complete")}
+        </p>
+      )}
     </section>
   );
 }
 
-
-/** عرض سجل مراحل المتجر للعميل دون أدوات تعديل. */
-export function CustomerOrderTracking({ merchantOrderId }: { merchantOrderId: string }) {
+/** Buyer-facing timeline for merchant-managed delivery or store pickup. */
+export function CustomerOrderTracking({
+  merchantOrderId,
+  deliveryType,
+}: {
+  merchantOrderId: string;
+  deliveryType: DeliveryType;
+}) {
+  const { t } = useTranslation();
   const query = useQuery({
     queryKey: ["merchant-order-tracking", merchantOrderId],
     queryFn: () => fetchMerchantOrderTracking(merchantOrderId),
@@ -73,25 +151,49 @@ export function CustomerOrderTracking({ merchantOrderId }: { merchantOrderId: st
     enabled: !!merchantOrderId,
   });
   const events = query.data ?? [];
-  if (query.isLoading || (!query.isError && events.length === 0)) return null;
+  const steps = getSteps(deliveryType, t);
+
+  if (query.isLoading) {
+    return (
+      <section className="rounded-[var(--radius-card)] border border-border bg-card p-4">
+        <p className="text-sm text-muted-foreground">{t("loading")}</p>
+      </section>
+    );
+  }
+  if (!query.isError && events.length === 0) return null;
 
   return (
     <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
-      <h2 className="font-bold text-foreground">تحديثات المتجر للتوصيل</h2>
+      <h2 className="font-bold text-foreground">{t("customer_tracking_heading")}</h2>
       {query.isError ? (
-        <ErrorState scope="customer-order-tracking" error={query.error} onRetry={() => query.refetch()} />
+        <ErrorState
+          scope="customer-order-tracking"
+          error={query.error}
+          onRetry={() => query.refetch()}
+        />
       ) : (
         <ol className="space-y-3">
           {steps.map((step) => {
             const event = events.find((item) => item.status === step.status);
             return (
               <li key={step.status} className="flex gap-3">
-                <span className={event ? "text-success" : "text-muted-foreground"}>{event ? "✓" : "○"}</span>
+                <span className={event ? "text-success" : "text-muted-foreground"}>
+                  {event ? "✓" : "○"}
+                </span>
                 <div className="min-w-0">
-                  <p className={event ? "text-sm font-semibold text-foreground" : "text-sm text-muted-foreground"}>{step.label}</p>
+                  <p
+                    className={
+                      event
+                        ? "text-sm font-semibold text-foreground"
+                        : "text-sm text-muted-foreground"
+                    }
+                  >
+                    {step.label}
+                  </p>
                   {event && (
                     <p className="text-xs text-muted-foreground">
-                      {formatDate(event.created_at)}{event.note ? " — " + event.note : ""}
+                      {formatDate(event.created_at)}
+                      {event.note ? " — " + event.note : ""}
                     </p>
                   )}
                 </div>
