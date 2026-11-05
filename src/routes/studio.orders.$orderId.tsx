@@ -70,7 +70,7 @@ function StudioOrderDetailPage() {
     filter: merchantOrderForShipment?.id
       ? `merchant_order_id=eq.${merchantOrderForShipment.id}`
       : undefined,
-    queryKeys: [["merchant-order-shipment", merchantOrderForShipment?.id]],
+    queryKeys: [["merchant-order-shipment", merchantOrderForShipment?.id ?? "none"]],
     enabled:
       !!user &&
       !!merchantOrderForShipment?.id &&
