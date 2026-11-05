@@ -252,6 +252,9 @@ function TrackPage() {
           key={merchantOrder.id}
           merchantOrderId={merchantOrder.id}
           deliveryType={order.delivery_type === "desk" ? "desk" : "home"}
+          storeName={merchantOrder.store?.name}
+          storeAddress={merchantOrder.store?.address_line}
+          storeCommune={merchantOrder.store?.commune}
         />
       ))}
 
