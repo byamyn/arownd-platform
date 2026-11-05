@@ -24,19 +24,19 @@ export function StudioNav() {
 
   const navClass = (active: boolean) =>
     cn(
-      "flex min-h-[var(--nav-height)] min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-0.5 text-[11px] leading-tight font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-      active ? "text-[var(--color-action-ink)]" : "text-muted-foreground active:bg-muted",
+      "app-bottom-nav-link",
+      active && "app-bottom-nav-link-active",
     );
 
   const iconClass = (active: boolean) =>
-    cn("flex size-9 items-center justify-center rounded-full", active ? "bg-muted" : "");
+    cn("app-bottom-nav-icon", active && "app-bottom-nav-icon-active");
 
   return (
     <nav
       aria-label={t("studio_nav_aria")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-muted md:hidden"
+      className="app-bottom-nav"
     >
-      <div className="mx-auto flex h-[var(--nav-height)] w-full max-w-7xl items-stretch gap-0 px-2 pb-[env(safe-area-inset-bottom)]">
+      <div className="app-bottom-nav-inner gap-0">
         {items.map(({ to, key, Icon }) => {
           const active = currentPath === to;
           return (
@@ -58,9 +58,9 @@ export function StudioNav() {
         <Link
           to="/studio/add-product"
           aria-label={t("studio_nav_add_product")}
-          className={cn(navClass(currentPath === "/studio/add-product"), "text-primary")}
+          className={navClass(currentPath === "/studio/add-product")}
         >
-          <span className="flex size-9 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm" aria-hidden="true">
+          <span className={iconClass(currentPath === "/studio/add-product")} aria-hidden="true">
             <Plus className="size-5 shrink-0" />
           </span>
           <span className="w-full text-center whitespace-normal break-words line-clamp-2">

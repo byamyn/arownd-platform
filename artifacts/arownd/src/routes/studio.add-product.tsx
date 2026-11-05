@@ -15,6 +15,7 @@ import {
 import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { AppShell } from "@/components/sooqy/app-shell";
 import { ImageUploader } from "@/components/sooqy/image-uploader";
 import {
   DEFAULT_CATEGORY_ID,
@@ -126,7 +127,7 @@ function AddProductPage() {
   };
 
   return (
-    <div className="mx-auto w-full max-w-2xl space-y-5 px-4 pb-28 pt-5 sm:px-6">
+    <AppShell className="mx-auto max-w-2xl space-y-5 pb-28 pt-5">
       <PageHeader title="إضافة منتج" subtitle="أضف منتجًا جديدًا إلى كتالوج متجرك" back="/studio" />
       <section className="rounded-[var(--radius-card)] border border-border bg-card p-4 sm:p-6">
         <div className="mb-5 flex items-center gap-3">
@@ -148,6 +149,6 @@ function AddProductPage() {
           <button type="button" onClick={save} disabled={busy} className="mt-2 min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary px-5 py-3 font-extrabold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50">{busy ? "جارٍ الحفظ..." : "حفظ المنتج"}</button>
         </div>
       </section>
-    </div>
+    </AppShell>
   );
 }

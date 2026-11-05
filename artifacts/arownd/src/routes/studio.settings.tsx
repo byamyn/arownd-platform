@@ -19,6 +19,7 @@ import { geoErrorMessage, useGeo } from "@/lib/geo";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
 import { StoreLocationPicker } from "@/components/sooqy/StoreLocationPicker";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { AppShell } from "@/components/sooqy/app-shell";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { cn } from "@/lib/utils";
 import { StoreSettingsSkeleton } from "@/components/sooqy/skeleton";
@@ -239,7 +240,7 @@ function StoreSettingsPage() {
   const labelCls = "mb-1 block text-xs font-bold text-muted-foreground";
 
   return (
-    <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
+    <AppShell className="mx-auto max-w-4xl space-y-5 pb-24 pt-5 lg:pt-8">
       <PageHeader
         title={t("studio_settings_heading")}
         subtitle={t("studio_settings_subtitle")}
@@ -249,7 +250,13 @@ function StoreSettingsPage() {
       <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
         <div className="relative h-40 bg-muted/40">
           {logoPreview ? (
-            <img src={logoPreview} alt="غلاف المتجر" className="size-full object-cover" />
+            <img
+              src={logoPreview}
+              alt="غلاف المتجر"
+              fetchPriority="low"
+              decoding="async"
+              className="size-full object-cover"
+            />
           ) : (
             <div className="flex size-full items-center justify-center bg-primary-soft text-4xl font-extrabold text-accent-ink">
               {form.name.trim() ? form.name.trim()[0] : "؟"}
@@ -264,7 +271,13 @@ function StoreSettingsPage() {
             aria-label={t("studio_change_store_logo")}
           >
             {logoPreview ? (
-              <img src={logoPreview} alt="شعار المتجر" className="size-full object-cover" />
+              <img
+                src={logoPreview}
+                alt="شعار المتجر"
+                fetchPriority="low"
+                decoding="async"
+                className="size-full object-cover"
+              />
             ) : (
               <span className="flex size-full items-center justify-center text-3xl font-extrabold text-accent-ink">
                 {form.name.trim() ? form.name.trim()[0] : "؟"}
@@ -521,6 +534,6 @@ function StoreSettingsPage() {
         <Save className="size-4.5" />
         {busy ? "جارٍ الحفظ..." : "حفظ التغييرات"}
       </button>
-    </div>
+    </AppShell>
   );
 }

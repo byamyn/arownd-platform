@@ -66,6 +66,7 @@ import {
 } from "@/components/sooqy/merchant-onboarding";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { AppShell } from "@/components/sooqy/app-shell";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/studio/")({
@@ -438,7 +439,7 @@ function StudioPage() {
   };
 
   return (
-    <div className="mx-auto w-full min-w-0 max-w-screen-2xl space-y-6 overflow-x-clip px-4 pb-28 pt-5 sm:px-6 lg:pt-8">
+    <AppShell width="wide" className="min-w-0 space-y-6 overflow-x-clip pb-28 pt-5 lg:pt-8">
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
@@ -454,7 +455,7 @@ function StudioPage() {
       </header>
 
       {/* بطاقة المتجر الرئيسية */}
-      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-border bg-muted p-4 text-foreground  sm:p-6">
+      <section className="card-premium relative isolate overflow-hidden p-4 sm:p-6">
         <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
@@ -463,6 +464,8 @@ function StudioPage() {
                 <img
                   src={store.data.logo_url}
                   alt={`شعار ${store.data.name}`}
+                  loading="lazy"
+                  decoding="async"
                   className="size-full object-cover"
                 />
               ) : (
@@ -1216,7 +1219,7 @@ function StudioPage() {
           </div>
         </section>
       )}
-    </div>
+    </AppShell>
   );
 }
 

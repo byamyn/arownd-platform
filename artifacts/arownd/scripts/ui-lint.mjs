@@ -87,12 +87,16 @@ for (const f of files) {
       "زر أيقوني بلا aria-label",
     );
   }
-  // 8) حقول tel/email بلا inputMode/autoComplete
-  for (const m of src.matchAll(/<input\b[^>]*?>/gs)) {
+  // 8) حقول tel/email بلا inputMode/autoComplete. Mask arrow functions so
+  // the `>` in `onChange={(event) => ...}` does not terminate the tag early.
+  const tagSafeSource = src.replace(/=>/g, "=§");
+  for (const m of tagSafeSource.matchAll(/<input\b[^>]*?>/gs)) {
     const tag = m[0].replace(/=>/g, "=§");
-    const line = src.slice(0, m.index).split("\n").length;
+    const line = tagSafeSource.slice(0, m.index).split("\n").length;
     if (/type="(tel|email)"/.test(tag) && !/autoComplete=/.test(tag))
       add("warn", "input-autocomplete", f, line, "أضف autoComplete (+ inputMode للهاتف)");
+    if (/type="tel"/.test(tag) && !/inputMode=/.test(tag))
+      add("warn", "input-mode-tel", f, line, "أضف inputMode=\"tel\" لحقل الهاتف");
   }
 }
 

@@ -4,9 +4,20 @@ import type { DictGroup } from "./types";
 export const explore: DictGroup = {
   ar: {
     explore_title: "اكتشف — Arownd",
-    explore_description: "استكشف المنتجات والمتاجر القريبة منك في الجزائر.",
+    explore_description: "اكتشف منتجات المتاجر المحلية في الجزائر.",
     explore_heading: "اكتشف",
-    explore_search_placeholder: "ابحث عن منتج أو متجر...",
+    explore_search_placeholder: "ابحث عن منتج...",
+    explore_products_count: "{count} منتج",
+    category_fashion: "الأزياء والملابس",
+    category_electronics: "الإلكترونيات",
+    category_beauty: "الجمال والعناية",
+    category_home: "المنزل والديكور",
+    category_kids: "الأطفال والألعاب",
+    category_sports: "الرياضة والترفيه",
+    category_food: "الأغذية والحلويات",
+    "category_gifts-crafts": "الهدايا والحرف",
+    category_digital: "الخدمات الرقمية",
+    category_cars: "السيارات وملحقاتها",
     explore_clear_search: "مسح البحث",
     explore_categories: "التصنيفات",
     explore_advanced_filters: "فلاتر متقدمة",
@@ -26,7 +37,8 @@ export const explore: DictGroup = {
     // الأقسام
     explore_new_arrivals: "وصل حديثًا",
     explore_no_new_products: "لا توجد منتجات جديدة بعد",
-    explore_no_new_products_hint: "تابع لاحقًا — يجري إضافة منتجات جديدة باستمرار.",
+    explore_no_new_products_hint:
+      "تابع لاحقًا — يجري إضافة منتجات جديدة باستمرار.",
     explore_bestsellers: "الأكثر مبيعًا",
     explore_worth_visiting: "متاجر تستحق الزيارة",
 
@@ -101,9 +113,20 @@ export const explore: DictGroup = {
   },
   en: {
     explore_title: "Explore — Arownd",
-    explore_description: "Discover products and stores near you in Algeria.",
+    explore_description: "Discover products from local stores across Algeria.",
     explore_heading: "Explore",
-    explore_search_placeholder: "Search for a product or store...",
+    explore_search_placeholder: "Search products...",
+    explore_products_count: "{count} products",
+    category_fashion: "Fashion",
+    category_electronics: "Electronics",
+    category_beauty: "Beauty & personal care",
+    category_home: "Home & decor",
+    category_kids: "Kids & toys",
+    category_sports: "Sports & leisure",
+    category_food: "Food & sweets",
+    "category_gifts-crafts": "Gifts & crafts",
+    category_digital: "Digital services",
+    category_cars: "Cars & accessories",
     explore_clear_search: "Clear search",
     explore_categories: "Categories",
     explore_advanced_filters: "Advanced filters",
@@ -121,7 +144,8 @@ export const explore: DictGroup = {
 
     explore_new_arrivals: "New arrivals",
     explore_no_new_products: "No new products yet",
-    explore_no_new_products_hint: "Check back later — new products are added constantly.",
+    explore_no_new_products_hint:
+      "Check back later — new products are added constantly.",
     explore_bestsellers: "Best sellers",
     explore_worth_visiting: "Stores worth visiting",
 
@@ -149,10 +173,12 @@ export const explore: DictGroup = {
 
     // Discovery card and interactions
     explore_discovery: "Discover products",
-    explore_product_unavailable: "This product is not available for purchase right now",
+    explore_product_unavailable:
+      "This product is not available for purchase right now",
     explore_no_more: "No more products",
     explore_empty_title: "No products to display",
-    explore_empty_hint: "Try searching for another product or store, or remove filters.",
+    explore_empty_hint:
+      "Try searching for another product or store, or remove filters.",
     explore_bag_count: "{count} products in your bag",
     explore_view_bag: "View bag",
     explore_option_required:

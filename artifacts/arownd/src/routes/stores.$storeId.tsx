@@ -201,7 +201,13 @@ function StorePage() {
           </button>
           <div className="absolute -bottom-9 start-4 size-18 overflow-hidden rounded-[var(--radius-card)] border-4 border-background bg-card ">
             {s.logo_url ? (
-              <img src={s.logo_url} alt={s.name} className="size-full object-cover" />
+              <img
+                src={s.logo_url}
+                alt={s.name}
+                loading="lazy"
+                decoding="async"
+                className="size-full object-cover"
+              />
             ) : (
               <div className="flex size-full items-center justify-center text-2xl font-bold text-accent-ink">
                 {s.name[0]}

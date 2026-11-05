@@ -19,6 +19,10 @@ vi.mock("@/lib/screen-error", () => ({ reportScreenError: vi.fn() }));
 vi.mock("@/components/sooqy/StoreMap", () => ({
   default: () => <div>خريطة تجريبية</div>,
 }));
+// WebGL is unavailable in jsdom; the map picker has a dedicated component test.
+vi.mock("@/components/sooqy/StoreLocationPicker", () => ({
+  StoreLocationPicker: () => <div>محدد موقع تجريبي</div>,
+}));
 
 import { createMemoryHistory } from "@tanstack/react-router";
 
@@ -61,7 +65,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     placeholder?: string;
   }> = [
     { to: "/", expect: "وصل حديثًا" },
-    { to: "/explore", placeholder: "ابحث عن متجر أو مكان..." },
+    { to: "/explore", placeholder: "ابحث عن منتج..." },
     { to: "/stores", expect: "المتاجر" },
     { to: "/stores/$storeId", params: { storeId: "store-1" }, expect: "متجر التجربة" },
     { to: "/category/$catId", params: { catId: "shoes" }, expect: "الأحذية" },
@@ -112,6 +116,35 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
     ).toHaveAttribute("href", "/delivery-register");
   });
 
+  it("يعرض الشحنات المعلقة لشركة توصيل معتمدة", async () => {
+    setSession({ id: "carrier-1", email: "courier@test.dz" });
+    state.deliveryCompanies = [
+      {
+        id: "delivery-1",
+        user_id: "carrier-1",
+        company_name: "شركة التوصيل التجريبية",
+        is_approved: true,
+      },
+    ];
+    state.shipments = [
+      {
+        id: "shipment-1",
+        company_id: "delivery-1",
+        order_id: "order-1",
+        status: "pending",
+        recipient_name: "محمد أمين",
+        recipient_phone: "0551234567",
+        delivery_address: "شارع ديدوش مراد",
+        fee: 500,
+      },
+    ];
+
+    renderApp("/delivery-dashboard");
+
+    expect(await screen.findByText("طلب شحن #shipment")).toBeInTheDocument();
+    await waitFor(() => expect(state.calls).toContain("shipments.eq(status, pending)"));
+  });
+
   it("إضافة متجر إلى المفضلة من صفحته تُظهره في قائمة المفضلة", async () => {
     const router = renderApp();
     await go(router, "/stores/$storeId", { storeId: "store-1" });
@@ -147,6 +180,33 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
     fireEvent.click(screen.getByRole("button", { name: "حذف من السلة" }));
     await expectText("سلتك فارغة");
+  });
+
+  it("البحث عن المنتجات من صفحة استكشف يستعلم عن كتالوج المنتجات", async () => {
+    const router = renderApp("/explore");
+
+    expect(await screen.findByText("حذاء رياضي")).toBeInTheDocument();
+    fireEvent.change(screen.getByPlaceholderText("ابحث عن منتج..."), {
+      target: { value: "حذاء" },
+    });
+
+    await waitFor(() => {
+      expect(state.calls.some((call) => call.startsWith("store_offers.or("))).toBe(true);
+      expect(router.state.location.search).toMatchObject({ q: "حذاء" });
+    });
+  });
+
+  it("تبقي شحن المحفظة والسحب معطلين في وضع المعاينة", async () => {
+    setSession({ id: "user-1", email: "customer@test.dz" });
+    renderApp("/wallet");
+
+    expect(await screen.findByText("معاينة فقط")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /شحن الرصيد/ })).toBeDisabled();
+    expect(screen.getByRole("button", { name: /طلب سحب/ })).toBeDisabled();
+    expect(screen.queryByRole("button", { name: "اشحن رصيدك" })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText(/سند الدفع|طريقة الدفع|بيانات الحساب/)).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: /إرسال طلب الشحن|إرسال طلب السحب/ })).not.toBeInTheDocument();
+    expect(state.calls.some((call) => /wallet_transactions\.(insert|update)/.test(call))).toBe(false);
   });
 
   it("تاجر بلا متجر ينشئ متجره من الاستوديو وتظهر اللوحة", async () => {
@@ -226,6 +286,8 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
     await go(router, "/checkout");
     await expectText("سلعك (2)");
+    expect(screen.getByText(/أسود · M/)).toBeInTheDocument();
+    expect(screen.getByText(/أبيض · L/)).toBeInTheDocument();
 
     // الخطوة 1: العنوان والولاية
     fireEvent.click(screen.getByRole("button", { name: "متابعة" }));

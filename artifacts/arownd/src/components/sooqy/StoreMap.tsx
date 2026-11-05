@@ -168,6 +168,7 @@ const StoreMapComponent = React.memo(
     useEffect(() => {
       const el = containerRef.current;
       if (!el) return;
+      const markers = markersRef.current;
       if (!hasWebGL2()) {
         setError("متصفحك لا يدعم WebGL2 — لا يمكن عرض الخريطة.");
         return;
@@ -337,8 +338,8 @@ const StoreMapComponent = React.memo(
       });
 
       return () => {
-        markersRef.current.forEach((m) => m.remove());
-        markersRef.current.clear();
+        markers.forEach((m) => m.remove());
+        markers.clear();
         userMarkerRef.current?.remove();
         userMarkerRef.current = null;
         mapRef.current?.remove();

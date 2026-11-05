@@ -16,6 +16,10 @@ export function StoreLocationPicker({ value, onChange }: Props) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const markerRef = useRef<maplibregl.Marker | null>(null);
+  const valueRef = useRef(value);
+  valueRef.current = value;
+  const selectedLatitude = value?.lat;
+  const selectedLongitude = value?.lng;
   const onChangeRef = useRef(onChange);
   onChangeRef.current = onChange;
 
@@ -23,14 +27,17 @@ export function StoreLocationPicker({ value, onChange }: Props) {
     const container = containerRef.current;
     if (!container) return;
     maplibregl.setWorkerUrl(maplibreglWorkerUrl);
-    const initial: [number, number] = value ? [value.lng, value.lat] : [3.0588, 36.7538];
+    const initialValue = valueRef.current;
+    const initial: [number, number] = initialValue
+      ? [initialValue.lng, initialValue.lat]
+      : [3.0588, 36.7538];
     let map: maplibregl.Map;
     try {
       map = new maplibregl.Map({
         container,
         style: AROWND_VERSATILES_STYLE as maplibregl.StyleSpecification,
         center: initial,
-        zoom: value ? 15 : 12,
+        zoom: initialValue ? 15 : 12,
         attributionControl: { compact: true },
         dragRotate: false,
         touchPitch: false,
@@ -65,9 +72,10 @@ export function StoreLocationPicker({ value, onChange }: Props) {
       }
     });
     map.once("load", () => {
-      if (value) {
+      const currentValue = valueRef.current;
+      if (currentValue) {
         markerRef.current = new maplibregl.Marker({ color: "#C6F135" })
-          .setLngLat([value.lng, value.lat])
+          .setLngLat([currentValue.lng, currentValue.lat])
           .addTo(map);
       }
       requestAnimationFrame(() => map.resize());
@@ -82,21 +90,20 @@ export function StoreLocationPicker({ value, onChange }: Props) {
       map.remove();
       mapRef.current = null;
     };
-    // Initial map is created once; marker updates are handled below.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !value) return;
+    const currentValue = valueRef.current;
+    if (!map || !currentValue) return;
     if (markerRef.current) {
-      markerRef.current.setLngLat([value.lng, value.lat]);
+      markerRef.current.setLngLat([currentValue.lng, currentValue.lat]);
     } else {
       markerRef.current = new maplibregl.Marker({ color: "#C6F135" })
-        .setLngLat([value.lng, value.lat])
+        .setLngLat([currentValue.lng, currentValue.lat])
         .addTo(map);
     }
-  }, [value?.lat, value?.lng]);
+  }, [selectedLatitude, selectedLongitude]);
 
   return (
     <div className="space-y-2">

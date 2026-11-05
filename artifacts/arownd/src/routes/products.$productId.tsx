@@ -687,7 +687,13 @@ function ProductPage() {
           className="max-w-full border-0 bg-background/95 p-0 sm:max-w-lg"
         >
           {zoomSrc && (
-            <img src={zoomSrc} alt={p.name} className="max-h-[85vh] w-full object-contain" />
+            <img
+              src={zoomSrc}
+              alt={p.name}
+              loading="lazy"
+              decoding="async"
+              className="max-h-[85vh] w-full object-contain"
+            />
           )}
           {zoomSrc && (
             <button
@@ -753,4 +759,3 @@ function SpecRow({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-

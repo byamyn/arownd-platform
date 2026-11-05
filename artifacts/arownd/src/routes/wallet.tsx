@@ -492,13 +492,6 @@ function WalletPage() {
             Icon={Wallet}
             title={tab === "all" ? "لا توجد عمليات بعد" : "لا توجد عمليات في هذا القسم"}
             hint="عندما تشحن رصيدك أو تسحب أرباحك، ستظهر العمليات هنا مع حالتها لحظة بلحظة."
-            action={
-              tab === "all" ? (
-                <button onClick={() => setShowTopup(true)} className="btn-primary">
-                  اشحن رصيدك
-                </button>
-              ) : undefined
-            }
           />
         )}
 

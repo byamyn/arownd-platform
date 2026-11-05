@@ -228,6 +228,8 @@ function ProfilePage() {
                     <img
                       src={avatarPreview}
                       alt={t("profile_avatar_alt")}
+                      loading="lazy"
+                      decoding="async"
                       className="size-full rounded-full object-cover"
                     />
                   ) : (

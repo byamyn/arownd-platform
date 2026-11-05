@@ -63,18 +63,19 @@ function CategoryPage() {
   });
 
   const sentinelRef = useRef<HTMLDivElement | null>(null);
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = products;
   useEffect(() => {
     const el = sentinelRef.current;
-    if (!el || !products.hasNextPage || products.isFetchingNextPage) return;
+    if (!el || !hasNextPage || isFetchingNextPage) return;
     const io = new IntersectionObserver(
       (entries) => {
-        if (entries.some((e) => e.isIntersecting)) products.fetchNextPage();
+        if (entries.some((e) => e.isIntersecting)) void fetchNextPage();
       },
       { rootMargin: "400px" },
     );
     io.observe(el);
     return () => io.disconnect();
-  }, [products.hasNextPage, products.isFetchingNextPage, catId, sort, inStock]);
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage, catId, sort, inStock]);
 
   const list = (products.data?.pages ?? []).flat();
   const active = resolveCategoryId(catId);

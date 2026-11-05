@@ -17,6 +17,7 @@ import {
 import { Link, useNavigate } from "@tanstack/react-router";
 import { showError, showSuccess } from "@/lib/feedback";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { AppShell } from "@/components/sooqy/app-shell";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
 import { useState } from "react";
@@ -197,7 +198,7 @@ function StudioOrderDetailPage() {
 
   return (
     <>
-      <div className="mx-auto w-full max-w-4xl space-y-5 px-4 pb-24 pt-5 sm:px-6 lg:pt-8">
+      <AppShell className="mx-auto max-w-4xl space-y-5 pb-24 pt-5 lg:pt-8">
         <PageHeader title={t("studio_order_details")} back="/studio" />
         <div className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
           <div className="rounded-t-3xl bg-muted p-5 text-foreground sm:p-6">
@@ -387,7 +388,7 @@ function StudioOrderDetailPage() {
             </div>
           </div>
         </div>
-      </div>
+      </AppShell>
     </>
   );
 }

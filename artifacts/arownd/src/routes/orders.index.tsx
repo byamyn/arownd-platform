@@ -20,6 +20,7 @@ import { ErrorState } from "@/components/sooqy/error-state";
 import { useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
 import { SeoHead } from "@/components/seo/SeoHead";
+import { AppShell } from "@/components/sooqy/app-shell";
 import { goBackOrTo } from "@/lib/nav";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { OrderListSkeleton } from "@/components/sooqy/skeleton";
@@ -146,7 +147,7 @@ function OrdersPage() {
         keywords={t("orders_seo_keywords")}
         ogType="website"
       />
-      <div className="space-y-4 px-4 pb-6 pt-5">
+      <AppShell className="space-y-4 pb-6 pt-5">
         <header className="flex items-center gap-2 py-1">
           <button
             type="button"
@@ -427,7 +428,7 @@ function OrdersPage() {
             );
           })}
         </div>
-      </div>
+      </AppShell>
       <ConfirmDialog
         open={pendingConfirmation !== null}
         title={pendingConfirmation?.title ?? ""}

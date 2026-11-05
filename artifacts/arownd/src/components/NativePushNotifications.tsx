@@ -12,9 +12,10 @@ import { supabase } from "@/integrations/supabase/client";
 export function NativePushNotifications() {
   const { user, ready } = useAuth();
   const queryClient = useQueryClient();
+  const userId = user?.id;
 
   useEffect(() => {
-    if (!ready || !user || !Capacitor.isNativePlatform() || Capacitor.getPlatform() !== "android") {
+    if (!ready || !userId || !Capacitor.isNativePlatform() || Capacitor.getPlatform() !== "android") {
       return;
     }
 
@@ -96,7 +97,7 @@ export function NativePushNotifications() {
       disposed = true;
       for (const handle of listenerHandles) void handle.remove();
     };
-  }, [ready, user?.id, queryClient]);
+  }, [ready, userId, queryClient]);
 
   return null;
 }

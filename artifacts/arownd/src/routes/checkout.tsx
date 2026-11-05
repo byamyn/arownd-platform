@@ -381,7 +381,7 @@ function CheckoutPage() {
           <div className="space-y-3">
             {rows.map((row) => (
               <div
-                key={row.offerId}
+                key={bagItemKey(row)}
                 className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-3"
               >
                 <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-muted">
@@ -389,6 +389,8 @@ function CheckoutPage() {
                     <img
                       src={primaryImage(row.offer.images)!}
                       alt=""
+                      loading="lazy"
+                      decoding="async"
                       className="size-full object-cover"
                     />
                   )}
@@ -399,6 +401,9 @@ function CheckoutPage() {
                   </p>
                   <p className="text-xs text-muted-foreground">
                     {row.offer?.store.name} · {t("checkout_quantity", { count: row.quantity })}
+                    {Object.values(row.options).length > 0 && (
+                      <span> · {Object.values(row.options).join(" · ")}</span>
+                    )}
                   </p>
                 </div>
                 <p className="text-sm font-bold">
@@ -424,7 +429,7 @@ function CheckoutPage() {
               {t("checkout_problems_title")}
               <ul className="mt-1 list-inside list-disc">
                 {problems.map((p) => (
-                  <li key={p.item.offerId}>
+                  <li key={bagItemKey(p.item)}>
                     {p.offer ? `${p.offer.product.name} — ${p.issue?.message}` : p.issue?.message}
                   </li>
                 ))}

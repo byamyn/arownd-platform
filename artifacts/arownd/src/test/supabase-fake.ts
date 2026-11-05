@@ -72,6 +72,8 @@ export const state = {
   sessionUser: null as FakeUser | null,
   stores: [] as Record<string, unknown>[],
   userRoles: [] as Record<string, unknown>[],
+  deliveryCompanies: [] as Record<string, unknown>[],
+  shipments: [] as Record<string, unknown>[],
   offers: [] as Record<string, unknown>[],
   products: [] as Record<string, unknown>[],
   images: [] as Record<string, unknown>[],
@@ -85,6 +87,8 @@ export function resetSupabaseFake() {
   state.sessionUser = null;
   state.stores = [store1];
   state.userRoles = [];
+  state.deliveryCompanies = [];
+  state.shipments = [];
   state.offers = [offer1];
   state.products = [product1];
   state.images = [];
@@ -113,6 +117,10 @@ function tableData(table: string): Record<string, unknown>[] {
       return state.stores;
     case "user_roles":
       return state.userRoles.filter((r) => r["user_id"] === state.sessionUser?.id);
+    case "delivery_companies":
+      return state.deliveryCompanies;
+    case "shipments":
+      return state.shipments;
     case "store_offers":
       return state.offers;
     case "products":

@@ -256,6 +256,8 @@ function DeliveryPartnerSection() {
             <input
               name="phone"
               type="tel"
+              inputMode="tel"
+              autoComplete="tel"
               required
               maxLength={30}
               className={inputClass}
@@ -267,6 +269,7 @@ function DeliveryPartnerSection() {
             <input
               name="email"
               type="email"
+              autoComplete="email"
               required
               maxLength={160}
               className={inputClass}

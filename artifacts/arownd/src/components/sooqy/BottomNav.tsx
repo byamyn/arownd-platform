@@ -16,9 +16,9 @@ export function BottomNav() {
   return (
     <nav
       aria-label={t("aria_main_nav")}
-      className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-muted"
+      className="app-bottom-nav"
     >
-      <div className="mx-auto flex h-[var(--nav-height)] w-full max-w-7xl items-stretch gap-1 px-[var(--margin)] pb-[env(safe-area-inset-bottom)]">
+      <div className="app-bottom-nav-inner gap-1">
         {items.map(({ to, labelKey, Icon }) => {
           const isActive = pathname === to;
           return (
@@ -29,16 +29,14 @@ export function BottomNav() {
               activeOptions={{ exact: to === "/" }}
               aria-current={isActive ? "page" : undefined}
               className={cn(
-                "flex min-h-[var(--nav-height)] min-w-11 flex-1 flex-col items-center justify-center gap-1 rounded-[var(--radius-control)] px-1 text-xs font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-                isActive
-                  ? "text-[var(--color-action-ink)]"
-                  : "text-muted-foreground active:bg-muted",
+                "app-bottom-nav-link",
+                isActive && "app-bottom-nav-link-active",
               )}
             >
               <span
                 className={cn(
-                  "flex size-9 items-center justify-center rounded-full",
-                  isActive ? "bg-muted" : "",
+                  "app-bottom-nav-icon",
+                  isActive && "app-bottom-nav-icon-active",
                 )}
                 aria-hidden="true"
               >

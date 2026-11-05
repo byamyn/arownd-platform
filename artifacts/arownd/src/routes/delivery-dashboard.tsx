@@ -15,6 +15,7 @@ import {
   type ShipmentStatus,
 } from "@/lib/delivery";
 import { PageHeader } from "@/components/sooqy/page-header";
+import { AppShell } from "@/components/sooqy/app-shell";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 import { translate } from "@/lib/i18n";
@@ -37,13 +38,13 @@ export const Route = createFileRoute("/delivery-dashboard")({
 });
 
 const STATUS_COLORS: Record<ShipmentStatus, string> = {
-  pending: "bg-amber-soft text-amber-soft-foreground border-amber-border",
-  accepted: "bg-blue-soft text-blue-soft-foreground border-blue-border",
-  picked_up: "bg-indigo-soft text-indigo-soft-foreground border-indigo-border",
-  in_transit: "bg-purple-soft text-purple-soft-foreground border-purple-border",
-  delivered: "bg-green-soft text-green-soft-foreground border-green-border",
-  failed: "bg-orange-soft text-orange-soft-foreground border-orange-border",
-  returned: "bg-rose-soft text-rose-soft-foreground border-rose-border",
+  pending: "bg-warning-soft text-warning border-warning/30",
+  accepted: "bg-info-soft text-info border-info/30",
+  picked_up: "bg-primary-soft text-accent-ink border-primary/30",
+  in_transit: "bg-primary-soft text-accent-ink border-primary/30",
+  delivered: "bg-success-soft text-success border-success/30",
+  failed: "bg-danger-soft text-danger border-danger/30",
+  returned: "bg-muted text-muted-foreground border-border",
   rejected: "bg-muted text-muted-foreground border-border",
 };
 
@@ -68,7 +69,7 @@ function DeliveryDashboardPage() {
   const pendingShipments = useQuery({
     queryKey: ["pending-shipments", company.data?.id ?? ""],
     queryFn: () => fetchPendingShipmentsForCompany(company.data!.id),
-    enabled: !!ready && !!company.data && !company.data.is_approved,
+    enabled: !!ready && !!company.data?.is_approved,
   });
 
   const allShipments = useQuery({
@@ -235,11 +236,11 @@ function DeliveryDashboardPage() {
   }
 
   return (
-    <div className="space-y-5 px-4 pb-32 pt-5">
+    <AppShell width="wide" className="space-y-5 pt-5 pb-32">
       <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
 
       {/* بطاقة ملخص الشركة */}
-      <section className="rounded-[var(--radius-card)] bg-card p-5  space-y-4">
+      <section className="card-premium space-y-4 p-5">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-bold text-lg">نظرة عامة</h2>
@@ -279,7 +280,7 @@ function DeliveryDashboardPage() {
       </section>
 
       {/* التبويبات */}
-      <section className="rounded-[var(--radius-card)] bg-card p-4 ">
+      <section className="card-premium p-4">
         <div className="flex gap-1 border-b border-border pb-2">
           <button
             onClick={() => setActiveTab("pending")}
@@ -332,7 +333,7 @@ function DeliveryDashboardPage() {
           if (d) void runDecision(d.id, d.decision);
         }}
       />
-    </div>
+    </AppShell>
   );
 }
 

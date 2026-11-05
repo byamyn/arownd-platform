@@ -1,6 +1,24 @@
 import { cn } from "@/lib/utils";
 import { type ReactNode } from "react";
 
-export function AppShell({ children, className }: { children: ReactNode; className?: string }) {
-  return <div className={cn("app-page min-h-screen bg-background", className)}>{children}</div>;
+export function AppShell({
+  children,
+  className,
+  width = "content",
+}: {
+  children: ReactNode;
+  className?: string;
+  width?: "content" | "wide";
+}) {
+  return (
+    <div
+      className={cn(
+        width === "wide" ? "app-workspace" : "app-page",
+        "min-h-screen bg-background",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
 }
