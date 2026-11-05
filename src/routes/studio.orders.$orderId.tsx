@@ -23,6 +23,7 @@ import { useState } from "react";
 import { MerchantOrderDetailSkeleton } from "@/components/sooqy/skeleton";
 import { MerchantOrderTracking } from "@/components/sooqy/merchant-order-tracking";
 import { fetchShipmentByMerchantOrderId } from "@/lib/delivery";
+import { isMerchantManagedDelivery } from "@/lib/shipping";
 
 export const Route = createFileRoute("/studio/orders/$orderId")({
   component: StudioOrderDetailPage,
@@ -161,11 +162,9 @@ function StudioOrderDetailPage() {
   const storeOrderItems = (order.items ?? []).filter((item) => item.store_id === storeData.id);
   const merchantOrderStatus = merchantOrder.status;
   const merchantCanCollectCod =
-    order.delivery_type === "desk" ||
-    (order.delivery_type === "home" &&
-      !merchantOrderShipment.isLoading &&
-      !merchantOrderShipment.isError &&
-      (!merchantOrderShipment.data || !merchantOrderShipment.data.company_id));
+    !merchantOrderShipment.isLoading &&
+    !merchantOrderShipment.isError &&
+    isMerchantManagedDelivery(order.delivery_type, !!merchantOrderShipment.data?.company_id);
 
   const refreshOrder = async () => {
     await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
