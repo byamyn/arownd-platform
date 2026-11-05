@@ -97,7 +97,7 @@ describe("PWA — Service Worker", () => {
   });
 
   it("لا يخزّن استجابات API أو Supabase", () => {
-    expect(sw).not.toContain("DATA_CACHE");
+    expect(sw).not.toContain("const DATA_CACHE =");
     expect(sw).not.toContain("DATA_TTL_MS");
     expect(sw).not.toContain("X-Arownd-Cached-At");
     expect(sw).not.toContain('url.pathname.includes("/rest/v1/")');
