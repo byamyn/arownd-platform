@@ -7,10 +7,12 @@ export function requiresDeliveryAddress(deliveryType: DeliveryType): boolean {
 
 /** Carrier-assigned home deliveries stay on the carrier workflow. */
 export function isMerchantManagedDelivery(
-  deliveryType: DeliveryType,
+  deliveryType: string,
   carrierAssigned: boolean,
 ): boolean {
-  return deliveryType === "desk" || !carrierAssigned;
+  if (deliveryType === "desk") return true;
+  if (deliveryType === "home") return !carrierAssigned;
+  return false;
 }
 
 /** رسوم التوصيل حسب الولاية — نفس المنطق السابق، منقول للاستخدام المشترك بين السلة والدفع */
