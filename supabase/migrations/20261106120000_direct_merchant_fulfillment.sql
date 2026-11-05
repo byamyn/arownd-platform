@@ -293,11 +293,21 @@ grant execute on function public.merchant_update_order_tracking(uuid, text, text
 create or replace function public.prevent_carrier_assignment_after_merchant_tracking()
 returns trigger
 language plpgsql
+security definer
 set search_path = public
 as $function$
+declare
+  company_changed boolean;
 begin
-  if new.company_id is not null
-     and new.company_id is distinct from old.company_id
+  if tg_op = 'INSERT' then
+    company_changed := new.company_id is not null;
+  else
+    company_changed :=
+      new.company_id is not null
+      and new.company_id is distinct from old.company_id;
+  end if;
+
+  if company_changed
      and new.merchant_order_id is not null
      and exists (
        select 1
@@ -317,6 +327,6 @@ revoke all on function public.prevent_carrier_assignment_after_merchant_tracking
 drop trigger if exists prevent_carrier_assignment_after_merchant_tracking
   on public.shipments;
 create trigger prevent_carrier_assignment_after_merchant_tracking
-before update of company_id on public.shipments
+before insert or update of company_id on public.shipments
 for each row
 execute function public.prevent_carrier_assignment_after_merchant_tracking();
