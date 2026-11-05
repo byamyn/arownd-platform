@@ -7,7 +7,6 @@ import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
 import {
   fetchOrder,
-  merchantUpdateOrderStatus,
   merchantSubmitOrderQuote,
   merchantRejectOrder,
   collectMerchantOrderCod,
@@ -158,16 +157,6 @@ function StudioOrderDetailPage() {
   const refreshOrder = async () => {
     await qc.invalidateQueries({ queryKey: ["store-order", orderId] });
     await qc.invalidateQueries({ queryKey: ["store-orders"] });
-  };
-
-  const handleStatus = async (status: "delivered") => {
-    try {
-      await merchantUpdateOrderStatus(order.id, status);
-      showSuccess(t("studio_action_deliver"));
-      await refreshOrder();
-    } catch (error) {
-      showError(error);
-    }
   };
 
   const handleReject = async () => {
@@ -341,15 +330,6 @@ function StudioOrderDetailPage() {
                   {t("studio_quote_pending_customer")}
                 </p>
               )}
-              {merchantOrderStatus === "confirmed" && order.delivery_type === "desk" && (
-                <button
-                  type="button"
-                  onClick={() => handleStatus("delivered")}
-                  className="min-h-[var(--control-height-compact)] w-full rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground"
-                >
-                  {t("studio_action_deliver")}
-                </button>
-              )}
               {merchantOrderStatus === "delivered" &&
                 merchantOrder.payment_status !== "paid" &&
                 merchantCanCollectCod && (
@@ -382,8 +362,12 @@ function StudioOrderDetailPage() {
                   {t("studio_cod_paid", { amount: formatDA(merchantOrder.paid_amount ?? 0) })}
                 </p>
               )}
-              {merchantOrderStatus === "confirmed" && order.delivery_type === "home" && (
-                <MerchantOrderTracking merchantOrderId={merchantOrder.id} onCompleted={refreshOrder} />
+              {merchantOrderStatus === "confirmed" && (
+                <MerchantOrderTracking
+                  merchantOrderId={merchantOrder.id}
+                  deliveryType={order.delivery_type === "desk" ? "desk" : "home"}
+                  onCompleted={refreshOrder}
+                />
               )}
             </div>
           </div>
