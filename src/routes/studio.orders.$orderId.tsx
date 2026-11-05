@@ -54,7 +54,8 @@ function StudioOrderDetailPage() {
     enabled:
       !!merchantOrderForShipment?.id &&
       orderQuery.data?.delivery_type === "home" &&
-      merchantOrderForShipment.status === "delivered",
+      (merchantOrderForShipment.status === "confirmed" ||
+        merchantOrderForShipment.status === "delivered"),
   });
 
   useRealtimeSubscription({
@@ -362,7 +363,7 @@ function StudioOrderDetailPage() {
                   {t("studio_cod_paid", { amount: formatDA(merchantOrder.paid_amount ?? 0) })}
                 </p>
               )}
-              {merchantOrderStatus === "confirmed" && (
+              {merchantOrderStatus === "confirmed" && merchantCanCollectCod && (
                 <MerchantOrderTracking
                   merchantOrderId={merchantOrder.id}
                   deliveryType={order.delivery_type === "desk" ? "desk" : "home"}
