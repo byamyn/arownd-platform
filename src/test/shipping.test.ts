@@ -33,4 +33,8 @@ describe("direct trade delivery options", () => {
   it("keeps store pickup merchant-managed regardless of carrier state", () => {
     expect(isMerchantManagedDelivery("desk", true)).toBe(true);
   });
+
+  it("rejects unsupported delivery types for merchant fulfillment", () => {
+    expect(isMerchantManagedDelivery("unknown", false)).toBe(false);
+  });
 });
