@@ -89,7 +89,7 @@ function createMarkerElement(): HTMLElement {
   glyph.setAttribute("stroke-linejoin", "round");
   glyph.setAttribute("aria-hidden", "true");
   const body = document.createElementNS("http://www.w3.org/2000/svg", "path");
-  body.setAttribute("d", "M3 9l1.5-5h15L21 9M5 9v11h14V9M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M9 20v-6h6v6");
+  body.setAttribute("d", "M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5M2 10h20M3.5 6 2 10v2a2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0 2 2 0 0 0 4 0v-2l-1.5-4ZM4 21h16M4 10v11M20 10v11");
   glyph.append(body);
   pin.append(glyph);
   root.append(pill, pin);
