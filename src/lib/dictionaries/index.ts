@@ -11,5 +11,6 @@ import { commerce } from "./commerce";
 import { ui } from "./ui";
 import { studio } from "./studio";
 import { pages } from "./pages";
+import { delivery } from "./delivery";
 
-export const GROUPS: DictGroup[] = [shared, home, explore, product, commerce, ui, studio, pages];
+export const GROUPS: DictGroup[] = [shared, home, explore, product, commerce, ui, studio, pages, delivery];
