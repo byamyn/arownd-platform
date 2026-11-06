@@ -4,6 +4,8 @@ import type { DictGroup } from "./types";
 export const activity: DictGroup = {
   ar: {
     wallet_title: "المحفظة",
+    wallet_keywords: "المحفظة, شحن الرصيد, سحب, Arownd",
+    wallet_currency: "دج",
     wallet_description: "اشحن رصيدك وتابع عمليات محفظتك في Arownd.",
     wallet_login_title: "سجّل الدخول لفتح محفظتك",
     wallet_login_hint: "شحن الرصيد وسجل العمليات ستظهر هنا بعد تسجيل الدخول.",
@@ -123,6 +125,8 @@ export const activity: DictGroup = {
   },
   en: {
     wallet_title: "Wallet",
+    wallet_keywords: "wallet, top-up, withdrawal, Arownd",
+    wallet_currency: "DZD",
     wallet_description: "Top up your balance and track your wallet activity on Arownd.",
     wallet_login_title: "Sign in to access your wallet",
     wallet_login_hint: "Your balance and transaction history will appear here after signing in.",
