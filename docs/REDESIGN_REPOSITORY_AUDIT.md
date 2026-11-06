@@ -71,8 +71,18 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Added bilingual keys for store verification, product/order dashboard hints, login action, and reservation quantity labels in `src/lib/dictionaries/studio.ts`.
 - Migrated the corresponding visible strings in `src/routes/studio.index.tsx`.
 - Added Arabic/English interpolation assertions to `src/test/i18n-parity.test.ts`.
-- Static source inspection only. The wider Merchant Studio routes still require a route-by-route localization and responsive-layout audit.
+- Static source inspection only at that point; the operational route follow-up is documented in section 1.6.
 - Final static validation after the merchant batch: all 10 registered dictionary groups have matching Arabic/English key sets, no duplicate keys, and no unresolved translation references in the reviewed routes. The Arabic source scan is clean for the reviewed pages; one Arabic code comment remains in the store route.
+
+#### 1.6 Merchant operational routes and create-store localization (2026-11-06)
+
+- Migrated the remaining visible labels in `src/routes/create-store.tsx`, including both PageHeader states, login guidance, action, subtitle, and SEO title.
+- Migrated `src/routes/studio.shipments.tsx` login action, order reference, order link, and currency unit.
+- Migrated `src/routes/studio.orders.$orderId.tsx` login and save action.
+- Migrated `src/routes/studio.add-product.tsx` SEO title.
+- Added matching Arabic/English keys and regression assertions. Added route smoke coverage for create-store, add-product, and shipments.
+- Static validation: all 10 registered dictionary groups have matching Arabic/English key sets, no duplicate keys, and no unresolved translation references in the reviewed route set. Arabic UI literal scan is clean for create-store, Merchant Studio index/settings/shipments/order-detail/add-product, and checkout.
+- No executable tests or build checks were run.
 
 ## 2. Directional CSS
 
