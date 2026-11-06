@@ -28,9 +28,6 @@ Arabic UI literals remain in multiple active routes. Notifications, wallet, and 
 | `studio.index.tsx` | 30 | Metadata, store state, accessibility labels |
 | `studio.settings.tsx` | 12 | Metadata and image accessibility labels |
 | `create-store.tsx` | 6 | Metadata, page title, login guidance |
-| `profile.tsx` | 9 | Anonymous profile and accessibility labels |
-| `settings.tsx` | 64 | Metadata and user-facing feedback |
-| `delete-account.tsx` | 34 | Statuses and page copy |
 | `about.tsx` | 41 | Entire informational page |
 | `help.tsx` | 78 | FAQ categories and content |
 | `privacy.tsx` | 114 | Legal copy and accessibility labels |
@@ -45,7 +42,16 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Migrated `src/routes/notifications.tsx`, `src/routes/wallet.tsx`, and `src/routes/reservations.index.tsx` to translation keys; static scan found no remaining Arabic UI literals in these three routes (comments excluded).
 - Added dictionary parity assertions for wallet/notifications/reservations and added `/reservations/` to route smoke coverage.
 - Static dictionary scan: 120 activity keys in each language, no missing language counterparts, no unresolved translation references, and no new cross-group collisions. Existing allowed accessibility-key duplicates remain unchanged.
-- The settings page and other routes in the findings table are still outstanding; this batch does not complete localization.
+- Settings, profile, and account-request pages were migrated in the next batch; remaining findings in the table still need localization.
+
+#### 1.2 Account and settings localization batch (2026-11-06)
+
+- Added bilingual settings, profile fallback/accessibility, and account-request copy to `src/lib/dictionaries/activity.ts` (with existing profile keys reused from the pages dictionary to avoid collisions).
+- Migrated `src/routes/settings.tsx`, `src/routes/profile.tsx`, and `src/routes/delete-account.tsx` to translation keys, including SEO metadata and server-confirmed feedback.
+- Account-request dates now use the active locale (`ar-DZ` / `en-DZ`). Cancelling a request now also gives success feedback only after the server confirms and the query is invalidated.
+- Added translation assertions for settings, profile, and account-request strings.
+- Static checks: 232 Arabic and 232 English activity keys; no unresolved references in the three migrated routes; no unapproved cross-group collisions; no Arabic UI literals found in these routes (comments excluded).
+- `about.tsx`, `help.tsx`, `privacy.tsx`, and `terms.tsx` remain outstanding, along with other shopper and merchant routes.
 
 ## 2. Directional CSS
 
@@ -59,7 +65,7 @@ Fixed by renaming them to:
 - `delivery_company_delivery_address`
 - `delivery_company_shipment_fee`
 
-Added regression assertions for these scoped names and a group-level collision guard. The only permitted duplicate keys are the existing shared/UI accessibility and retry labels.
+Added regression assertions for these scoped names and a group-level collision guard. The only permitted duplicate keys are the existing shared/UI accessibility and retry labels; a static follow-up scan found no other duplicates.
 
 ### 4. Delivery implementation defects fixed
 
