@@ -12,9 +12,10 @@
 - Dark mode uses near-black canvas and layered charcoal surfaces.
 - Typography: Tajawal for Arabic (bundled locally through the already-installed Fontsource package) and Inter for Latin.
 - Cards use a restrained 20px radius; controls 14px; sheets 24px.
-- Primary controls remain at least 48px high; compact controls and touch targets remain at least 44px.
+- Primary controls and form fields are at least 48px high; compact controls and icon buttons remain at least 44px.
 - Use short transitions and honor reduced-motion preferences.
 - Keep semantic success, warning, error and rating tokens for meaningful feedback; do not use them as decorative brand colors.
+- Use Lucide icons with a consistent 16–20px visual scale and avoid mixing emoji into functional navigation.
 
 ## Source of truth
 
@@ -23,6 +24,17 @@
 - `src/lib/theme.tsx` remains responsible for system/light/dark preference and persistence.
 - The unused duplicate `src/styles/theme.css` was removed to prevent competing theme declarations.
 - Existing Tailwind semantic aliases remain available so existing screens continue to render while they are migrated.
+
+## Shared primitives updated
+
+| Component | Change |
+|---|---|
+| `src/components/ui/button.tsx` | Token-based radius, consistent variants, 48px default and 44px compact/icon controls |
+| `src/components/ui/card.tsx` | Shared 20px card radius, white/light semantic surface, compact spacing and no decorative shadow |
+| `src/components/ui/input.tsx` | 48px minimum height, shared radius and clear focus ring |
+| `src/components/ui/badge.tsx` | Consistent pill shape and semantic variants without elevation |
+
+The existing marketplace-specific cards, logo artwork, navigation and page compositions are intentionally retained for now. They will be migrated in the relevant shopper/merchant page phases after the design foundation is established. The final logo concept still requires a separate visual exploration and approval.
 
 ## Token contract
 
@@ -45,11 +57,11 @@
 
 - No business logic, Supabase query, RPC, RLS policy, database migration or route behavior is changed in this phase.
 - Existing component APIs and legacy utility names are retained for incremental migration.
-- The brand mark, icon language, card composition and page layouts will be redesigned in later page/component phases; this phase establishes their visual foundations only.
-- The final logo concept still requires a separate visual exploration and approval.
+- Brand mark, icon artwork, card composition and page layouts will be redesigned in later phases; this phase establishes their visual foundations only.
 
 ## Phase 2 verification
 
-- Added a Vitest contract test for palette, themes, typography, shape and reduced-motion tokens.
+- Added Vitest contract coverage for palette, themes, typography, shape and reduced-motion tokens.
+- Added component tests for button, card and input primitives.
 - Runtime checks still need to be run in an executable checkout:
   `npx tsc --noEmit`, `npm run lint`, `npm run ui:check`, `npm test`, `npm run build`.
