@@ -236,7 +236,7 @@ function ProductPage() {
       }
     } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError")) {
-        toast.error("تعذّرت مشاركة الصورة. يمكنك حفظها من الصورة المفتوحة.");
+        toast.error(t("product_share_image_error"));
       }
     }
   };
@@ -421,7 +421,7 @@ function ProductPage() {
               </div>
               <div className="flex items-center gap-2">
                 <StockBadge level={level} />
-                <ReportContentButton targetType="product" targetId={p.id} label="إبلاغ" />
+                <ReportContentButton targetType="product" targetId={p.id} label={t("product_report_action")} />
               </div>
             </div>
             {selected && (
@@ -525,7 +525,7 @@ function ProductPage() {
             <h2 className="text-lg font-bold text-foreground">{t("product_where_to_find")}</h2>
             {user && sorted.some((o) => o.store.owner_id === user.id) && purchasableOffers.length === 0 && (
               <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground">
-                هذا منتجك في متجرك. يمكنك إدارته من استديو التاجر، ولا يمكنك طلبه من متجرك.
+                {t("product_own_store_notice")}
                 <Link to="/studio" className="ms-1 text-accent-ink underline underline-offset-2">
                   إدارة المنتج
                 </Link>
@@ -669,7 +669,7 @@ function ProductPage() {
           )}
                     {isOwnProduct && (
             <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground">
-              هذا منتجك في متجرك. يمكنك إدارته من استديو التاجر، ولا يمكنك طلبه من متجرك.
+              {t("product_own_store_notice")}
               <Link to="/studio" className="ms-1 text-accent-ink underline underline-offset-2">
                 إدارة المنتج
               </Link>
