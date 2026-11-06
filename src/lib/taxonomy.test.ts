@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { CATEGORY_ICONS } from "@/components/sooqy/category-icons";
 import {
   ALL_CATEGORIES,
   MAIN_CATEGORIES,
@@ -36,6 +37,15 @@ describe("taxonomy — تماسك الشجرة", () => {
   it("التصنيفات الأخرى تشمل سلة «منتجات أخرى»", () => {
     expect(OTHER_CATEGORIES.map((c) => c.id)).toContain("misc");
     expect(OTHER_CATEGORIES.every((c) => !c.children)).toBe(true);
+  });
+
+  it("كل التصنيفات لها أيقونة Lucide موحّدة", () => {
+    for (const category of ALL_CATEGORIES) {
+      expect(CATEGORY_ICONS[category.id], category.id).toBeDefined();
+      for (const child of category.children ?? []) {
+        expect(CATEGORY_ICONS[child.id], child.id).toBeDefined();
+      }
+    }
   });
 
   it("كل المعرّفات فريدة وغير فارغة", () => {
