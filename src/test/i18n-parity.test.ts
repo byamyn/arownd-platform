@@ -119,6 +119,12 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("category_product_count", "en", { count: 4 })).toContain("4");
     expect(t("product_own_store_notice", "ar")).toContain("استوديو التاجر");
     expect(t("product_own_store_notice", "en")).toContain("Merchant Studio");
+    expect(t("store_not_found_title", "ar")).toBe("المتجر غير موجود");
+    expect(t("store_not_found_title", "en")).toBe("Store not found");
+    expect(t("store_meta_description", "ar", { name: "متجر" })).toContain("متجر");
+    expect(t("store_meta_description", "en", { name: "Store" })).toContain("Store");
+    expect(t("store_tab_reviews", "ar")).toBe("التقييمات");
+    expect(t("store_tab_reviews", "en")).toBe("Reviews");
     expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
     expect(t("delivery_cod_collected_amount", "en", { amount: "1,200" })).toContain("1,200");
   });
