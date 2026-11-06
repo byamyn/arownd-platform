@@ -597,10 +597,10 @@ function RootComponent() {
             <div
               className={
                 isAuth
-                  ? "min-h-dvh w-full min-w-0 max-w-none overflow-x-clip pb-0"
+                  ? "min-h-dvh w-full min-w-0 max-w-none overflow-x-clip pt-[env(safe-area-inset-top)] pb-0"
                   : isStudio
-                    ? "min-h-dvh w-full min-w-0 max-w-none overflow-x-clip pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]"
-                    : "mx-auto min-h-dvh w-full min-w-0 max-w-7xl overflow-x-clip pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]"
+                    ? "min-h-dvh w-full min-w-0 max-w-none overflow-x-clip pt-[env(safe-area-inset-top)] pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]"
+                    : "mx-auto min-h-dvh w-full min-w-0 max-w-7xl overflow-x-clip pt-[env(safe-area-inset-top)] pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]"
               }
             >
               <PageTransition>
