@@ -17,7 +17,7 @@ Reviewed the active route inventory, shared shell/navigation, shared design prim
 
 ### 1. Translation and localization gaps
 
-Arabic UI literals remain in multiple active routes. Representative findings:
+Arabic UI literals remain in multiple active routes. Notifications, wallet, and reservations were migrated in the latest follow-up batch; the remaining representative findings are:
 
 | Route | Approx. non-comment Arabic lines found | Examples |
 |---|---:|---|
@@ -25,9 +25,6 @@ Arabic UI literals remain in multiple active routes. Representative findings:
 | `products.$productId.tsx` | 6 | Share error, report action |
 | `stores.$storeId.tsx` | 37 | Store empty/error states, weekdays, toasts |
 | `checkout.tsx` | 4 | Tracking label and action |
-| `notifications.tsx` | 16 | Metadata, title, mark-all, empty state |
-| `wallet.tsx` | 69 | Filters, statuses, headings, action feedback |
-| `reservations.index.tsx` | 35 | Status labels, filters, page headings |
 | `studio.index.tsx` | 30 | Metadata, store state, accessibility labels |
 | `studio.settings.tsx` | 12 | Metadata and image accessibility labels |
 | `create-store.tsx` | 6 | Metadata, page title, login guidance |
@@ -41,7 +38,16 @@ Arabic UI literals remain in multiple active routes. Representative findings:
 
 Counts are source-line indicators, not exact counts of visible strings; they can include arrays, metadata, and accessibility attributes. Nevertheless, they demonstrate that Arabic/English parity is not yet complete across the application.
 
-### 2. Directional CSS
+#### 1.1 Latest localization batch (2026-11-06)
+
+- Added `src/lib/dictionaries/activity.ts` with matching Arabic/English keys for notifications, wallet, reservations, and settings groundwork only where explicitly listed in the dictionary.
+- Registered the group in `src/lib/dictionaries/index.ts`.
+- Migrated `src/routes/notifications.tsx`, `src/routes/wallet.tsx`, and `src/routes/reservations.index.tsx` to translation keys; static scan found no remaining Arabic UI literals in these three routes (comments excluded).
+- Added dictionary parity assertions for wallet/notifications/reservations and added `/reservations/` to route smoke coverage.
+- Static dictionary scan: 120 activity keys in each language, no missing language counterparts, no unresolved translation references, and no new cross-group collisions. Existing allowed accessibility-key duplicates remain unchanged.
+- The settings page and other routes in the findings table are still outstanding; this batch does not complete localization.
+
+## 2. Directional CSS
 
 The route scans completed for the shopper, checkout, order, merchant, and profile/settings route groups found no direct physical-direction Tailwind utilities from the audited patterns. This is a positive static signal, but it does not prove full LTR correctness: icons, map controls, third-party widgets, mixed-direction identifiers, and component internals still require visual testing.
 
@@ -84,6 +90,13 @@ Static source checks found logical spacing utilities in the reviewed route group
 ## Files changed in this audit
 
 - `src/lib/dictionaries/delivery.ts` — scope delivery-specific address/fee keys to avoid global collisions.
+- `src/lib/dictionaries/activity.ts` — add bilingual notifications, reservations, and wallet copy.
+- `src/lib/dictionaries/index.ts` — register the activity dictionary group.
+- `src/routes/notifications.tsx` — migrate visible UI and SEO copy to translations.
+- `src/routes/reservations.index.tsx` — migrate visible UI, statuses, and confirmation copy to translations.
+- `src/routes/wallet.tsx` — migrate wallet labels, statuses, feedback, and metadata to translations.
+- `src/test/i18n-parity.test.ts` — add wallet and activity translation assertions.
+- `src/test/journey.test.tsx` — add reservations route smoke coverage.
 - `src/routes/delivery-dashboard.tsx` — use the scoped keys and render stat icon colors.
 - `src/routes/delivery-register.tsx` — use a typed Supabase Insert payload without an unsafe cast.
 - `src/test/i18n-parity.test.ts` — add dictionary collision and scoped-key regression checks.
