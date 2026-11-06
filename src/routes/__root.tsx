@@ -438,6 +438,9 @@ function PullToRefresh({ queryClient }: { queryClient: QueryClient }) {
 function NativeBackButtonHandler() {
   const router = useRouter();
   const location = useLocation();
+  const { t } = useTranslation();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const pendingBack = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     if (!isNativePlatform()) return;
@@ -449,22 +452,26 @@ function NativeBackButtonHandler() {
       .then(async ({ App }) => {
         if (disposed) return;
         const listener = await App.addListener("backButton", ({ canGoBack }) => {
+          const continueBack = () => {
+            if (canGoBack || window.history.length > 1) {
+              router.history.back();
+              return;
+            }
+            if (location.pathname !== "/") {
+              void router.navigate({ to: "/" });
+              return;
+            }
+            void App.exitApp();
+          };
           if (hasUnsavedFormChanges()) {
-            const leave = window.confirm("لديك تغييرات غير محفوظة. هل تريد مغادرة الصفحة وفقدانها؟");
-            if (!leave) return;
-            dirtyForms.clear();
-          }
-          if (canGoBack || window.history.length > 1) {
-            router.history.back();
+            pendingBack.current = () => {
+              dirtyForms.clear();
+              continueBack();
+            };
+            setConfirmOpen(true);
             return;
           }
-
-          if (location.pathname !== "/") {
-            void router.navigate({ to: "/" });
-            return;
-          }
-
-          void App.exitApp();
+          continueBack();
         });
 
         if (disposed) {
@@ -485,7 +492,26 @@ function NativeBackButtonHandler() {
     };
   }, [router, location.pathname]);
 
-  return null;
+  return (
+    <ConfirmDialog
+      open={confirmOpen}
+      title={t("unsaved_changes_title")}
+      message={t("unsaved_changes_message")}
+      confirmLabel={t("unsaved_changes_leave")}
+      cancelLabel={t("unsaved_changes_stay")}
+      tone="danger"
+      onCancel={() => {
+        pendingBack.current = null;
+        setConfirmOpen(false);
+      }}
+      onConfirm={() => {
+        const continueBack = pendingBack.current;
+        pendingBack.current = null;
+        setConfirmOpen(false);
+        continueBack?.();
+      }}
+    />
+  );
 }
 
 function NativeExternalLinkHandler() {
