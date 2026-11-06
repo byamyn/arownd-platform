@@ -246,7 +246,7 @@ const DICTIONARY: Record<Lang, Record<string, string>> = {
     product_added_to_wishlist: "أُضيف إلى قائمة الأمنيات",
     product_removed_from_wishlist: "أُزيل من قائمة الأمنيات",
     already_in_wishlist: "المنتج موجود بالفعل في قائمة الأمنيات",
-    login_required: "ي Require تسجيل الدخول",
+    login_required: "يتطلب تسجيل الدخول",
     create_account_prompt: "لا تملك حساباً بعد؟ أنشئ حساباً",
     already_have_account: "لديك حساب بالفعل؟ تسجيل الدخول",
     terms_agreement: "بالمتابعة، أنت توافق على",
