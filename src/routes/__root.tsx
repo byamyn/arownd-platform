@@ -347,7 +347,7 @@ function UnsavedFormGuard() {
         pendingAnchor.current = null;
         dirtyForms.clear();
         setConfirmOpen(false);
-        if (anchor) window.location.assign(anchor.href);
+        if (anchor?.isConnected) anchor.click();
       }}
     />
   );
