@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
-import { useTranslation } from "@/lib/i18n";
+import { translate, useTranslation } from "@/lib/i18n";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { logNetError } from "@/lib/conn";
 import { OrderStatusBadge } from "@/components/sooqy/badges";
@@ -71,8 +71,8 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/studio/")({
   head: () => ({
     meta: [
-      { title: "Arownd Merchant Studio — استوديو التاجر" },
-      { name: "description", content: "أدر متجرك، منتجاتك، مخزونك وطلباتك بأسلوب احترافي." },
+      { title: translate("studio_meta_title") },
+      { name: "description", content: translate("studio_meta_description") },
     ],
   }),
   component: StudioPage,
@@ -461,7 +461,7 @@ function StudioPage() {
               {store.data?.logo_url ? (
                 <img
                   src={store.data.logo_url}
-                  alt={`شعار ${store.data.name}`}
+                  alt={t("studio_store_logo_alt", { name: store.data.name })}
                   loading="lazy"
                   decoding="async"
                   className="size-full object-cover"
@@ -482,7 +482,7 @@ function StudioPage() {
                   <span className="relative inline-flex shrink-0">
                     <button
                       type="button"
-                      aria-label="معلومات توثيق المتجر"
+                      aria-label={t("studio_verification_aria")}
                       aria-expanded={showVerificationInfo}
                       aria-describedby={showVerificationInfo ? "studio-verification-tooltip" : undefined}
                       onClick={() => setShowVerificationInfo((open) => !open)}
@@ -504,7 +504,7 @@ function StudioPage() {
               </div>
               <p className="mt-1 flex items-center gap-1 truncate text-xs text-muted-foreground">
                 <MapPin className="size-3 shrink-0" />
-                {store.data?.commune || "الموقع قيد الإعداد"}
+                {store.data?.commune || t("studio_location_setup_pending")}
               </p>
               <div className="mt-2 flex flex-wrap items-center gap-2">
                 {(() => {
@@ -517,7 +517,7 @@ function StudioPage() {
                           st.isOpen ? "bg-primary" : "bg-muted-foreground/40",
                         )}
                       />
-                      {st.isOpen ? "مفتوح الآن" : "مغلق حاليًا"}
+                      {st.isOpen ? t("studio_store_open_now") : t("studio_store_closed_now")}
                     </span>
                   );
                 })()}
@@ -529,14 +529,14 @@ function StudioPage() {
               to="/studio/settings"
               className="flex min-h-[var(--control-height-compact)] items-center justify-center gap-2 rounded-[var(--radius-control)] bg-primary px-3 text-xs font-extrabold text-primary-foreground transition hover:brightness-95 active:scale-[var(--scale-pressed)]"
             >
-              <Settings className="size-4" /> تخصيص المتجر
+              <Settings className="size-4" /> {t("studio_customize_store")}
             </Link>
             <Link
               to="/stores/$storeId"
               params={{ storeId: store.data?.id ?? "" }}
               className="flex min-h-[var(--control-height-compact)] items-center justify-center gap-2 rounded-[var(--radius-control)] border border-border bg-card px-3 text-xs font-bold text-foreground transition hover:bg-muted active:scale-[var(--scale-pressed)]"
             >
-              <Eye className="size-4" /> معاينة المتجر
+              <Eye className="size-4" /> {t("studio_preview_store")}
             </Link>
           </div>
         </div>
@@ -640,10 +640,10 @@ function StudioPage() {
       {(() => {
         const s = store.data;
         const items = [
-          { label: "اسم المتجر", done: !!s?.name },
-          { label: "صورة المتجر (الشعار)", done: !!s?.logo_url },
-          { label: "إضافة أول منتج", done: (offers.data?.length ?? 0) > 0 },
-          { label: "معلومات التواصل (الهاتف)", done: !!s?.phone },
+          { label: t("studio_setup_store_name"), done: !!s?.name },
+          { label: t("studio_setup_store_logo"), done: !!s?.logo_url },
+          { label: t("studio_setup_first_product"), done: (offers.data?.length ?? 0) > 0 },
+          { label: t("studio_setup_contact_phone"), done: !!s?.phone },
         ];
         const done = items.filter((i) => i.done).length;
         const pct = Math.round((done / items.length) * 100);
@@ -688,14 +688,14 @@ function StudioPage() {
                 to="/studio/settings"
                 className="flex-1 rounded-[var(--radius-control)] bg-primary py-2 text-center text-xs font-bold text-primary-foreground transition active:scale-95"
               >
-                استكمال الإعداد
+                {t("studio_setup_continue")}
               </Link>
               <Link
                 to="/stores/$storeId"
                 params={{ storeId: s?.id ?? "" }}
                 className="flex-1 rounded-[var(--radius-control)] border border-accent-ink/30 bg-card py-2 text-center text-xs font-bold text-accent-ink transition active:scale-95"
               >
-                معاينة متجري
+                {t("studio_preview_my_store")}
               </Link>
             </div>
           </section>
@@ -721,7 +721,7 @@ function StudioPage() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-bold text-foreground">
-                    طلب #{o.order.id.slice(0, 8)}
+                    {t("studio_order_hash", { id: o.order.id.slice(0, 8) })}
                   </span>
                   <span className="block text-xs text-muted-foreground">
                     {o.quantity} × {o.product_name}
@@ -742,10 +742,10 @@ function StudioPage() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-sm font-bold text-foreground">
-                    حجز بانتظار التأكيد
+                    {t("studio_pending_reservation")}
                   </span>
                   <span className="block text-xs text-muted-foreground">
-                    {r.offer?.product.name ?? "منتج"} · {r.quantity} قطعة
+                    {t("studio_product_units", { name: r.offer?.product.name ?? t("studio_product_name_label"), count: r.quantity })}
                   </span>
                 </span>
                 <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
@@ -886,7 +886,7 @@ function StudioPage() {
                 />
                 {editImages.length > 0 && (
                   <p className="text-xs text-muted-foreground">
-                    {editImages.length} صورة جديدة سيتم رفعها
+                    {t("studio_new_images_uploading", { count: editImages.length })}
                   </p>
                 )}
               </div>
@@ -1082,7 +1082,7 @@ function StudioPage() {
                     <div>
                       <p className="font-mono text-sm font-bold text-accent-ink">{r.code}</p>
                       <p className="text-xs text-muted-foreground">
-                        {r.offer?.product?.name ?? "منتج محذوف"} · {r.quantity} وحدة
+                        {r.offer?.product?.name ?? t("studio_deleted_product_units", { count: r.quantity })} · {r.quantity} وحدة
                       </p>
                     </div>
                     <span
@@ -1096,12 +1096,12 @@ function StudioPage() {
                       )}
                     >
                       {isActiveReservation(r)
-                        ? "في الانتظار"
+                        ? t("studio_reservation_pending")
                         : r.status === "collected"
-                          ? "تم الاستلام"
+                          ? t("studio_reservation_collected")
                           : r.status === "cancelled"
-                            ? "ملغي"
-                            : "منتهي"}
+                            ? t("studio_reservation_cancelled")
+                            : t("studio_reservation_expired")}
                     </span>
                   </div>
                   {isActiveReservation(r) && (
@@ -1119,7 +1119,7 @@ function StudioPage() {
                       }}
                       className="mt-2 w-full rounded-[var(--radius-control)] bg-success-soft py-2 text-xs font-bold text-success transition hover:bg-success/25"
                     >
-                      تأكيد الاستلام
+                      {t("studio_confirm_pickup")}
                     </button>
                   )}
                   {!isActiveReservation(r) && (
