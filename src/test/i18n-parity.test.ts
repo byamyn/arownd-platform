@@ -104,6 +104,15 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("delete_status_under_review", "en")).toBe("Under review");
     expect(t("delete_intro", "ar")).toContain("فريق Arownd");
     expect(t("delete_intro", "en")).toContain("Arownd team");
+    expect(t("about_hero_heading", "ar")).toContain("اكتشف ما حولك");
+    expect(t("about_hero_heading", "en")).toContain("Discover what's around you");
+    expect(t("about_delivery_description", "en")).toContain("delivery companies");
+    expect(t("help_tab_delivery", "ar")).toBe("شركات التوصيل");
+    expect(t("help_tab_delivery", "en")).toBe("Delivery companies");
+    expect(t("help_faq_payment_q", "ar")).toContain("طرق الدفع");
+    expect(t("help_faq_payment_q", "en")).toContain("payment methods");
+    expect(t("help_delivery_mail_note", "ar")).toContain("لن يُرسل الطلب تلقائيًا");
+    expect(t("help_delivery_mail_note", "en")).toContain("not sent automatically");
     expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
     expect(t("delivery_cod_collected_amount", "en", { amount: "1,200" })).toContain("1,200");
   });
