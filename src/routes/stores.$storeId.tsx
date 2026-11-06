@@ -138,7 +138,7 @@ function StorePage() {
         }
         ogImage={s.cover_url ?? s.logo_url ?? undefined}
         ogType="website"
-        keywords={`${s.name}, متجر الجزائر, شراء ${s.name}, Arownd`}
+        keywords={t("store_keywords", { name: s.name })}
         jsonLd={{
           "@context": "https://schema.org",
           "@type": "LocalBusiness",
