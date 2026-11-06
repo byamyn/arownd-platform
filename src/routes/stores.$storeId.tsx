@@ -41,13 +41,13 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { telUrl, whatsappUrl } from "@/lib/contact";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { shareTextContent } from "@/lib/native-sharing";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/stores/$storeId")({
   head: () => ({}),
   component: StorePage,
 });
 
-const DAYS = ["الأحد", "الإثنين", "الثلاثاء", "الأربعاء", "الخميس", "الجمعة", "السبت"];
 type Tab = "products" | "about" | "reviews";
 
 /** يكمل الرابط إن أُدخل بدون بروتوكول (instagram.com/... أو @handle). */
@@ -61,6 +61,13 @@ function StorePage() {
   const { storeId } = Route.useParams();
   const { pos } = useGeo();
   const { user } = useAuth();
+  const { t, lang } = useTranslation();
+  const days = Array.from({ length: 7 }, (_, index) =>
+    new Intl.DateTimeFormat(lang === "ar" ? "ar-DZ" : "en-DZ", {
+      weekday: "long",
+      timeZone: "UTC",
+    }).format(new Date(Date.UTC(2024, 0, 7 + index))),
+  );
   const [tab, setTab] = useState<Tab>("products");
   const favs = useFavorites();
   const store = useQuery({ queryKey: ["store", storeId], queryFn: () => getStore(storeId) });
@@ -85,11 +92,11 @@ function StorePage() {
       <div className="space-y-4 p-8 text-center">
         <EmptyState
           Icon={Store}
-          title="المتجر غير موجود"
-          hint="تأكد من الرابط أو ابحث عن متجر آخر."
+          title={t("store_not_found_title")}
+          hint={t("store_not_found_hint")}
         />
         <Link to="/stores" className="btn-primary inline-flex px-6">
-          تصفّح المتاجر
+          {t("store_browse_stores")}
         </Link>
       </div>
     );
@@ -112,11 +119,11 @@ function StorePage() {
       const shared = await shareTextContent({ title: s.name, text: s.name, url });
       if (!shared) {
         await navigator.clipboard.writeText(url);
-        toast.success("تم نسخ رابط المتجر");
+        toast.success(t("store_link_copied"));
       }
     } catch (error) {
       if (!(error instanceof DOMException && error.name === "AbortError")) {
-        toast.error("تعذّر مشاركة الرابط");
+        toast.error(t("store_share_failed"));
       }
     }
   };
@@ -127,7 +134,7 @@ function StorePage() {
         title={s.name}
         description={
           s.description?.slice(0, 150) ||
-          `متجر ${s.name} في الجزائر — شاهد جميع سلالته وأسعاره ومواعيد العمل.`
+          t("store_meta_description", { name: s.name })
         }
         ogImage={s.cover_url ?? s.logo_url ?? undefined}
         ogType="website"
@@ -165,18 +172,18 @@ function StorePage() {
         {isOwner && (
           <div className="flex flex-wrap items-center gap-2 bg-primary-soft px-4 py-2.5 text-accent-ink-soft-foreground">
             <Eye className="size-4 shrink-0" />
-            <p className="min-w-0 flex-1 text-xs font-bold">أنت تشاهد متجرك كما يراه الزوار</p>
+            <p className="min-w-0 flex-1 text-xs font-bold">{t("store_owner_preview")}</p>
             <Link
               to="/studio/settings"
               className="flex items-center gap-1 rounded-full bg-primary px-3 py-1 text-xs font-bold text-primary-foreground transition active:scale-95"
             >
-              <Settings className="size-3.5" /> تخصيص
+              <Settings className="size-3.5" /> {t("store_customize")}
             </Link>
             <Link
               to="/studio"
               className="flex items-center gap-1 rounded-full border border-accent-ink/40 px-3 py-1 text-xs font-bold transition active:scale-95"
             >
-              <Store className="size-3.5" /> لوحة التحكم
+              <Store className="size-3.5" /> {t("store_dashboard")}
             </Link>
           </div>
         )}
@@ -194,7 +201,7 @@ function StorePage() {
           )}
           <button
             onClick={share}
-            aria-label="مشاركة المتجر"
+            aria-label={t("store_share_aria")}
             className="absolute top-4 end-4 z-10 flex size-10 items-center justify-center rounded-full bg-card/95  backdrop-blur transition active:scale-95"
           >
             <Share2 className="size-5" />
@@ -221,7 +228,7 @@ function StorePage() {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h1 className="text-h1 text-foreground">{s.name}</h1>
             {!isOwner && (
-              <ReportContentButton targetType="store" targetId={s.id} label="الإبلاغ عن المتجر" />
+              <ReportContentButton targetType="store" targetId={s.id} label={t("store_report")} />
             )}
           </div>
           <div className="space-y-1.5">
@@ -246,7 +253,7 @@ function StorePage() {
             <button
               onClick={() => {
                 const nowFollowing = toggleFavorite("stores", s.id);
-                toast.success(nowFollowing ? "أُضيف المتجر إلى مفضلتك" : "أُزيل المتجر من المفضلة");
+                toast.success(nowFollowing ? t("store_follow_added") : t("store_follow_removed"));
               }}
               className={cn(
                 "flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border px-2 text-xs font-semibold transition active:scale-95",
@@ -256,7 +263,7 @@ function StorePage() {
               )}
             >
               <Heart className={cn("size-3.5 shrink-0", followed && "fill-accent-ink text-accent-ink")} />
-              {followed ? "إزالة من المفضلة" : "إضافة إلى المفضلة"}
+              {followed ? t("store_unfollow") : t("store_follow")}
             </button>
             <DirectionsButton
               lat={s.latitude}
@@ -265,7 +272,7 @@ function StorePage() {
               className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border border-border bg-card px-2 text-xs font-semibold text-foreground transition active:scale-95"
             >
               <Navigation className="size-3.5 shrink-0" />
-              الاتجاهات
+              {t("store_directions")}
             </DirectionsButton>
             {whatsappUrl(s.whatsapp) ? (
               <a
@@ -275,7 +282,7 @@ function StorePage() {
                 className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] bg-success-soft px-2 text-xs font-semibold text-success transition active:scale-95"
               >
                 <MessageCircle className="size-3.5 shrink-0" />
-                واتساب
+                {t("store_whatsapp")}
               </a>
             ) : telUrl(s.phone) ? (
               <a
@@ -283,7 +290,7 @@ function StorePage() {
                 className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] bg-success-soft px-2 text-xs font-semibold text-success transition active:scale-95"
               >
                 <Phone className="size-3.5 shrink-0" />
-                اتصال
+                {t("store_call")}
               </a>
             ) : (
               <span
@@ -291,7 +298,7 @@ function StorePage() {
                 className="flex min-h-11 items-center justify-center gap-1 rounded-[var(--radius-control)] border border-border bg-muted px-2 text-xs font-semibold text-muted-foreground"
               >
                 <MessageCircle className="size-4" />
-                لا يوجد رقم
+                {t("store_no_phone")}
               </span>
             )}
           </div>
@@ -301,9 +308,9 @@ function StorePage() {
             <div className="flex gap-1">
               {(
                 [
-                  { id: "products", label: "المنتجات" },
-                  { id: "about", label: "حول المتجر" },
-                  { id: "reviews", label: "التقييمات" },
+                  { id: "products", label: t("store_tab_products") },
+                  { id: "about", label: t("store_tab_about") },
+                  { id: "reviews", label: t("store_tab_reviews") },
                 ] as const
               ).map((t) => (
                 <button
@@ -337,7 +344,7 @@ function StorePage() {
                 />
               )}
               {offers.isLoading && (
-                <div className="grid grid-cols-2 gap-3" aria-label="Loading products">
+                <div className="grid grid-cols-2 gap-3" aria-label={t("store_loading_products")}>
                   {[0, 1, 2, 3].map((i) => (
                     <div
                       key={i}
@@ -388,16 +395,16 @@ function StorePage() {
               {!offers.isLoading && !offers.isError && !offers.data?.length && (
                 <EmptyState
                   Icon={Store}
-                  title={isOwner ? "متجرك لا يعرض أي سلعة بعد" : "لم يضف المتجر أي سلعة بعد"}
+                  title={isOwner ? t("store_owner_empty_title") : t("store_empty_title")}
                   hint={
                     isOwner
-                      ? "أضف منتجك الأول من لوحة التحكم ليظهر هنا للزوار."
-                      : "ترقّب وصول منتجات جديدة قريبًا."
+                      ? t("store_owner_empty_hint")
+                      : t("store_empty_hint")
                   }
                   action={
                     isOwner ? (
                       <Link to="/studio" className="btn-primary inline-flex items-center gap-1.5">
-                        <Plus className="size-4" /> أضف منتجًا
+                        <Plus className="size-4" /> {t("store_add_product")}
                       </Link>
                     ) : undefined
                   }
@@ -415,7 +422,7 @@ function StorePage() {
                 </div>
               )}
               <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
-                <h3 className="text-section text-foreground">الموقع</h3>
+                <h3 className="text-section text-foreground">{t("store_location")}</h3>
                 <p className="mt-2 flex items-start gap-2 text-body text-muted-foreground">
                   <MapPin className="mt-0.5 size-4 shrink-0 text-accent-ink" />
                   {[s.address_line, s.commune].filter(Boolean).join("، ")}
@@ -424,12 +431,12 @@ function StorePage() {
               <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
                 <div className="flex items-center justify-between">
                   <h3 className="flex items-center gap-1.5 text-section text-foreground">
-                    <Clock className="size-4 text-accent-ink" /> ساعات العمل
+                    <Clock className="size-4 text-accent-ink" /> {t("store_hours")}
                   </h3>
                   <OpenBadge open={open} />
                 </div>
                 <div className="mt-3 space-y-1.5">
-                  {DAYS.map((d, i) => {
+                  {days.map((d, i) => {
                     const closed = oh.closed_days?.includes(i);
                     return (
                       <div key={d} className="flex items-center justify-between text-sm">
@@ -443,7 +450,7 @@ function StorePage() {
                                 : "font-semibold text-foreground"
                           }
                         >
-                          {closed ? "مغلق" : `${oh.open} - ${oh.close}`}
+                          {closed ? t("store_closed") : `${oh.open} - ${oh.close}`}
                         </span>
                       </div>
                     );
@@ -451,7 +458,7 @@ function StorePage() {
                 </div>
               </div>
               <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
-                <h3 className="text-section text-foreground">التواصل</h3>
+                <h3 className="text-section text-foreground">{t("store_contact")}</h3>
                 {s.phone && (
                   <a
                     href={telUrl(s.phone) ?? undefined}
@@ -467,7 +474,7 @@ function StorePage() {
                     rel="noreferrer"
                     className="mt-1 flex items-center gap-2 text-body text-muted-foreground"
                   >
-                    <MessageCircle className="size-4 text-success" /> واتساب
+                    <MessageCircle className="size-4 text-success" /> {t("store_whatsapp")}
                   </a>
                 )}
                 {(s.instagram_url || s.facebook_url) && (
@@ -479,7 +486,7 @@ function StorePage() {
                         rel="noreferrer"
                         className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
                       >
-                        <Instagram className="size-3.5" /> إنستغرام
+                        <Instagram className="size-3.5" /> {t("store_instagram")}
                       </a>
                     )}
                     {s.facebook_url && (
@@ -489,7 +496,7 @@ function StorePage() {
                         rel="noreferrer"
                         className="flex items-center gap-1.5 rounded-full bg-muted px-3 py-1.5 text-xs font-bold text-foreground transition hover:bg-primary hover:text-primary-foreground"
                       >
-                        <Facebook className="size-3.5" /> فيسبوك
+                        <Facebook className="size-3.5" /> {t("store_facebook")}
                       </a>
                     )}
                   </div>
@@ -500,7 +507,7 @@ function StorePage() {
 
           {/* التقييمات */}
           {tab === "reviews" && (
-            <ReviewSection targetType="store" targetId={s.id} title="تقييمات المتجر" />
+            <ReviewSection targetType="store" targetId={s.id} title={t("store_reviews_title")} />
           )}
         </div>
       </div>
