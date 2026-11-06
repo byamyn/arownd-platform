@@ -50,6 +50,10 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("orders_cancel_store_title", "en")).toBe("Cancel this store order");
     expect(t("orders_archive_action", "ar")).toBe("إخفاء من السجل");
     expect(t("orders_archive_action", "en")).toBe("Hide from history");
+    expect(t("delivery_register_title", "ar")).toBe("تسجيل شركة توصيل");
+    expect(t("delivery_register_title", "en")).toBe("Register a delivery company");
+    expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
+    expect(t("delivery_cod_collected_amount", "en", { amount: "1,200" })).toContain("1,200");
   });
 
   it("لا تُعيد المفتاح الخام إذا كان مفقودًا (سلاح أمان)", () => {
