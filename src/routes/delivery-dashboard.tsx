@@ -1,7 +1,7 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { ArrowRight, Check, Truck, X, Clock, PackageCheck, AlertCircle } from "lucide-react";
+import { Check, Truck, X, Clock, PackageCheck, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
@@ -50,7 +50,6 @@ const STATUS_COLORS: Record<ShipmentStatus, string> = {
 
 function DeliveryDashboardPage() {
   const { user, ready } = useAuth();
-  const navigate = useNavigate();
   const qc = useQueryClient();
   const [activeTab, setActiveTab] = useState<"pending" | "all">("pending");
   const [collectingCodFor, setCollectingCodFor] = useState<string | null>(null);
@@ -236,11 +235,11 @@ function DeliveryDashboardPage() {
   }
 
   return (
-    <AppShell width="wide" className="space-y-5 pt-5 pb-32">
+    <AppShell width="wide" className="space-y-4 overflow-x-clip pt-3 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:space-y-5 sm:pt-5">
       <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
 
       {/* بطاقة ملخص الشركة */}
-      <section className="card-premium space-y-4 p-5">
+      <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
             <h2 className="font-bold text-lg">نظرة عامة</h2>
@@ -251,7 +250,7 @@ function DeliveryDashboardPage() {
           <BadgeCompany status={company.data.is_approved ? "active" : "pending"} />
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           <StatCard
             label="طلبات جديدة قيد الانتظار"
             value={pendingShipments.data?.length ?? 0}
@@ -280,12 +279,12 @@ function DeliveryDashboardPage() {
       </section>
 
       {/* التبويبات */}
-      <section className="card-premium p-4">
-        <div className="flex gap-1 border-b border-border pb-2">
+      <section className="rounded-[var(--radius-card)] border border-border bg-card p-3 sm:p-4">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto border-b border-border pb-2">
           <button
             onClick={() => setActiveTab("pending")}
             className={cn(
-              "px-4 py-2 rounded-[var(--radius-control)] text-sm font-medium transition",
+              "min-h-11 min-w-max shrink-0 rounded-2xl px-4 py-2 text-sm font-semibold transition",
               activeTab === "pending"
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted",
@@ -295,7 +294,7 @@ function DeliveryDashboardPage() {
           </button>
           <button
             onClick={() => setActiveTab("all")}
-            className={cn(
+            aria-pressed={activeTab === "all"}\n            className={cn(
               "px-4 py-2 rounded-[var(--radius-control)] text-sm font-medium transition",
               activeTab === "all"
                 ? "bg-primary text-primary-foreground"
@@ -364,7 +363,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="rounded-[var(--radius-control)] border p-4 bg-background">
+    <div className="min-h-[5.5rem] rounded-2xl border border-border bg-background p-3 sm:p-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-muted-foreground">{label}</p>
@@ -385,7 +384,7 @@ function PendingShipmentsList({
 }) {
   if (shipments.length === 0) {
     return (
-      <div className="mt-6 text-center py-10">
+      <div className="px-3 py-10 text-center sm:py-12">
         <PackageCheck className="mx-auto size-16 text-muted-foreground/50" />
         <h3 className="mt-3 text-lg font-bold">لا توجد طلبات شحن جديدة</h3>
         <p className="text-sm text-muted-foreground">
@@ -398,7 +397,7 @@ function PendingShipmentsList({
   return (
     <div className="mt-4 space-y-3">
       {shipments.map((shipment) => (
-        <div key={shipment.id} className="rounded-[var(--radius-control)] border p-4 bg-card ">
+        <div key={shipment.id} className="rounded-2xl border border-border bg-card p-3.5 sm:p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold truncate">طلب شحن #{shipment.id.slice(0, 8)}</p>
@@ -430,13 +429,13 @@ function PendingShipmentsList({
           <div className="mt-4 flex items-center gap-2">
             <button
               onClick={() => onDecision(shipment.id, "accept")}
-              className="flex-1 rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground hover:bg-primary/90 transition"
+              className="min-h-11 flex-1 rounded-2xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
             >
               <Check className="ms-1.5 size-4" /> قبول
             </button>
             <button
               onClick={() => onDecision(shipment.id, "reject")}
-              className="rounded-[var(--radius-control)] bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground hover:bg-rose-soft/80 transition"
+              className="min-h-11 rounded-2xl bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground transition hover:bg-rose-soft/80"
             >
               <X className="ms-1.5 size-4" /> رفض
             </button>
@@ -537,7 +536,7 @@ function AllShipmentsList({
                       type="button"
                       disabled={collectingCodFor === shipment.id}
                       onClick={() => onCollectCod(shipment)}
-                      className="w-full rounded-[var(--radius-control)] bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
+                      className="min-h-11 w-full rounded-2xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
                     >
                       {collectingCodFor === shipment.id
                         ? "جارٍ تسجيل التحصيل..."
@@ -563,7 +562,7 @@ function AllShipmentsList({
                       key={status}
                       onClick={() => onStatusUpdate(shipment.id, status)}
                       className={cn(
-                        "rounded-[var(--radius-control)] border px-3 py-1.5 text-xs font-medium transition",
+                        "min-h-11 rounded-2xl border px-3 py-2 text-xs font-semibold transition",
                         STATUS_COLORS[status],
                       )}
                     >
