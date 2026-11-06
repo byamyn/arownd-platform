@@ -75,6 +75,7 @@ export const studio: DictGroup = {
     studio_low_stock_alert: "{count} منتجات مخزونها منخفض أو نافد",
     studio_low_stock_review: "راجعها",
     studio_store_name_required: "اسم المتجر *",
+    studio_verified_badge: "هذا المتجر موثق",
     studio_manage_products_hint: "عرض المنتجات وتعديلها وحذفها",
     studio_deleted_product_label: "منتج محذوف",
     studio_manage_orders_hint: "إدارة الطلبات وتحديث حالاتها",
