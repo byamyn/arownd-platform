@@ -88,6 +88,10 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("delivery_register_title", "en")).toBe("Register a delivery company");
     expect(t("notifications_title", "ar")).toBe("الإشعارات");
     expect(t("notifications_title", "en")).toBe("Notifications");
+    expect(t("wallet_title", "ar")).toBe("المحفظة");
+    expect(t("wallet_title", "en")).toBe("Wallet");
+    expect(t("wallet_error_amount", "ar", { amount: 100 })).toContain("100");
+    expect(t("wallet_error_amount", "en", { amount: 100 })).toContain("100");
     expect(t("reservations_cancel_message", "ar")).toContain("إلغاء هذا الحجز");
     expect(t("reservations_cancel_message", "en")).toContain("cancel this reservation");
     expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
