@@ -23,6 +23,10 @@ export const ui: DictGroup = {
     action_confirm: "تأكيد",
     action_cancel: "إلغاء",
     action_busy: "جارٍ التنفيذ...",
+    unsaved_changes_title: "لديك تغييرات غير محفوظة",
+    unsaved_changes_message: "هل تريد مغادرة الصفحة وفقدان التغييرات التي أجريتها؟",
+    unsaved_changes_leave: "مغادرة الصفحة",
+    unsaved_changes_stay: "البقاء في الصفحة",
     action_soon: "قريبًا",
     action_coming_soon_toast: "هذه الميزة ستتاح قريبًا",
 
@@ -118,6 +122,10 @@ export const ui: DictGroup = {
     action_confirm: "Confirm",
     action_cancel: "Cancel",
     action_busy: "Working…",
+    unsaved_changes_title: "Unsaved changes",
+    unsaved_changes_message: "Do you want to leave this page and discard your changes?",
+    unsaved_changes_leave: "Leave page",
+    unsaved_changes_stay: "Stay on page",
     action_soon: "Soon",
     action_coming_soon_toast: "This feature is coming soon",
 
