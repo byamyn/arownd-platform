@@ -165,6 +165,7 @@ function OrdersPage() {
           {TABS.map((tb) => (
             <button
               key={tb.id}
+              aria-pressed={tab === tb.id}
               onClick={() => setTab(tb.id)}
               className={cn(
                 "min-h-11 shrink-0 rounded-2xl border px-4 py-2 text-sm font-semibold transition-colors",
