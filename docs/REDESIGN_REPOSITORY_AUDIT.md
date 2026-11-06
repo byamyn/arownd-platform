@@ -5,7 +5,7 @@ Audit date: 2026-11-06
 
 ## Executive result
 
-The redesign is **not yet complete across the entire repository**. The core shopping, checkout, merchant, and delivery surfaces received substantial visual work, and a static scan found that many route files use logical Tailwind spacing classes. However, several routes still contain Arabic UI literals and have not been migrated to the shared dictionaries. There is also a remaining native `window.confirm` usage in the root navigation guard.
+The redesign is **not yet complete across the entire repository**. The core shopping, checkout, merchant, and delivery surfaces received substantial visual work, and a static scan found that many route files use logical Tailwind spacing classes. However, several routes still contain Arabic UI literals and have not been migrated to the shared dictionaries. The root navigation guard initially used native `window.confirm`; this was replaced during the follow-up pass with the shared `ConfirmDialog` for both browser links and the Android back button.
 
 This report deliberately distinguishes static source review from executable verification. No claim of passing tests or production build is made.
 
@@ -62,9 +62,14 @@ Added regression assertions for these scoped names and a group-level collision g
 - Added regression assertions for the typed payload and stat icon class.
 - Corrected the Arabic `login_required` translation, which contained an accidental English fragment.
 
-### 5. Remaining root navigation issue
+### 5. Root navigation confirmation fixed
 
-`src/routes/__root.tsx` still contains native `window.confirm` calls in the unsaved-form guard and native back-button handler. This conflicts with the project's shared confirmation-dialog rule and needs a carefully tested root-level dialog flow. It was not changed in this pass to avoid replacing a data-loss guard with an unverified navigation behavior.
+- Replaced native `window.confirm` in the browser unsaved-form guard with the shared `ConfirmDialog`.
+- Replaced native `window.confirm` in the Android back-button handler with the same dialog.
+- Kept the pending destination in a ref; confirming clears the dirty-form set and resumes the original anchor click so TanStack Router can handle client-side navigation rather than forcing a full page reload.
+- Added bilingual confirmation copy and a regression assertion that the root contains no native `window.confirm` and wires both pending-navigation paths.
+
+The dialog flow is statically reviewed but still needs browser and Android runtime verification, especially repeated taps, Escape/back behavior, and focus restoration.
 
 ### 6. Mobile and visual validation
 
@@ -85,6 +90,8 @@ Static source checks found logical spacing utilities in the reviewed route group
 - `src/test/delivery-mobile-layout.test.ts` — cover stat icon styling and typed registration payload.
 - `src/lib/dictionaries/ui.ts` — add bilingual unsaved-change confirmation copy for the planned root guard replacement.
 - `src/lib/i18n.ts` — correct the Arabic login-required message.
+- `src/routes/__root.tsx` — replace browser and Android native confirmation prompts with the shared dialog; resume client-side navigation after confirmation.
+- `src/test/navigation-layout.test.tsx` — add a regression check for the shared unsaved-change dialog and absence of `window.confirm`.
 
 ## Verification status
 
@@ -101,7 +108,7 @@ The latest branch status is affected by Vercel `build-rate-limit`; it is not a v
 
 Do not mark the redesign complete or release-ready yet. Prioritize:
 1. Migrate the listed route copy into bilingual dictionaries and verify parity.
-2. Replace the root native confirmation calls with the shared dialog and test browser/native back behavior.
+2. Runtime-test the new root confirmation dialog and browser/native back behavior.
 3. Run the full verification command set in a real checkout.
 4. Complete visual and accessibility checks on mobile and desktop.
 5. Only then approve the redesign for the MVP pilot.
