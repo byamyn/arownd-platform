@@ -75,6 +75,7 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Migrated the corresponding visible strings in `src/routes/studio.index.tsx`.
 - Added Arabic/English interpolation assertions to `src/test/i18n-parity.test.ts`.
 - Static source inspection only. The wider Merchant Studio routes still require a route-by-route localization and responsive-layout audit.
+- Final static validation after the merchant batch: all 10 registered dictionary groups have matching Arabic/English key sets, no duplicate keys, and no unresolved translation references in the reviewed routes. The Arabic source scan is clean for the reviewed pages; one Arabic code comment remains in the store route.
 
 ## 2. Directional CSS
 
