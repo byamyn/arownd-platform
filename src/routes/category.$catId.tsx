@@ -101,7 +101,7 @@ function CategoryPage() {
           inLanguage: "ar-DZ",
         }}
       />
-      <div className="space-y-4 px-4 pt-4">
+      <div className="space-y-5 px-4 pt-3">
         <header className="flex items-start gap-3 py-1">
           <button
             onClick={() => goBackOrTo(router, "/explore")}
@@ -138,9 +138,9 @@ function CategoryPage() {
                 aria-pressed={sort === s.id}
                 onClick={() => setSort(s.id)}
                 className={cn(
-                  "min-h-11 shrink-0 rounded-full border px-4 text-xs font-bold transition",
+                  "min-h-10 shrink-0 rounded-full border px-4 text-xs font-semibold transition-colors",
                   sort === s.id
-                    ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
+                    ? "border-primary bg-primary text-primary-foreground"
                     : "border-border bg-card text-muted-foreground",
                 )}
               >
@@ -183,7 +183,7 @@ function CategoryPage() {
             hint="جرّب فئة فرعية أخرى أو تصنيفًا مختلفًا — تُعرض هنا السلع المتوفرة فعلًا."
           />
         )}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 gap-2.5">
           {list.map((g, i) => (
             <Reveal key={g.product.id} index={i}>
               <ProductCard g={g} />
