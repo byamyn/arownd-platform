@@ -12,6 +12,7 @@ import {
   resolveCategoryId,
 } from "@/lib/taxonomy";
 import { ProductCard } from "@/components/sooqy/cards";
+import { CategoryIcon } from "@/components/sooqy/category-icons";
 import { CategoryBreadcrumb, SubcategoryChips } from "@/components/sooqy/category-tiles";
 import { ProductGridSkeleton } from "@/components/sooqy/skeleton";
 import { EmptyState } from "@/components/sooqy/empty-state";
