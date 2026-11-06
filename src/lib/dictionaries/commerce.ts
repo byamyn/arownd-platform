@@ -109,6 +109,7 @@ export const commerce: DictGroup = {
     checkout_confirm_order: "إرسال طلب الشراء",
     checkout_next: "متابعة",
     checkout_success_title: "تم إرسال طلبك إلى المتاجر",
+    checkout_partial_success: "تم إنشاء {orders} طلب بنجاح. بقيت {remaining} منتجات في سلتك لإتمام شرائها لاحقًا.",
     checkout_success_hint:
       "أرسلنا طلبك إلى كل متجر بشكل مستقل. ستصلك عروض الأسعار ورسوم التوصيل، ويمكنك قبول أو رفض عرض كل متجر على حدة.",
     checkout_tracking_code: "رمز التتبع",
