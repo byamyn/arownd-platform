@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "@/lib/i18n";
 import { ChevronLeft } from "lucide-react";
+import { CategoryIcon } from "./category-icons";
 import {
   MAIN_CATEGORIES,
   OTHER_CATEGORIES,
@@ -67,11 +68,11 @@ function CategoryTile({
         />
         <span
           className={cn(
-            "flex size-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br text-2xl shadow-lift",
+            "flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-accent-ink shadow-lift",
             node.gradient,
           )}
         >
-          {node.emoji}
+          <CategoryIcon categoryId={node.id} className="size-6" />
         </span>
         <span className="flex flex-col gap-1">
           <span className="text-sm font-extrabold leading-snug text-foreground">{node.label}</span>
@@ -130,7 +131,7 @@ export function OtherCategoriesRow({ counts = null }: { counts?: CategoryCounts 
           params={{ catId: c.id }}
           className="flex shrink-0 items-center gap-2 rounded-full border border-border bg-card px-3.5 py-2 text-xs font-bold text-foreground shadow-soft transition-transform active:scale-95"
         >
-          <span className="text-base">{c.emoji}</span>
+          <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink"><CategoryIcon categoryId={c.id} className="size-[18px]" /></span>
           {c.label}
         </Link>
       ))}
@@ -173,7 +174,7 @@ export function SubcategoryChips({ categoryId }: { categoryId: string }) {
               : "border-border bg-card text-muted-foreground",
           )}
         >
-          <span className="text-sm">{c.emoji}</span>
+          <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-accent-ink"><CategoryIcon categoryId={c.id} className="size-4" /></span>
           {c.label}
         </Link>
       ))}
@@ -252,8 +253,8 @@ export function SubcategoryMultiSelect({
                 : "border-border bg-card text-muted-foreground",
             )}
           >
-            <span className={cn("text-sm", selected && "opacity-100")}>
-              {selected ? "✓" : c.emoji}
+            <span className={cn("flex size-7 shrink-0 items-center justify-center rounded-lg", selected ? "bg-primary/20 text-accent-ink" : "bg-primary/10 text-accent-ink")}>
+              {selected ? <span aria-hidden="true">✓</span> : <CategoryIcon categoryId={c.id} className="size-4" />}
             </span>
             {c.label}
           </button>
@@ -288,11 +289,11 @@ export function MainCategoryPicker({
         >
           <span
             className={cn(
-              "flex size-8 items-center justify-center rounded-xl bg-gradient-to-br text-base",
+              "flex size-8 items-center justify-center rounded-xl bg-primary/10 text-accent-ink",
               categoryGradient(c.id),
             )}
           >
-            {c.emoji}
+            <CategoryIcon categoryId={c.id} className="size-4" />
           </span>
           <span className="leading-snug">{c.label}</span>
         </button>
