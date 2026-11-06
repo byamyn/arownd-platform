@@ -157,7 +157,7 @@ function DeliveryDashboardPage() {
           search={{ redirect: "/delivery-dashboard" }}
           className="inline-flex min-h-[var(--control-height)] items-center justify-center rounded-[var(--radius-pill)] bg-primary px-6 py-3 font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          دخول
+          {translate("delivery_login_action")}
         </Link>
       </div>
     );
@@ -192,7 +192,7 @@ function DeliveryDashboardPage() {
           to="/delivery-register"
           className="inline-flex min-h-[var(--control-height)] items-center justify-center rounded-[var(--radius-pill)] bg-primary px-8 py-3 font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          تسجيل شركة توصيل جديدة
+          {translate("delivery_register_new")}
         </Link>
       </div>
     );
@@ -204,8 +204,7 @@ function DeliveryDashboardPage() {
         <Clock className="mx-auto size-12 text-warning" />
         <h1 className="text-2xl font-bold">{translate("delivery_review_title")}</h1>
         <p className="text-sm text-muted-foreground">
-          تم إرسال طلب تسجيل شركتك ({company.data.company_name}) وسيتم تفعيله بعد مراجعة إدارة
-          المنصة واعتماده.
+          {translate("delivery_review_body", { company: company.data.company_name })}
         </p>
         <p className="text-xs text-muted-foreground mt-2">
           {translate("delivery_review_support")}
