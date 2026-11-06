@@ -56,7 +56,7 @@ function CreateStorePage() {
   if (myStore.isError) {
     return (
       <div className="mx-auto max-w-xl px-4 pt-6">
-        <PageHeader title="أصبح تاجر" back="/settings" />
+        <PageHeader title={t("create_store_title")} back="/settings" />
         <ErrorState
           scope="create-store:existing-store"
           error={myStore.error}
@@ -68,7 +68,7 @@ function CreateStorePage() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <PageHeader title="أصبح تاجر" subtitle={t("create_store_subtitle")} back="/settings" />
+      <PageHeader title={t("create_store_title")} subtitle={t("create_store_subtitle")} back="/settings" />
       <MerchantOnboarding
         onSubmit={async (input) => {
           await merchantCreateStore(input);
