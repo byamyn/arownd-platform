@@ -13,15 +13,21 @@ describe("delivery company mobile experience", () => {
   });
 
   it("keeps delivery actions at comfortable mobile touch sizes", () => {
-    expect(dashboard).toContain("min-h-11 flex-1 rounded-2xl");
+    expect(dashboard).toContain("min-h-11 flex-1 rounded-[var(--radius-control)]");
     expect(dashboard).toContain("min-h-11 rounded-2xl border px-3 py-2");
-    expect(dashboard).toContain("min-h-[5.5rem] rounded-2xl");
+    expect(dashboard).toContain("min-h-[5.5rem] rounded-[var(--radius-card)]");
   });
 
   it("uses safe-area aware spacing and full-height form controls during registration", () => {
     expect(registration).toContain("pb-[calc(7rem+env(safe-area-inset-bottom))]");
-    expect(registration).toContain("h-12 w-full rounded-2xl");
-    expect(registration).toContain("min-h-12 w-full rounded-2xl");
+    expect(registration).toContain("h-12 w-full rounded-[var(--radius-control)]");
+    expect(registration).toContain("min-h-[var(--control-height)] rounded-full");
+  });
+
+  it("uses dictionary keys instead of hardcoded Arabic UI strings", () => {
+    const arabicLiteral = /["\x27`][^"\x27`]*[\\u0600-\\u06FF][^"\x27`]*["\x27`]/;
+    expect(dashboard).not.toMatch(arabicLiteral);
+    expect(registration).not.toMatch(arabicLiteral);
   });
 
   it("does not contain escaped newline fragments in JSX", () => {
