@@ -1,13 +1,12 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Bell } from "lucide-react";
+import { Armchair, Baby, Bell, Cake, CarFront, Gift, Laptop, Shirt, Smartphone, Sparkles, Dumbbell, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { useGeo } from "@/lib/geo";
 import { fetchUnreadNotificationCount, searchProducts, searchStores } from "@/lib/sooqy";
 import { ProductCard, StoreCard } from "@/components/sooqy/cards";
-import { SearchField } from "@/components/sooqy/search-field";
 import { SectionHeader, SeeAllLink } from "@/components/sooqy/section-header";
 import { ProductGridSkeleton, StoreRailSkeleton } from "@/components/sooqy/skeleton";
 import { EmptyState } from "@/components/sooqy/empty-state";
@@ -17,6 +16,19 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { WilayaButton } from "@/components/sooqy/WilayaSelect";
 import { translate, useTranslation } from "@/lib/i18n";
 import { MAIN_CATEGORIES } from "@/lib/taxonomy";
+
+const HOME_CATEGORY_ICONS: Record<string, LucideIcon> = {
+  fashion: Shirt,
+  electronics: Smartphone,
+  beauty: Sparkles,
+  home: Armchair,
+  kids: Baby,
+  sports: Dumbbell,
+  food: Cake,
+  "gifts-crafts": Gift,
+  digital: Laptop,
+  cars: CarFront,
+};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -35,7 +47,6 @@ function Home() {
   const { user } = useAuth();
   const { pos } = useGeo();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
   const [wilaya, setWilaya] = useState<number | null>(null);
 
   const unreadNotifications = useQuery({
@@ -95,10 +106,7 @@ function Home() {
   const products = (productsQuery.data?.pages ?? []).flat();
   const stores = storesQuery.data ?? [];
 
-  const submitSearch = () => {
-    const query = searchQuery.trim();
-    void navigate({ to: "/explore", search: query ? { q: query } : {} });
-  };
+
 
   return (
     <>
@@ -124,8 +132,8 @@ function Home() {
           },
         }}
       />
-      <main className="space-y-7 px-4 pb-8 pt-3">
-        <header className="flex min-h-12 items-center justify-between gap-3">
+      <main className="space-y-6 px-4 pb-8 pt-2">
+        <header className="flex min-h-10 items-center justify-between gap-2">
           <ArowndBrand />
           <div className="flex items-center gap-2">
             <WilayaButton
@@ -140,9 +148,9 @@ function Home() {
                   ? `${t("home_notifications")} (${unreadNotifications.data})`
                   : t("home_notifications")
               }
-              className="icon-btn relative focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+              className="icon-btn relative size-10 min-h-10 min-w-10 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Bell className="size-5" aria-hidden="true" />
+              <Bell className="size-[19px]" aria-hidden="true" />
               {!!unreadNotifications.data && unreadNotifications.data > 0 && (
                 <span
                   aria-hidden="true"
@@ -155,28 +163,26 @@ function Home() {
           </div>
         </header>
 
-        <SearchField
-          value={searchQuery}
-          onChange={setSearchQuery}
-          onSearch={submitSearch}
-          placeholder={t("explore_search_placeholder")}
-        />
-
         <nav
           aria-label={t("explore_categories")}
-          className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
+          className="no-scrollbar -mx-4 flex snap-x snap-proximity gap-2 overflow-x-auto px-4 pb-1"
         >
-          {MAIN_CATEGORIES.slice(0, 6).map((category) => (
-            <Link
-              key={category.id}
-              to="/category/$catId"
-              params={{ catId: category.id }}
-              className="flex min-h-11 shrink-0 items-center gap-2 rounded-2xl border border-border bg-card px-3.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            >
-              <span aria-hidden="true">{category.emoji}</span>
-              {t(`category_${category.id}`)}
-            </Link>
-          ))}
+          {MAIN_CATEGORIES.slice(0, 6).map((category) => {
+            const CategoryIcon = HOME_CATEGORY_ICONS[category.id] ?? Sparkles;
+            return (
+              <Link
+                key={category.id}
+                to="/category/$catId"
+                params={{ catId: category.id }}
+                className="flex h-[3.65rem] min-w-[8.5rem] shrink-0 snap-start items-center gap-2.5 rounded-2xl border border-border bg-card px-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              >
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink">
+                  <CategoryIcon className="size-[19px]" strokeWidth={1.9} aria-hidden="true" />
+                </span>
+                <span className="whitespace-nowrap">{t(`category_${category.id}`)}</span>
+              </Link>
+            );
+          })}
         </nav>
 
         <section className="space-y-3.5">
