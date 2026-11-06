@@ -5,7 +5,7 @@ import { Camera, MapPin, Save, Store } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
 import { useAuth } from "@/lib/auth";
-import { useTranslation } from "@/lib/i18n";
+import { translate, useTranslation } from "@/lib/i18n";
 import {
   fetchMyAccountType,
   fetchMyRoles,
@@ -27,8 +27,8 @@ import { StoreSettingsSkeleton } from "@/components/sooqy/skeleton";
 export const Route = createFileRoute("/studio/settings")({
   head: () => ({
     meta: [
-      { title: "تخصيص المتجر — Arownd" },
-      { name: "description", content: "عدّل وصف متجرك وشعاره وغلافه وساعات عمله." },
+      { title: translate("studio_settings_meta_title") },
+      { name: "description", content: translate("studio_settings_meta_description") },
     ],
   }),
   component: StoreSettingsPage,
@@ -252,7 +252,7 @@ function StoreSettingsPage() {
           {logoPreview ? (
             <img
               src={logoPreview}
-              alt="غلاف المتجر"
+              alt={t("studio_settings_cover_alt")}
               fetchPriority="low"
               decoding="async"
               className="size-full object-cover"
@@ -273,7 +273,7 @@ function StoreSettingsPage() {
             {logoPreview ? (
               <img
                 src={logoPreview}
-                alt="شعار المتجر"
+                alt={t("studio_settings_logo_alt")}
                 fetchPriority="low"
                 decoding="async"
                 className="size-full object-cover"
@@ -289,7 +289,7 @@ function StoreSettingsPage() {
           </button>
           <div className="min-w-0 flex-1 pt-1">
             <p className="truncate text-base font-extrabold text-foreground">
-              {form.name.trim() || "اسم متجرك"}
+              {form.name.trim() || t("studio_settings_name_fallback")}
             </p>
             <p className="text-xs text-muted-foreground">{t("studio_change_logo_cover")}</p>
           </div>
@@ -356,7 +356,7 @@ function StoreSettingsPage() {
         <div>
           <h2 className="text-section text-foreground">{t("studio_store_category")}</h2>
           <p className="text-xs text-muted-foreground">
-            تصنيف رئيسي واحد على الأقل، ويمكنك إضافة الفئات الفرعية التي تبيعها.
+            {t("studio_settings_category_hint")}
           </p>
         </div>
         <MainCategoryPicker
@@ -390,7 +390,7 @@ function StoreSettingsPage() {
         )}
         {!form.category && (
           <p className="rounded-[var(--radius-control)] bg-warning-soft px-3 py-2 text-caption font-bold text-warning-foreground">
-            ⚠️ لم يُحدَّد تصنيف المتجر بعد — اختر تصنيفًا رئيسيًا ليظهر متجرك في الأقسام المناسبة.
+            ⚠️ {t("studio_settings_category_missing")}
           </p>
         )}
       </section>
@@ -532,7 +532,7 @@ function StoreSettingsPage() {
         className="sticky bottom-3 z-20 flex min-h-[var(--control-height)] w-full items-center justify-center gap-2 rounded-[var(--radius-card)] bg-primary py-3 font-extrabold text-primary-foreground  transition active:scale-[var(--scale-pressed)] disabled:opacity-50"
       >
         <Save className="size-4.5" />
-        {busy ? "جارٍ الحفظ..." : "حفظ التغييرات"}
+        {busy ? t("studio_settings_save_loading") : t("studio_settings_save")}
       </button>
     </AppShell>
   );
