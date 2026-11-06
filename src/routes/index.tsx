@@ -184,7 +184,7 @@ function Home() {
             title={t("home_new_arrivals")}
             action={<SeeAllLink to="/explore" />}
           />
-          {productsQuery.isLoading && <ProductGridSkeleton count={6} />}
+          {productsQuery.isLoading && <ProductGridSkeleton count={6} horizontal />}
           {productsQuery.isError && (
             <ErrorState
               scope="home:products"
@@ -199,9 +199,19 @@ function Home() {
             />
           )}
           {products.length > 0 && (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
+            <div
+              role="region"
+              aria-label={t("home_new_arrivals")}
+              tabIndex={0}
+              className="no-scrollbar -mx-4 flex snap-x snap-proximity gap-2.5 overflow-x-auto px-4 pb-1 sm:gap-3"
+            >
               {products.slice(0, 12).map((group) => (
-                <ProductCard key={group.product.id} g={group} />
+                <div
+                  key={group.product.id}
+                  className="w-[calc((100%-0.625rem)/2)] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/3)] lg:w-[calc((100%-2.25rem)/4)]"
+                >
+                  <ProductCard g={group} />
+                </div>
               ))}
             </div>
           )}
