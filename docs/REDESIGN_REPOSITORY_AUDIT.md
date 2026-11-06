@@ -40,7 +40,7 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 
 #### 1.1 Latest localization batch (2026-11-06)
 
-- Added `src/lib/dictionaries/activity.ts` with matching Arabic/English keys for notifications, wallet, reservations, and settings groundwork only where explicitly listed in the dictionary.
+- Added `src/lib/dictionaries/activity.ts` with matching Arabic/English keys for notifications, wallet, and reservations.
 - Registered the group in `src/lib/dictionaries/index.ts`.
 - Migrated `src/routes/notifications.tsx`, `src/routes/wallet.tsx`, and `src/routes/reservations.index.tsx` to translation keys; static scan found no remaining Arabic UI literals in these three routes (comments excluded).
 - Added dictionary parity assertions for wallet/notifications/reservations and added `/reservations/` to route smoke coverage.
