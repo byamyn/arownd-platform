@@ -34,6 +34,7 @@ import { openExternalUrl, syncNativeStatusBar } from "@/lib/native-sharing";
 import { useTheme } from "@/lib/theme";
 import { NativePushNotifications } from "@/components/NativePushNotifications";
 import { NativeBiometricGate } from "@/components/NativeBiometricGate";
+import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
 
 function NotFoundComponent() {
   const { t } = useTranslation();
@@ -282,6 +283,10 @@ const dirtyForms = new Set<HTMLFormElement>();
 const hasUnsavedFormChanges = () => dirtyForms.size > 0;
 
 function UnsavedFormGuard() {
+  const { t } = useTranslation();
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const pendingAnchor = useRef<HTMLAnchorElement | null>(null);
+
   useEffect(() => {
     const markDirty = (event: Event) => {
       const target = event.target;
@@ -306,12 +311,10 @@ function UnsavedFormGuard() {
       if (!(anchor instanceof HTMLAnchorElement) || anchor.target === "_blank" || anchor.hasAttribute("download")) return;
       const destination = new URL(anchor.href, window.location.href);
       if (destination.origin !== window.location.origin || destination.href === window.location.href) return;
-      if (!window.confirm("لديك تغييرات غير محفوظة. هل تريد مغادرة الصفحة وفقدانها؟")) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-      } else {
-        dirtyForms.clear();
-      }
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      pendingAnchor.current = anchor;
+      setConfirmOpen(true);
     };
     document.addEventListener("input", markDirty, true);
     document.addEventListener("change", markDirty, true);
@@ -326,7 +329,28 @@ function UnsavedFormGuard() {
       window.removeEventListener("beforeunload", warnBeforeUnload);
     };
   }, []);
-  return null;
+
+  return (
+    <ConfirmDialog
+      open={confirmOpen}
+      title={t("unsaved_changes_title")}
+      message={t("unsaved_changes_message")}
+      confirmLabel={t("unsaved_changes_leave")}
+      cancelLabel={t("unsaved_changes_stay")}
+      tone="danger"
+      onCancel={() => {
+        pendingAnchor.current = null;
+        setConfirmOpen(false);
+      }}
+      onConfirm={() => {
+        const anchor = pendingAnchor.current;
+        pendingAnchor.current = null;
+        dirtyForms.clear();
+        setConfirmOpen(false);
+        if (anchor) window.location.assign(anchor.href);
+      }}
+    />
+  );
 }
 
 
