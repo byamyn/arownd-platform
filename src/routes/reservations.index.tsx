@@ -255,7 +255,7 @@ function ReservationsPage() {
                     className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                   >
                     <XCircle className="size-4" />
-                    {cancellingId === reservation.id ? t("reservations_cancelling") : t("reservations_cancel_title")}
+                    {cancellingId === reservation.id ? t("reservations_cancelling") : t("reservations_cancel_action")}
                   </button>
                 )}
                 {archivable && (
