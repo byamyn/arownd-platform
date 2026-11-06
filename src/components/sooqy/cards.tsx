@@ -12,11 +12,11 @@ import { formatMoney } from "@/lib/market";
 
 /** صورة افتراضية فاخرة — ظل ناعم مع أيقونة منتَج */
 const PRODUCT_PLACEHOLDER =
-  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGN0Y4RjUiLz48ZGVmcz48Y2lyY2xlIGlkPSJhIiBjeD0iMTAwIiByPSIzMCIvPjxtYXNrIGlkPSJiIj48dXNlIGhcmWs9IiNhIi8+PC9tYXNrPjwvZGVmcz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNDNkYzNkIiIHN0cm9rZS1vcGFjaXR5PSIwLjMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgbWFzaz0idXJsKCNiKSI+PGNpcmNsZSBjeD0iMTAwIiBjeT0iOSAiIHI9IjMwIi8+PHBhdGggZD0iTTEwMCA4MGExNiAxNiAwIDEwMCAzMiIgZmlsbD0ibm9uZSIvPjwvZz48L3N2Zz4=";
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNGN0Y4RjUiLz48ZGVmcz48Y2lyY2xlIGlkPSJhIiBjeD0iMTAwIiByPSIzMCIvPjxtYXNrIGlkPSJiIj48dXNlIGhcmWs9IiNhIi8+PC9tYXNrPjwvZGVmcz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNDNkYzNkIiBzdHJva2Utb3BhY2l0eT0iMC4zIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIG1hc2s9InVybCgjYikiPjxjaXJjbGUgY3g9IjEwMCIgY3k9IjkgIiByPSIzMCIvPjxwYXRoIGQ9Ik0xMDAgODBhMTYgMTYgMCAxMCAwIDMyIiBmaWxsPSJub25lIi8+PC9nPjwvc3ZnPg==";
 
 /** صورة افتراضية للمتاجر — أيقونة متجر بسيطة */
 const STORE_PLACEHOLDER =
-  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlMmU4ZjAiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNDNkYzNkIiIHN0cm9rZS1vcGFjaXR5PSIwLjMiIHN0cm9rZS13aWR0aD0iMiIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCI+PHJlY3QgeD0iNzAiIHk9Ijc1IiB3aWR0aD0iNjAiIGhlaWdodD0iNTAiIHJ4PSI0Ii8+PHBhdGggZD0iTTgwIDc1di0xMGgyMHYxMCIvPHJlY3QgeD0iODAiIHk9IjEyNSIgd2lkdGg9IjE2IiBoZWlnaHQ9IjMwIiBieD0iMiIvPjxyZWN0IHg9IjEwNCIgeT0iMTI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMzAiIHJ4PSIyIi8+PC9nPjwvc3ZnPg==";
+  "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMjAwIDIwMCI+PHJlY3Qgd2lkdGg9IjIwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiNlMmU4ZjAiLz48ZyBmaWxsPSJub25lIiBzdHJva2U9IiNDNkYzNkIiBzdHJva2Utb3BhY2l0eT0iMC4zIiBzdHJva2Utd2lkdGg9IjIiIHN0cm9rZS1saW5lam9pbj0icm91bmQiPjxyZWN0IHg9IjcwIiB5PSI3NSIgd2lkdGg9IjYwIiBoZWlnaHQ9IjUwIiByeD0iNCIvPjxwYXRoIGQ9Ik04MCA3NXYtMTBoMjB2MTAiLz48cmVjdCB4PSI4MCIgeT0iMTI1IiB3aWR0aD0iMTYiIGhlaWdodD0iMzAiIHJ4PSIyIi8+PHJlY3QgeD0iMTA0IiB5PSIxMjUiIHdpZHRoPSIxNiIgaGVpZ2h0PSIzMCIgcng9IjIiLz48L2c+PC9zdmc+";
 
 /* ═══════════════ زر المفضلة ═══════════════ */
 export function FavoriteButton({ kind, id, className }: { kind: "products" | "stores"; id: string; className?: string }) {
@@ -34,7 +34,7 @@ export function FavoriteButton({ kind, id, className }: { kind: "products" | "st
         e.stopPropagation();
         toggleFavorite(kind, id);
       }}
-      className={cn("absolute end-2 top-2 z-10 flex size-9 items-center justify-center rounded-full bg-card/85 text-foreground/80 shadow-sm backdrop-blur-sm transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}
+      className={cn("absolute end-2 top-2 z-10 flex size-10 items-center justify-center rounded-full bg-card/90 text-foreground/80 shadow-sm backdrop-blur-sm transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}
     >
       <Heart
         className={cn(
@@ -53,6 +53,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
   const level = g.available ? (g.totalStock <= 3 ? "low" : "in") : "out";
   const rating = Number(g.product.rating) || 0;
   const best = g.bestOffer;
+  const storeLocation = best?.store.commune ?? best?.store.address_line;
   const discountPct = Math.max(
     0,
     ...g.offers.map((offer) =>
@@ -61,37 +62,26 @@ export function ProductCard({ g }: { g: ProductGroup }) {
         : 0,
     ),
   );
-  const priceToShow = best?.price !== undefined ? best.price : g.minPrice;
 
   return (
     <Link
       to="/products/$productId"
       params={{ productId: g.product.id }}
       preload="intent"
-      className="group flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card transition-colors duration-200 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+      className="group flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card transition-[border-color,box-shadow] duration-200 hover:border-primary/50 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
       <div className="relative aspect-[4/5] overflow-hidden bg-muted">
-        {g.image ? (
-          <img
-            src={g.image}
-            alt={g.product.name}
-            loading="lazy"
-            decoding="async"
-            onError={(event) => {
-              event.currentTarget.src = PRODUCT_PLACEHOLDER;
-            }}
-            className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
-          />
-        ) : (
-          <img
-            src={PRODUCT_PLACEHOLDER}
-            alt={t("product_placeholder")}
-            loading="lazy"
-            decoding="async"
-            className="size-full object-cover"
-          />
-        )}
-        <FavoriteButton kind="products" id={g.product.id} className="end-2 top-2 size-9 bg-card/85" />
+        <img
+          src={g.image ?? PRODUCT_PLACEHOLDER}
+          alt={g.image ? g.product.name : t("product_placeholder")}
+          loading="lazy"
+          decoding="async"
+          onError={(event) => {
+            event.currentTarget.src = PRODUCT_PLACEHOLDER;
+          }}
+          className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
+        />
+        <FavoriteButton kind="products" id={g.product.id} />
         {discountPct > 0 && (
           <span className="absolute start-2 top-2 rounded-full bg-primary px-2 py-1 text-[10px] font-bold text-primary-foreground">
             -{discountPct}%
@@ -104,25 +94,44 @@ export function ProductCard({ g }: { g: ProductGroup }) {
         )}
       </div>
 
-      <div className="flex min-h-[8.15rem] flex-1 flex-col gap-1.5 p-2.5 sm:p-3">
+      <div className="flex min-h-[9rem] flex-1 flex-col gap-1.5 p-2.5 sm:p-3">
         <p className="line-clamp-2 min-h-10 text-[13px] font-semibold leading-5 text-foreground">
           {g.product.name}
         </p>
-        <p className="min-h-4 truncate text-[11px] leading-4 text-muted-foreground">
-          {best?.store.name ?? ""}
-        </p>
-        <div className="mt-auto flex min-h-7 items-center justify-between gap-2 border-t border-border/70 pt-1.5">
-          <p className="whitespace-nowrap text-sm font-extrabold tracking-tight text-accent-ink">
-            {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
+        {best?.store.name ? (
+          <p className="truncate text-[11px] leading-4 text-muted-foreground">
+            {best.store.name}
           </p>
-          <span className="flex min-w-0 items-center justify-end gap-1 text-[11px] font-semibold text-muted-foreground">
-            {rating > 0 ? (
-              <>
-                <Star className="size-3 shrink-0 fill-warning text-warning" aria-hidden="true" />
-                <span>{rating.toFixed(1)}</span>
-              </>
-            ) : null}
-          </span>
+        ) : (
+          <span className="min-h-4" aria-hidden="true" />
+        )}
+        {storeLocation ? (
+          <p className="flex min-w-0 items-center gap-1 truncate text-[10px] leading-4 text-muted-foreground">
+            <MapPin className="size-3 shrink-0" aria-hidden="true" />
+            <span className="truncate">{storeLocation}</span>
+          </p>
+        ) : (
+          <span className="min-h-4" aria-hidden="true" />
+        )}
+        <div className="mt-auto flex min-h-8 items-center justify-between gap-2 border-t border-border/70 pt-1.5">
+          {best ? (
+            <p className="whitespace-nowrap text-sm font-extrabold tracking-tight text-accent-ink">
+              {formatDA(best.price)}
+            </p>
+          ) : (
+            <span className="text-[11px] font-medium text-muted-foreground">
+              {t("badge_stock_out")}
+            </span>
+          )}
+          {rating > 0 ? (
+            <span
+              className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-muted-foreground"
+              aria-label={t("explore_rating", { rating: rating.toFixed(1) })}
+            >
+              <Star className="size-3 fill-warning text-warning" aria-hidden="true" />
+              <span>{rating.toFixed(1)}</span>
+            </span>
+          ) : null}
         </div>
       </div>
     </Link>
@@ -240,8 +249,8 @@ export function StoreMiniCard({ s, distance }: { s: Store; distance?: number | n
 
   return (
     <div className="card-premium flex items-center p-2">
-      <img src={logoUrl} alt={s.name} loading="lazy" className="w-5 h-5 rounded-md object-cover" />
-      <span className="me-2 text-xs text-text truncate">{s.name}</span>
+      <img src={logoUrl} alt={s.name} loading="lazy" className="size-5 rounded-md object-cover" />
+      <span className="me-2 truncate text-xs text-text">{s.name}</span>
       {distance != null && (
         <span className="me-auto text-caption text-muted-foreground">
           {t("unit_km", { distance })}
@@ -260,10 +269,10 @@ export function OfferCard({ offer }: { offer: OfferFull }) {
         src={productImage}
         alt={offer.product.name}
         loading="lazy"
-        className="w-6 h-6 object-cover rounded-md"
+        className="size-6 rounded-md object-cover"
       />
-      <div className="me-3 flex-1 min-w-0">
-        <p className="text-sm line-clamp-1 text-text truncate">{offer.product.name}</p>
+      <div className="me-3 min-w-0 flex-1">
+        <p className="line-clamp-1 truncate text-sm text-text">{offer.product.name}</p>
         <p className="text-caption font-bold text-accent">
           {offer.price !== undefined ? formatMoney(offer.price) : formatMoney(0)}
         </p>
