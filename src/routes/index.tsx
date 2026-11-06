@@ -124,8 +124,8 @@ function Home() {
           },
         }}
       />
-      <main className="space-y-5 px-4 pb-8 pt-2">
-        <header className="flex items-center justify-between gap-3">
+      <main className="space-y-7 px-4 pb-8 pt-3">
+        <header className="flex min-h-12 items-center justify-between gap-3">
           <ArowndBrand />
           <div className="flex items-center gap-2">
             <WilayaButton
@@ -164,14 +164,14 @@ function Home() {
 
         <nav
           aria-label={t("explore_categories")}
-          className="no-scrollbar flex gap-2 overflow-x-auto"
+          className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
         >
           {MAIN_CATEGORIES.slice(0, 6).map((category) => (
             <Link
               key={category.id}
               to="/category/$catId"
               params={{ catId: category.id }}
-              className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+              className="flex min-h-11 shrink-0 items-center gap-2 rounded-2xl border border-border bg-card px-3.5 text-sm font-semibold text-foreground transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <span aria-hidden="true">{category.emoji}</span>
               {t(`category_${category.id}`)}
@@ -179,7 +179,7 @@ function Home() {
           ))}
         </nav>
 
-        <section className="space-y-3">
+        <section className="space-y-3.5">
           <SectionHeader
             title={t("home_new_arrivals")}
             action={<SeeAllLink to="/explore" />}
@@ -199,7 +199,7 @@ function Home() {
             />
           )}
           {products.length > 0 && (
-            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
               {products.slice(0, 12).map((group) => (
                 <ProductCard key={group.product.id} g={group} />
               ))}
@@ -240,7 +240,7 @@ function Home() {
                 onRetry={() => void storesQuery.refetch()}
               />
             )}
-            <div className="grid gap-2">
+            <div className="grid gap-2.5">
               {stores.map((store) => (
                 <StoreCard
                   key={store.id}
