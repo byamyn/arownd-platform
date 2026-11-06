@@ -730,14 +730,14 @@ function SuccessScreen({
       </div>
       {remainingCount > 0 && (
         <p className="w-full max-w-xs rounded-xl border border-warning/30 bg-warning-soft p-3 text-sm font-semibold text-warning">
-          تم إنشاء {orderIds.length} طلب بنجاح. بقيت {remainingCount} منتجات في سلتك لإتمام شرائها لاحقًا.
+          {t("checkout_partial_success", { orders: orderIds.length, remaining: remainingCount })}
         </p>
       )}
 
       {/* رمز التتبع */}
       <div className="w-full max-w-xs space-y-2 rounded-[var(--radius-card)] border border-border bg-card px-4 py-4 ">
         <p className="text-caption text-muted-foreground">
-          {orderIds.length > 1 ? "رموز تتبع الطلبات المستقلة" : t("checkout_tracking_code")}
+          {orderIds.length > 1 ? t("checkout_tracking_codes") : t("checkout_tracking_code")}
         </p>
         {orderIds.map((id) => (
           <Link
@@ -749,7 +749,7 @@ function SuccessScreen({
             <span className="font-mono text-lg font-bold tracking-[0.2em] text-accent-ink">
               {id.replace(/-/g, "").slice(0, 8).toUpperCase()}
             </span>
-            <span className="text-xs font-semibold text-muted-foreground">تتبع</span>
+            <span className="text-xs font-semibold text-muted-foreground">{t("checkout_track_order")}</span>
           </Link>
         ))}
       </div>
