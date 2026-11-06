@@ -772,7 +772,7 @@ function StudioPage() {
                 {t("studio_my_products")}
               </span>
               <span className="block text-xs text-muted-foreground">
-                عرض المنتجات وتعديلها وحذفها
+                {t("studio_manage_products_hint")}
               </span>
             </span>
             <ChevronLeft className="size-4 shrink-0 text-muted-foreground" />
@@ -788,7 +788,7 @@ function StudioPage() {
             <span className="min-w-0 flex-1">
               <span className="block text-sm font-bold text-foreground">{t("studio_orders")}</span>
               <span className="block text-xs text-muted-foreground">
-                إدارة الطلبات وتحديث حالاتها
+                {t("studio_manage_orders_hint")}
               </span>
             </span>
             {pendingCount > 0 && (
@@ -1217,7 +1217,7 @@ function AuthGate({ onLogin }: { onLogin: () => void }) {
         onClick={onLogin}
         className="rounded-[var(--radius-card)] bg-primary px-8 py-3 font-bold text-primary-foreground"
       >
-        دخول
+        {t("studio_auth_login")}
       </button>
     </div>
   );
