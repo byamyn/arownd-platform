@@ -304,7 +304,7 @@ function ProductPage() {
         {/* Hero image */}
         <section className="relative bg-muted">
           <div
-            className="relative aspect-[4/5] w-full overflow-hidden rounded-b-[var(--radius-card)] sm:aspect-square"
+            className="relative aspect-square w-full overflow-hidden sm:aspect-square"
             onTouchStart={(e) => {
               touchStartX.current = e.touches[0].clientX;
             }}
@@ -411,8 +411,8 @@ function ProductPage() {
         </section>
 
         {/* Product info */}
-        <div className="space-y-6 px-5 pt-6">
-          <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-4 ">
+        <div className="space-y-5 px-4 pt-4">
+          <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="min-w-0 flex-1">
                 <h1 className="text-xl font-extrabold leading-tight tracking-tight text-foreground">
