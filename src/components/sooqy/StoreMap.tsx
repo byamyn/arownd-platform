@@ -553,7 +553,7 @@ const StoreMapComponent = React.memo(
             } else {
               marker.setLngLat([item.longitude, item.latitude]);
               const glyph = marker.getElement().querySelector(".arownd-pin-dot span");
-              if (glyph) glyph.textContent = categoryEmoji(item.category);
+              
               marker
                 .getElement()
                 .setAttribute("aria-label", store.name ? `فتح متجر ${store.name}` : "فتح المتجر");
