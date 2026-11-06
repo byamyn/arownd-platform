@@ -549,7 +549,7 @@ function WalletPage() {
                         st.cls,
                       )}
                     >
-                      {st.label}
+                      {tr(st.label)}
                     </span>
                   </div>
                 </div>
