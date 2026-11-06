@@ -80,8 +80,9 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Migrated `src/routes/studio.shipments.tsx` login action, order reference, order link, and currency unit.
 - Migrated `src/routes/studio.orders.$orderId.tsx` login and save action.
 - Migrated `src/routes/studio.add-product.tsx` SEO title.
+- Migrated the map page SEO title and description in `src/routes/map.tsx` using new bilingual keys in `src/lib/dictionaries/pages.ts`.
 - Added matching Arabic/English keys and regression assertions. Added route smoke coverage for create-store, add-product, and shipments.
-- Static validation: all 10 registered dictionary groups have matching Arabic/English key sets, no duplicate keys, and no unresolved translation references in the reviewed route set. Arabic UI literal scan is clean for create-store, Merchant Studio index/settings/shipments/order-detail/add-product, and checkout.
+- Static validation: all 10 registered dictionary groups have matching Arabic/English key sets, no duplicate keys, and no unresolved translation references in the reviewed route set. Arabic UI literal scan is clean for create-store, Merchant Studio index/settings/shipments/order-detail/add-product, map, and checkout.
 - No executable tests or build checks were run.
 
 ## 2. Directional CSS
