@@ -1082,7 +1082,7 @@ function StudioPage() {
                     <div>
                       <p className="font-mono text-sm font-bold text-accent-ink">{r.code}</p>
                       <p className="text-xs text-muted-foreground">
-                        {r.offer?.product?.name ?? t("studio_deleted_product_units", { count: r.quantity })} · {r.quantity} وحدة
+                        {r.offer?.product?.name ?? t("studio_deleted_product_label")} · {r.quantity} وحدة
                       </p>
                     </div>
                     <span
