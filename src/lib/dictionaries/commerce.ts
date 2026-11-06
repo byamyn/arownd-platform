@@ -337,6 +337,8 @@ export const commerce: DictGroup = {
     checkout_confirm_order: "Send purchase request",
     checkout_next: "Continue",
     checkout_success_title: "Your request was sent to the stores",
+    checkout_partial_success: "{orders} orders were created successfully. {remaining} items remain in your bag for later.",
+    checkout_tracking_codes: "Separate order tracking codes",
     checkout_success_hint:
       "Your request was sent to each store separately. You will receive each store’s product and delivery quote and can accept or decline each offer individually.",
     checkout_tracking_code: "Tracking code",
