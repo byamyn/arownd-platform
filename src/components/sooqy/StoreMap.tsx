@@ -6,7 +6,7 @@ import { MAP_COLORS, OSM_RASTER_FALLBACK } from "./map-style";
 import { AROWND_VERSATILES_STYLE, VERSATILES_SOURCE_ID } from "./map-style-versatiles";
 import type { LatLng } from "@/lib/geo";
 import type { Store } from "@/lib/sooqy";
-import { categoryEmoji } from "@/lib/taxonomy";
+
 
 const C = MAP_COLORS;
 
@@ -46,7 +46,7 @@ function dbg(...args: unknown[]) {
   if (DEBUG) console.log("[StoreMap]", ...args);
 }
 
-function createMarkerElement(emoji = "🛍️"): HTMLElement {
+function createMarkerElement(): HTMLElement {
   const root = document.createElement("div");
   root.style.cssText =
     "display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;outline:none;";
@@ -78,11 +78,20 @@ function createMarkerElement(emoji = "🛍️"): HTMLElement {
   pin.style.cssText =
     "display:flex;align-items:center;justify-content:center;border-radius:50%;color:#172033;border:3px solid #fff;transition:transform .18s ease, box-shadow .18s ease, border-width .18s ease;";
 
-  const glyph = document.createElement("span");
-  glyph.textContent = emoji;
-  glyph.style.cssText = "display:block;font-size:16px;line-height:1;";
+  const glyph = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  glyph.setAttribute("viewBox", "0 0 24 24");
+  glyph.setAttribute("width", "18");
+  glyph.setAttribute("height", "18");
+  glyph.setAttribute("fill", "none");
+  glyph.setAttribute("stroke", "#26320D");
+  glyph.setAttribute("stroke-width", "1.9");
+  glyph.setAttribute("stroke-linecap", "round");
+  glyph.setAttribute("stroke-linejoin", "round");
+  glyph.setAttribute("aria-hidden", "true");
+  const body = document.createElementNS("http://www.w3.org/2000/svg", "path");
+  body.setAttribute("d", "M3 9l1.5-5h15L21 9M5 9v11h14V9M3 9a3 3 0 006 0 3 3 0 006 0 3 3 0 006 0M9 20v-6h6v6");
+  glyph.append(body);
   pin.append(glyph);
-  pin.dataset["emoji"] = emoji;
   root.append(pill, pin);
   return root;
 }
@@ -523,7 +532,7 @@ const StoreMapComponent = React.memo(
             visibleIds.add(id);
             let marker = markersRef.current.get(id);
             if (!marker) {
-              const el = createMarkerElement(categoryEmoji(item.category));
+              const el = createMarkerElement();
               el.setAttribute("role", "button");
               el.setAttribute("tabindex", "0");
               el.setAttribute("aria-label", store.name ? `فتح متجر ${store.name}` : "فتح المتجر");
