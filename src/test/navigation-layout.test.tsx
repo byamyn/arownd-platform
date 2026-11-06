@@ -19,6 +19,15 @@ describe("mobile application shell and role navigation labels", () => {
     expect(rootLayout).toContain("pb-[calc(var(--nav-height)+env(safe-area-inset-bottom))]");
   });
 
+
+  it("uses the shared confirmation dialog for unsaved browser and native navigation", () => {
+    expect(rootLayout).not.toContain("window.confirm");
+    expect(rootLayout).toContain('title={t("unsaved_changes_title")}');
+    expect(rootLayout).toContain("pendingAnchor.current");
+    expect(rootLayout).toContain("pendingBack.current");
+    expect(rootLayout).toContain("anchor.click()");
+  });
+
   it("provides matching delivery navigation labels in Arabic and English", () => {
     expect(t("delivery_dashboard", "ar")).toBe("لوحة التوصيل");
     expect(t("delivery_dashboard", "en")).toBe("Delivery");
