@@ -174,7 +174,7 @@ export const commerce: DictGroup = {
     orders_delivery_home: "توصيل للمنزل",
     orders_delivery_desk: "استلام من المكتب",
     orders_track: "تتبع الطلب",
-    orders_load_failed: "تعذّر تحميل طلباتك",
+    orders_load_failed: "تعذّر تحميل طلباتك",\n    orders_cancel_store_title: "إلغاء طلب هذا المتجر",\n    orders_cancel_store_message: "هل تريد إلغاء طلب هذا المتجر فقط؟ ستُعاد المنتجات إلى مخزونه، وتبقى طلبات المتاجر الأخرى مستقلة.",\n    orders_cancel_store_success: "تم إلغاء طلب هذا المتجر.",\n    orders_cancelling: "جارٍ إلغاء الطلب...",\n    orders_cancel_title: "إلغاء الطلب",\n    orders_cancel_message: "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",\n    orders_cancel_success: "تم إلغاء الطلب بنجاح.",\n    orders_archive_title: "إخفاء الطلب من السجل",\n    orders_archive_message: "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",\n    orders_archive_success: "تم إخفاء الطلب من سجلك.",\n    orders_archive_action: "إخفاء من السجل",\n    common_confirm: "تأكيد",
 
     track_title: "تتبع الطلب — Arownd",
     track_login: "سجّل الدخول لتتبع طلبك",
@@ -389,7 +389,7 @@ export const commerce: DictGroup = {
     orders_delivery_home: "Home delivery",
     orders_delivery_desk: "Desk pickup",
     orders_track: "Track order",
-    orders_load_failed: "Couldn’t load your orders",
+    orders_load_failed: "Couldn’t load your orders",\n    orders_cancel_store_title: "Cancel this store order",\n    orders_cancel_store_message: "Cancel only this store order? The products will return to its stock, while orders from other stores remain independent.",\n    orders_cancel_store_success: "This store order was cancelled.",\n    orders_cancelling: "Cancelling order...",\n    orders_cancel_title: "Cancel order",\n    orders_cancel_message: "Cancel this order? Quantities will be returned to the stores’ stock.",\n    orders_cancel_success: "Order cancelled successfully.",\n    orders_archive_title: "Hide order from history",\n    orders_archive_message: "Hide this order from your history? It will remain stored in the database.",\n    orders_archive_success: "Order hidden from your history.",\n    orders_archive_action: "Hide from history",\n    common_confirm: "Confirm",
 
     track_title: "Track order — Arownd",
     track_login: "Sign in to track your order",
