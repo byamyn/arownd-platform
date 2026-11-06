@@ -437,7 +437,7 @@ function StudioPage() {
   };
 
   return (
-    <AppShell width="wide" className="min-w-0 space-y-6 overflow-x-clip pb-28 pt-5 lg:pt-8">
+    <AppShell width="wide" className="min-w-0 space-y-5 overflow-x-clip pb-28 pt-3 lg:space-y-7 lg:pt-8">
       <header className="flex min-w-0 flex-wrap items-center justify-between gap-3">
         <div className="min-w-0">
           <h1 className="mt-1 text-2xl font-black tracking-tight text-foreground sm:text-3xl">
@@ -453,11 +453,11 @@ function StudioPage() {
       </header>
 
       {/* بطاقة المتجر الرئيسية */}
-      <section className="card-premium relative isolate overflow-hidden p-4 sm:p-6">
+      <section className="relative isolate overflow-hidden rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
         <div className="pointer-events-none absolute -end-12 -top-20 size-56 rounded-full bg-primary/10 blur-3xl" />
         <div className="relative flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex min-w-0 items-center gap-3 sm:gap-4">
-            <div className="flex size-16 shrink-0 items-center justify-center overflow-hidden rounded-[var(--radius-card)] border border-border bg-card sm:size-[4.5rem]">
+            <div className="flex size-14 shrink-0 items-center justify-center overflow-hidden rounded-2xl border border-border bg-background sm:size-16">
               {store.data?.logo_url ? (
                 <img
                   src={store.data.logo_url}
@@ -570,8 +570,8 @@ function StudioPage() {
             {t("studio_store_data")}
           </span>
         </div>
-        <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
-          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5  sm:p-4">
+        <div className="grid grid-cols-2 gap-2.5 sm:gap-3 lg:grid-cols-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3 sm:p-4">
             <div className="flex items-center justify-between gap-2">
               <span className="flex size-9 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
                 <Package className="size-4.5" />
@@ -708,13 +708,13 @@ function StudioPage() {
           <h2 className="px-1 text-section text-muted-foreground">
             {t("studio_action_needed_now")}
           </h2>
-          <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-danger/25 bg-card">
+          <div className="divide-y divide-border overflow-hidden rounded-[var(--radius-card)] border border-border bg-card">
             {actionOrders.map((o) => (
               <Link
                 key={o.order.id}
                 to="/studio/orders/$orderId"
                 params={{ orderId: o.order.id }}
-                className="flex items-center gap-3 p-3.5 text-start transition active:bg-muted/40"
+                className="flex min-h-[4.5rem] items-center gap-3 p-3 text-start transition-colors hover:bg-muted/50 active:bg-muted/70"
               >
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-danger-soft text-danger">
                   <ShoppingBag className="size-5" />
@@ -735,7 +735,7 @@ function StudioPage() {
                 key={r.id}
                 type="button"
                 onClick={() => setMode("orders")}
-                className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted/40"
+                className="flex min-h-[4.5rem] w-full items-center gap-3 p-3 text-start transition-colors hover:bg-muted/50 active:bg-muted/70"
               >
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-warning-soft text-warning">
                   <Clock className="size-5" />
@@ -762,7 +762,7 @@ function StudioPage() {
           <button
             type="button"
             onClick={() => setMode("offers")}
-            className="flex w-full items-center gap-3 p-3.5 text-start transition active:bg-muted"
+            className="flex min-h-[4.5rem] w-full items-center gap-3 p-3 text-start transition-colors hover:bg-muted/50 active:bg-muted"
           >
             <span className="flex size-10 shrink-0 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink">
               <Package className="size-5" />
@@ -804,7 +804,7 @@ function StudioPage() {
       {/* تبويب المنتجات */}
       {mode === "offers" && (
         <section className="space-y-5">
-          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
             <div className="mb-4 flex items-center justify-between gap-3">
               <div>
                 <h2 className="font-extrabold">{t("studio_current_products")}</h2>
@@ -926,7 +926,7 @@ function StudioPage() {
               />
             </SideSheet>
 
-            <div className="mb-4 space-y-3 rounded-[var(--radius-control)] bg-muted/30 p-3">
+            <div className="mb-4 space-y-3 rounded-2xl bg-muted/40 p-2.5 sm:p-3">
               <input
                 type="search"
                 value={productQuery}
