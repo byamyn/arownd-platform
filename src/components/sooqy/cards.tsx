@@ -34,12 +34,12 @@ export function FavoriteButton({ kind, id, className }: { kind: "products" | "st
         e.stopPropagation();
         toggleFavorite(kind, id);
       }}
-      className={cn("absolute end-3 top-3 z-10 flex size-11 items-center justify-center rounded-full bg-card/90 text-foreground transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}
+      className={cn("absolute end-2 top-2 z-10 flex size-9 items-center justify-center rounded-full bg-card/85 text-foreground/80 shadow-sm backdrop-blur-sm transition-transform duration-200 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2", className)}
     >
       <svg
         viewBox="0 0 24 24"
         className={cn(
-          "size-5 transition-colors duration-200",
+          "size-[18px] transition-colors duration-200",
           active ? "fill-current text-rose-600" : "fill-transparent text-muted-foreground",
         )}
         stroke="currentColor"
@@ -97,7 +97,7 @@ export function ProductCard({ g }: { g: ProductGroup }) {
             className="size-full object-cover"
           />
         )}
-        <FavoriteButton kind="products" id={g.product.id} className="end-2 top-2 size-10 bg-card/95" />
+        <FavoriteButton kind="products" id={g.product.id} className="end-2 top-2 size-9 bg-card/85" />
         {discountPct > 0 && (
           <span className="absolute start-2 top-2 rounded-full bg-primary px-2 py-1 text-[10px] font-bold text-primary-foreground">
             -{discountPct}%
@@ -110,20 +110,25 @@ export function ProductCard({ g }: { g: ProductGroup }) {
         )}
       </div>
 
-      <div className="flex flex-1 flex-col gap-1.5 p-3">
-        <p className="line-clamp-2 min-h-10 text-[13px] font-medium leading-5 text-foreground">
+      <div className="flex min-h-[8.15rem] flex-1 flex-col gap-1.5 p-2.5 sm:p-3">
+        <p className="line-clamp-2 min-h-10 text-[13px] font-semibold leading-5 text-foreground">
           {g.product.name}
         </p>
-        <div className="mt-auto flex min-h-6 items-center justify-between gap-1">
-          <p className="text-sm font-extrabold tracking-tight text-accent-ink">
+        <p className="min-h-4 truncate text-[11px] leading-4 text-muted-foreground">
+          {best?.store.name ?? ""}
+        </p>
+        <div className="mt-auto flex min-h-7 items-center justify-between gap-2 border-t border-border/70 pt-1.5">
+          <p className="whitespace-nowrap text-sm font-extrabold tracking-tight text-accent-ink">
             {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
           </p>
-          {rating > 0 && (
-            <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-muted-foreground">
-              <Star className="size-3 fill-warning text-warning" aria-hidden="true" />
-              {rating.toFixed(1)}
-            </span>
-          )}
+          <span className="flex min-w-0 items-center justify-end gap-1 text-[11px] font-semibold text-muted-foreground">
+            {rating > 0 ? (
+              <>
+                <Star className="size-3 shrink-0 fill-warning text-warning" aria-hidden="true" />
+                <span>{rating.toFixed(1)}</span>
+              </>
+            ) : null}
+          </span>
         </div>
       </div>
     </Link>
