@@ -91,7 +91,7 @@ function DeleteAccountPage() {
 
   return (
     <div className="app-page mx-auto max-w-xl space-y-5 pb-8 pt-4">
-      <PageHeader title="حذف الحساب" subtitle="إدارة طلب حذف حساب Arownd" back="/settings" />
+      <PageHeader title={t("delete_title")} subtitle={t("delete_subtitle")} back="/settings" />
 
       <section className="rounded-[var(--radius-card)] border border-border bg-card p-4">
         <div className="flex items-start gap-3">
@@ -99,44 +99,41 @@ function DeleteAccountPage() {
             <Trash2 className="size-5" />
           </span>
           <div>
-            <h2 className="font-bold text-foreground">طلب حذف الحساب والبيانات</h2>
+            <h2 className="font-bold text-foreground">{t("delete_intro_title")}</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              يمكنك تقديم الطلب من التطبيق أو من هذه الصفحة على الويب. سيتحقق فريق Arownd من
-              الطلب، ويراجع الطلبات النشطة والسجلات التي يجب الاحتفاظ بها قانونيًا، ثم يحذف أو
-              يزيل هوية البيانات التي لا يلزم الاحتفاظ بها.
+              {t("delete_intro")}
             </p>
           </div>
         </div>
         <div className="mt-4 rounded-xl bg-muted/60 p-3 text-sm leading-6 text-muted-foreground">
-          <p className="font-semibold text-foreground">قبل الإرسال</p>
+          <p className="font-semibold text-foreground">{t("delete_before_submit")}</p>
           <ul className="mt-2 list-disc space-y-1 ps-5">
-            <li>لا يؤدي إرسال الطلب إلى حذف فوري أو تلقائي للحساب.</li>
-            <li>قد يتأخر إتمام الطلب عند وجود طلبات أو شحنات أو تحصيلات أو نزاع مفتوح.</li>
-            <li>قد تُحفظ المستندات المحاسبية التي يفرض القانون الاحتفاظ بها، مع تقليل البيانات الشخصية غير اللازمة.</li>
-            <li>لن نطلب منك كلمة المرور أو رمز التحقق عبر البريد.</li>
+            <li>{t("delete_warning_immediate")}</li>
+            <li>{t("delete_warning_pending")}</li>
+            <li>{t("delete_warning_records")}</li>
+            <li>{t("delete_warning_password")}</li>
           </ul>
           <Link to="/privacy" className="mt-2 inline-flex font-bold text-accent-ink">
-            اقرأ سياسة الخصوصية
+            {t("delete_privacy_link")}
           </Link>
         </div>
       </section>
 
       {!ready ? (
-        <p className="text-sm text-muted-foreground">جارٍ التحقق من حالة تسجيل الدخول...</p>
+        <p className="text-sm text-muted-foreground">{t("delete_auth_check")}</p>
       ) : !user ? (
         <section className="rounded-[var(--radius-card)] border border-border bg-card p-4">
           <p className="text-sm leading-6 text-muted-foreground">
-            لإرسال طلب إلكتروني ومتابعة حالته، سجّل الدخول إلى حسابك. هذه الصفحة متاحة أيضًا
-            خارج التطبيق من متصفح الويب.
+            {t("delete_login_hint")}
           </p>
           <Link to="/auth" className="btn-primary mt-4 inline-flex w-full justify-center">
-            تسجيل الدخول للمتابعة
+            {t("delete_login_action")}
           </Link>
           <a
             href="mailto:arownddz@gmail.com?subject=%D8%B7%D9%84%D8%A8%20%D8%AD%D8%B0%D9%81%20%D8%AD%D8%B3%D8%A7%D8%A8%20Arownd"
             className="mt-3 inline-flex min-h-11 w-full items-center justify-center rounded-full border border-border px-4 text-sm font-bold text-foreground"
           >
-            لا أستطيع الدخول إلى حسابي — تواصل مع الدعم
+            {t("delete_support_login")}
           </a>
         </section>
       ) : (
