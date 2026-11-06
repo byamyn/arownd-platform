@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
+import { act, render, renderHook, screen, waitFor } from "@testing-library/react";
 import { describe, expect, it } from "vitest";
 import { AppShell } from "@/components/sooqy/app-shell";
-import { t } from "@/lib/i18n";
+import { t, useTranslation } from "@/lib/i18n";
 import { readFileSync } from "node:fs";
 
 const rootLayout = readFileSync(new URL("../routes/__root.tsx", import.meta.url), "utf8");
@@ -26,3 +26,25 @@ describe("mobile application shell and role navigation labels", () => {
     expect(t("delivery_nav_home", "en")).toBe("Home");
   });
 });
+
+  describe("document direction", () => {
+    it("switches the document direction with the active language", async () => {
+      const { result } = renderHook(() => useTranslation());
+
+      await act(async () => {
+        result.current.switchLang("en");
+      });
+      await waitFor(() => {
+        expect(document.documentElement.lang).toBe("en");
+        expect(document.documentElement.dir).toBe("ltr");
+      });
+
+      await act(async () => {
+        result.current.switchLang("ar");
+      });
+      await waitFor(() => {
+        expect(document.documentElement.lang).toBe("ar");
+        expect(document.documentElement.dir).toBe("rtl");
+      });
+    });
+  });
