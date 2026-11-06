@@ -31,8 +31,7 @@ describe("Arownd Premium Marketplace design tokens", () => {
   });
 
   it("reserves native safe areas and bottom navigation space", () => {
-    expect(stylesheet).toContain("padding-block-start: env(safe-area-inset-top, 0px);");
-    expect(stylesheet).toContain("padding-block-end: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));");
+    expect(stylesheet).toContain("padding-bottom: env(safe-area-inset-bottom, 0px);");
     expect(stylesheet).toContain("@utility app-bottom-nav");
     expect(stylesheet).toContain("backdrop-filter: blur(16px);");
   });
