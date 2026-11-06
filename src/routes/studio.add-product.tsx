@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { ArrowRight, PackagePlus } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/auth";
-import { useTranslation } from "@/lib/i18n";
+import { translate, useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
 import {
   fetchMyStore,
@@ -28,7 +28,7 @@ import {
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 
 export const Route = createFileRoute("/studio/add-product")({
-  head: () => ({ meta: [{ title: "إضافة منتج — استوديو التاجر | Arownd" }] }),
+  head: () => ({ meta: [{ title: translate("studio_add_product_meta_title") }] }),
   component: AddProductPage,
 });
 
