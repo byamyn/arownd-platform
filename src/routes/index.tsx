@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Armchair, Baby, Bell, Cake, CarFront, Gift, Laptop, Shirt, Smartphone, Sparkles, Dumbbell, type LucideIcon } from "lucide-react";
+import { Armchair, Baby, Bell, CarFront, Gift, Laptop, Shirt, Smartphone, Sparkles, Utensils, Watch, type LucideIcon } from "lucide-react";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { useGeo } from "@/lib/geo";
@@ -23,8 +23,8 @@ const HOME_CATEGORY_ICONS: Record<string, LucideIcon> = {
   beauty: Sparkles,
   home: Armchair,
   kids: Baby,
-  sports: Dumbbell,
-  food: Cake,
+  sports: Watch,
+  food: Utensils,
   "gifts-crafts": Gift,
   digital: Laptop,
   cars: CarFront,
