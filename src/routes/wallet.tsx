@@ -73,7 +73,7 @@ const MIN_AMOUNT = 100;
 
 function WalletPage() {
   const { user, ready } = useAuth();
-  const { t } = useTranslation();
+  const { t: tr } = useTranslation();
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>("all");
   const [showTopup, setShowTopup] = useState(false);
@@ -143,11 +143,11 @@ function WalletPage() {
   const submitTopup = async () => {
     const amount = Math.round(Number(topupAmount));
     if (!amount || amount < MIN_AMOUNT) {
-      toast.error(t("wallet_error_amount", { amount: MIN_AMOUNT }));
+      toast.error(tr("wallet_error_amount", { amount: MIN_AMOUNT }));
       return;
     }
     if (!topupReceipt) {
-      toast.error(t("wallet_error_receipt"));
+      toast.error(tr("wallet_error_receipt"));
       return;
     }
     setBusyTopup(true);
@@ -158,7 +158,7 @@ function WalletPage() {
         receiptUrl,
         method: topupMethod,
       });
-      showSuccess(t("wallet_topup_success"));
+      showSuccess(tr("wallet_topup_success"));
       setTopupAmount("");
       setTopupReceipt(null);
       setShowTopup(false);
@@ -173,11 +173,11 @@ function WalletPage() {
   const submitWithdraw = async () => {
     const amount = Math.round(Number(withdrawAmount));
     if (!amount || amount < MIN_AMOUNT) {
-      toast.error(t("wallet_error_amount", { amount: MIN_AMOUNT }));
+      toast.error(tr("wallet_error_amount", { amount: MIN_AMOUNT }));
       return;
     }
     if (amount > summary.balance) {
-      toast.error(t("wallet_error_balance"));
+      toast.error(tr("wallet_error_balance"));
       return;
     }
     setBusyWithdraw(true);
@@ -187,7 +187,7 @@ function WalletPage() {
         method: withdrawMethod,
         note: withdrawNote.trim() || undefined,
       });
-      showSuccess(t("wallet_withdraw_success"));
+      showSuccess(tr("wallet_withdraw_success"));
       setWithdrawAmount("");
       setWithdrawNote("");
       setShowWithdraw(false);
@@ -202,15 +202,15 @@ function WalletPage() {
   return (
     <>
       <SeoHead
-        title={t("wallet_title")}
-        description={t("wallet_description")}
+        title={tr("wallet_title")}
+        description={tr("wallet_description")}
         keywords="المحفظة, شحن الرصيد, سحب, Arownd"
         ogType="website"
       />
       <div className="mx-auto max-w-xl space-y-4 px-4 pb-6 pt-5">
         <PageHeader
-          title={t("wallet_title")}
-          subtitle={t("wallet_description")}
+          title={tr("wallet_title")}
+          subtitle={tr("wallet_description")}
           back="/profile"
         />
 
@@ -221,9 +221,9 @@ function WalletPage() {
         >
           <Info className="mt-0.5 size-5 shrink-0 text-info" aria-hidden="true" />
           <div className="min-w-0">
-            <p className="text-sm font-extrabold text-foreground">{t("wallet_preview_title")}</p>
+            <p className="text-sm font-extrabold text-foreground">{tr("wallet_preview_title")}</p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              {t("wallet_preview_message")}
+              {tr("wallet_preview_message")}
             </p>
           </div>
         </aside>
@@ -233,14 +233,14 @@ function WalletPage() {
           <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-4 border-primary-foreground/10" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-xs font-bold opacity-80">{t("wallet_balance")}</p>
+              <p className="text-xs font-bold opacity-80">{tr("wallet_balance")}</p>
               {txs.isLoading ? (
                 <div
                   className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-primary-foreground/10"
-                  aria-label={t("wallet_balance_loading")}
+                  aria-label={tr("wallet_balance_loading")}
                 />
               ) : txs.isError ? (
-                <p className="mt-2 text-sm font-bold">{t("wallet_balance_error")}</p>
+                <p className="mt-2 text-sm font-bold">{tr("wallet_balance_error")}</p>
               ) : (
                 <p dir="ltr" className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
                   {formatDA(summary.balance)}
@@ -252,18 +252,18 @@ function WalletPage() {
             </span>
           </div>
           <p className="relative mt-4 text-caption font-semibold opacity-75">
-            {t("wallet_balance_note")}
+            {tr("wallet_balance_note")}
           </p>
           {!txs.isLoading && !txs.isError && (
             <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-primary-foreground/10 pt-3">
               <div className="rounded-[var(--radius-control)] bg-primary-foreground/5 px-3 py-2">
-                <p className="text-caption font-bold opacity-70">{t("wallet_pending_topups")}</p>
+                <p className="text-caption font-bold opacity-70">{tr("wallet_pending_topups")}</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingTopup)}
                 </p>
               </div>
               <div className="rounded-[var(--radius-control)] bg-primary-foreground/5 px-3 py-2">
-                <p className="text-caption font-bold opacity-70">{t("wallet_pending_withdrawals")}</p>
+                <p className="text-caption font-bold opacity-70">{tr("wallet_pending_withdrawals")}</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingWithdraw)}
                 </p>
@@ -275,26 +275,26 @@ function WalletPage() {
         {/* الخدمات المالية معطّلة حتى الإطلاق الرسمي */}
         <div className="grid grid-cols-2 gap-3" aria-describedby="wallet-preview-notice">
           <button type="button" disabled className="btn-primary cursor-not-allowed opacity-55">
-            {t("wallet_topup_soon")}
+            {tr("wallet_topup_soon")}
           </button>
           <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-55">
-            {t("wallet_withdraw_soon")}
+            {tr("wallet_withdraw_soon")}
           </button>
         </div>
 
         {/* نموذج الشحن */}
         {showTopup && (
           <div className="animate-fade-up space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
-            <p className="text-sm font-extrabold text-foreground">{t("wallet_topup_title")}</p>
+            <p className="text-sm font-extrabold text-foreground">{tr("wallet_topup_title")}</p>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                {t("wallet_amount")}
+                {tr("wallet_amount")}
               </label>
               <input
                 value={topupAmount}
                 onChange={(e) => setTopupAmount(e.target.value.replace(/[^0-9]/g, ""))}
                 inputMode="numeric"
-                placeholder={t("wallet_min_amount", { amount: MIN_AMOUNT })}
+                placeholder={tr("wallet_min_amount", { amount: MIN_AMOUNT })}
                 dir="ltr"
                 className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
               />
@@ -326,7 +326,7 @@ function WalletPage() {
               >
                 {METHODS.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {t(m.label)}
+                    {tr(m.label)}
                   </option>
                 ))}
               </select>
@@ -334,7 +334,7 @@ function WalletPage() {
             <label className="flex cursor-pointer items-center justify-between gap-2 rounded-[var(--radius-control)] border border-dashed border-border bg-background px-3 py-3 text-sm font-bold transition active:scale-[0.99]">
               <span className="flex items-center gap-2 text-muted-foreground">
                 <Upload className="size-4" />
-                {topupReceipt ? t("wallet_receipt_selected") : t("wallet_receipt_attach")}
+                {topupReceipt ? tr("wallet_receipt_selected") : tr("wallet_receipt_attach")}
               </span>
               <input
                 type="file"
@@ -344,7 +344,7 @@ function WalletPage() {
               />
             </label>
             <button onClick={submitTopup} disabled={busyTopup} className="btn-primary w-full">
-              {busyTopup ? t("wallet_topup_sending") : t("wallet_topup_submit")}
+              {busyTopup ? tr("wallet_topup_sending") : tr("wallet_topup_submit")}
             </button>
           </div>
         )}
@@ -352,19 +352,19 @@ function WalletPage() {
         {/* نموذج السحب */}
         {showWithdraw && (
           <div className="animate-fade-up space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
-            <p className="text-sm font-extrabold text-foreground">{t("wallet_withdraw_title")}</p>
+            <p className="text-sm font-extrabold text-foreground">{tr("wallet_withdraw_title")}</p>
             <p className="text-caption font-semibold text-muted-foreground">
-              {t("wallet_available_withdraw", { amount: formatDA(summary.balance) })}
+              {tr("wallet_available_withdraw", { amount: formatDA(summary.balance) })}
             </p>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                {t("wallet_amount")}
+                {tr("wallet_amount")}
               </label>
               <input
                 value={withdrawAmount}
                 onChange={(e) => setWithdrawAmount(e.target.value.replace(/[^0-9]/g, ""))}
                 inputMode="numeric"
-                placeholder={t("wallet_min_amount", { amount: MIN_AMOUNT })}
+                placeholder={tr("wallet_min_amount", { amount: MIN_AMOUNT })}
                 dir="ltr"
                 className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
               />
@@ -392,12 +392,12 @@ function WalletPage() {
               <input
                 value={withdrawNote}
                 onChange={(e) => setWithdrawNote(e.target.value)}
-                placeholder={t("wallet_account_placeholder")}
+                placeholder={tr("wallet_account_placeholder")}
                 className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
             </div>
             <button onClick={submitWithdraw} disabled={busyWithdraw} className="btn-primary w-full">
-              {busyWithdraw ? t("wallet_topup_sending") : t("wallet_withdraw_submit")}
+              {busyWithdraw ? tr("wallet_topup_sending") : tr("wallet_withdraw_submit")}
             </button>
           </div>
         )}
@@ -428,7 +428,7 @@ function WalletPage() {
               </p>
             </div>
             <div className="col-span-2 flex items-center justify-between rounded-[var(--radius-card)] border border-border bg-card px-4 py-3">
-              <span className="text-xs font-bold text-muted-foreground">{t("wallet_pending_count")}</span>
+              <span className="text-xs font-bold text-muted-foreground">{tr("wallet_pending_count")}</span>
               <span className="text-sm font-extrabold text-foreground">{pendingCount}</span>
             </div>
           </div>
@@ -437,14 +437,14 @@ function WalletPage() {
         {/* سجل المعاملات والفلاتر */}
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-base font-extrabold text-foreground">{t("wallet_transactions_title")}</h2>
+            <h2 className="text-base font-extrabold text-foreground">{tr("wallet_transactions_title")}</h2>
             <p className="mt-0.5 text-caption text-muted-foreground">
-              {t("wallet_transactions_hint")}
+              {tr("wallet_transactions_hint")}
             </p>
           </div>
           {!txs.isLoading && !txs.isError && (
             <span className="rounded-full bg-muted px-2.5 py-1 text-caption font-bold text-muted-foreground">
-              {filtered.length} {t("wallet_transactions_count")}
+              {filtered.length} {tr("wallet_transactions_count")}
             </span>
           )}
         </div>
@@ -460,7 +460,7 @@ function WalletPage() {
                   : "border-border bg-card text-muted-foreground",
               )}
             >
-              {t(t.label)}
+              {tr(t.label)}
             </button>
           ))}
         </div>
@@ -478,9 +478,9 @@ function WalletPage() {
 
         {txs.isError && (
           <div className="rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft p-4 text-center">
-            <p className="text-sm font-bold text-foreground">{t("wallet_error_load")}</p>
+            <p className="text-sm font-bold text-foreground">{tr("wallet_error_load")}</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              {t("wallet_error_network")}
+              {tr("wallet_error_network")}
             </p>
             <button onClick={() => void txs.refetch()} className="btn-secondary mt-3">
               إعادة المحاولة
@@ -491,8 +491,8 @@ function WalletPage() {
         {!txs.isLoading && !txs.isError && filtered.length === 0 && (
           <EmptyState
             Icon={Wallet}
-            title={tab === "all" ? t("wallet_empty_all") : t("wallet_empty_filtered")}
-            hint="{t("wallet_empty_hint")}"
+            title={tab === "all" ? tr("wallet_empty_all") : tr("wallet_empty_filtered")}
+            hint="{tr("wallet_empty_hint")}"
           />
         )}
 
@@ -510,7 +510,7 @@ function WalletPage() {
             });
             const time = formatTime(t.created_at);
             const methodKey = METHODS.find((m) => m.id === t.method)?.label;
-            const methodLabel = methodKey ? t(methodKey) : t.method;
+            const methodLabel = methodKey ? tr(methodKey) : t.method;
             return (
               <div
                 key={t.id}
@@ -526,7 +526,7 @@ function WalletPage() {
                     <Icon className="size-5" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-foreground">{t(meta.label)}</p>
+                    <p className="truncate text-sm font-bold text-foreground">{tr(meta.label)}</p>
                     <p className="truncate text-caption text-muted-foreground">
                       {date} · {time}
                       {methodLabel ? ` · ${methodLabel}` : ""}
@@ -555,7 +555,7 @@ function WalletPage() {
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-caption text-muted-foreground">
                   <span>
-                    {t("wallet_transaction_id")}{" "}
+                    {tr("wallet_transaction_id")}{" "}
                     <b dir="ltr" className="font-mono">
                       {t.id.slice(0, 8).toUpperCase()}
                     </b>
