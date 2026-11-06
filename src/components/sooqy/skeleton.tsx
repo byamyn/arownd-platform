@@ -30,19 +30,35 @@ export function StoreCardSkeleton({ className }: { className?: string }) {
 export function ProductGridSkeleton({
   count = 6,
   className,
+  horizontal = false,
 }: {
   count?: number;
   className?: string;
+  horizontal?: boolean;
 }) {
   return (
     <div
+      role={horizontal ? "region" : undefined}
+      aria-label={horizontal ? "جارٍ تحميل المنتجات الجديدة" : undefined}
+      tabIndex={horizontal ? 0 : undefined}
       className={cn(
-        "grid grid-cols-2 gap-[var(--gutter)] sm:grid-cols-3 lg:grid-cols-4",
+        horizontal
+          ? "no-scrollbar -mx-4 flex snap-x snap-proximity gap-2.5 overflow-x-auto px-4 pb-1 sm:gap-3"
+          : "grid grid-cols-2 gap-[var(--gutter)] sm:grid-cols-3 lg:grid-cols-4",
         className,
       )}
     >
       {Array.from({ length: count }).map((_, i) => (
-        <ProductCardSkeleton key={i} />
+        <div
+          key={i}
+          className={
+            horizontal
+              ? "w-[calc((100%-0.625rem)/2)] shrink-0 snap-start sm:w-[calc((100%-1.5rem)/3)] lg:w-[calc((100%-2.25rem)/4)]"
+              : undefined
+          }
+        >
+          <ProductCardSkeleton />
+        </div>
       ))}
     </div>
   );
