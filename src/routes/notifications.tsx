@@ -28,7 +28,6 @@ import { PageHeader } from "@/components/sooqy/page-header";
 import { useState } from "react";
 import { useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
-import { NotificationListSkeleton } from "@/components/sooqy/skeleton";
 
 export const Route = createFileRoute("/notifications")({
   head: () => ({}),
@@ -198,8 +197,8 @@ function NotificationsPage() {
         {!user && (
           <EmptyState
             Icon={Lock}
-            title=t("notifications_login_title")
-            hint=t("notifications_login_hint")
+            title={t("notifications_login_title")}
+            hint={t("notifications_login_hint")}
             action={
               <Link to="/auth" className="btn-small">
                 تسجيل الدخول
@@ -225,12 +224,12 @@ function NotificationsPage() {
             <span className="flex size-20 items-center justify-center rounded-3xl bg-primary-soft">
               <Bell className="size-9 text-accent-ink" strokeWidth={1.6} />
             </span>
-            <h2 className="mt-5 text-h3 text-foreground">لا توجد إشعارات بعد</h2>
+            <h2 className="mt-5 text-h3 text-foreground">{t("notifications_empty_title")}</h2>
             <p className="mt-2 max-w-xs text-body text-muted-foreground">
-              عندما تصلك تحديثات عن طلباتك أو عروض جديدة من المتاجر، ستظهر هنا.
+              {t("notifications_empty_hint")}
             </p>
             <Link to="/" className="btn-small mt-6">
-              تصفح المنتجات
+              {t("notifications_browse")}
             </Link>
           </div>
         )}
@@ -304,7 +303,7 @@ function NotificationsPage() {
                           ) : (
                             <CheckCircle2 className="size-4" aria-hidden="true" />
                           )}
-                          تعيين كمقروء
+                          {t("notifications_mark_read")}
                         </button>
                       ) : (
                         <span />
@@ -320,7 +319,7 @@ function NotificationsPage() {
                         ) : (
                           <Trash2 className="size-4" aria-hidden="true" />
                         )}
-                        حذف
+                        {t("notifications_delete")}
                       </button>
                     </div>
                   )}
