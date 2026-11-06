@@ -4,6 +4,11 @@ import type { DictGroup } from "./types";
 export const pages: DictGroup = {
   ar: {
     stores_title: "المتاجر القريبة منك — Arownd",
+    create_store_title: "أصبح تاجرًا",
+    create_store_login_hint: "يرجى تسجيل الدخول لإنشاء متجر",
+    create_store_login_action: "تسجيل الدخول",
+    create_store_subtitle: "أنشئ متجرك على Arownd",
+    create_store_seo_title: "أنشئ متجرك — Arownd",
     store_not_found_title: "المتجر غير موجود",
     store_not_found_hint: "تأكد من الرابط أو ابحث عن متجر آخر.",
     store_browse_stores: "تصفّح المتاجر",
