@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { SeoHead } from "@/components/seo/SeoHead";
-import { translate } from "@/lib/i18n";
+import { translate, useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/help")({
@@ -41,9 +41,10 @@ export const Route = createFileRoute("/help")({
 type Tab = "user" | "merchant" | "delivery" | "faq";
 
 function HelpPage() {
+  const { t } = useTranslation();
   const [tab, setTab] = useState<Tab>("user");
   const tabs: { id: Tab; label: string }[] = [
-    { id: "user", label: translate("help_tab_user") },
+    { id: "user", label: t("help_tab_user") },
     { id: "merchant", label: translate("help_tab_merchant") },
     { id: "delivery", label: translate("help_tab_delivery") },
     { id: "faq", label: translate("help_tab_faq") },
@@ -57,12 +58,12 @@ function HelpPage() {
         description={translate("help_description")}
         alternates={{ ar: "/help", en: "/help" }}
       />
-      <PageHeader title={translate("help_header")} subtitle={translate("help_subtitle")} />
+      <PageHeader title={t("help_header")} subtitle={t("help_subtitle")} />
 
       <div
         className="grid grid-cols-2 gap-2 sm:grid-cols-4"
         role="tablist"
-        aria-label={translate("help_tabs_aria")}
+        aria-label={t("help_tabs_aria")}
       >
         {tabs.map((t) => (
           <button
@@ -317,7 +318,7 @@ function DeliveryPartnerSection() {
   );
 }
 
-function getFaqs() {
+function getFaqs(t: (key: string) => string) {
   return [
   {
     q: translate("help_faq_order_q"),
@@ -353,7 +354,7 @@ function getFaqs() {
 function FaqSection({ open, onToggle }: { open: number | null; onToggle: (i: number) => void }) {
   return (
     <div className="space-y-2">
-      {getFaqs().map((f, i) => {
+      {getFaqs(translate).map((f, i) => {
         const isOpen = open === i;
         return (
           <div key={i} className="overflow-hidden rounded-2xl bg-card ">
