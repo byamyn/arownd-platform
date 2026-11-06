@@ -127,10 +127,10 @@ function AddProductPage() {
   };
 
   return (
-    <AppShell className="mx-auto max-w-2xl space-y-5 pb-28 pt-5">
+    <AppShell className="mx-auto max-w-2xl space-y-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3">
       <PageHeader title="إضافة منتج" subtitle="أضف منتجًا جديدًا إلى كتالوج متجرك" back="/studio" />
-      <section className="rounded-[var(--radius-card)] border border-border bg-card p-4 sm:p-6">
-        <div className="mb-5 flex items-center gap-3">
+      <section className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-6">
+        <div className="mb-4 flex items-center gap-3">
           <span className="flex size-11 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink"><PackagePlus className="size-5" /></span>
           <div><h2 className="font-extrabold text-foreground">بيانات المنتج</h2><p className="text-xs text-muted-foreground">أدخل المعلومات الأساسية ثم احفظ المنتج</p></div>
         </div>
@@ -146,7 +146,7 @@ function AddProductPage() {
           <label className="grid gap-1.5 text-sm font-semibold">الألوان<input value={form.colors} onChange={(e) => update("colors", e.target.value)} placeholder={t("studio_colors_ph")} className={COMPACT_FIELD} /></label>
           <label className="grid gap-1.5 text-sm font-semibold">الوصف<textarea value={form.description} onChange={(e) => update("description", e.target.value)} placeholder={t("studio_description_ph")} rows={4} className="min-h-24 w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 font-normal outline-none focus:border-accent-ink focus:ring-2 focus:ring-primary/20" /></label>
           <div className="grid gap-1.5 text-sm font-semibold"><span>صور المنتج</span><ImageUploader initialItems={[]} onChange={(items) => setImages(items.map((item) => item.file).filter(Boolean))} label={t("studio_add_product_images_label")} /></div>
-          <button type="button" onClick={save} disabled={busy} className="mt-2 min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary px-5 py-3 font-extrabold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50">{busy ? "جارٍ الحفظ..." : "حفظ المنتج"}</button>
+          <button type="button" onClick={save} disabled={busy} className="mt-2 min-h-12 rounded-2xl bg-primary px-5 py-3 font-extrabold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50">{busy ? "جارٍ الحفظ..." : "حفظ المنتج"}</button>
         </div>
       </section>
     </AppShell>
