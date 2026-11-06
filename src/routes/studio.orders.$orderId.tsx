@@ -88,7 +88,7 @@ function StudioOrderDetailPage() {
           search={{ redirect: `/studio/orders/${orderId}` }}
           className="btn-primary inline-block"
         >
-          تسجيل الدخول
+          {t("studio_auth_login")}
         </Link>
       </div>
     );
@@ -269,7 +269,7 @@ function StudioOrderDetailPage() {
                   }}
                   className="min-h-[var(--control-height)] rounded-[var(--radius-control)] bg-primary px-5 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
                 >
-                  حفظ
+                  {t("studio_save_changes")}
                 </button>
               </div>
               {merchantOrderStatus === "pending" && (
