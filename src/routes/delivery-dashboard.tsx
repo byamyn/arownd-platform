@@ -283,6 +283,7 @@ function DeliveryDashboardPage() {
         <div className="no-scrollbar flex gap-2 overflow-x-auto border-b border-border pb-2">
           <button
             onClick={() => setActiveTab("pending")}
+            aria-pressed={activeTab === "pending"}
             className={cn(
               "min-h-11 min-w-max shrink-0 rounded-2xl px-4 py-2 text-sm font-semibold transition",
               activeTab === "pending"
@@ -294,8 +295,9 @@ function DeliveryDashboardPage() {
           </button>
           <button
             onClick={() => setActiveTab("all")}
-            aria-pressed={activeTab === "all"}\n            className={cn(
-              "px-4 py-2 rounded-[var(--radius-control)] text-sm font-medium transition",
+            aria-pressed={activeTab === "all"}
+            className={cn(
+              "min-h-11 min-w-max shrink-0 rounded-2xl px-4 py-2 text-sm font-semibold transition",
               activeTab === "all"
                 ? "bg-primary text-primary-foreground"
                 : "text-muted-foreground hover:bg-muted",
