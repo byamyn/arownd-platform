@@ -93,10 +93,10 @@ function DeliveryRegisterPage() {
   };
 
   return (
-    <div className="space-y-5 px-4 pb-32 pt-5">
+    <div className="space-y-4 px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 sm:space-y-5 sm:pt-5">
       <PageHeader title="تسجيل شركة توصيل" subtitle="انضم إلى شبكة التوصيل في Arownd" back="/" />
 
-      <section className="rounded-[var(--radius-card)] bg-card p-5  space-y-4">
+      <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
         <div className="flex items-center gap-2">
           <Truck className="size-5 text-accent-ink" />
           <h2 className="font-bold">بيانات الشركة</h2>
@@ -110,7 +110,7 @@ function DeliveryRegisterPage() {
             placeholder="اسم الشركة التجاري"
             aria-label="اسم الشركة التجاري"
             autoComplete="organization"
-            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="h-12 w-full rounded-2xl border border-input bg-background px-4 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             value={contactName}
