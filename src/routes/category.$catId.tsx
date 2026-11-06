@@ -23,19 +23,6 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { goBackOrTo } from "@/lib/nav";
 import { useTranslation, translate } from "@/lib/i18n";
 
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  fashion: Shirt,
-  electronics: Smartphone,
-  beauty: Sparkles,
-  home: Armchair,
-  kids: Baby,
-  sports: Watch,
-  food: Utensils,
-  "gifts-crafts": Gift,
-  digital: Laptop,
-  cars: CarFront,
-};
-
 const PAGE_SIZE = 24;
 
 export const Route = createFileRoute("/category/$catId")({
@@ -95,7 +82,7 @@ function CategoryPage() {
   const current = parentOf(active);
   const otherMains = MAIN_CATEGORIES.filter((c) => c.id !== current?.id).slice(0, 6);
 
-  const CategoryIcon = CATEGORY_ICONS[current?.id ?? active] ?? Sparkles;
+
   const catLabel = categoryLabel(catId);
   const catHint = categoryHint(current?.id) || t("category_seo_fallback", { category: catLabel });
 
@@ -125,7 +112,7 @@ function CategoryPage() {
             <ArrowRight className="size-5" />
           </button>
           <div className="flex min-w-0 items-center gap-2">
-            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-accent-ink"><CategoryIcon className="size-6" strokeWidth={1.9} aria-hidden="true" /></span>
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-accent-ink"><CategoryIcon categoryId={current?.id ?? active} className="size-6" /></span>
             <div className="min-w-0">
               <h1 className="truncate text-h1 text-foreground">{catLabel}</h1>
               {categoryHint(current?.id) && (
@@ -219,7 +206,6 @@ function CategoryPage() {
           <h2 className="text-xs font-bold text-muted-foreground">{t("category_other_heading")}</h2>
           <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
             {otherMains.map((c) => {
-              const OtherCategoryIcon = CATEGORY_ICONS[c.id] ?? Sparkles;
               return (
                 <Link
                   key={c.id}
@@ -228,7 +214,7 @@ function CategoryPage() {
                   className="card-premium flex min-h-11 shrink-0 items-center gap-1.5 !rounded-full px-4 text-xs font-bold text-muted-foreground"
                 >
                   <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-accent-ink">
-                    <OtherCategoryIcon className="size-4" aria-hidden="true" />
+                    <CategoryIcon categoryId={c.id} className="size-4" />
                   </span>
                   {c.label}
                 </Link>
