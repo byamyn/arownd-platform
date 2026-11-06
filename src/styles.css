@@ -490,14 +490,11 @@
 @utility app-page {
   width: 100%; max-width: 80rem; margin-inline: auto;
   padding-inline: var(--margin);
-  padding-block-start: env(safe-area-inset-top, 0px);
-  padding-block-end: calc(var(--nav-height) + env(safe-area-inset-bottom, 0px));
 }
 @utility app-workspace {
   width: 100%; max-width: 96rem; margin-inline: auto;
   padding-inline: var(--margin);
-  padding-block-start: calc(var(--space-4) + env(safe-area-inset-top, 0px));
-  padding-block-end: calc(var(--nav-height) + var(--space-8) + env(safe-area-inset-bottom, 0px));
+  padding-block-start: var(--space-4);
 }
 @utility page-section { margin-block-start: var(--space-6); }
 @utility section-gap { gap: var(--space-6); }
