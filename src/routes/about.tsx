@@ -40,107 +40,100 @@ function AboutPage() {
         description={translate("about_description")}
         alternates={{ ar: "/about", en: "/about" }}
       />
-      <PageHeader title="حول Arownd" back="/" />
+      <PageHeader title={translate("about_header")} back="/" />
 
       <div className="mb-8 rounded-[var(--radius-card)] bg-primary p-6 text-center text-primary-foreground ">
         <Store className="mx-auto mb-3 size-12" />
-        <h1 className="text-2xl font-extrabold">Arownd — اكتشف ما حولك</h1>
-        <p className="mt-2 text-sm opacity-85">منصة جزائرية قيد التطوير والتوسع التدريجي</p>
+        <h1 className="text-2xl font-extrabold">{translate("about_hero_heading")}</h1>
+        <p className="mt-2 text-sm opacity-85">{translate("about_hero_subheading")}</p>
       </div>
 
-      <Section title="من نحن؟">
+      <Section title={translate("about_who_heading")}>
         <p>
-          Arownd هي منصة رقمية جزائرية تهدف إلى تسهيل اكتشاف المتاجر والمحلات والمشاريع التجارية،
-          وجمعها في تجربة تسوق واحدة تجمع بين الاستكشاف والشراء والوصول إلى المنتجات والخدمات
-          بسهولة.
+          {translate("about_who_first")}
         </p>
         <p>
-          نسعى إلى مساعدة أصحاب المتاجر والمشاريع الإلكترونية على تعزيز حضورهم الرقمي، والوصول إلى
-          عملاء جدد، وعرض منتجاتهم ومعلومات متاجرهم بطريقة واضحة ومنظمة.
+          {translate("about_who_second")}
         </p>
       </Section>
 
-      <Section title="ماذا تقدم Arownd؟">
+      <Section title={translate("about_offers_heading")}>
         <Item
           icon={<Compass className="size-5" />}
-          title="اكتشف المتاجر والمنتجات"
-          desc="تتيح المنصة للمستخدمين استكشاف المتاجر والمحلات والمشاريع التجارية والتعرف على المنتجات التي تعرضها، مع العمل على تسهيل الوصول إلى الخيارات المناسبة لاحتياجاتهم."
+          title={translate("about_discover_heading")}
+          desc={translate("about_discover_description")}
         />
         <Item
           icon={<MapPin className="size-5" />}
-          title="الوصول إلى المتاجر عبر الخريطة"
-          desc="نطمح إلى جعل اكتشاف التجارة المحلية أكثر سهولة من خلال عرض مواقع المتاجر على الخريطة، بما يساعد المستخدمين على معرفة أماكنها والوصول إليها."
+          title={translate("about_map_heading")}
+          desc={translate("about_map_description")}
         />
         <Item
           icon={<Store className="size-5" />}
-          title="أدوات لأصحاب المتاجر"
-          desc="تهدف Arownd إلى توفير مساحة رقمية لأصحاب المتاجر لعرض منتجاتهم ومعلوماتهم، واستقبال الطلبات وإدارتها وفق الإمكانات المتاحة داخل المنصة."
+          title={translate("about_merchant_heading")}
+          desc={translate("about_merchant_description")}
         />
         <Item
           icon={<ShoppingBag className="size-5" />}
-          title="تجربة طلب أكثر تنظيمًا"
-          desc="نسعى إلى تسهيل التواصل بين المشتري والمتجر خلال مراحل الطلب، مع تطوير إمكانات متابعة الطلبات وحالاتها تدريجيًا."
+          title={translate("about_order_heading")}
+          desc={translate("about_order_description")}
         />
         <Item
           icon={<Truck className="size-5" />}
-          title="التوصيل والخدمات المستقبلية"
-          desc="نعمل على تطوير تصور يتيح للمتاجر التعامل مع شركات التوصيل المعتمدة من خلال المنصة، وإرسال طلبات الشحن ومتابعة حالاتها عند توفر هذه الإمكانات. كما ندرس إضافة خيارات دفع إلكترونية مستقبلًا وفق المتطلبات القانونية والتقنية والتعاقدية اللازمة."
+          title={translate("about_delivery_heading")}
+          desc={translate("about_delivery_description")}
         />
       </Section>
 
-      <Section title="رؤيتنا">
+      <Section title={translate("about_vision_heading")}>
         <p>
-          أن تصبح Arownd منصة تساعد على ربط التجارة المحلية بالتسوق الرقمي، وتمنح المتاجر والمشاريع
-          فرصة أفضل للظهور، وتوفر للمستخدمين تجربة أكثر سهولة في اكتشاف المنتجات والوصول إلى
-          البائعين.
+          {translate("about_vision_description")}
         </p>
       </Section>
 
-      <Section title="من نخدم؟">
+      <Section title={translate("about_audience_heading")}>
         <Item
           icon={<Eye className="size-5" />}
-          title="المشترون"
-          desc="لاكتشاف المتاجر والمنتجات والتسوق بسهولة."
+          title={translate("about_buyers_heading")}
+          desc={translate("about_buyers_description")}
         />
         <Item
           icon={<Store className="size-5" />}
-          title="أصحاب المتاجر والمحلات"
-          desc="لتعزيز حضورهم الرقمي والوصول إلى عملاء جدد."
+          title={translate("about_stores_heading")}
+          desc={translate("about_stores_description")}
         />
         <Item
           icon={<ShoppingBag className="size-5" />}
-          title="أصحاب المشاريع الإلكترونية"
-          desc="لعرض مشاريعهم ومنتجاتهم ضمن بيئة تجارية واحدة."
+          title={translate("about_projects_heading")}
+          desc={translate("about_projects_description")}
         />
         <Item
           icon={<Truck className="size-5" />}
-          title="شركات التوصيل"
-          desc="شركاء محتملون ضمن منظومة الشحن التي نطمح إلى تطويرها."
+          title={translate("about_delivery_partners_heading")}
+          desc={translate("about_delivery_partners_description")}
         />
       </Section>
 
-      <Section title="التزامنا">
+      <Section title={translate("about_commitment_heading")}>
         <p>
-          نؤمن بأن بناء منصة موثوقة يبدأ بالوضوح واحترام المستخدمين والعمل على تحسين التجربة
-          باستمرار. لذلك نسعى إلى تطوير Arownd تدريجيًا، وتوضيح الخدمات المتاحة فعليًا، والإعلان عن
-          الميزات الجديدة عندما تصبح جاهزة للاستخدام.
+          {translate("about_commitment_description")}
         </p>
       </Section>
 
       <div className="mt-10 rounded-[var(--radius-card)] border border-border/60 bg-card p-6 text-center ">
         <Heart className="mx-auto mb-3 size-8 text-accent-ink" />
-        <p className="text-lg font-extrabold">Arownd — اكتشف ما حولك</p>
+        <p className="text-lg font-extrabold">{translate("about_footer_heading")}</p>
         <p className="mt-1 text-xs text-muted-foreground">
-          منصة جزائرية قيد التطوير والتوسع التدريجي
+          {translate("about_footer_subheading")}
         </p>
       </div>
 
       <div className="mt-6 flex flex-col gap-3">
         <Link to="/terms" className="btn-secondary w-full">
-          شروط الاستخدام
+          {translate("about_terms_link")}
         </Link>
         <Link to="/privacy" className="btn-secondary w-full">
-          سياسة الخصوصية
+          {translate("about_privacy_link")}
         </Link>
       </div>
     </div>
