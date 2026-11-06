@@ -10,7 +10,6 @@ import {
   fetchPendingShipmentsForCompany,
   fetchShipmentsByCompany,
   updateShipmentStatus,
-  SHIPMENT_STATUS_LABELS,
   type Shipment,
   type ShipmentStatus,
 } from "@/lib/delivery";
@@ -26,11 +25,11 @@ import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
 export const Route = createFileRoute("/delivery-dashboard")({
   head: () => ({
     meta: [
-      { title: "لوحة شركة التوصيل — Arownd" },
+      { title: translate("delivery_dashboard_title") + " — Arownd" },
       {
         name: "description",
         content:
-          "إدارة طلبات الشحن، قبولها أو رفضها، وتحديث حالات التوصيل لشركة التوصيل في Arownd.",
+          translate("delivery_dashboard_description"),
       },
     ],
   }),
@@ -98,47 +97,47 @@ function DeliveryDashboardPage() {
       await updateShipmentStatus(
         shipmentId,
         decision === "accept" ? "accepted" : "rejected",
-        decision === "reject" ? "تم الرفض من قبل شركة التوصيل" : undefined,
+        decision === "reject" ? translate("delivery_rejection_reason") : undefined,
       );
-      toast.success(decision === "accept" ? "تم قبول طلب الشحن ✅" : "تم رفض طلب الشحن ❌");
+      toast.success(translate(decision === "accept" ? "delivery_success_accepted" : "delivery_success_rejected"));
       qc.invalidateQueries({ queryKey: ["pending-shipments"] });
       qc.invalidateQueries({ queryKey: ["all-shipments"] });
     } catch (error) {
-      toast.error("تعذر تحديث الحالة. أعد المحاولة.");
+      toast.error(translate("delivery_error_update_status"));
     }
   };
 
   const handleStatusUpdate = async (shipmentId: string, status: ShipmentStatus) => {
     try {
       await updateShipmentStatus(shipmentId, status);
-      toast.success(`تم تحديث الحالة إلى: ${SHIPMENT_STATUS_LABELS[status]} ✅`);
+      toast.success(translate("delivery_success_status", { status: translate(`delivery_status_${status}`) }));
       qc.invalidateQueries({ queryKey: ["all-shipments"] });
       qc.invalidateQueries({ queryKey: ["pending-shipments"] });
     } catch (error) {
-      toast.error("تعذر تحديث الحالة. أعد المحاولة.");
+      toast.error(translate("delivery_error_update_status"));
     }
   };
 
   const handleCollectCod = async (shipment: Shipment) => {
     if (shipment.status !== "delivered" || !shipment.merchant_order_id) {
-      toast.error("لا يمكن تسجيل التحصيل قبل اكتمال تسليم الشحنة.");
+      toast.error(translate("delivery_error_cod_not_delivered"));
       return;
     }
     if (shipment.cod_collection) {
-      toast.info("تم تسجيل الدفع لهذا الطلب مسبقًا.");
+      toast.info(translate("delivery_error_cod_already_collected"));
       return;
     }
 
     setCollectingCodFor(shipment.id);
     try {
       await collectMerchantOrderCod(shipment.merchant_order_id);
-      toast.success("تم تسجيل تحصيل المبلغ النقدي لهذا الطلب.");
+      toast.success(translate("delivery_success_cod"));
       await qc.invalidateQueries({ queryKey: ["all-shipments"] });
     } catch (error) {
       toast.error(
         error instanceof Error
           ? error.message
-          : "تعذر تسجيل التحصيل. تحقق من حالة التسليم وصلاحية الحساب.",
+          : translate("delivery_error_cod"),
       );
     } finally {
       setCollectingCodFor(null);
@@ -151,8 +150,8 @@ function DeliveryDashboardPage() {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
         <Truck className="mx-auto size-12 text-accent-ink" />
-        <h1 className="text-2xl font-bold">تحتاج لدخول الحساب</h1>
-        <p className="text-sm text-muted-foreground">لدخول لوحة شركة التوصيل، سجّل الدخول أولاً.</p>
+        <h1 className="text-2xl font-bold">{translate("delivery_error_login")}</h1>
+        <p className="text-sm text-muted-foreground">{translate("delivery_error_login_hint")}</p>
         <Link
           to="/auth"
           search={{ redirect: "/delivery-dashboard" }}
@@ -185,9 +184,9 @@ function DeliveryDashboardPage() {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
         <AlertCircle className="mx-auto size-12 text-muted-foreground" />
-        <h1 className="text-2xl font-bold">لا يوجد حساب شركة توصيل</h1>
+        <h1 className="text-2xl font-bold">{translate("delivery_no_account_title")}</h1>
         <p className="text-sm text-muted-foreground">
-          لم يتم العثور على حساب شركة توصيل مرتبط بحسابك.
+          {translate("delivery_no_account_hint")}
         </p>
         <Link
           to="/delivery-register"
@@ -203,13 +202,13 @@ function DeliveryDashboardPage() {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
         <Clock className="mx-auto size-12 text-warning" />
-        <h1 className="text-2xl font-bold">حسابك قيد المراجعة</h1>
+        <h1 className="text-2xl font-bold">{translate("delivery_review_title")}</h1>
         <p className="text-sm text-muted-foreground">
           تم إرسال طلب تسجيل شركتك ({company.data.company_name}) وسيتم تفعيله بعد مراجعة إدارة
           المنصة واعتماده.
         </p>
         <p className="text-xs text-muted-foreground mt-2">
-          يمكنك متابعة حالة الطلب من خلال التواصل مع دعم المنصة.
+          {translate("delivery_review_support")}
         </p>
       </div>
     );
@@ -242,9 +241,9 @@ function DeliveryDashboardPage() {
       <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-bold text-lg">نظرة عامة</h2>
+            <h2 className="font-bold text-lg">{translate("delivery_dashboard_overview")}</h2>
             <p className="text-xs text-muted-foreground">
-              إدارة طلبات الشحن الخاصة بشركة {company.data.company_name}
+              {translate("delivery_dashboard_company_summary", { company: company.data.company_name })}
             </p>
           </div>
           <BadgeCompany status={company.data.is_approved ? "active" : "pending"} />
@@ -252,25 +251,25 @@ function DeliveryDashboardPage() {
 
         <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-4">
           <StatCard
-            label="طلبات جديدة قيد الانتظار"
+            label={translate("delivery_dashboard_pending_count")}
             value={pendingShipments.data?.length ?? 0}
             icon={PackageCheck}
             color="text-warning"
           />
           <StatCard
-            label="إجمالي الشحنات"
+            label={translate("delivery_dashboard_total_count")}
             value={allShipments.data?.length ?? 0}
             icon={Truck}
             color="text-accent-ink"
           />
           <StatCard
-            label="تم التسليم"
+            label={translate("delivery_dashboard_delivered_count")}
             value={allShipments.data?.filter((s) => s.status === "delivered").length ?? 0}
             icon={Check}
             color="text-success"
           />
           <StatCard
-            label="تعذر التسليم"
+            label={translate("delivery_dashboard_failed_count")}
             value={allShipments.data?.filter((s) => s.status === "failed").length ?? 0}
             icon={X}
             color="text-danger"
@@ -291,7 +290,7 @@ function DeliveryDashboardPage() {
                 : "text-muted-foreground hover:bg-muted",
             )}
           >
-            طلبات جديدة ({pendingShipments.data?.length ?? 0})
+            {translate("delivery_tab_pending", { count: pendingShipments.data?.length ?? 0 })}
           </button>
           <button
             onClick={() => setActiveTab("all")}
@@ -303,7 +302,7 @@ function DeliveryDashboardPage() {
                 : "text-muted-foreground hover:bg-muted",
             )}
           >
-            جميع الشحنات ({allShipments.data?.length ?? 0})
+            {translate("delivery_tab_all", { count: allShipments.data?.length ?? 0 })}
           </button>
         </div>
 
@@ -348,7 +347,7 @@ function BadgeCompany({ status }: { status: "active" | "pending" }) {
           : "bg-amber-soft text-amber-soft-foreground",
       )}
     >
-      {status === "active" ? "مفعل" : "قيد المراجعة"}
+      {status === "active" ? translate("delivery_status_active") : translate("delivery_status_review")}
     </span>
   );
 }
@@ -388,9 +387,9 @@ function PendingShipmentsList({
     return (
       <div className="px-3 py-10 text-center sm:py-12">
         <PackageCheck className="mx-auto size-16 text-muted-foreground/50" />
-        <h3 className="mt-3 text-lg font-bold">لا توجد طلبات شحن جديدة</h3>
+        <h3 className="mt-3 text-lg font-bold">{translate("delivery_no_shipments_pending")}</h3>
         <p className="text-sm text-muted-foreground">
-          عندما يرسل متجر طلب شحن إلى شركتك، سيظهر هنا لاتخاذ قرار بشأنه.
+          {translate("delivery_no_shipments_pending_hint")}
         </p>
       </div>
     );
@@ -402,26 +401,26 @@ function PendingShipmentsList({
         <div key={shipment.id} className="rounded-2xl border border-border bg-card p-3.5 sm:p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold truncate">طلب شحن #{shipment.id.slice(0, 8)}</p>
+              <p className="text-sm font-bold truncate">{translate("delivery_shipment_number", { id: shipment.id.slice(0, 8) })}</p>
               <p className="text-xs text-muted-foreground truncate">
-                الطلب رقم: {shipment.order_id.slice(0, 8)}
+                {translate("delivery_order_number", { id: shipment.order_id.slice(0, 8) })}
               </p>
               {shipment.recipient_name && (
                 <p className="text-sm text-muted-foreground mt-1">
-                  المستلم: {shipment.recipient_name}
+                  {translate("delivery_recipient", { name: shipment.recipient_name })}
                 </p>
               )}
               {shipment.recipient_phone && (
-                <p className="text-sm text-muted-foreground">الهاتف: {shipment.recipient_phone}</p>
+                <p className="text-sm text-muted-foreground">{translate("delivery_phone", { phone: shipment.recipient_phone })}</p>
               )}
               {shipment.delivery_address && (
                 <p className="text-sm text-muted-foreground">
-                  العنوان: {shipment.delivery_address}
+                  {translate("delivery_address", { address: shipment.delivery_address })}
                 </p>
               )}
               {shipment.fee != null && (
                 <p className="text-sm font-medium text-accent-ink mt-1">
-                  الرسوم: {shipment.fee} دج
+                  {translate("delivery_fee", { amount: shipment.fee })}
                 </p>
               )}
             </div>
@@ -463,9 +462,9 @@ function AllShipmentsList({
     return (
       <div className="mt-6 text-center py-10">
         <Truck className="mx-auto size-16 text-muted-foreground/50" />
-        <h3 className="mt-3 text-lg font-bold">لا توجد شحنات مسجلة</h3>
+        <h3 className="mt-3 text-lg font-bold">{translate("delivery_no_shipments_all")}</h3>
         <p className="text-sm text-muted-foreground">
-          ستظهر الشحنات هنا عندما يختار المتاجر شركتك للتوصيل وتقبل الطلبات.
+          {translate("delivery_no_shipments_all_hint")}
         </p>
       </div>
     );
@@ -494,26 +493,26 @@ function AllShipmentsList({
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-bold truncate">شحنة #{shipment.id.slice(0, 8)}</p>
                 <p className="text-xs text-muted-foreground truncate">
-                  الطلب رقم: {shipment.order_id.slice(0, 8)}
+                  {translate("delivery_order_number", { id: shipment.order_id.slice(0, 8) })}
                 </p>
                 {shipment.recipient_name && (
                   <p className="text-sm text-muted-foreground mt-1">
-                    المستلم: {shipment.recipient_name}
+                    {translate("delivery_recipient", { name: shipment.recipient_name })}
                   </p>
                 )}
                 {shipment.recipient_phone && (
                   <p className="text-sm text-muted-foreground">
-                    الهاتف: {shipment.recipient_phone}
+                    {translate("delivery_phone", { phone: shipment.recipient_phone })}
                   </p>
                 )}
                 {shipment.delivery_address && (
                   <p className="text-sm text-muted-foreground">
-                    العنوان: {shipment.delivery_address}
+                    {translate("delivery_address", { address: shipment.delivery_address })}
                   </p>
                 )}
                 {shipment.fee != null && (
                   <p className="text-sm font-medium text-accent-ink mt-1">
-                    الرسوم: {shipment.fee} دج
+                    {translate("delivery_fee", { amount: shipment.fee })}
                   </p>
                 )}
               </div>
@@ -524,15 +523,14 @@ function AllShipmentsList({
               <div className="mt-4 rounded-[var(--radius-control)] border border-border bg-background p-3">
                 {shipment.cod_collection ? (
                   <p className="text-sm font-semibold text-green-soft-foreground">
-                    تم تسجيل تحصيل الدفع عند الاستلام
-                    {" — " + shipment.cod_collection.amount.toLocaleString("ar-DZ") + " دج"}
+                    {translate("delivery_cod_recorded")}
+                    {" — " + shipment.cod_collection.amount.toLocaleString(translate("language") === "English" ? "en-US" : "ar-DZ") + (translate("language") === "English" ? " DZD" : " دج")}
                   </p>
                 ) : (
                   <>
-                    <p className="mb-2 text-sm font-semibold">الدفع النقدي عند الاستلام</p>
+                    <p className="mb-2 text-sm font-semibold">{translate("delivery_cod_title")}</p>
                     <p className="mb-3 text-xs text-muted-foreground">
-                      سجّل التحصيل بعد استلام المبلغ من المستلم. يُسجّل المبلغ من بيانات الطلب على
-                      الخادم.
+                      {translate("delivery_cod_hint")}
                     </p>
                     <button
                       type="button"
@@ -541,8 +539,8 @@ function AllShipmentsList({
                       className="min-h-11 w-full rounded-2xl bg-primary px-4 py-2.5 text-sm font-bold text-primary-foreground disabled:opacity-50"
                     >
                       {collectingCodFor === shipment.id
-                        ? "جارٍ تسجيل التحصيل..."
-                        : "تأكيد استلام المبلغ نقدًا"}
+                        ? translate("delivery_cod_submitting")
+                        : translate("delivery_cod_submit")}
                     </button>
                   </>
                 )}
@@ -568,7 +566,7 @@ function AllShipmentsList({
                         STATUS_COLORS[status],
                       )}
                     >
-                      {SHIPMENT_STATUS_LABELS[status]}
+                      {translate(`delivery_status_${status}`)}
                     </button>
                   );
                 })}
@@ -582,7 +580,7 @@ function AllShipmentsList({
 }
 
 function BadgeStatus({ status }: { status: string }) {
-  const label = SHIPMENT_STATUS_LABELS[status as ShipmentStatus] || status;
+  const label = translate(`delivery_status_${status}`);
   return (
     <span
       className={cn(
