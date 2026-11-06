@@ -10,6 +10,7 @@ import { formatDate } from "@/lib/market";
 import { EmptyState } from "@/components/sooqy/empty-state";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { ConfirmDialog } from "@/components/sooqy/confirm-dialog";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/reservations/")({
   head: () => ({}),
@@ -32,16 +33,17 @@ function canArchive(reservation: { status: string; expires_at: string }) {
   );
 }
 
-function reservationStatus(reservation: { status: string; expires_at: string }) {
-  if (isExpired(reservation)) return "منتهي";
-  if (reservation.status === "pending") return "نشط";
-  if (reservation.status === "collected") return "تم الاستلام";
-  if (reservation.status === "cancelled") return "ملغى";
+function reservationStatus(reservation: { status: string; expires_at: string }): string {
+  if (isExpired(reservation)) return "reservations_status_expired";
+  if (reservation.status === "pending") return "reservations_status_active";
+  if (reservation.status === "collected") return "reservations_status_collected";
+  if (reservation.status === "cancelled") return "reservations_status_cancelled";
   return reservation.status;
 }
 
 function ReservationsPage() {
   const { user, ready } = useAuth();
+  const { t } = useTranslation();
   const queryClient = useQueryClient();
   const [tab, setTab] = useState<ReservationTab>("all");
   const [cancellingId, setCancellingId] = useState<string | null>(null);
@@ -91,16 +93,16 @@ function ReservationsPage() {
   });
 
   const tabs: { id: ReservationTab; label: string }[] = [
-    { id: "all", label: "الكل" },
-    { id: "active", label: "نشطة" },
-    { id: "ended", label: "منتهية" },
-    { id: "cancelled", label: "ملغاة" },
+    { id: "all", label: t("reservations_tab_all") },
+    { id: "active", label: t("reservations_tab_active") },
+    { id: "ended", label: t("reservations_tab_ended") },
+    { id: "cancelled", label: t("reservations_tab_cancelled") },
   ];
 
   return (
     <main className="space-y-4 px-4 pb-6 pt-5">
       <header className="flex items-center gap-3">
-        <Link to="/profile" aria-label="العودة إلى الملف الشخصي" className="icon-btn">
+        <Link to="/profile" aria-label={t("reservations_back")} className="icon-btn">
           <ArrowLeft className="size-5 rtl:rotate-180" />
         </Link>
         <div>
@@ -142,8 +144,8 @@ function ReservationsPage() {
       {!reservations.isLoading && !reservations.isError && filtered.length === 0 && (
         <EmptyState
           Icon={CalendarDays}
-          title={tab === "all" ? "لا توجد حجوزات بعد" : "لا توجد حجوزات في هذا القسم"}
-          hint="عندما تحجز منتجًا من أحد المتاجر، سيظهر هنا."
+          title={tab === "all" ? t("reservations_empty_all") : t("reservations_empty_filtered")}
+          hint=t("reservations_empty_hint")
           action={
             <Link to="/explore" className="btn-primary">
               اكتشف المنتجات
@@ -156,7 +158,7 @@ function ReservationsPage() {
         {filtered.map((reservation) => {
           const archivable = canArchive(reservation);
           const expired = isExpired(reservation);
-          const status = reservationStatus(reservation);
+          const status = t(reservationStatus(reservation));
           const statusStyle =
             reservation.status === "cancelled"
               ? "bg-danger-soft text-danger"
@@ -175,17 +177,17 @@ function ReservationsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0">
                     <p className="truncate text-base font-extrabold text-foreground">
-                      {reservation.offer?.product?.name ?? "منتج محجوز"}
+                      {reservation.offer?.product?.name ?? t("reservations_product_fallback")}
                     </p>
                     <p className="mt-1 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                       <Store className="size-3.5" />
-                      {reservation.store?.name ?? "المتجر"}
+                      {reservation.store?.name ?? t("reservations_store_fallback")}
                     </p>
                   </div>
                   <span
                     className={`shrink-0 rounded-full px-3 py-1.5 text-caption font-bold ${statusStyle}`}
                   >
-                    {status}
+                    {t(status)}
                   </span>
                 </div>
 
@@ -224,7 +226,7 @@ function ReservationsPage() {
                     <div className="min-w-0">
                       <p className="text-caption text-muted-foreground">انتهاء الصلاحية</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
-                        {expired ? "انتهت الصلاحية" : formatDate(reservation.expires_at)}
+                        {expired ? t("reservations_expired") : formatDate(reservation.expires_at)}
                       </p>
                     </div>
                   </div>
@@ -236,14 +238,14 @@ function ReservationsPage() {
                     disabled={cancellingId === reservation.id}
                     onClick={() =>
                       setPendingConfirmation({
-                        title: "إلغاء الحجز",
-                        message: "هل تريد إلغاء هذا الحجز؟ ستُعاد الكمية إلى مخزون المتجر.",
+                        title: t("reservations_cancel_title"),
+                        message: t("reservations_cancel_message"),
                         action: async () => {
                           setCancellingId(reservation.id);
                           try {
                             await cancelMyReservation(reservation.id);
                             await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                            showSuccess("تم إلغاء الحجز بنجاح.");
+                            showSuccess(t("reservations_cancelled_success"));
                           } finally {
                             setCancellingId(null);
                           }
@@ -253,7 +255,7 @@ function ReservationsPage() {
                     className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                   >
                     <XCircle className="size-4" />
-                    {cancellingId === reservation.id ? "جارٍ الإلغاء..." : "إلغاء الحجز"}
+                    {cancellingId === reservation.id ? t("reservations_cancelling") : t("reservations_cancel_title")}
                   </button>
                 )}
                 {archivable && (
@@ -261,13 +263,13 @@ function ReservationsPage() {
                     type="button"
                     onClick={() =>
                       setPendingConfirmation({
-                        title: "إخفاء الحجز من السجل",
+                        title: t("reservations_archive_title"),
                         message:
-                          "هل تريد إخفاء هذا الحجز من سجلك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                          t("reservations_archive_message"),
                         action: async () => {
                           await archiveMyActivity("reservation", reservation.id);
                           await queryClient.invalidateQueries({ queryKey: ["my-reservations"] });
-                          showSuccess("تم إخفاء الحجز من سجلك.");
+                          showSuccess(t("reservations_archived_success"));
                         },
                       })
                     }
@@ -285,8 +287,8 @@ function ReservationsPage() {
         open={pendingConfirmation !== null}
         title={pendingConfirmation?.title ?? ""}
         message={pendingConfirmation?.message ?? ""}
-        confirmLabel="تأكيد"
-        cancelLabel="إلغاء"
+        confirmLabel={t("reservations_confirm")}
+        cancelLabel={t("reservations_cancel_confirmation")}
         busy={confirmationBusy}
         onConfirm={runPendingConfirmation}
         onCancel={() => setPendingConfirmation(null)}
