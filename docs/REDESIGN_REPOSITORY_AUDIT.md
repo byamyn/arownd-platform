@@ -69,6 +69,13 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Static source review only; no executable test, typecheck, lint, UI check, or build was run.
 - `privacy.tsx` and `terms.tsx` are deliberately not machine-localized in this pass: legal translations require review against applicable Algerian law and the actual production data practices before publication.
 
+#### 1.5 Merchant dashboard localization follow-up (2026-11-06)
+
+- Added bilingual keys for store verification, product/order dashboard hints, login action, and reservation quantity labels in `src/lib/dictionaries/studio.ts`.
+- Migrated the corresponding visible strings in `src/routes/studio.index.tsx`.
+- Added Arabic/English interpolation assertions to `src/test/i18n-parity.test.ts`.
+- Static source inspection only. The wider Merchant Studio routes still require a route-by-route localization and responsive-layout audit.
+
 ## 2. Directional CSS
 
 The route scans completed for the shopper, checkout, order, merchant, and profile/settings route groups found no direct physical-direction Tailwind utilities from the audited patterns. This is a positive static signal, but it does not prove full LTR correctness: icons, map controls, third-party widgets, mixed-direction identifiers, and component internals still require visual testing.
