@@ -133,6 +133,12 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("studio_settings_meta_title", "en")).toContain("Customize store");
     expect(t("studio_settings_category_missing", "ar")).toContain("التصنيف");
     expect(t("studio_settings_category_missing", "en")).toContain("category");
+    expect(t("studio_meta_title", "ar")).toContain("استوديو التاجر");
+    expect(t("studio_meta_title", "en")).toContain("Merchant Studio");
+    expect(t("studio_store_open_now", "ar")).toBe("مفتوح الآن");
+    expect(t("studio_store_open_now", "en")).toBe("Open now");
+    expect(t("studio_order_hash", "ar", { id: "1234" })).toContain("1234");
+    expect(t("studio_order_hash", "en", { id: "1234" })).toContain("1234");
     expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
     expect(t("delivery_cod_collected_amount", "en", { amount: "1,200" })).toContain("1,200");
   });
