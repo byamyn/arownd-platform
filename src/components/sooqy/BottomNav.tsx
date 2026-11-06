@@ -14,13 +14,13 @@ export function BottomNav() {
   ];
 
   return (
-    <nav
-      aria-label={t("aria_main_nav")}
-      className="app-bottom-nav"
-    >
+    <nav aria-label={t("aria_main_nav")} className="app-bottom-nav">
       <div className="app-bottom-nav-inner gap-1">
         {items.map(({ to, labelKey, Icon }) => {
-          const isActive = pathname === to;
+          const isActive =
+            to === "/"
+              ? pathname === "/"
+              : pathname === to || pathname.startsWith(`${to}/`);
           return (
             <Link
               key={to}
@@ -40,7 +40,7 @@ export function BottomNav() {
                 )}
                 aria-hidden="true"
               >
-                <Icon className="size-5" strokeWidth={isActive ? 2.4 : 2} />
+                <Icon className="size-5" strokeWidth={isActive ? 2.4 : 1.9} />
               </span>
               <span className="w-full truncate text-center">{t(labelKey)}</span>
             </Link>
