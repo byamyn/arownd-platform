@@ -113,7 +113,7 @@ function DeliveryDashboardPage() {
       toast.success(translate("delivery_success_status", { status: translate(`delivery_status_${status}`) }));
       qc.invalidateQueries({ queryKey: ["all-shipments"] });
       qc.invalidateQueries({ queryKey: ["pending-shipments"] });
-    } catch (error) {
+    } catch {
       toast.error(translate("delivery_error_update_status"));
     }
   };
