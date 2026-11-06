@@ -1,12 +1,11 @@
 import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Search, SlidersHorizontal } from "lucide-react";
+import { Armchair, Baby, CarFront, Gift, Laptop, ArrowRight, Search, Shirt, SlidersHorizontal, Smartphone, Sparkles, Utensils, Watch, type LucideIcon } from "lucide-react";
 import { useGeo } from "@/lib/geo";
 import { searchProducts, type SortBy } from "@/lib/sooqy";
 import {
   MAIN_CATEGORIES,
-  categoryEmoji,
   categoryHint,
   categoryLabel,
   parentOf,
@@ -23,6 +22,19 @@ import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { goBackOrTo } from "@/lib/nav";
 import { useTranslation, translate } from "@/lib/i18n";
+
+const CATEGORY_ICONS: Record<string, LucideIcon> = {
+  fashion: Shirt,
+  electronics: Smartphone,
+  beauty: Sparkles,
+  home: Armchair,
+  kids: Baby,
+  sports: Watch,
+  food: Utensils,
+  "gifts-crafts": Gift,
+  digital: Laptop,
+  cars: CarFront,
+};
 
 const PAGE_SIZE = 24;
 
@@ -83,6 +95,7 @@ function CategoryPage() {
   const current = parentOf(active);
   const otherMains = MAIN_CATEGORIES.filter((c) => c.id !== current?.id).slice(0, 6);
 
+  const CategoryIcon = CATEGORY_ICONS[current?.id ?? active] ?? Sparkles;
   const catLabel = categoryLabel(catId);
   const catHint = categoryHint(current?.id) || t("category_seo_fallback", { category: catLabel });
 
@@ -112,7 +125,7 @@ function CategoryPage() {
             <ArrowRight className="size-5" />
           </button>
           <div className="flex min-w-0 items-center gap-2">
-            <span className="text-2xl">{categoryEmoji(catId)}</span>
+            <span className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-primary/10 text-accent-ink"><CategoryIcon className="size-6" strokeWidth={1.9} aria-hidden="true" /></span>
             <div className="min-w-0">
               <h1 className="truncate text-h1 text-foreground">{catLabel}</h1>
               {categoryHint(current?.id) && (
@@ -212,7 +225,7 @@ function CategoryPage() {
                 params={{ catId: c.id }}
                 className="card-premium flex min-h-11 shrink-0 items-center gap-1.5 !rounded-full px-4 text-xs font-bold text-muted-foreground"
               >
-                <span className="text-sm">{c.emoji}</span>
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-accent-ink"><(CATEGORY_ICONS[c.id] ?? Sparkles) className="size-4" aria-hidden="true" /></span>
                 {c.label}
               </Link>
             ))}
