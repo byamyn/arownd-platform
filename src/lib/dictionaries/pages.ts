@@ -348,6 +348,11 @@ export const pages: DictGroup = {
   },
   en: {
     stores_title: "Nearby stores — Arownd",
+    create_store_title: "Become a merchant",
+    create_store_login_hint: "Please sign in to create a store",
+    create_store_login_action: "Sign in",
+    create_store_subtitle: "Create your store on Arownd",
+    create_store_seo_title: "Create your store — Arownd",
     store_not_found_title: "Store not found",
     store_not_found_hint: "Check the link or search for another store.",
     store_browse_stores: "Browse stores",
