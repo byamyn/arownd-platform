@@ -1,7 +1,8 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { Armchair, Baby, CarFront, Gift, Laptop, Search, Shirt, ShoppingBag, Smartphone, Sparkles, Utensils, Watch, type LucideIcon } from "lucide-react";
+import { Search, ShoppingBag } from "lucide-react";
+import { CategoryIcon } from "@/components/sooqy/category-icons";
 import { useGeo } from "@/lib/geo";
 import { searchProducts, type SortBy } from "@/lib/sooqy";
 import { ProductCard } from "@/components/sooqy/cards";
@@ -14,19 +15,6 @@ import { useTranslation } from "@/lib/i18n";
 import { MAIN_CATEGORIES } from "@/lib/taxonomy";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { cn } from "@/lib/utils";
-
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
-  fashion: Shirt,
-  electronics: Smartphone,
-  beauty: Sparkles,
-  home: Armchair,
-  kids: Baby,
-  sports: Watch,
-  food: Utensils,
-  "gifts-crafts": Gift,
-  digital: Laptop,
-  cars: CarFront,
-};
 
 const PAGE_SIZE = 24;
 const SORTS: SortBy[] = ["newest", "cheapest", "rating"];
@@ -125,7 +113,6 @@ function ExplorePage() {
           className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
         >
           {MAIN_CATEGORIES.map((category) => {
-            const CategoryIcon = CATEGORY_ICONS[category.id] ?? Sparkles;
             return (
             <Link
               key={category.id}
@@ -133,7 +120,7 @@ function ExplorePage() {
               params={{ catId: category.id }}
               className="flex min-h-11 shrink-0 items-center gap-2 rounded-full border border-border bg-card px-4 text-sm font-semibold text-foreground transition hover:bg-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
-              <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink" aria-hidden="true"><CategoryIcon className="size-[18px]" strokeWidth={1.9} /></span>
+              <span className="flex size-8 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink" aria-hidden="true"><CategoryIcon categoryId={category.id} className="size-[18px]" /></span>
               {t(`category_${category.id}`)}
             </Link>
           );})}
