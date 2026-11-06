@@ -128,7 +128,7 @@ function DeliveryRegisterPage() {
             placeholder={t("delivery_company_phone_required")}
             aria-label={t("delivery_company_phone_required")}
             autoComplete="tel"
-            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             type="email"
@@ -148,8 +148,7 @@ function DeliveryRegisterPage() {
           />
 
           <p className="text-xs text-muted-foreground leading-relaxed">
-            بعد التسجيل، ستظهر شركتك في قائمة الشركات المتاحة للمتاجر، ولكن لن يتم قبول طلبات الشحن
-            حتى يتم اعتماد حسابك من قبل إدارة المنصة.
+            {t("delivery_registration_review_note")}
           </p>
 
           <button
@@ -160,7 +159,7 @@ function DeliveryRegisterPage() {
               busy && "cursor-not-allowed",
             )}
           >
-            {busy ? "{t("delivery_registration_submitting")}" : "{t("delivery_registration_submit")}"}
+            {busy ? t("delivery_registration_submitting") : t("delivery_registration_submit")}
           </button>
         </form>
       </section>
