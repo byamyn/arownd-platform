@@ -102,7 +102,7 @@ function ProfilePage() {
   const [editing, setEditing] = useState(false);
   const avatarInputRef = useRef<HTMLInputElement>(null);
   const displayName = public_id
-    ? (publicProfile.data?.full_name ?? "مستخدم Arownd")
+    ? (publicProfile.data?.full_name ?? t("profile_default_name"))
     : (profile.data?.full_name ??
       (typeof user?.user_metadata?.["full_name"] === "string"
         ? user.user_metadata["full_name"]
@@ -129,12 +129,12 @@ function ProfilePage() {
         <span className="flex size-20 items-center justify-center rounded-[var(--radius-card)] bg-primary-soft">
           <User className="size-9 text-accent-ink" strokeWidth={1.6} />
         </span>
-        <h1 className="text-h1 text-foreground">سجّل الدخول لعرض ملفك الشخصي</h1>
+        <h1 className="text-h1 text-foreground">{t("profile_login_title")}</h1>
         <p className="max-w-xs text-sm leading-7 text-muted-foreground">
-          سجّل الدخول أو أنشئ حساباً للوصول إلى طلباتك وإعداداتك وبياناتك الشخصية.
+          {t("profile_login_hint")}
         </p>
         <Link to="/auth" search={{ redirect: "/profile" }} className="btn-primary mt-2">
-          تسجيل الدخول
+          {t("profile_login_action")}
         </Link>
       </AppShell>
     );
@@ -199,16 +199,16 @@ function ProfilePage() {
       <AppShell className="mx-auto max-w-xl space-y-5 pb-24 pt-6">
         {isMerchant ? (
           <div className="flex min-h-11 items-center justify-end gap-2">
-            <Link to="/bag" aria-label="سلة التسوق" title="سلة التسوق" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
+            <Link to="/bag" aria-label={t("profile_bag_aria")} title={t("profile_bag_aria")} className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
               <ShoppingBag className="size-5" />
             </Link>
-            <Link to="/settings" aria-label="الإعدادات" title="الإعدادات" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
+            <Link to="/settings" aria-label={t("profile_settings_aria")} title={t("profile_settings_aria")} className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
               <Settings className="size-5" />
             </Link>
           </div>
         ) : (
           <PageHeader title={t("profile_hub_title")} subtitle={t("profile_hub_subtitle")} action={
-            <Link to="/settings" aria-label="الإعدادات" title="الإعدادات" className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
+            <Link to="/settings" aria-label={t("profile_settings_aria")} title={t("profile_settings_aria")} className="inline-flex size-10 shrink-0 items-center justify-center rounded-full border border-border bg-card text-foreground transition hover:bg-muted active:scale-95">
               <Settings className="size-5" />
             </Link>
           } />
@@ -280,7 +280,7 @@ function ProfilePage() {
                   <ReportContentButton
                     targetType="user"
                     targetId={public_id}
-                    label="الإبلاغ عن هذا الحساب"
+                    label={t("profile_report_action")}
                   />
                 </div>
               )}
