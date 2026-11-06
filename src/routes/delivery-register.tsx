@@ -49,9 +49,9 @@ function DeliveryRegisterPage() {
         <Link
           to="/auth"
           search={{ redirect: "/delivery-register" }}
-          className="inline-block bg-primary min-h-[var(--control-height)] rounded-full px-6 py-3 font-bold text-primary-foreground"
+          className="inline-flex min-h-[var(--control-height)] items-center justify-center rounded-full bg-primary px-6 py-3 font-bold text-primary-foreground"
         >
-          دخول
+          {t("delivery_login_action")}
         </Link>
       </div>
     );
@@ -61,12 +61,12 @@ function DeliveryRegisterPage() {
     e.preventDefault();
     if (!user || busy) return;
     if (!companyName.trim() || !contactPhone.trim()) {
-      toast.error("${t("delivery_registration_required")}");
+      toast.error(t("delivery_registration_required"));
       return;
     }
     // شركة التوصيل قد تسجّل هاتفًا ثابتًا (021…) أو جوالًا: نقبل 9–10 أرقام تبدأ بـ 0
     if (!/^0\d{8,9}$/.test(normalizePhone(contactPhone.trim()))) {
-      toast.error("${t("delivery_registration_phone_invalid")}");
+      toast.error(t("delivery_registration_phone_invalid"));
       return;
     }
     setBusy(true);
@@ -82,9 +82,7 @@ function DeliveryRegisterPage() {
       await registerDeliveryCompany(
         payload as Database["public"]["Tables"]["delivery_companies"]["Insert"],
       );
-      showSuccess(
-        "${t("delivery_registration_success")}",
-      );
+      showSuccess(t("delivery_registration_success"));
       navigate({ to: "/", replace: true });
     } catch (error) {
       showError(error);
@@ -111,7 +109,7 @@ function DeliveryRegisterPage() {
             placeholder={t("delivery_company_name")}
             aria-label={t("delivery_company_name")}
             autoComplete="organization"
-            className="h-12 w-full rounded-2xl border border-input bg-background px-4 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="h-12 w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             value={contactName}
@@ -119,7 +117,7 @@ function DeliveryRegisterPage() {
             placeholder={t("delivery_contact_name_optional")}
             aria-label={t("delivery_contact_name_optional")}
             autoComplete="name"
-            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             required
