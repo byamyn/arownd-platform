@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { Armchair, Baby, Bell, CarFront, Gift, Laptop, Shirt, Smartphone, Sparkles, Utensils, Watch, type LucideIcon } from "lucide-react";
+import { Bell } from "lucide-react";
+import { CategoryIcon } from "@/components/sooqy/category-icons";
 import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { useGeo } from "@/lib/geo";
@@ -16,19 +17,6 @@ import { SeoHead } from "@/components/seo/SeoHead";
 import { WilayaButton } from "@/components/sooqy/WilayaSelect";
 import { translate, useTranslation } from "@/lib/i18n";
 import { MAIN_CATEGORIES } from "@/lib/taxonomy";
-
-const HOME_CATEGORY_ICONS: Record<string, LucideIcon> = {
-  fashion: Shirt,
-  electronics: Smartphone,
-  beauty: Sparkles,
-  home: Armchair,
-  kids: Baby,
-  sports: Watch,
-  food: Utensils,
-  "gifts-crafts": Gift,
-  digital: Laptop,
-  cars: CarFront,
-};
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -168,7 +156,7 @@ function Home() {
           className="no-scrollbar -mx-4 flex snap-x snap-proximity gap-2 overflow-x-auto px-4 pb-1"
         >
           {MAIN_CATEGORIES.slice(0, 6).map((category) => {
-            const CategoryIcon = HOME_CATEGORY_ICONS[category.id] ?? Sparkles;
+            
             return (
               <Link
                 key={category.id}
@@ -177,7 +165,7 @@ function Home() {
                 className="flex h-[3.65rem] min-w-[8.5rem] shrink-0 snap-start items-center gap-2.5 rounded-2xl border border-border bg-card px-3 text-sm font-semibold text-foreground transition-colors hover:border-primary/60 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
               >
                 <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-accent-ink">
-                  <CategoryIcon className="size-[19px]" strokeWidth={1.9} aria-hidden="true" />
+                  <CategoryIcon categoryId={category.id} className="size-[19px]" />
                 </span>
                 <span className="whitespace-nowrap">{t(`category_${category.id}`)}</span>
               </Link>
