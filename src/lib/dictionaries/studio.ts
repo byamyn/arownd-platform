@@ -387,6 +387,7 @@ export const studio: DictGroup = {
     studio_low_stock_alert: "{count} products are low or out of stock",
     studio_low_stock_review: "Review",
     studio_store_name_required: "Store name *",
+    studio_verified_badge: "This store is verified",
     studio_manage_products_hint: "View, edit, and delete products",
     studio_deleted_product_label: "Deleted product",
     studio_manage_orders_hint: "Manage orders and update their statuses",
