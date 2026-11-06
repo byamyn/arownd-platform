@@ -33,7 +33,7 @@ export const Route = createFileRoute("/category/$catId")({
 
 function CategoryPage() {
   const { catId } = Route.useParams();
-  const { t } = useTranslation();
+  const { t, lang } = useTranslation();
   const sorts: { id: SortBy; label: string }[] = [
     { id: "newest", label: t("category_sort_newest") },
     { id: "cheapest", label: t("category_sort_cheapest") },
@@ -91,7 +91,7 @@ function CategoryPage() {
       <SeoHead
         title={catLabel}
         description={catHint}
-        keywords={`${catLabel}, منتجات الجزائر, شراء ${catLabel} في الجزائر, Arownd`}
+        keywords={t("category_keywords", { category: catLabel })}
         ogType="website"
         jsonLd={{
           "@context": "https://schema.org",
@@ -99,7 +99,7 @@ function CategoryPage() {
           name: catLabel,
           numberOfItems: list.length,
           description: catHint,
-          inLanguage: "ar-DZ",
+          inLanguage: lang === "ar" ? "ar-DZ" : "en-DZ",
         }}
       />
       <div className="space-y-5 px-4 pt-3">
