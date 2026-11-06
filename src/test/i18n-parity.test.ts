@@ -86,6 +86,12 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("checkout_continue_delivery", "en")).toBe("Continue to delivery");
     expect(t("checkout_continue_payment", "ar")).toBe("متابعة إلى الدفع");
     expect(t("checkout_continue_payment", "en")).toBe("Continue to payment");
+    expect(t("checkout_wilaya_label", "ar")).toBe("الولاية");
+    expect(t("checkout_wilaya_label", "en")).toBe("Wilaya");
+    expect(t("checkout_commune_label", "ar")).toBe("البلدية");
+    expect(t("checkout_commune_label", "en")).toBe("Commune");
+    expect(t("checkout_commune_placeholder", "ar")).toBe("اختر البلدية");
+    expect(t("checkout_commune_placeholder", "en")).toBe("Choose commune");
   });
 
   it("الترجمة تُعيد النص المفاتيح لا المفتاح نفسه", () => {
