@@ -18,7 +18,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-const CATEGORY_ICONS: Record<string, LucideIcon> = {
+export const CATEGORY_ICONS: Record<string, LucideIcon> = {
   fashion: Shirt,
   clothes: Shirt,
   shoes: Shirt,
