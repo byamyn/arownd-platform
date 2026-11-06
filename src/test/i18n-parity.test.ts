@@ -46,6 +46,10 @@ describe("توازن القاموس (i18n parity)", () => {
   it("الترجمة تُعيد النص المفاتيح لا المفتاح نفسه", () => {
     expect(t("bag_heading", "ar")).toBe("سلة التسوق");
     expect(t("bag_heading", "en")).toBe("Shopping bag");
+    expect(t("orders_cancel_store_title", "ar")).toBe("إلغاء طلب هذا المتجر");
+    expect(t("orders_cancel_store_title", "en")).toBe("Cancel this store order");
+    expect(t("orders_archive_action", "ar")).toBe("إخفاء من السجل");
+    expect(t("orders_archive_action", "en")).toBe("Hide from history");
   });
 
   it("لا تُعيد المفتاح الخام إذا كان مفقودًا (سلاح أمان)", () => {
