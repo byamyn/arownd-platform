@@ -144,7 +144,7 @@
   --ease-bounce: cubic-bezier(.34, 1.56, .64, 1);
 
   /* Legacy semantic aliases retained for existing component APIs.
-     Their values now resolve exclusively to AROWND v1.2 tokens. */
+     Their values now resolve exclusively to AROWND v2.0 tokens. */
   --background: var(--color-bg-canvas);
   --foreground: var(--color-text-primary);
   --card: var(--color-bg-surface);
