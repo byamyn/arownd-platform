@@ -112,10 +112,10 @@ function WalletPage() {
         </span>
         <h1 className="text-h1 text-foreground">سجّل الدخول لفتح محفظتك</h1>
         <p className="max-w-xs text-body text-muted-foreground">
-          شحن الرصيد وسجل العمليات ستظهر هنا بعد تسجيل الدخول.
+          {tr("wallet_login_hint")}
         </p>
         <a href="/auth" className="btn-primary mt-2">
-          دخول
+          {tr("wallet_login_action")}
         </a>
       </div>
     );
@@ -317,7 +317,7 @@ function WalletPage() {
             </div>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                طريقة الدفع
+                {tr("wallet_payment_method")}
               </label>
               <select
                 value={topupMethod}
@@ -371,7 +371,7 @@ function WalletPage() {
             </div>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                طريقة الاستلام
+                {tr("wallet_payout_method")}
               </label>
               <select
                 value={withdrawMethod}
@@ -387,7 +387,7 @@ function WalletPage() {
             </div>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                بيانات الحساب (CCP / RIB / رقم بريدي موب)
+                {tr("wallet_account_details")}
               </label>
               <input
                 value={withdrawNote}
@@ -409,7 +409,7 @@ function WalletPage() {
               <div className="flex items-center gap-2 text-success">
                 <ArrowDownLeft className="size-4" />
                 <span className="text-caption font-bold text-muted-foreground">
-                  إجمالي الإيداعات
+                  {tr("wallet_total_topups")}
                 </span>
               </div>
               <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">
@@ -420,7 +420,7 @@ function WalletPage() {
               <div className="flex items-center gap-2 text-danger">
                 <ArrowUpRight className="size-4" />
                 <span className="text-caption font-bold text-muted-foreground">
-                  إجمالي السحوبات
+                  {tr("wallet_total_withdrawals")}
                 </span>
               </div>
               <p dir="ltr" className="mt-2 text-base font-extrabold text-foreground">
@@ -483,7 +483,7 @@ function WalletPage() {
               {tr("wallet_error_network")}
             </p>
             <button onClick={() => void txs.refetch()} className="btn-secondary mt-3">
-              إعادة المحاولة
+              {tr("wallet_retry")}
             </button>
           </div>
         )}
@@ -492,7 +492,7 @@ function WalletPage() {
           <EmptyState
             Icon={Wallet}
             title={tab === "all" ? tr("wallet_empty_all") : tr("wallet_empty_filtered")}
-            hint="{tr("wallet_empty_hint")}"
+            hint={tr("wallet_empty_hint")}
           />
         )}
 
@@ -581,7 +581,7 @@ function WalletPage() {
                     className="mt-2 flex items-center gap-1.5 text-xs font-bold text-accent-ink"
                   >
                     <ReceiptText className="size-3.5" />
-                    عرض سند الدفع
+                    {tr("wallet_receipt_view")}
                   </button>
                 )}
               </div>
