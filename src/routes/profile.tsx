@@ -108,7 +108,7 @@ function ProfilePage() {
         ? user.user_metadata["full_name"]
         : null) ??
       user?.email ??
-      "مستخدم Arownd");
+      t("profile_default_name"));
   const initial = displayName.trim().charAt(0) || "A";
   const favCount = favorites.products.length + favorites.stores.length;
 
