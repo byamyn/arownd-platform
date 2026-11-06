@@ -24,7 +24,7 @@ export function PageHeader({
   return (
     <header
       className={cn(
-        "sticky top-0 z-20 -mx-[var(--margin)] flex min-h-16 items-center gap-3 border-b border-border/80 bg-background/90 px-[var(--margin)] py-2 backdrop-blur-xl",
+        "sticky top-[env(safe-area-inset-top)] z-20 -mx-[var(--margin)] flex min-h-16 items-center gap-3 border-b border-border/80 bg-background/90 px-[var(--margin)] py-2 backdrop-blur-xl",
         className,
       )}
     >
