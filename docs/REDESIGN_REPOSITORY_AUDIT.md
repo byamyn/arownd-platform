@@ -17,19 +17,14 @@ Reviewed the active route inventory, shared shell/navigation, shared design prim
 
 ### 1. Translation and localization gaps
 
-Arabic UI literals remain in multiple active routes. Notifications, wallet, and reservations were migrated in the latest follow-up batch; the remaining representative findings are:
+Arabic UI literals remain in multiple active routes. Notifications, wallet, reservations, settings, profile, account deletion, About, Help, category, product detail, and store detail have since been migrated. Remaining representative findings are:
 
 | Route | Approx. non-comment Arabic lines found | Examples |
 |---|---:|---|
-| `category.$catId.tsx` | 17 | Sort labels, category hint, back label |
-| `products.$productId.tsx` | 6 | Share error, report action |
-| `stores.$storeId.tsx` | 37 | Store empty/error states, weekdays, toasts |
 | `checkout.tsx` | 4 | Tracking label and action |
 | `studio.index.tsx` | 30 | Metadata, store state, accessibility labels |
 | `studio.settings.tsx` | 12 | Metadata and image accessibility labels |
 | `create-store.tsx` | 6 | Metadata, page title, login guidance |
-| `about.tsx` | 41 | Entire informational page |
-| `help.tsx` | 78 | FAQ categories and content |
 | `privacy.tsx` | 114 | Legal copy and accessibility labels |
 | `terms.tsx` | 108 | Legal copy and accessibility labels |
 
@@ -52,6 +47,18 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Added translation assertions for settings, profile, and account-request strings.
 - Static checks: 232 Arabic and 232 English activity keys; no unresolved references in the three migrated routes; no unapproved cross-group collisions; no Arabic UI literals found in these routes (comments excluded).
 - `about.tsx`, `help.tsx`, `privacy.tsx`, and `terms.tsx` remain outstanding, along with other shopper and merchant routes.
+
+#### 1.3 Informational and shopper route localization batch (2026-11-06)
+
+- Added complete Arabic/English content keys for About and Help pages in `src/lib/dictionaries/pages.ts`.
+- Migrated `src/routes/about.tsx` and `src/routes/help.tsx`, including FAQ entries, delivery partner form labels/placeholders, email subject/body labels, quick links, SEO metadata, and page accessibility labels.
+- Kept the Help FAQ and quick-link content reactive to language changes rather than capturing translated strings at module initialization.
+- Migrated category filters, sorting, loading/empty states, result count, SEO keywords, and JSON-LD language in `src/routes/category.$catId.tsx`.
+- Migrated product-detail sharing errors, reporting action, and own-store notice/actions in `src/routes/products.$productId.tsx`.
+- Migrated store detail owner controls, sharing/favorites feedback, tabs, empty states, contact actions, opening-hours labels, weekday names, and SEO metadata in `src/routes/stores.$storeId.tsx`.
+- Added bilingual dictionary assertions for About, Help, category, product, and store content. Added `/about` to route smoke coverage.
+- Static route scan: no Arabic UI literals found in About, Help, category, or product detail; store detail has only an Arabic explanatory code comment remaining. Dictionary groups have no new key collisions and all newly referenced keys resolve.
+- Legal documents (`privacy.tsx`, `terms.tsx`) and other shopper/merchant routes remain outstanding. Legal text should receive a separate legal-language review before being represented as an approved English translation.
 
 ## 2. Directional CSS
 
