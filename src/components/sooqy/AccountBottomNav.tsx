@@ -15,10 +15,9 @@ export function AccountBottomNav() {
   if (!ready) return null;
   if (!user) return <BottomNav />;
   if (accountType.data === "merchant") return <StudioNav />;
+  if (accountType.isLoading) return null;
   if (accountType.data === "delivery_company") return <DeliveryNav />;
-  if (accountType.isLoading || accountType.isError || !accountType.isSuccess) {
-    return <BottomNav />;
-  }
+  if (accountType.isError || !accountType.isSuccess) return <BottomNav />;
   if (accountType.data === "personal") return <BottomNav />;
   return null;
 }
