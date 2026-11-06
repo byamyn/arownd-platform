@@ -26,13 +26,13 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/help")({
   head: () => ({
     meta: [
-      { title: "مساعدة والأسئلة الشائعة — Arownd" },
+      { title: translate("help_page_title") },
       {
         name: "description",
-        content: "كل ما تحتاج معرفته عن Arownd: الحساب، المتاجر، الحجوزات، الطلبات والدفع.",
+        content: translate("help_page_description"),
       },
-      { property: "og:title", content: "مساعدة والأسئلة الشائعة — Arownd" },
-      { property: "og:description", content: "كل ما تحتاج معرفته عن Arownd." },
+      { property: "og:title", content: translate("help_page_title") },
+      { property: "og:description", content: translate("help_og_description") },
     ],
   }),
   component: HelpPage,
@@ -41,10 +41,10 @@ export const Route = createFileRoute("/help")({
 type Tab = "user" | "merchant" | "delivery" | "faq";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "user", label: "المستخدم" },
-  { id: "merchant", label: "التاجر" },
-  { id: "delivery", label: "شركات التوصيل" },
-  { id: "faq", label: "أسئلة شائعة" },
+  { id: "user", label: translate("help_tab_user") },
+  { id: "merchant", label: translate("help_tab_merchant") },
+  { id: "delivery", label: translate("help_tab_delivery") },
+  { id: "faq", label: translate("help_tab_faq") },
 ];
 
 function HelpPage() {
@@ -58,12 +58,12 @@ function HelpPage() {
         description={translate("help_description")}
         alternates={{ ar: "/help", en: "/help" }}
       />
-      <PageHeader title="مساعدة والأسئلة الشائعة" subtitle="كل ما يمكنك فعله في Arownd" />
+      <PageHeader title={translate("help_header")} subtitle={translate("help_subtitle")} />
 
       <div
         className="grid grid-cols-2 gap-2 sm:grid-cols-4"
         role="tablist"
-        aria-label="أقسام المساعدة"
+        aria-label={translate("help_tabs_aria")}
       >
         {TABS.map((t) => (
           <button
@@ -113,29 +113,29 @@ function UserSection() {
     <div className="space-y-3">
       <FeatureCard
         icon={<LogIn className="size-5" />}
-        title="الدخول إلى حسابك"
-        desc="سجّل الدخول ببريدك الإلكتروني لعرض حجوزاتك وطلباتك في أي وقت، والخروج متاح بنقرة."
+        title={translate("help_user_login_title")}
+        desc={translate("help_user_login_desc")}
       />
       <FeatureCard
         icon={<Timer className="size-5" />}
-        title="الحجز من المحل"
-        desc="احجز المنتج من أقرب محل واستلمه خلال المهلة المحددة — احجز واستلم بدون دفع مسبق."
+        title={translate("help_user_reserve_title")}
+        desc={translate("help_user_reserve_desc")}
       />
       <FeatureCard
         icon={<PackageCheck className="size-5" />}
-        title="تتبع طلباتك مباشرة"
-        desc="شريط التنبيهات أعلى الشاشة يعرض طلبك النشط مع عدّاد تنازلي لحين الاستلام."
+        title={translate("help_user_track_title")}
+        desc={translate("help_user_track_desc")}
       />
       <FeatureCard
         icon={<Sparkles className="size-5" />}
-        title="الترقية إلى تاجر"
-        desc="من صفحة حسابك يمكنك التحول إلى تاجر وفتح متجرك الخاص بنقرة واحدة."
+        title={translate("help_user_merchant_title")}
+        desc={translate("help_user_merchant_desc")}
       />
       <Link
         to="/profile"
         className="block min-h-[var(--control-height)] rounded-[var(--radius-pill)] bg-primary px-4 py-3 text-center text-sm font-bold text-primary-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 "
       >
-        اذهب إلى حسابي
+        {translate("help_user_profile_link")}
       </Link>
     </div>
   );
@@ -146,39 +146,39 @@ function MerchantSection() {
     <div className="space-y-3">
       <FeatureCard
         icon={<Store className="size-5" />}
-        title="فتح متجرك"
-        desc="أنشئ متجرك بالاسم والهاتف والولاية والعنوان وساعات العمل — جاهز في دقائق."
+        title={translate("help_merchant_store_title")}
+        desc={translate("help_merchant_store_desc")}
       />
       <FeatureCard
         icon={<PlusCircle className="size-5" />}
-        title="إضافة منتج بسرعة"
-        desc="أضف منتجًا بالاسم والسعر والكمية والفئة والمقاسات والألوان وصورة واحدة."
+        title={translate("help_merchant_product_title")}
+        desc={translate("help_merchant_product_desc")}
       />
       <FeatureCard
         icon={<RefreshCw className="size-5" />}
-        title="إدارة المخزون"
-        desc="بدّل توفر أي منتج بنقرة، أو حدّث مخزونك كاملًا في نبضة الصباح."
+        title={translate("help_merchant_stock_title")}
+        desc={translate("help_merchant_stock_desc")}
       />
       <FeatureCard
         icon={<ClipboardCheck className="size-5" />}
-        title="تأكيد الحجوزات"
-        desc="أدخل رمز الحجز بصيغة AR-XXXX-00 لتأكيد استلام العميل، أو أكّد مباشرة من قائمة الحجوزات."
+        title={translate("help_merchant_reservation_title")}
+        desc={translate("help_merchant_reservation_desc")}
       />
       <FeatureCard
         icon={<Truck className="size-5" />}
-        title="متابعة الطلبات"
-        desc="حدّث حالة طلبات التوصيل: تأكيد، شحن، تسليم أو إلغاء."
+        title={translate("help_merchant_orders_title")}
+        desc={translate("help_merchant_orders_desc")}
       />
       <FeatureCard
         icon={<BarChart3 className="size-5" />}
-        title="لوحة الإحصائيات"
-        desc="اعرف عدد منتجاتك وحجوزاتك المعلقة وطلباتك في نظرة واحدة."
+        title={translate("help_merchant_stats_title")}
+        desc={translate("help_merchant_stats_desc")}
       />
       <Link
         to="/studio"
         className="block rounded-2xl bg-primary py-3 text-center text-sm font-bold text-primary-foreground "
       >
-        افتح استوديو التاجر
+        {translate("help_merchant_studio_link")}
       </Link>
     </div>
   );
@@ -189,17 +189,17 @@ function DeliveryPartnerSection() {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const fields = [
-      ["اسم الشركة", "company"],
-      ["اسم الشخص المسؤول", "contact"],
-      ["رقم الهاتف", "phone"],
-      ["البريد الإلكتروني", "email"],
-      ["ولايات ومناطق التغطية", "coverage"],
-      ["تفاصيل الخدمات والإمكانات", "details"],
+      [translate("help_field_company"), "company"],
+      [translate("help_field_contact"), "contact"],
+      [translate("help_field_phone"), "phone"],
+      [translate("help_field_email"), "email"],
+      [translate("help_field_coverage"), "coverage"],
+      [translate("help_field_details"), "details"],
     ] as const;
     const body = fields
       .map(([label, name]) => `${label}: ${String(formData.get(name) ?? "").trim()}`)
       .join("\\n");
-    const subject = encodeURIComponent("طلب شراكة توصيل مع Arownd");
+    const subject = encodeURIComponent(translate("help_delivery_subject"));
     window.location.href = `mailto:arownddz@gmail.com?subject=${subject}&body=${encodeURIComponent(body)}`;
   }
 
@@ -213,61 +213,61 @@ function DeliveryPartnerSection() {
           <Building2 className="size-5" />
         </div>
         <div className="min-w-0">
-          <h2 className="font-bold">انضم كشريك توصيل إلى Arownd</h2>
+          <h2 className="font-bold">{translate("help_delivery_title")}</h2>
           <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-            هذا القسم مخصص لشركات ومؤسسات التوصيل الراغبة في التقدم لإبرام عقد شراكة مع Arownd
-            لتقديم خدمات التوصيل لعملائنا.
+            {translate("help_delivery_intro")}
           </p>
         </div>
       </div>
 
       <div className="rounded-xl border border-border/70 p-3">
-        <p className="text-sm font-semibold">كيف تبدأ الشراكة؟</p>
+        <p className="text-sm font-semibold">{translate("help_delivery_how")}</p>
         <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-          أرسل بيانات شركتك ومناطق التغطية والخدمات التي تقدمها. سيصل طلبك إلى فريق Arownd لمراجعته
-          والتواصل معك لمناقشة تفاصيل التعاون والعقد.
+          {translate("help_delivery_steps")}
         </p>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-3">
         <label className="block space-y-1.5">
-          <span className="text-xs font-semibold">اسم شركة التوصيل *</span>
+          <span className="text-xs font-semibold">{translate("help_delivery_company_label")}</span>
           <input
             name="company"
             required
             maxLength={120}
             className={inputClass}
-            placeholder="الاسم التجاري للشركة"
+            placeholder={translate("help_delivery_company_placeholder")}
           />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-xs font-semibold">اسم الشخص المسؤول *</span>
+          <span className="text-xs font-semibold">{translate("help_delivery_contact_label")}</span>
           <input
             name="contact"
             required
             maxLength={100}
             className={inputClass}
-            placeholder="الاسم واللقب"
+            placeholder={translate("help_delivery_contact_placeholder")}
           />
         </label>
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           <label className="block space-y-1.5">
-            <span className="text-xs font-semibold">رقم الهاتف *</span>
+            <span className="text-xs font-semibold">{translate("help_delivery_phone_label")}</span>
             <input
               name="phone"
+              dir="ltr"
               type="tel"
               inputMode="tel"
               autoComplete="tel"
               required
               maxLength={30}
               className={inputClass}
-              placeholder="05 / 06 / 07 ..."
+              placeholder={translate("help_delivery_phone_placeholder")}
             />
           </label>
           <label className="block space-y-1.5">
-            <span className="text-xs font-semibold">البريد الإلكتروني *</span>
+            <span className="text-xs font-semibold">{translate("help_delivery_email_label")}</span>
             <input
               name="email"
+              dir="ltr"
               type="email"
               autoComplete="email"
               required
@@ -278,23 +278,23 @@ function DeliveryPartnerSection() {
           </label>
         </div>
         <label className="block space-y-1.5">
-          <span className="text-xs font-semibold">ولايات ومناطق التغطية *</span>
+          <span className="text-xs font-semibold">{translate("help_delivery_coverage_label")}</span>
           <input
             name="coverage"
             required
             maxLength={300}
             className={inputClass}
-            placeholder="مثال: الجزائر، البليدة، بومرداس..."
+            placeholder={translate("help_delivery_coverage_placeholder")}
           />
         </label>
         <label className="block space-y-1.5">
-          <span className="text-xs font-semibold">نبذة عن الخدمات وإمكانات التوصيل</span>
+          <span className="text-xs font-semibold">{translate("help_delivery_details_label")}</span>
           <textarea
             name="details"
             rows={4}
             maxLength={1500}
             className={inputClass}
-            placeholder="نوع خدمات التوصيل، حجم العمليات، وأي معلومات تساعدنا على تقييم طلبكم..."
+            placeholder={translate("help_delivery_details_placeholder")}
           />
         </label>
         <button
@@ -302,18 +302,17 @@ function DeliveryPartnerSection() {
           className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-bold text-primary-foreground "
         >
           <Mail className="size-4" />
-          إرسال طلب الشراكة عبر البريد
+          {translate("help_delivery_submit")}
         </button>
       </form>
       <p className="text-center text-xs text-muted-foreground">
-        أو راسلنا مباشرة على{" "}
+        {translate("help_delivery_direct")}{" "}
         <a href="mailto:arownddz@gmail.com" className="font-semibold text-accent-ink underline">
           arownddz@gmail.com
         </a>
       </p>
       <p className="text-caption leading-relaxed text-muted-foreground">
-        عند الضغط على الإرسال، سيفتح تطبيق البريد في جهازك برسالة مجهزة بالبيانات المدخلة. لن يُرسل
-        الطلب تلقائيًا؛ يجب مراجعة الرسالة ثم الضغط على إرسال من تطبيق البريد.
+        {translate("help_delivery_mail_note")}
       </p>
     </section>
   );
@@ -321,32 +320,32 @@ function DeliveryPartnerSection() {
 
 const FAQS = [
   {
-    q: "كيف أطلب منتجًا؟",
-    a: "ابحث عن المنتج، اختر المحل الأنسب، ثم أضفه إلى السلة. من السلة انتقل إلى الدفع، أدخل عنوانك وولايتك، اختر طريقة الدفع وأكّد الطلب.",
+    q: translate("help_faq_order_q"),
+    a: translate("help_faq_order_a"),
   },
   {
-    q: "ما طرق الدفع المتاحة؟",
-    a: "حاليًا الدفع عند الاستلام فقط (نقدًا عند وصول الطلب أو استلامه). الدفع عبر BaridiMob (بريدي موب) والدفع الإلكتروني بالبطاقة قادمان قريبًا.",
+    q: translate("help_faq_payment_q"),
+    a: translate("help_faq_payment_a"),
   },
   {
-    q: "كم تبلغ رسوم التوصيل؟",
-    a: "تختلف حسب الولاية وطريقة التوصيل، وتظهر بوضوح في صفحة الدفع قبل تأكيد الطلب.",
+    q: translate("help_faq_fee_q"),
+    a: translate("help_faq_fee_a"),
   },
   {
-    q: "كيف أحجز منتجًا من المحل؟",
-    a: "في صفحة المنتج اختر المحل القريب واضغط زر الحجز. ستحصل على رمز حجز، وتستلم المنتج من المحل خلال المهلة المحددة.",
+    q: translate("help_faq_reserve_q"),
+    a: translate("help_faq_reserve_a"),
   },
   {
-    q: "كيف ألغي حجزًا؟",
-    a: "من صفحة حسابي، قسم الحجوزات، اضغط زر إلغاء بجانب الحجز المعلق.",
+    q: translate("help_faq_cancel_q"),
+    a: translate("help_faq_cancel_a"),
   },
   {
-    q: "كيف أصبح تاجرًا على Arownd؟",
-    a: "من حسابك اضغط بطاقة الترقية، ثم افتح متجرك من استوديو التاجر وأضف منتجاتك.",
+    q: translate("help_faq_become_merchant_q"),
+    a: translate("help_faq_become_merchant_a"),
   },
   {
-    q: "كيف أدير متجري؟",
-    a: "من استوديو التاجر يمكنك إضافة المنتجات، تحديث المخزون، تأكيد الحجوزات برمز، ومتابعة الطلبات.",
+    q: translate("help_faq_manage_q"),
+    a: translate("help_faq_manage_a"),
   },
 ];
 
@@ -384,14 +383,14 @@ function FaqSection({ open, onToggle }: { open: number | null; onToggle: (i: num
 
 function QuickLinks() {
   const links = [
-    { to: "/profile", label: "حسابي", icon: <User className="size-5" /> },
-    { to: "/studio", label: "استوديو التاجر", icon: <Store className="size-5" /> },
-    { to: "/bag", label: "سلتي", icon: <ShoppingBag className="size-5" /> },
-    { to: "/explore", label: "البحث", icon: <Search className="size-5" /> },
+    { to: "/profile", label: translate("help_quick_profile"), icon: <User className="size-5" /> },
+    { to: "/studio", label: translate("help_quick_studio"), icon: <Store className="size-5" /> },
+    { to: "/bag", label: translate("help_quick_bag"), icon: <ShoppingBag className="size-5" /> },
+    { to: "/explore", label: translate("help_quick_search"), icon: <Search className="size-5" /> },
   ] as const;
   return (
     <div className="space-y-2">
-      <h2 className="font-bold">روابط سريعة</h2>
+      <h2 className="font-bold">{translate("help_quick_heading")}</h2>
       <div className="grid grid-cols-2 gap-2">
         {links.map((l) => (
           <Link
