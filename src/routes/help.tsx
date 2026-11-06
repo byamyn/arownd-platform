@@ -87,7 +87,7 @@ function HelpPage() {
       {tab === "user" && <UserSection />}
       {tab === "merchant" && <MerchantSection />}
       {tab === "delivery" && <DeliveryPartnerSection />}
-      {tab === "faq" && <FaqSection open={open} onToggle={setOpen} />}
+      {tab === "faq" && <FaqSection open={open} onToggle={setOpen} t={t} />}
 
       <QuickLinks />
     </div>
@@ -351,10 +351,10 @@ function getFaqs(t: (key: string) => string) {
   ];
 }
 
-function FaqSection({ open, onToggle }: { open: number | null; onToggle: (i: number) => void }) {
+function FaqSection({ open, onToggle, t }: { open: number | null; onToggle: (i: number) => void; t: (key: string) => string }) {
   return (
     <div className="space-y-2">
-      {getFaqs(translate).map((f, i) => {
+      {getFaqs(t).map((f, i) => {
         const isOpen = open === i;
         return (
           <div key={i} className="overflow-hidden rounded-2xl bg-card ">
