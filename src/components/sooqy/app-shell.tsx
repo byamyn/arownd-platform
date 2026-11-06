@@ -14,7 +14,7 @@ export function AppShell({
     <div
       className={cn(
         width === "wide" ? "app-workspace" : "app-page",
-        "min-h-screen bg-background",
+        "min-h-dvh w-full overflow-x-clip bg-background",
         className,
       )}
     >
