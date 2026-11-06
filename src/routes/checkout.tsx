@@ -32,6 +32,7 @@ import {
 } from "@/lib/sooqy";
 import { requiresDeliveryAddress, type DeliveryType } from "@/lib/shipping";
 import { WilayaSelect } from "@/components/sooqy/WilayaSelect";
+import { CommuneSelect } from "@/components/sooqy/CommuneSelect";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { AppShell } from "@/components/sooqy/app-shell";
 import { StickyActionBar } from "@/components/sooqy/sticky-action-bar";
@@ -484,23 +485,33 @@ function CheckoutPage() {
               {t("checkout_buyer_area_hint")}
             </p>
           )}
-          <WilayaSelect
-            value={wilayaId}
-            onChange={(value) => {
-              setWilayaId(value);
-            }}
-            required
-            className="h-12 w-full"
-          />
-          <input
-            value={commune}
-            onChange={(e) => {
-              setCommune(e.target.value);
-            }}
-            placeholder={t("checkout_commune_placeholder")}
-            required
-            className="h-12 w-full rounded-full border border-input bg-background px-4 outline-none transition focus:border-ring focus:ring-2 focus:ring-ring"
-          />
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-muted-foreground">
+              {t("checkout_wilaya_label")}
+            </label>
+            <WilayaSelect
+              value={wilayaId}
+              onChange={(value) => {
+                setWilayaId(value);
+                setCommune("");
+              }}
+              required
+              className="h-12 w-full"
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-muted-foreground">
+              {t("checkout_commune_label")}
+            </label>
+            <CommuneSelect
+              value={commune || null}
+              onChange={(value) => setCommune(value ?? "")}
+              wilayaId={wilayaId}
+              allLabel={t("checkout_commune_placeholder")}
+              required
+              className="h-12 w-full"
+            />
+          </div>
           <div className="space-y-3 rounded-2xl bg-background p-3">
             <p className="text-xs font-bold text-muted-foreground">{t("checkout_buyer_data")}</p>
             <input
