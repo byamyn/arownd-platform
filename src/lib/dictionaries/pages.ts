@@ -19,6 +19,7 @@ export const pages: DictGroup = {
     category_apply: "تطبيق",
     category_in_stock_only: "المنتجات المتوفرة فقط",
     category_back: "رجوع",
+    category_seo_fallback: "تصنيف {category} في سوق الجزائر.",
     product_share_image_error: "تعذّرت مشاركة الصورة. يمكنك حفظها من الصورة المفتوحة.",
     product_report_action: "إبلاغ",
     product_own_store_notice: "هذا منتجك في متجرك. يمكنك إدارته من استوديو التاجر، ولا يمكنك طلبه من متجرك.",
