@@ -131,6 +131,8 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("create_store_title", "en")).toBe("Become a merchant");
     expect(t("create_store_seo_title", "ar")).toContain("متجرك");
     expect(t("create_store_seo_title", "en")).toContain("Create your store");
+    expect(t("map_seo_title", "ar")).toBe("الخريطة — Arownd");
+    expect(t("map_seo_title", "en")).toBe("Map — Arownd");
     expect(t("checkout_tracking_codes", "ar")).toContain("تتبع");
     expect(t("checkout_tracking_codes", "en")).toContain("tracking");
     expect(t("studio_settings_meta_title", "ar")).toContain("تخصيص المتجر");
