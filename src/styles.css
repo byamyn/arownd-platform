@@ -1,3 +1,6 @@
+@import "@fontsource/tajawal/400.css";
+@import "@fontsource/tajawal/500.css";
+@import "@fontsource/tajawal/700.css";
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -5,7 +8,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * AROWND Design System v1.2
+ * AROWND Premium Marketplace Design System v2.0
  * Single source of truth for colors, typography, spacing, radii and motion.
  * Dark is the base theme; auto follows prefers-color-scheme unless data-theme
  * explicitly forces light or dark.
@@ -15,9 +18,9 @@
 
   /* Typography */
   --font-family-latin: "Inter", system-ui, -apple-system, sans-serif;
-  --font-family-arabic: "IBM Plex Sans Arabic", system-ui, sans-serif;
-  --font-size-display: 32px;
-  --font-size-title: 24px;
+  --font-family-arabic: "Tajawal", system-ui, sans-serif;
+  --font-size-display: 34px;
+  --font-size-title: 26px;
   --font-size-heading: 20px;
   --font-size-body: 16px;
   --font-size-body-small: 14px;
@@ -25,10 +28,10 @@
   --font-size-button: 15px;
   --font-size-small-heading: 18px;
   --font-size-micro: 11px;
-  --font-size-body-small-ar: 15px;
-  --font-size-caption-ar: 13px;
+  --font-size-body-small-ar: 16px;
+  --font-size-caption-ar: 12px;
   --border-width-default: 1px;
-  --nav-height: 64px;
+  --nav-height: 68px;
   --motion-reduced: 0.01ms;
   --control-height: 48px;
   --control-height-compact: 44px;
@@ -116,18 +119,18 @@
   --space-12: 48px;
   --margin: 16px;
   --gutter: 12px;
-  --section-gap: 32px;
+  --section-gap: 24px;
   --layout-studio-grid-min: 250px;
 
   /* Shape and motion */
   --radius-pill: 999px;
-  --radius-control: 16px;
-  --radius-card: 32px;
-  --radius-sheet: 32px;
+  --radius-control: 14px;
+  --radius-card: 20px;
+  --radius-sheet: 24px;
   --radius-small: 8px;
   --radius-medium: 12px;
-  --radius-large: 20px;
-  --radius-extra-large: 24px;
+  --radius-large: 16px;
+  --radius-extra-large: 20px;
   --touch-target-size: 44px;
   --focus-width: 2px;
   --focus-offset: 2px;
@@ -201,7 +204,7 @@
 :root[data-theme="light"] {
   color-scheme: light;
   --color-bg-canvas: var(--neutral-100);
-  --color-bg-surface: var(--neutral-50);
+  --color-bg-surface: var(--neutral-0);
   --color-bg-elevated: var(--neutral-0);
   --color-bg-overlay: var(--neutral-0);
   --color-border-default: var(--neutral-150);
@@ -430,7 +433,7 @@
 @utility btn-primary {
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2); min-height: var(--control-height); padding-inline: var(--space-6);
-  border: 0; border-radius: var(--radius-pill);
+  border: 0; border-radius: var(--radius-control);
   background: var(--color-action-primary); color: var(--color-on-action);
   font-size: var(--font-size-button); font-weight: var(--font-weight-semibold);
   user-select: none; transition: background var(--duration-fast) var(--ease-in), transform var(--duration-fast) var(--ease-in);
@@ -441,7 +444,7 @@
 @utility btn-secondary {
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2); min-height: var(--control-height); padding-inline: var(--space-6);
-  border: var(--border-width-default) solid var(--color-border-input); border-radius: var(--radius-pill);
+  border: var(--border-width-default) solid var(--color-border-input); border-radius: var(--radius-control);
   background: transparent; color: var(--color-text-primary);
   font-size: var(--font-size-button); font-weight: var(--font-weight-semibold);
   transition: background var(--duration-fast) var(--ease-in), transform var(--duration-fast) var(--ease-in);
@@ -451,7 +454,7 @@
 @utility btn-ghost {
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2); min-height: var(--control-height); padding-inline: var(--space-4);
-  border: 0; border-radius: var(--radius-pill); background: transparent;
+  border: 0; border-radius: var(--radius-control); background: transparent;
   color: var(--color-action-ink); font-size: var(--font-size-button); font-weight: var(--font-weight-semibold);
   &:active { background: color-mix(in srgb, var(--color-action-ink) 14%, transparent); }
   &:disabled, &[aria-disabled="true"] { color: var(--color-text-secondary); pointer-events: none; }
@@ -459,14 +462,14 @@
 @utility btn-small {
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2); min-height: var(--control-height-compact); padding-inline: var(--space-4);
-  border: 0; border-radius: var(--radius-pill); background: var(--color-action-primary);
+  border: 0; border-radius: var(--radius-control); background: var(--color-action-primary);
   color: var(--color-on-action); font-size: var(--font-size-body-small); font-weight: var(--font-weight-semibold);
   &:active { background: var(--color-action-pressed); transform: scale(var(--scale-pressed)); }
 }
 @utility btn-danger {
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2); min-height: var(--control-height); padding-inline: var(--space-6);
-  border: var(--border-width-default) solid var(--color-feedback-error); border-radius: var(--radius-pill);
+  border: var(--border-width-default) solid var(--color-feedback-error); border-radius: var(--radius-control);
   background: transparent; color: var(--color-feedback-error);
   font-size: var(--font-size-button); font-weight: var(--font-weight-semibold);
   &:active { background: color-mix(in srgb, var(--color-feedback-error) 14%, transparent); }
@@ -474,7 +477,7 @@
 @utility btn-danger-small {
   display: inline-flex; align-items: center; justify-content: center;
   gap: var(--space-2); min-height: var(--control-height-compact); padding-inline: var(--space-4);
-  border: 1px solid var(--color-feedback-error); border-radius: var(--radius-pill);
+  border: 1px solid var(--color-feedback-error); border-radius: var(--radius-control);
   background: transparent; color: var(--color-feedback-error);
   font-size: var(--font-size-body-small); font-weight: var(--font-weight-semibold);
 }
