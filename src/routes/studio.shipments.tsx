@@ -103,18 +103,18 @@ function StudioShipmentsPage() {
     (statusFilter ? (shipments ?? []).filter((s) => s.status === statusFilter) : shipments) ?? [];
 
   return (
-    <div className="min-h-screen bg-background pb-24">
+    <div className="min-h-dvh bg-background pb-[calc(7rem+env(safe-area-inset-bottom))]">
       <PageHeader title={t("studio_shipments")} back="/studio" />
-      <div className="mx-auto max-w-6xl space-y-5 px-4 py-5 sm:px-6">
+      <div className="mx-auto max-w-6xl space-y-4 px-4 py-3 sm:space-y-5 sm:px-6 sm:py-5">
         {/* ملخص الحالات */}
-        <section className="rounded-[var(--radius-card)] border border-border bg-muted p-4 text-foreground sm:p-5">
+        <section className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 text-foreground sm:p-5">
           <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
             AROWND · DELIVERY
           </p>
           <h2 className="mt-1 text-xl font-black">{t("studio_shipments_heading")}</h2>
           <p className="mt-1 text-xs text-foreground/60">{t("studio_shipments_intro")}</p>
         </section>
-        <div className="grid grid-cols-2 gap-2.5 md:grid-cols-4">
+        <div className="no-scrollbar flex gap-2 overflow-x-auto pb-1 md:grid md:grid-cols-4 md:overflow-visible">
           {[
             {
               key: null,
@@ -169,7 +169,7 @@ function StudioShipmentsPage() {
               key={item.key ?? "all"}
               onClick={() => setStatusFilter(item.key ?? null)}
               className={cn(
-                "min-h-[var(--control-height-compact)] rounded-[var(--radius-control)] px-3 py-2 text-xs font-extrabold border transition-colors",
+                "min-h-11 min-w-max shrink-0 rounded-2xl border px-3 py-2 text-xs font-extrabold transition-colors",
                 item.color,
                 statusFilter === item.key ? "ring-2 ring-primary" : "",
               )}
@@ -231,7 +231,7 @@ function ShipmentRow({
   const order = shipment.order;
 
   return (
-    <div className="rounded-[var(--radius-card)] border border-border bg-card p-4  transition-shadow hover: sm:p-5">
+    <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 transition-colors hover:border-primary/40 sm:p-5">
       <div className="flex justify-between items-start mb-2">
         <div>
           <div className="font-semibold text-foreground">
@@ -244,7 +244,7 @@ function ShipmentRow({
         <BadgeStatus status={shipment.status} />
       </div>
 
-      <div className="grid grid-cols-2 gap-x-3 gap-y-2 rounded-[var(--radius-control)] bg-muted/40 p-3 text-xs sm:grid-cols-4 sm:text-sm mb-3">
+      <div className="mb-3 grid grid-cols-2 gap-x-3 gap-y-2 rounded-2xl bg-muted/40 p-3 text-xs sm:grid-cols-4 sm:text-sm">
         <div className="text-muted-foreground">{t("studio_phone")}</div>
         <div className="font-semibold text-foreground">{order?.phone ?? "—"}</div>
         <div className="text-muted-foreground">{t("studio_amount")}</div>
