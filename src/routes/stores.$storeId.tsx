@@ -182,7 +182,7 @@ function StorePage() {
         )}
 
         {/* الغلاف */}
-        <div className="relative h-44 bg-muted">
+        <div className="relative h-36 bg-muted sm:h-44">
           {s.cover_url && (
             <img
               src={s.cover_url}
@@ -297,7 +297,7 @@ function StorePage() {
           </div>
 
           {/* التبويبات */}
-          <div className="sticky top-0 z-20 -mx-4 border-b border-border bg-background/95 px-4 backdrop-blur">
+          <div className="sticky top-[env(safe-area-inset-top)] z-20 -mx-4 border-b border-border bg-background/95 px-4 backdrop-blur">
             <div className="flex gap-1">
               {(
                 [
@@ -349,7 +349,7 @@ function StorePage() {
               {[...byCat.entries()].map(([cat, list]) => (
                 <section key={cat} className="space-y-2">
                   <h2 className="text-section text-foreground">{categoryLabel(cat)}</h2>
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-2 gap-2.5">
                     {list.map((o) => (
                       <Link
                         key={o.id}
