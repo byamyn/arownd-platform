@@ -55,11 +55,11 @@ function BagPage() {
   const blocked = evaluation.hasBlocking;
 
   return (
-    <AppShell className="pb-[calc(11.5rem+env(safe-area-inset-bottom))]">
-      <div className="space-y-4 pt-6">
+    <AppShell className="pb-[calc(12rem+env(safe-area-inset-bottom))]">
+      <div className="space-y-5 pt-3">
         {/* رأس الصفحة: العنوان + إفراغ السلة */}
         <div className="flex items-center justify-between gap-2">
-          <h1 className="text-h1 text-foreground">{t("bag_heading")}</h1>
+          <div className="min-w-0"><h1 className="text-h1 text-foreground">{t("bag_heading")}</h1><p className="mt-1 text-xs text-muted-foreground">{t("bag_cta_items", { count: bag.count })}</p></div>
           {bag.items.length > 0 && (
             <button
               type="button"
@@ -109,7 +109,7 @@ function BagPage() {
 
         {/* المجموعات حسب المتجر */}
         {[...groups.entries()].map(([storeName, items]) => (
-          <section key={storeName} className="space-y-2">
+          <section key={storeName} className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3">
             <SectionHeader
               title={
                 <span className="flex items-center gap-1.5">
@@ -142,14 +142,14 @@ function BagPage() {
                   <div
                     key={bagItemKey(r.item)}
                     className={
-                      "card-premium flex gap-3 p-3 " + (r.issue ? "!border-danger/50" : "")
+                      "flex gap-3 rounded-2xl border border-border/70 bg-background p-3 " + (r.issue ? "!border-danger/50" : "")
                     }
                   >
                     {r.offer ? (
                       <Link
                         to="/products/$productId"
                         params={{ productId: r.offer.product_id }}
-                        className="size-20 shrink-0 overflow-hidden rounded-[var(--radius-control)] bg-muted"
+                        className="size-24 shrink-0 overflow-hidden rounded-2xl bg-muted"
                       >
                         {image && (
                           <img
@@ -162,7 +162,7 @@ function BagPage() {
                         )}
                       </Link>
                     ) : (
-                      <div className="size-20 shrink-0 animate-pulse rounded-[var(--radius-control)] bg-muted" />
+                      <div className="size-24 shrink-0 animate-pulse rounded-2xl bg-muted" />
                     )}
                     <div className="min-w-0 flex-1 space-y-1">
                       <p className="line-clamp-1 text-sm font-semibold">{name}</p>
@@ -217,7 +217,7 @@ function BagPage() {
 
         {/* ملخص الطلب */}
         {bag.items.length > 0 && (
-          <div className="card-premium space-y-2 p-4">
+          <div className="rounded-[var(--radius-card)] border border-border bg-card p-4 space-y-3">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">{t("bag_subtotal")}</span>
               <b className="text-foreground">{formatDA(subtotal)}</b>
