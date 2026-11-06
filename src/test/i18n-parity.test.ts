@@ -77,6 +77,17 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(mismatched).toEqual([]);
   });
 
+  it("مراحل Checkout الجديدة مترجمة في اللغتين", () => {
+    expect(t("checkout_step_counter", "ar", { current: 2, total: 4 })).toBe("الخطوة 2 من 4");
+    expect(t("checkout_step_counter", "en", { current: 2, total: 4 })).toBe("Step 2 of 4");
+    expect(t("checkout_continue_address", "ar")).toBe("متابعة إلى العنوان");
+    expect(t("checkout_continue_address", "en")).toBe("Continue to address");
+    expect(t("checkout_continue_delivery", "ar")).toBe("متابعة إلى التوصيل");
+    expect(t("checkout_continue_delivery", "en")).toBe("Continue to delivery");
+    expect(t("checkout_continue_payment", "ar")).toBe("متابعة إلى الدفع");
+    expect(t("checkout_continue_payment", "en")).toBe("Continue to payment");
+  });
+
   it("الترجمة تُعيد النص المفاتيح لا المفتاح نفسه", () => {
     expect(t("bag_heading", "ar")).toBe("سلة التسوق");
     expect(t("bag_heading", "en")).toBe("Shopping bag");
