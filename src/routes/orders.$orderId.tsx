@@ -112,7 +112,7 @@ function TrackPage() {
   });
 
   return (
-    <div className="space-y-4 px-4 pt-4">
+    <div className="space-y-4 px-4 pb-8 pt-3">
       <header className="flex items-center gap-2 py-1">
         <button
           onClick={() => goBackOrTo(router, "/orders")}
@@ -125,7 +125,7 @@ function TrackPage() {
       </header>
 
       {/* رمز التتبع */}
-      <div className="rounded-[var(--radius-card)] border border-border bg-card p-4">
+      <div className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
         <p className="text-xs text-muted-foreground">
           {t("orders_code", { code: trackCode(order.id) })}
         </p>
@@ -154,7 +154,7 @@ function TrackPage() {
               const done = i <= statusIdx;
               const current = i === statusIdx;
               return (
-                <li key={step.id} className="relative flex gap-3 pb-6 last:pb-0">
+                <li key={step.id} className="relative flex gap-3 pb-5 last:pb-0">
                   {i < STEPS.length - 1 && (
                     <span
                       className={cn(
@@ -201,7 +201,7 @@ function TrackPage() {
       )}
 
       {/* التفاصيل */}
-      <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
+      <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
         <h2 className="text-section text-foreground">{t("track_details")}</h2>
         <div className="space-y-1.5">
           {(order.items ?? []).map((it) => (
@@ -234,7 +234,7 @@ function TrackPage() {
       </div>
 
       {/* العنوان */}
-      <div className="flex items-start gap-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
+      <div className="flex items-start gap-3 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
         <MapPin className="mt-0.5 size-5 shrink-0 text-accent-ink" />
         <div className="text-sm">
           <p className="text-xs font-semibold text-muted-foreground">
