@@ -38,9 +38,7 @@ export function ProductGridSkeleton({
 }) {
   return (
     <div
-      role={horizontal ? "region" : undefined}
-      aria-label={horizontal ? "جارٍ تحميل المنتجات الجديدة" : undefined}
-      tabIndex={horizontal ? 0 : undefined}
+      aria-hidden={horizontal ? true : undefined}
       className={cn(
         horizontal
           ? "no-scrollbar -mx-4 flex snap-x snap-proximity gap-2.5 overflow-x-auto px-4 pb-1 sm:gap-3"
