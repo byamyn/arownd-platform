@@ -322,6 +322,8 @@ const DICTIONARY: Record<Lang, Record<string, string>> = {
     region_adrar: "أدرار",
     region_illizi: "إيليزي",
     region_tamanrasset: "تمنراست",
+    delivery_dashboard: "لوحة التوصيل",
+    delivery_nav_home: "الرئيسية",
   },
   en: {
     feedback_generic_error: "We couldn't complete that action. Please try again.",
@@ -641,6 +643,8 @@ const DICTIONARY: Record<Lang, Record<string, string>> = {
     region_adrar: "Adrar",
     region_illizi: "Illizi",
     region_tamanrasset: "Tamanrasset",
+    delivery_dashboard: "Delivery",
+    delivery_nav_home: "Home",
   },
 };
 
