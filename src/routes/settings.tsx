@@ -224,7 +224,7 @@ function SettingsPage() {
       <div className="app-page mx-auto max-w-xl pb-6 pt-4">
         <PageHeader title={t("settings_title")} back="/profile" />
         <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-card p-6 text-center">
-          <p className="text-body text-muted-foreground">يرجى تسجيل الدخول للوصول إلى الإعدادات</p>
+          <p className="text-body text-muted-foreground">{t("settings_login_hint")}</p>
           <Link to="/auth" className="btn-primary mt-4 w-full">
             {t("settings_login_action")}
           </Link>
@@ -347,7 +347,7 @@ function SettingsPage() {
                   biometricEnabled ? "bg-primary text-accent-ink-foreground" : "border border-border text-foreground",
                 )}
               >
-                {biometricBusy ? t("settings_saving") : biometricEnabled ? "مفعّل" : "تفعيل"}
+                {biometricBusy ? t("settings_saving") : biometricEnabled ? t("settings_enabled") : t("settings_enable")}
               </button>
             </div>
             <MenuRow
@@ -429,7 +429,7 @@ function SettingsPage() {
             disabled={savingPassword}
             className="btn-primary w-full py-3 disabled:opacity-50"
           >
-            {savingPassword ? t("settings_saving") : "تغيير كلمة المرور"}
+            {savingPassword ? t("settings_saving") : t("settings_password_submit")}
           </button>
         }
       >
