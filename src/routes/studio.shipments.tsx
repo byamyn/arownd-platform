@@ -61,7 +61,7 @@ function StudioShipmentsPage() {
         <PageHeader title={t("studio_shipments")} back="/studio" />
         <div className="text-danger-foreground">{t("studio_login_shipments")}</div>
         <Link to="/auth" className="btn-primary mt-4 inline-block">
-          تسجيل الدخول
+          {t("studio_auth_login")}
         </Link>
       </div>
     );
@@ -238,7 +238,7 @@ function ShipmentRow({
             {order?.full_name ?? t("shipment_customer")}
           </div>
           <div className="text-sm text-muted-foreground">
-            طلب #{order?.id?.slice(-6) ?? shipment.id.slice(-6)}
+            {t("studio_order_hash", { id: order?.id?.slice(-6) ?? shipment.id.slice(-6) })}
           </div>
         </div>
         <BadgeStatus status={shipment.status} />
@@ -262,7 +262,7 @@ function ShipmentRow({
             params={{ orderId: order.id }}
             className="flex min-h-[var(--control-height-compact)] flex-1 items-center justify-center rounded-[var(--radius-control)] bg-primary px-3 py-2 text-sm font-extrabold text-primary-foreground transition active:scale-[.98]"
           >
-            عرض الطلب
+            {t("shipment_view_order")}
           </Link>
         )}
       </div>
