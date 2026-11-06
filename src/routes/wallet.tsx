@@ -31,6 +31,7 @@ import { EmptyState } from "@/components/sooqy/empty-state";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { WalletPageSkeleton } from "@/components/sooqy/skeleton";
+import { useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/wallet")({
   head: () => ({}),
@@ -40,31 +41,31 @@ export const Route = createFileRoute("/wallet")({
 type Tab = "all" | "topup" | "withdraw" | "pending" | "approved" | "rejected";
 
 const TABS: { id: Tab; label: string }[] = [
-  { id: "all", label: "الكل" },
-  { id: "topup", label: "الإيداعات" },
-  { id: "withdraw", label: "السحوبات" },
-  { id: "pending", label: "قيد المراجعة" },
-  { id: "approved", label: "معتمدة" },
-  { id: "rejected", label: "مرفوضة" },
+  { id: "all", label: "wallet_tab_all" },
+  { id: "topup", label: "wallet_tab_topup" },
+  { id: "withdraw", label: "wallet_tab_withdraw" },
+  { id: "pending", label: "wallet_tab_pending" },
+  { id: "approved", label: "wallet_tab_approved" },
+  { id: "rejected", label: "wallet_tab_rejected" },
 ];
 
 const STATUS: Record<string, { label: string; cls: string }> = {
-  pending: { label: "قيد المراجعة", cls: "bg-warning-soft text-warning" },
-  approved: { label: "معتمد", cls: "bg-success-soft text-success" },
-  rejected: { label: "مرفوض", cls: "bg-danger-soft text-danger" },
+  pending: { label: "wallet_status_pending", cls: "bg-warning-soft text-warning" },
+  approved: { label: "wallet_status_approved", cls: "bg-success-soft text-success" },
+  rejected: { label: "wallet_status_rejected", cls: "bg-danger-soft text-danger" },
 };
 
 const TYPE_META: Record<WalletTxType, { label: string; icon: typeof Wallet }> = {
-  topup: { label: "شحن المحفظة", icon: ArrowDownLeft },
-  withdraw: { label: "سحب رصيد", icon: ArrowUpRight },
-  purchase: { label: "الدفع من المحفظة", icon: ShoppingBag },
-  refund: { label: "استرداد", icon: RotateCcw },
+  topup: { label: "wallet_type_topup", icon: ArrowDownLeft },
+  withdraw: { label: "wallet_type_withdraw", icon: ArrowUpRight },
+  purchase: { label: "wallet_type_purchase", icon: ShoppingBag },
+  refund: { label: "wallet_type_refund", icon: RotateCcw },
 };
 
 const METHODS = [
-  { id: "baridimob", label: "بريدي موب" },
-  { id: "ccp", label: "البريد الجزائري (CCP)" },
-  { id: "bank", label: "تحويل بنكي" },
+  { id: "baridimob", label: "wallet_method_baridimob" },
+  { id: "ccp", label: "wallet_method_ccp" },
+  { id: "bank", label: "wallet_method_bank" },
 ];
 
 const PRESETS = [500, 1000, 2000, 5000];
@@ -72,6 +73,7 @@ const MIN_AMOUNT = 100;
 
 function WalletPage() {
   const { user, ready } = useAuth();
+  const { t } = useTranslation();
   const qc = useQueryClient();
   const [tab, setTab] = useState<Tab>("all");
   const [showTopup, setShowTopup] = useState(false);
@@ -141,11 +143,11 @@ function WalletPage() {
   const submitTopup = async () => {
     const amount = Math.round(Number(topupAmount));
     if (!amount || amount < MIN_AMOUNT) {
-      toast.error(`أدخل مبلغًا صحيحًا (الحد الأدنى ${MIN_AMOUNT} دج).`);
+      toast.error(t("wallet_error_amount", { amount: MIN_AMOUNT }));
       return;
     }
     if (!topupReceipt) {
-      toast.error("أرفق صورة سند الدفع.");
+      toast.error(t("wallet_error_receipt"));
       return;
     }
     setBusyTopup(true);
@@ -156,7 +158,7 @@ function WalletPage() {
         receiptUrl,
         method: topupMethod,
       });
-      showSuccess("أُرسل طلب الشحن — سيُعتمد بعد مراجعة الإدارة.");
+      showSuccess(t("wallet_topup_success"));
       setTopupAmount("");
       setTopupReceipt(null);
       setShowTopup(false);
@@ -171,11 +173,11 @@ function WalletPage() {
   const submitWithdraw = async () => {
     const amount = Math.round(Number(withdrawAmount));
     if (!amount || amount < MIN_AMOUNT) {
-      toast.error(`أدخل مبلغًا صحيحًا (الحد الأدنى ${MIN_AMOUNT} دج).`);
+      toast.error(t("wallet_error_amount", { amount: MIN_AMOUNT }));
       return;
     }
     if (amount > summary.balance) {
-      toast.error("المبلغ أكبر من رصيدك المتاح.");
+      toast.error(t("wallet_error_balance"));
       return;
     }
     setBusyWithdraw(true);
@@ -185,7 +187,7 @@ function WalletPage() {
         method: withdrawMethod,
         note: withdrawNote.trim() || undefined,
       });
-      showSuccess("أُرسل طلب السحب — سيُنفَّذ بعد مراجعة الإدارة.");
+      showSuccess(t("wallet_withdraw_success"));
       setWithdrawAmount("");
       setWithdrawNote("");
       setShowWithdraw(false);
@@ -200,15 +202,15 @@ function WalletPage() {
   return (
     <>
       <SeoHead
-        title="المحفظة"
-        description="اشحن رصيدك وتابع عمليات محفظتك في Arownd."
+        title={t("wallet_title")}
+        description={t("wallet_description")}
         keywords="المحفظة, شحن الرصيد, سحب, Arownd"
         ogType="website"
       />
       <div className="mx-auto max-w-xl space-y-4 px-4 pb-6 pt-5">
         <PageHeader
-          title="المحفظة"
-          subtitle="رصيدك وعملياتك المالية في مكان واحد"
+          title={t("wallet_title")}
+          subtitle={t("wallet_description")}
           back="/profile"
         />
 
@@ -219,10 +221,9 @@ function WalletPage() {
         >
           <Info className="mt-0.5 size-5 shrink-0 text-info" aria-hidden="true" />
           <div className="min-w-0">
-            <p className="text-sm font-extrabold text-foreground">معاينة فقط</p>
+            <p className="text-sm font-extrabold text-foreground">{t("wallet_preview_title")}</p>
             <p className="mt-1 text-xs leading-5 text-muted-foreground">
-              صفحة المحفظة قيد التطوير حاليًا. الأرصدة والعمليات المعروضة تجريبية، ولن تتوفر
-              خدمات الشحن والسحب والدفع حتى الإعلان عن إطلاقها رسميًا.
+              {t("wallet_preview_message")}
             </p>
           </div>
         </aside>
@@ -232,14 +233,14 @@ function WalletPage() {
           <div className="pointer-events-none absolute -end-12 -top-16 size-44 rounded-full border-4 border-primary-foreground/10" />
           <div className="relative flex items-start justify-between gap-4">
             <div className="min-w-0">
-              <p className="text-xs font-bold opacity-80">الرصيد المتاح</p>
+              <p className="text-xs font-bold opacity-80">{t("wallet_balance")}</p>
               {txs.isLoading ? (
                 <div
                   className="mt-3 h-10 w-40 animate-pulse rounded-lg bg-primary-foreground/10"
-                  aria-label="جارٍ تحميل الرصيد"
+                  aria-label={t("wallet_balance_loading")}
                 />
               ) : txs.isError ? (
-                <p className="mt-2 text-sm font-bold">تعذّر تحميل الرصيد</p>
+                <p className="mt-2 text-sm font-bold">{t("wallet_balance_error")}</p>
               ) : (
                 <p dir="ltr" className="mt-1 text-3xl font-black tracking-tight sm:text-4xl">
                   {formatDA(summary.balance)}
@@ -251,18 +252,18 @@ function WalletPage() {
             </span>
           </div>
           <p className="relative mt-4 text-caption font-semibold opacity-75">
-            الرصيد محسوب من العمليات المعتمدة فقط
+            {t("wallet_balance_note")}
           </p>
           {!txs.isLoading && !txs.isError && (
             <div className="relative mt-4 grid grid-cols-2 gap-2 border-t border-primary-foreground/10 pt-3">
               <div className="rounded-[var(--radius-control)] bg-primary-foreground/5 px-3 py-2">
-                <p className="text-caption font-bold opacity-70">إيداعات قيد المراجعة</p>
+                <p className="text-caption font-bold opacity-70">{t("wallet_pending_topups")}</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingTopup)}
                 </p>
               </div>
               <div className="rounded-[var(--radius-control)] bg-primary-foreground/5 px-3 py-2">
-                <p className="text-caption font-bold opacity-70">سحوبات قيد المراجعة</p>
+                <p className="text-caption font-bold opacity-70">{t("wallet_pending_withdrawals")}</p>
                 <p dir="ltr" className="mt-1 text-sm font-extrabold">
                   {formatDA(pendingWithdraw)}
                 </p>
@@ -274,26 +275,26 @@ function WalletPage() {
         {/* الخدمات المالية معطّلة حتى الإطلاق الرسمي */}
         <div className="grid grid-cols-2 gap-3" aria-describedby="wallet-preview-notice">
           <button type="button" disabled className="btn-primary cursor-not-allowed opacity-55">
-            شحن الرصيد · قريبًا
+            {t("wallet_topup_soon")}
           </button>
           <button type="button" disabled className="btn-secondary cursor-not-allowed opacity-55">
-            طلب سحب · قريبًا
+            {t("wallet_withdraw_soon")}
           </button>
         </div>
 
         {/* نموذج الشحن */}
         {showTopup && (
           <div className="animate-fade-up space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
-            <p className="text-sm font-extrabold text-foreground">شحن المحفظة</p>
+            <p className="text-sm font-extrabold text-foreground">{t("wallet_topup_title")}</p>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                المبلغ (دج)
+                {t("wallet_amount")}
               </label>
               <input
                 value={topupAmount}
                 onChange={(e) => setTopupAmount(e.target.value.replace(/[^0-9]/g, ""))}
                 inputMode="numeric"
-                placeholder={`الحد الأدنى ${MIN_AMOUNT} دج`}
+                placeholder={t("wallet_min_amount", { amount: MIN_AMOUNT })}
                 dir="ltr"
                 className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
               />
@@ -325,7 +326,7 @@ function WalletPage() {
               >
                 {METHODS.map((m) => (
                   <option key={m.id} value={m.id}>
-                    {m.label}
+                    {t(m.label)}
                   </option>
                 ))}
               </select>
@@ -333,7 +334,7 @@ function WalletPage() {
             <label className="flex cursor-pointer items-center justify-between gap-2 rounded-[var(--radius-control)] border border-dashed border-border bg-background px-3 py-3 text-sm font-bold transition active:scale-[0.99]">
               <span className="flex items-center gap-2 text-muted-foreground">
                 <Upload className="size-4" />
-                {topupReceipt ? "تم اختيار السند ✓" : "أرفق صورة سند الدفع *"}
+                {topupReceipt ? t("wallet_receipt_selected") : t("wallet_receipt_attach")}
               </span>
               <input
                 type="file"
@@ -343,7 +344,7 @@ function WalletPage() {
               />
             </label>
             <button onClick={submitTopup} disabled={busyTopup} className="btn-primary w-full">
-              {busyTopup ? "جارٍ الإرسال..." : "إرسال طلب الشحن"}
+              {busyTopup ? t("wallet_topup_sending") : t("wallet_topup_submit")}
             </button>
           </div>
         )}
@@ -351,19 +352,19 @@ function WalletPage() {
         {/* نموذج السحب */}
         {showWithdraw && (
           <div className="animate-fade-up space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4">
-            <p className="text-sm font-extrabold text-foreground">سحب رصيد</p>
+            <p className="text-sm font-extrabold text-foreground">{t("wallet_withdraw_title")}</p>
             <p className="text-caption font-semibold text-muted-foreground">
-              الرصيد المتاح للسحب: {formatDA(summary.balance)}
+              {t("wallet_available_withdraw", { amount: formatDA(summary.balance) })}
             </p>
             <div>
               <label className="mb-1 block text-xs font-bold text-muted-foreground">
-                المبلغ (دج)
+                {t("wallet_amount")}
               </label>
               <input
                 value={withdrawAmount}
                 onChange={(e) => setWithdrawAmount(e.target.value.replace(/[^0-9]/g, ""))}
                 inputMode="numeric"
-                placeholder={`الحد الأدنى ${MIN_AMOUNT} دج`}
+                placeholder={t("wallet_min_amount", { amount: MIN_AMOUNT })}
                 dir="ltr"
                 className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 text-start outline-none transition focus:ring-2 focus:ring-primary/30"
               />
@@ -391,12 +392,12 @@ function WalletPage() {
               <input
                 value={withdrawNote}
                 onChange={(e) => setWithdrawNote(e.target.value)}
-                placeholder="مثال: CCP 0012345678 ..."
+                placeholder={t("wallet_account_placeholder")}
                 className="w-full rounded-[var(--radius-control)] border border-input bg-background px-3 py-2.5 outline-none transition focus:ring-2 focus:ring-primary/30"
               />
             </div>
             <button onClick={submitWithdraw} disabled={busyWithdraw} className="btn-primary w-full">
-              {busyWithdraw ? "جارٍ الإرسال..." : "إرسال طلب السحب"}
+              {busyWithdraw ? t("wallet_topup_sending") : t("wallet_withdraw_submit")}
             </button>
           </div>
         )}
@@ -427,7 +428,7 @@ function WalletPage() {
               </p>
             </div>
             <div className="col-span-2 flex items-center justify-between rounded-[var(--radius-card)] border border-border bg-card px-4 py-3">
-              <span className="text-xs font-bold text-muted-foreground">عمليات قيد المراجعة</span>
+              <span className="text-xs font-bold text-muted-foreground">{t("wallet_pending_count")}</span>
               <span className="text-sm font-extrabold text-foreground">{pendingCount}</span>
             </div>
           </div>
@@ -436,14 +437,14 @@ function WalletPage() {
         {/* سجل المعاملات والفلاتر */}
         <div className="flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-base font-extrabold text-foreground">سجل المعاملات</h2>
+            <h2 className="text-base font-extrabold text-foreground">{t("wallet_transactions_title")}</h2>
             <p className="mt-0.5 text-caption text-muted-foreground">
-              كل الحركات المسجلة في محفظتك
+              {t("wallet_transactions_hint")}
             </p>
           </div>
           {!txs.isLoading && !txs.isError && (
             <span className="rounded-full bg-muted px-2.5 py-1 text-caption font-bold text-muted-foreground">
-              {filtered.length} عملية
+              {filtered.length} {t("wallet_transactions_count")}
             </span>
           )}
         </div>
@@ -459,7 +460,7 @@ function WalletPage() {
                   : "border-border bg-card text-muted-foreground",
               )}
             >
-              {t.label}
+              {t(t.label)}
             </button>
           ))}
         </div>
@@ -477,9 +478,9 @@ function WalletPage() {
 
         {txs.isError && (
           <div className="rounded-[var(--radius-card)] border border-danger/30 bg-danger-soft p-4 text-center">
-            <p className="text-sm font-bold text-foreground">تعذّر تحميل بيانات المحفظة</p>
+            <p className="text-sm font-bold text-foreground">{t("wallet_error_load")}</p>
             <p className="mt-1 text-xs text-muted-foreground">
-              تحقق من اتصالك بالإنترنت ثم أعد المحاولة.
+              {t("wallet_error_network")}
             </p>
             <button onClick={() => void txs.refetch()} className="btn-secondary mt-3">
               إعادة المحاولة
@@ -490,8 +491,8 @@ function WalletPage() {
         {!txs.isLoading && !txs.isError && filtered.length === 0 && (
           <EmptyState
             Icon={Wallet}
-            title={tab === "all" ? "لا توجد عمليات بعد" : "لا توجد عمليات في هذا القسم"}
-            hint="عندما تشحن رصيدك أو تسحب أرباحك، ستظهر العمليات هنا مع حالتها لحظة بلحظة."
+            title={tab === "all" ? t("wallet_empty_all") : t("wallet_empty_filtered")}
+            hint="{t("wallet_empty_hint")}"
           />
         )}
 
@@ -508,7 +509,8 @@ function WalletPage() {
               month: "long",
             });
             const time = formatTime(t.created_at);
-            const methodLabel = METHODS.find((m) => m.id === t.method)?.label ?? t.method;
+            const methodKey = METHODS.find((m) => m.id === t.method)?.label;
+            const methodLabel = methodKey ? t(methodKey) : t.method;
             return (
               <div
                 key={t.id}
@@ -524,7 +526,7 @@ function WalletPage() {
                     <Icon className="size-5" />
                   </span>
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-sm font-bold text-foreground">{meta.label}</p>
+                    <p className="truncate text-sm font-bold text-foreground">{t(meta.label)}</p>
                     <p className="truncate text-caption text-muted-foreground">
                       {date} · {time}
                       {methodLabel ? ` · ${methodLabel}` : ""}
@@ -553,7 +555,7 @@ function WalletPage() {
                 </div>
                 <div className="mt-3 flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3 text-caption text-muted-foreground">
                   <span>
-                    رقم المعاملة:{" "}
+                    {t("wallet_transaction_id")}{" "}
                     <b dir="ltr" className="font-mono">
                       {t.id.slice(0, 8).toUpperCase()}
                     </b>
