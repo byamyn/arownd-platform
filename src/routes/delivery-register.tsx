@@ -71,17 +71,15 @@ function DeliveryRegisterPage() {
     }
     setBusy(true);
     try {
-      const payload: Record<string, unknown> = {
+      const payload: Database["public"]["Tables"]["delivery_companies"]["Insert"] = {
         user_id: user.id,
         company_name: companyName.trim(),
         contact_phone: normalizePhone(contactPhone.trim()),
+        ...(contactName.trim() ? { contact_name: contactName.trim() } : {}),
+        ...(email.trim() ? { email: email.trim() } : {}),
+        ...(licenseNumber.trim() ? { license_number: licenseNumber.trim() } : {}),
       };
-      if (contactName.trim()) payload["contact_name"] = contactName.trim();
-      if (email.trim()) payload["email"] = email.trim();
-      if (licenseNumber.trim()) payload["license_number"] = licenseNumber.trim();
-      await registerDeliveryCompany(
-        payload as Database["public"]["Tables"]["delivery_companies"]["Insert"],
-      );
+      await registerDeliveryCompany(payload);
       showSuccess(t("delivery_registration_success"));
       navigate({ to: "/", replace: true });
     } catch (error) {
