@@ -16,12 +16,15 @@ describe("delivery company mobile experience", () => {
     expect(dashboard).toContain("min-h-11 flex-1 rounded-[var(--radius-control)]");
     expect(dashboard).toContain("min-h-11 rounded-2xl border px-3 py-2");
     expect(dashboard).toContain("min-h-[5.5rem] rounded-[var(--radius-card)]");
+    expect(dashboard).toContain('className={cn("size-6 shrink-0", color)}');
   });
 
   it("uses safe-area aware spacing and full-height form controls during registration", () => {
     expect(registration).toContain("pb-[calc(7rem+env(safe-area-inset-bottom))]");
     expect(registration).toContain("h-12 w-full rounded-[var(--radius-control)]");
     expect(registration).toContain("min-h-[var(--control-height)] rounded-full");
+    expect(registration).toContain("const payload: Database[\"public\"][\"Tables\"][\"delivery_companies\"][\"Insert\"]");
+    expect(registration).not.toContain("Record<string, unknown>");
     expect(registration).toContain('type="tel"\n            dir="ltr"');
     expect(registration).toContain('type="email"\n            dir="ltr"');
   });
