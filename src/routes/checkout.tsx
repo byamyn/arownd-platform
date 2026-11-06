@@ -333,21 +333,27 @@ function CheckoutPage() {
       <PageHeader title={t("checkout_heading")} subtitle={t("checkout_subtitle")} />
 
       {/* شريط التقدم */}
-      <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3">
-        <div className="flex items-center justify-between px-1">
-          <span className="text-caption font-bold tracking-wider text-muted-foreground">
-            STEP {String(step + 1).padStart(2, "0")} / 04
+      <nav
+        aria-label={t("checkout_progress_label")}
+        className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3 sm:p-4"
+      >
+        <div className="flex items-center justify-between gap-3 px-1">
+          <span className="text-xs font-bold tabular-nums text-muted-foreground">
+            {t("checkout_step_counter", { current: step + 1, total: STEP_KEYS.length })}
           </span>
-          <span className="text-xs font-bold text-accent-ink">{t(STEP_KEYS[step])}</span>
+          <span className="text-sm font-bold text-accent-ink">{t(STEP_KEYS[step])}</span>
         </div>
-        <div className="flex items-center gap-1.5">
+        <ol className="flex items-stretch gap-1.5" dir="rtl">
           {STEP_KEYS.map((key, i) => (
-            <div key={key} className="flex-1">
+            <li key={key} className="min-w-0 flex-1">
               <button
+                type="button"
+                aria-current={i === step ? "step" : undefined}
+                aria-label={t(key)}
                 onClick={() => i < step && setStep(i)}
-                disabled={i > step}
+                disabled={i >= step}
                 className={cn(
-                  "flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-2 py-1.5 text-caption font-bold transition",
+                  "flex min-h-[4.25rem] w-full flex-col items-center justify-center gap-1 rounded-xl px-1.5 py-2 text-center transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-default",
                   i === step
                     ? "bg-primary text-accent-ink-foreground"
                     : i < step
@@ -357,18 +363,20 @@ function CheckoutPage() {
               >
                 <span
                   className={cn(
-                    "flex size-4 shrink-0 items-center justify-center rounded-full text-caption",
-                    i < step ? "bg-primary text-accent-ink-foreground" : "bg-background/60",
+                    "flex size-6 shrink-0 items-center justify-center rounded-full text-xs font-bold",
+                    i < step ? "bg-primary text-accent-ink-foreground" : "bg-background/70",
                   )}
                 >
-                  {i < step ? <Check className="size-3" /> : i + 1}
+                  {i < step ? <Check className="size-3.5" aria-hidden="true" /> : i + 1}
                 </span>
-                <span className="hidden min-w-0 truncate sm:inline">{t(key)}</span>
+                <span className="w-full truncate text-[10px] font-semibold leading-4 sm:text-xs">
+                  {t(key)}
+                </span>
               </button>
-            </div>
+            </li>
           ))}
-        </div>
-      </div>
+        </ol>
+      </nav>
 
       {step === 0 && (
         <section className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
@@ -380,36 +388,40 @@ function CheckoutPage() {
           </div>
           <div className="space-y-3">
             {rows.map((row) => (
-              <div
+              <article
                 key={bagItemKey(row)}
-                className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-2.5"
+                className="grid grid-cols-[4.5rem_minmax(0,1fr)] items-start gap-3 rounded-2xl border border-border/70 bg-background p-3 sm:grid-cols-[5rem_minmax(0,1fr)] sm:gap-4"
               >
-                <div className="size-[4.5rem] shrink-0 overflow-hidden rounded-xl bg-muted">
-                  {row.offer && primaryImage(row.offer.images) && (
+                <div className="aspect-square w-full overflow-hidden rounded-xl bg-muted">
+                  {row.offer && primaryImage(row.offer.images) ? (
                     <img
                       src={primaryImage(row.offer.images)!}
-                      alt=""
+                      alt={row.offer.product.name}
                       loading="lazy"
                       decoding="async"
                       className="size-full object-cover"
                     />
+                  ) : (
+                    <div className="size-full animate-pulse bg-muted" />
                   )}
                 </div>
-                <div className="min-w-0 flex-1">
-                  <p className="line-clamp-1 text-sm font-bold">
+                <div className="flex min-w-0 flex-col gap-1.5">
+                  <p className="line-clamp-2 break-words text-sm font-bold leading-5 text-foreground">
                     {row.offer?.product.name ?? "..."}
                   </p>
-                  <p className="text-xs text-muted-foreground">
+                  <p className="break-words text-xs leading-5 text-muted-foreground">
                     {row.offer?.store.name} · {t("checkout_quantity", { count: row.quantity })}
-                    {Object.values(row.options).length > 0 && (
-                      <span> · {Object.values(row.options).join(" · ")}</span>
-                    )}
+                  </p>
+                  {Object.values(row.options).length > 0 && (
+                    <p className="break-words text-xs leading-5 text-muted-foreground">
+                      {Object.values(row.options).join(" · ")}
+                    </p>
+                  )}
+                  <p className="mt-1 whitespace-nowrap text-base font-extrabold tabular-nums text-accent-ink">
+                    {formatDA((row.offer?.price ?? 0) * row.quantity)}
                   </p>
                 </div>
-                <p className="text-sm font-bold">
-                  {formatDA((row.offer?.price ?? 0) * row.quantity)}
-                </p>
-              </div>
+              </article>
             ))}
           </div>
           {offers.isLoading && (
@@ -619,10 +631,10 @@ function CheckoutPage() {
       <StickyActionBar>
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
-            <p className="text-caption text-muted-foreground">
-              {step < 3 ? t("checkout_total_label") : t("checkout_final_total_label")}
+            <p className="text-xs font-medium text-muted-foreground">
+              {t("checkout_final_total_label")}
             </p>
-            <p className="text-price text-accent-ink">{formatDA(total)}</p>
+            <p className="whitespace-nowrap text-price tabular-nums text-accent-ink">{formatDA(total)}</p>
           </div>
           <button
             disabled={submitting}
@@ -633,7 +645,7 @@ function CheckoutPage() {
               ? t("checkout_sending")
               : step === 3
                 ? t("checkout_confirm_order")
-                : t("checkout_next")}
+                : t(step === 0 ? "checkout_continue_address" : step === 1 ? "checkout_continue_delivery" : "checkout_continue_payment")}
           </button>
         </div>
       </StickyActionBar>
