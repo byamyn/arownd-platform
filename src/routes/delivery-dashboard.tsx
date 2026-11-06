@@ -522,7 +522,6 @@ function AllShipmentsList({
               <div className="mt-4 rounded-[var(--radius-control)] border border-border bg-background p-3">
                 {shipment.cod_collection ? (
                   <p className="text-sm font-semibold text-green-soft-foreground">
-                    {translate("delivery_cod_recorded")}
                     {translate("delivery_cod_collected_amount", { amount: shipment.cod_collection.amount.toLocaleString() })}
                   </p>
                 ) : (
