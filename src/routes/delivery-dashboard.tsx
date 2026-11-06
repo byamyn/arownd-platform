@@ -369,7 +369,7 @@ function StatCard({
           <p className="text-xs text-muted-foreground">{label}</p>
           <p className="text-2xl font-bold">{value}</p>
         </div>
-        <Icon className="size-6 shrink-0" />
+        <Icon className={cn("size-6 shrink-0", color)} />
       </div>
     </div>
   );
@@ -414,12 +414,12 @@ function PendingShipmentsList({
               )}
               {shipment.delivery_address && (
                 <p className="text-sm text-muted-foreground">
-                  {translate("delivery_address", { address: shipment.delivery_address })}
+                  {translate("delivery_company_delivery_address", { address: shipment.delivery_address })}
                 </p>
               )}
               {shipment.fee != null && (
                 <p className="text-sm font-medium text-accent-ink mt-1">
-                  {translate("delivery_fee", { amount: shipment.fee })}
+                  {translate("delivery_company_shipment_fee", { amount: shipment.fee })}
                 </p>
               )}
             </div>
@@ -506,12 +506,12 @@ function AllShipmentsList({
                 )}
                 {shipment.delivery_address && (
                   <p className="text-sm text-muted-foreground">
-                    {translate("delivery_address", { address: shipment.delivery_address })}
+                    {translate("delivery_company_delivery_address", { address: shipment.delivery_address })}
                   </p>
                 )}
                 {shipment.fee != null && (
                   <p className="text-sm font-medium text-accent-ink mt-1">
-                    {translate("delivery_fee", { amount: shipment.fee })}
+                    {translate("delivery_company_shipment_fee", { amount: shipment.fee })}
                   </p>
                 )}
               </div>
