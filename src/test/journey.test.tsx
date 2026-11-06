@@ -80,6 +80,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     { to: "/orders/", expect: /سجّل الدخول|طلباتي/ },
     { to: "/orders/$orderId", params: { orderId: "order-1" }, expect: /سجّل الدخول|طلب/ },
     { to: "/studio", expect: /استوديو Arownd|لوحة التاجر|أنشئ متجر/ },
+    { to: "/delivery-register", expect: /تحتاج إلى تسجيل الدخول|تسجيل الدخول/ },
     { to: "/studio/settings", expect: "معلومات المتجر" },
     { to: "/help", expect: "مساعدة والأسئلة الشائعة" },
     { to: "/terms", expect: "شروط الاستخدام" },
@@ -141,7 +142,7 @@ describe("جولة المستخدم — تدفقات حقيقية", () => {
 
     renderApp("/delivery-dashboard");
 
-    expect(await screen.findByText("طلب شحن #shipment")).toBeInTheDocument();
+    expect(await screen.findByText("شحنة #shipment")).toBeInTheDocument();
     await waitFor(() => expect(state.calls).toContain("shipments.eq(status, pending)"));
   });
 
