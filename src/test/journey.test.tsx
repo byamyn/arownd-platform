@@ -77,6 +77,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     { to: "/settings", expect: "الإعدادات" },
     { to: "/profile", expect: /سجّل الدخول|تسجيل الدخول|الملف الشخصي/ },
     { to: "/notifications", expect: "الإشعارات" },
+    { to: "/reservations/", expect: "حجوزاتي" },
     { to: "/orders/", expect: /سجّل الدخول|طلباتي/ },
     { to: "/orders/$orderId", params: { orderId: "order-1" }, expect: /سجّل الدخول|طلب/ },
     { to: "/studio", expect: /استوديو Arownd|لوحة التاجر|أنشئ متجر/ },
