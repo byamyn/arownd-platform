@@ -51,7 +51,6 @@ function BagPage() {
   const subtotal = evaluation.subtotal;
   // رسوم التوصيل النهائية يحددها كل متجر بعد مراجعة الطلب؛ لا نعرض تقديراً مضللاً.
   const delivery = null;
-  const total = subtotal;
   const blocked = evaluation.hasBlocking;
 
   return (
@@ -259,9 +258,9 @@ function BagPage() {
         <StickyActionBar>
           <div className="flex items-center justify-between px-1">
             <span className="text-sm font-semibold text-muted-foreground">
-              {t("bag_cta_items", { count: bag.count })}
+              {t("bag_subtotal")}
             </span>
-            <b className="text-section text-accent-ink">{formatDA(total)}</b>
+            <b className="text-section whitespace-nowrap tabular-nums text-accent-ink">{formatDA(subtotal)}</b>
           </div>
           {blocked ? (
             <p className="mt-2 rounded-[var(--radius-control)] bg-danger-soft px-3 py-2 text-center text-xs font-bold text-danger">
