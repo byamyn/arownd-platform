@@ -1,10 +1,10 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "@/lib/i18n";
-import { BadgeCheck, ChevronLeft, MapPin, Navigation, ImageOff, Star } from "lucide-react";
+import { BadgeCheck, ChevronLeft, MapPin, Star } from "lucide-react";
 import { formatDA, formatKm, getStoreStatus } from "@/lib/geo";
 import type { OfferFull, ProductGroup, Store } from "@/lib/sooqy";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
-import { OpenBadge, VerifiedBadge } from "./badges";
+import { OpenBadge } from "./badges";
 import { DirectionsButton } from "./DirectionsButton";
 import { RatingStars } from "./rating-stars";
 import { cn } from "@/lib/utils";
