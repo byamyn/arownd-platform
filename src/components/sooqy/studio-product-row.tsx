@@ -33,7 +33,7 @@ export function StudioProductRow({
   const level = inventoryLevel(offer);
 
   return (
-    <article className="card-premium space-y-3 p-3" aria-busy={busy}>
+    <article className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3" aria-busy={busy}>
       <div className="flex items-start gap-3">
         {img ? (
           <img
@@ -41,10 +41,10 @@ export function StudioProductRow({
             alt=""
             loading="lazy"
             decoding="async"
-            className="size-14 shrink-0 rounded-xl object-cover"
+            className="size-[4.5rem] shrink-0 rounded-2xl object-cover"
           />
         ) : (
-          <span className="flex size-14 shrink-0 items-center justify-center rounded-xl bg-muted text-muted-foreground">
+          <span className="flex size-[4.5rem] shrink-0 items-center justify-center rounded-2xl bg-muted text-muted-foreground">
             <Package className="size-6" aria-hidden="true" />
           </span>
         )}
@@ -99,12 +99,12 @@ export function StudioProductRow({
         </button>
       </div>
 
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-1.5 sm:gap-2">
         <button
           type="button"
           onClick={onEdit}
           aria-label={t("studio_action_edit_aria")}
-          className="flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-border bg-card text-xs font-bold text-foreground transition hover:bg-muted"
+          className="flex min-h-11 items-center justify-center gap-1.5 rounded-2xl border border-border bg-background text-xs font-bold text-foreground transition hover:bg-muted"
         >
           <Pencil className="size-4" aria-hidden="true" /> {t("studio_action_edit")}
         </button>
