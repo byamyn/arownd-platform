@@ -235,7 +235,7 @@ function DeliveryDashboardPage() {
 
   return (
     <AppShell width="wide" className="space-y-4 overflow-x-clip pt-3 pb-[calc(7rem+env(safe-area-inset-bottom))] sm:space-y-5 sm:pt-5">
-      <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
+      <PageHeader title={translate("delivery_dashboard_title")} subtitle={company.data.company_name} back="/" />
 
       {/* بطاقة ملخص الشركة */}
       <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
