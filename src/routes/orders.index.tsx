@@ -6,6 +6,7 @@ import { useAuth } from "@/lib/auth";
 import { useRealtimeSubscription } from "@/hooks/use-realtime";
 import { formatDA } from "@/lib/geo";
 import { formatDate } from "@/lib/market";
+import { getMerchantOrderDisplayTotal } from "@/lib/order-display";
 import {
   archiveMyActivity,
   cancelMyOrder,
@@ -125,7 +126,7 @@ function OrdersPage() {
       parentOrderId: order.id,
       isMerchantSuborder: true,
       status: suborder.status,
-      total: suborder.subtotal + suborder.shipping_fee,
+      total: getMerchantOrderDisplayTotal(suborder.status, suborder.subtotal, suborder.shipping_fee),
       items: suborder.items ?? [],
       merchant_orders: [suborder],
     }));
