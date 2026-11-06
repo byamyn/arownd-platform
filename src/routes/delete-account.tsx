@@ -7,9 +7,10 @@ import { PageHeader } from "@/components/sooqy/page-header";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
 import { showError } from "@/lib/feedback";
+import { translate, useTranslation } from "@/lib/i18n";
 
 export const Route = createFileRoute("/delete-account")({
-  head: () => ({ meta: [{ title: "حذف الحساب — Arownd" }] }),
+  head: () => ({ meta: [{ title: translate("delete_seo_title") }] }),
   component: DeleteAccountPage,
 });
 
@@ -32,6 +33,7 @@ const statusLabels: Record<DeletionRequest["status"], string> = {
 
 function DeleteAccountPage() {
   const { user, ready } = useAuth();
+  const { t, lang } = useTranslation();
   const queryClient = useQueryClient();
   const [submitting, setSubmitting] = useState(false);
   const requests = useQuery({
