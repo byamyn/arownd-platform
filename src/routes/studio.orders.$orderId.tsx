@@ -199,10 +199,10 @@ function StudioOrderDetailPage() {
 
   return (
     <>
-      <AppShell className="mx-auto max-w-4xl space-y-5 pb-24 pt-5 lg:pt-8">
+      <AppShell className="mx-auto max-w-4xl space-y-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 lg:space-y-6 lg:pt-8">
         <PageHeader title={t("studio_order_details")} back="/studio" />
         <div className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
-          <div className="rounded-t-3xl bg-muted p-5 text-foreground sm:p-6">
+          <div className="rounded-t-[var(--radius-card)] bg-muted p-4 text-foreground sm:p-6">
             <p className="text-caption font-extrabold tracking-[0.2em] text-accent-ink">
               AROWND · ORDER
             </p>
@@ -217,8 +217,8 @@ function StudioOrderDetailPage() {
               })}
             </p>
           </div>
-          <div className="space-y-4 p-4 sm:p-6">
-            <div className="flex items-center gap-2">
+          <div className="space-y-4 p-3.5 sm:p-6">
+            <div className="flex flex-wrap items-center gap-2">
               <span className="flex items-center gap-1 font-semibold text-foreground">
                 {t("studio_total")}
               </span>
