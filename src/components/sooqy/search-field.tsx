@@ -43,6 +43,7 @@ export function SearchField({
             onSearch?.();
           }
         }}
+        aria-label={placeholder ?? t("explore_search_placeholder")}
         placeholder={placeholder}
         disabled={disabled}
         autoComplete="off"
@@ -54,7 +55,6 @@ export function SearchField({
           disabled && "pointer-events-none opacity-50",
           bare && "h-full rounded-none border-0 bg-transparent focus:ring-0",
           hasTrailing && "pe-20",
-          className,
         )}
       />
       {(hasValue || hasTrailing) && !disabled && (
@@ -67,7 +67,7 @@ export function SearchField({
                 onSearch?.();
               }}
               aria-label={t("aria_clear_search")}
-              className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground"
+              className="flex size-11 items-center justify-center rounded-full text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             >
               <X className="size-5" aria-hidden="true" />
             </button>
@@ -102,7 +102,7 @@ export function FilterChip({
       onClick={() => onChange(value)}
       aria-pressed={selected}
       className={cn(
-        "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
+        "inline-flex min-h-11 items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
         selected
           ? "border-transparent bg-primary text-primary-foreground"
           : "border-input bg-card text-foreground hover:bg-muted",
