@@ -110,7 +110,7 @@ function WalletPage() {
         <span className="flex size-20 items-center justify-center rounded-[var(--radius-card)] bg-primary-soft">
           <Wallet className="size-9 text-accent-ink" strokeWidth={1.6} />
         </span>
-        <h1 className="text-h1 text-foreground">سجّل الدخول لفتح محفظتك</h1>
+        <h1 className="text-h1 text-foreground">{tr("wallet_login_title")}</h1>
         <p className="max-w-xs text-body text-muted-foreground">
           {tr("wallet_login_hint")}
         </p>
@@ -204,7 +204,7 @@ function WalletPage() {
       <SeoHead
         title={tr("wallet_title")}
         description={tr("wallet_description")}
-        keywords="المحفظة, شحن الرصيد, سحب, Arownd"
+        keywords={tr("wallet_keywords")}
         ogType="website"
       />
       <div className="mx-auto max-w-xl space-y-4 px-4 pb-6 pt-5">
@@ -310,7 +310,7 @@ function WalletPage() {
                         : "border-border bg-background text-muted-foreground",
                     )}
                   >
-                    {p} دج
+                    {p} {tr("wallet_currency")}
                   </button>
                 ))}
               </div>
