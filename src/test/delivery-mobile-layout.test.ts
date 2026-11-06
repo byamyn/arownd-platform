@@ -25,7 +25,7 @@ describe("delivery company mobile experience", () => {
   });
 
   it("uses dictionary keys instead of hardcoded Arabic UI strings", () => {
-    const arabicLiteral = /["\x27`][^"\x27`]*[\\u0600-\\u06FF][^"\x27`]*["\x27`]/;
+    const arabicLiteral = /["'`][^"'`]*[\u0600-\u06FF][^"'`]*["'`]/;
     expect(dashboard).not.toMatch(arabicLiteral);
     expect(registration).not.toMatch(arabicLiteral);
   });
