@@ -201,7 +201,7 @@ function NotificationsPage() {
             hint={t("notifications_login_hint")}
             action={
               <Link to="/auth" className="btn-small">
-                تسجيل الدخول
+                {t("notifications_login_action")}
               </Link>
             }
           />
