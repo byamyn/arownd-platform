@@ -73,12 +73,12 @@ function ReservationsPage() {
     return (
       <div className="flex min-h-[65vh] flex-col items-center justify-center gap-4 px-6 text-center">
         <CalendarDays className="size-10 text-accent-ink" />
-        <h1 className="text-h1 text-foreground">حجوزاتي</h1>
+        <h1 className="text-h1 text-foreground">{t("reservations_title")}</h1>
         <p className="max-w-xs text-sm text-muted-foreground">
-          سجّل الدخول لمتابعة حجوزاتك وإدارتها.
+          {t("reservations_login_hint")}
         </p>
         <Link to="/auth" search={{ redirect: "/reservations" }} className="btn-primary">
-          تسجيل الدخول
+          {t("notifications_login_action")}
         </Link>
       </div>
     );
@@ -106,8 +106,8 @@ function ReservationsPage() {
           <ArrowLeft className="size-5 rtl:rotate-180" />
         </Link>
         <div>
-          <h1 className="text-h1 text-foreground">حجوزاتي</h1>
-          <p className="text-xs text-muted-foreground">تابع حجوزاتك وحالة الاستلام</p>
+          <h1 className="text-h1 text-foreground">{t("reservations_title")}</h1>
+          <p className="text-xs text-muted-foreground">{t("reservations_subtitle")}</p>
         </div>
       </header>
 
@@ -145,10 +145,10 @@ function ReservationsPage() {
         <EmptyState
           Icon={CalendarDays}
           title={tab === "all" ? t("reservations_empty_all") : t("reservations_empty_filtered")}
-          hint=t("reservations_empty_hint")
+          hint={t("reservations_empty_hint")}
           action={
             <Link to="/explore" className="btn-primary">
-              اكتشف المنتجات
+              {t("reservations_browse")}
             </Link>
           }
         />
@@ -158,7 +158,7 @@ function ReservationsPage() {
         {filtered.map((reservation) => {
           const archivable = canArchive(reservation);
           const expired = isExpired(reservation);
-          const status = t(reservationStatus(reservation));
+          const status = reservationStatus(reservation);
           const statusStyle =
             reservation.status === "cancelled"
               ? "bg-danger-soft text-danger"
@@ -192,7 +192,7 @@ function ReservationsPage() {
                 </div>
 
                 <div className="rounded-[var(--radius-card)] border border-dashed border-primary/40 bg-primary-soft p-4 text-center">
-                  <p className="text-caption font-semibold text-muted-foreground">رمز الحجز</p>
+                  <p className="text-caption font-semibold text-muted-foreground">{t("reservations_code")}</p>
                   <p
                     className="mt-1 max-w-full break-all font-mono text-[clamp(1.25rem,6vw,1.875rem)] font-black leading-tight tracking-[0.12em] text-foreground"
                     dir="ltr"
@@ -203,11 +203,11 @@ function ReservationsPage() {
 
                 <div className="grid grid-cols-2 gap-3">
                   <div className="rounded-[var(--radius-card)] bg-background p-3">
-                    <p className="text-caption text-muted-foreground">الكمية</p>
+                    <p className="text-caption text-muted-foreground">{t("reservations_quantity")}</p>
                     <p className="mt-1 text-sm font-bold text-foreground">{reservation.quantity}</p>
                   </div>
                   <div className="rounded-[var(--radius-card)] bg-background p-3">
-                    <p className="text-caption text-muted-foreground">سعر الوحدة</p>
+                    <p className="text-caption text-muted-foreground">{t("reservations_unit_price")}</p>
                     <p className="mt-1 text-sm font-extrabold text-accent-ink">
                       {reservation.offer?.price != null ? formatDA(reservation.offer.price) : "—"}
                     </p>
@@ -215,7 +215,7 @@ function ReservationsPage() {
                   <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-background p-3">
                     <CalendarDays className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-caption text-muted-foreground">تاريخ الحجز</p>
+                      <p className="text-caption text-muted-foreground">{t("reservations_created_at")}</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
                         {formatDate(reservation.created_at)}
                       </p>
@@ -224,7 +224,7 @@ function ReservationsPage() {
                   <div className="flex items-start gap-2 rounded-[var(--radius-card)] bg-background p-3">
                     <Clock3 className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
                     <div className="min-w-0">
-                      <p className="text-caption text-muted-foreground">انتهاء الصلاحية</p>
+                      <p className="text-caption text-muted-foreground">{t("reservations_expires_at")}</p>
                       <p className="mt-1 text-xs font-semibold text-foreground">
                         {expired ? t("reservations_expired") : formatDate(reservation.expires_at)}
                       </p>
@@ -275,7 +275,7 @@ function ReservationsPage() {
                     }
                     className="inline-flex min-h-10 w-full items-center justify-center gap-2 rounded-[var(--radius-card)] border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                   >
-                    <Archive className="size-4" /> إخفاء من السجل
+                    <Archive className="size-4" /> {t("reservations_archive_action")}
                   </button>
                 )}
               </div>
