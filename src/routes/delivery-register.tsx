@@ -122,6 +122,7 @@ function DeliveryRegisterPage() {
           <input
             required
             type="tel"
+            dir="ltr"
             inputMode="tel"
             value={contactPhone}
             onChange={(e) => setContactPhone(e.target.value)}
@@ -132,6 +133,7 @@ function DeliveryRegisterPage() {
           />
           <input
             type="email"
+            dir="ltr"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             placeholder={t("delivery_company_email_optional")}
@@ -140,6 +142,7 @@ function DeliveryRegisterPage() {
             className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
+            dir="ltr"
             value={licenseNumber}
             onChange={(e) => setLicenseNumber(e.target.value)}
             placeholder={t("delivery_license_optional")}
