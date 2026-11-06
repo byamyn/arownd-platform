@@ -40,15 +40,14 @@ export const Route = createFileRoute("/help")({
 
 type Tab = "user" | "merchant" | "delivery" | "faq";
 
-const TABS: { id: Tab; label: string }[] = [
-  { id: "user", label: translate("help_tab_user") },
-  { id: "merchant", label: translate("help_tab_merchant") },
-  { id: "delivery", label: translate("help_tab_delivery") },
-  { id: "faq", label: translate("help_tab_faq") },
-];
-
 function HelpPage() {
   const [tab, setTab] = useState<Tab>("user");
+  const tabs: { id: Tab; label: string }[] = [
+    { id: "user", label: translate("help_tab_user") },
+    { id: "merchant", label: translate("help_tab_merchant") },
+    { id: "delivery", label: translate("help_tab_delivery") },
+    { id: "faq", label: translate("help_tab_faq") },
+  ];
   const [open, setOpen] = useState<number | null>(0);
 
   return (
@@ -65,7 +64,7 @@ function HelpPage() {
         role="tablist"
         aria-label={translate("help_tabs_aria")}
       >
-        {TABS.map((t) => (
+        {tabs.map((t) => (
           <button
             key={t.id}
             type="button"
@@ -318,7 +317,8 @@ function DeliveryPartnerSection() {
   );
 }
 
-const FAQS = [
+function getFaqs() {
+  return [
   {
     q: translate("help_faq_order_q"),
     a: translate("help_faq_order_a"),
@@ -347,12 +347,13 @@ const FAQS = [
     q: translate("help_faq_manage_q"),
     a: translate("help_faq_manage_a"),
   },
-];
+  ];
+}
 
 function FaqSection({ open, onToggle }: { open: number | null; onToggle: (i: number) => void }) {
   return (
     <div className="space-y-2">
-      {FAQS.map((f, i) => {
+      {getFaqs().map((f, i) => {
         const isOpen = open === i;
         return (
           <div key={i} className="overflow-hidden rounded-2xl bg-card ">
