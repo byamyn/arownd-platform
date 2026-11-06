@@ -97,13 +97,13 @@ export function WilayaButton({
     <div
       ref={buttonRef}
       className={cn(
-        "relative inline-flex min-h-[var(--control-height-compact)] w-auto items-center rounded-full border border-border bg-card px-3 text-sm font-semibold text-foreground transition hover:bg-muted active:bg-muted focus-within:ring-2 focus-within:ring-primary/30",
+        "relative inline-flex min-h-10 w-auto items-center rounded-full border border-primary/25 bg-primary/10 px-3.5 text-sm font-bold text-foreground transition hover:bg-primary/15 active:bg-primary/15 focus-within:ring-2 focus-within:ring-primary/30",
         className,
       )}
     >
-      <span className="flex items-center gap-2 ps-6">
-        <MapPin className="size-4 shrink-0 text-accent-ink" />
-        <span className="max-w-[5rem] truncate">{label}</span>
+      <span className="flex items-center gap-2 ps-5">
+        <MapPin className="size-[18px] shrink-0 text-accent-ink" />
+        <span className="max-w-[7rem] truncate">{label}</span>
         <ChevronDown
           className={cn(
             "size-3.5 shrink-0 text-muted-foreground transition",
