@@ -248,7 +248,7 @@ function ShipmentRow({
         <div className="text-muted-foreground">{t("studio_phone")}</div>
         <div className="font-semibold text-foreground">{order?.phone ?? "—"}</div>
         <div className="text-muted-foreground">{t("studio_amount")}</div>
-        <div className="font-semibold text-foreground">{order?.total ?? 0} دج</div>
+        <div className="font-semibold text-foreground">{order?.total ?? 0} {t("currency_dzd")}</div>
         <div className="text-muted-foreground">{t("studio_company")}</div>
         <div className="font-semibold text-foreground">{shipment.company_id?.slice(-4) ?? "—"}</div>
         <div className="text-muted-foreground">{t("studio_created_at")}</div>
