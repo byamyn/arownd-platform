@@ -3,8 +3,8 @@ import { useState } from "react";
 import { Truck } from "lucide-react";
 import { toast } from "sonner";
 import { showError, showSuccess } from "@/lib/feedback";
-import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/lib/auth";
+import { translate, useTranslation } from "@/lib/i18n";
 import { registerDeliveryCompany } from "@/lib/delivery";
 import type { Database } from "@/integrations/supabase/types";
 import { PageHeader } from "@/components/sooqy/page-header";
@@ -14,11 +14,11 @@ import { normalizePhone } from "@/lib/sooqy";
 export const Route = createFileRoute("/delivery-register")({
   head: () => ({
     meta: [
-      { title: "تسجيل شركة توصيل — Arownd" },
+      { title: translate("delivery_register_title") + " — Arownd" },
       {
         name: "description",
         content:
-          "سجّل شركة التوصيل الخاصة بك في Arownd لاستقبال طلبات الشحن من المتاجر وإدارة التوصيلات.",
+          translate("delivery_register_description"),
       },
     ],
   }),
@@ -27,6 +27,7 @@ export const Route = createFileRoute("/delivery-register")({
 
 function DeliveryRegisterPage() {
   const { user, ready } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [busy, setBusy] = useState(false);
   const [companyName, setCompanyName] = useState("");
@@ -41,9 +42,9 @@ function DeliveryRegisterPage() {
     return (
       <div className="space-y-4 px-4 pt-16 text-center">
         <Truck className="mx-auto size-12 text-accent-ink" />
-        <h1 className="text-2xl font-bold">تحتاج لدخول الحساب</h1>
+        <h1 className="text-2xl font-bold">{t("delivery_register_login_title")}</h1>
         <p className="text-sm text-muted-foreground">
-          لتسجيل شركة توصيل، يجب أن تكون مسجلاً الدخول أولاً.
+          {t("delivery_register_login_hint")}
         </p>
         <Link
           to="/auth"
@@ -60,12 +61,12 @@ function DeliveryRegisterPage() {
     e.preventDefault();
     if (!user || busy) return;
     if (!companyName.trim() || !contactPhone.trim()) {
-      toast.error("يرجى ملء اسم الشركة ورقم الهاتف على الأقل.");
+      toast.error("${t("delivery_registration_required")}");
       return;
     }
     // شركة التوصيل قد تسجّل هاتفًا ثابتًا (021…) أو جوالًا: نقبل 9–10 أرقام تبدأ بـ 0
     if (!/^0\d{8,9}$/.test(normalizePhone(contactPhone.trim()))) {
-      toast.error("رقم الهاتف غير صالح — أدخل رقمًا جزائريًا يبدأ بـ 0 (جوال أو ثابت).");
+      toast.error("${t("delivery_registration_phone_invalid")}");
       return;
     }
     setBusy(true);
@@ -82,7 +83,7 @@ function DeliveryRegisterPage() {
         payload as Database["public"]["Tables"]["delivery_companies"]["Insert"],
       );
       showSuccess(
-        "تم إرسال طلب تسجيل الشركة. سيتم مراجعته واعتماده من قبل المنصة قبل تفعيل الحساب.",
+        "${t("delivery_registration_success")}",
       );
       navigate({ to: "/", replace: true });
     } catch (error) {
@@ -94,12 +95,12 @@ function DeliveryRegisterPage() {
 
   return (
     <div className="space-y-4 px-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 sm:space-y-5 sm:pt-5">
-      <PageHeader title="تسجيل شركة توصيل" subtitle="انضم إلى شبكة التوصيل في Arownd" back="/" />
+      <PageHeader title={t("delivery_register_title")} subtitle={t("delivery_register_join")} back="/" />
 
       <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
         <div className="flex items-center gap-2">
           <Truck className="size-5 text-accent-ink" />
-          <h2 className="font-bold">بيانات الشركة</h2>
+          <h2 className="font-bold">{t("delivery_company_details")}</h2>
         </div>
 
         <form onSubmit={submit} className="space-y-3">
@@ -107,16 +108,16 @@ function DeliveryRegisterPage() {
             required
             value={companyName}
             onChange={(e) => setCompanyName(e.target.value)}
-            placeholder="اسم الشركة التجاري"
-            aria-label="اسم الشركة التجاري"
+            placeholder={t("delivery_company_name")}
+            aria-label={t("delivery_company_name")}
             autoComplete="organization"
             className="h-12 w-full rounded-2xl border border-input bg-background px-4 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             value={contactName}
             onChange={(e) => setContactName(e.target.value)}
-            placeholder="اسم الشخص المسؤول (اختياري)"
-            aria-label="اسم الشخص المسؤول (اختياري)"
+            placeholder={t("delivery_contact_name_optional")}
+            aria-label={t("delivery_contact_name_optional")}
             autoComplete="name"
             className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
@@ -126,8 +127,8 @@ function DeliveryRegisterPage() {
             inputMode="tel"
             value={contactPhone}
             onChange={(e) => setContactPhone(e.target.value)}
-            placeholder="رقم هاتف الشركة (مطلوب)"
-            aria-label="رقم هاتف الشركة (مطلوب)"
+            placeholder={t("delivery_company_phone_required")}
+            aria-label={t("delivery_company_phone_required")}
             autoComplete="tel"
             className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
@@ -135,16 +136,16 @@ function DeliveryRegisterPage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder="البريد الإلكتروني (اختياري)"
-            aria-label="البريد الإلكتروني (اختياري)"
+            placeholder={t("delivery_company_email_optional")}
+            aria-label={t("delivery_company_email_optional")}
             autoComplete="email"
             className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             value={licenseNumber}
             onChange={(e) => setLicenseNumber(e.target.value)}
-            placeholder="رقم السجل التجاري / الرخصة (اختياري)"
-            aria-label="رقم السجل التجاري / الرخصة (اختياري)"
+            placeholder={t("delivery_license_optional")}
+            aria-label={t("delivery_license_optional")}
             className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
 
@@ -161,15 +162,15 @@ function DeliveryRegisterPage() {
               busy && "cursor-not-allowed",
             )}
           >
-            {busy ? "جارٍ الإرسال..." : "إرسال طلب التسجيل"}
+            {busy ? "{t("delivery_registration_submitting")}" : "{t("delivery_registration_submit")}"}
           </button>
         </form>
       </section>
 
       <div className="text-center text-xs text-muted-foreground">
-        لديك حساب بالفعل؟{" "}
+        {t("delivery_existing_account")}{" "}
         <Link to="/" className="text-accent-ink font-bold hover:underline">
-          العودة إلى الصفحة الرئيسية
+          {t("delivery_back_home")}
         </Link>
       </div>
     </div>
