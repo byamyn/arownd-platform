@@ -218,17 +218,22 @@ function CategoryPage() {
         <section className="space-y-2 border-t border-border pt-4 pb-2">
           <h2 className="text-xs font-bold text-muted-foreground">{t("category_other_heading")}</h2>
           <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
-            {otherMains.map((c) => (
-              <Link
-                key={c.id}
-                to="/category/$catId"
-                params={{ catId: c.id }}
-                className="card-premium flex min-h-11 shrink-0 items-center gap-1.5 !rounded-full px-4 text-xs font-bold text-muted-foreground"
-              >
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-accent-ink"><(CATEGORY_ICONS[c.id] ?? Sparkles) className="size-4" aria-hidden="true" /></span>
-                {c.label}
-              </Link>
-            ))}
+            {otherMains.map((c) => {
+              const OtherCategoryIcon = CATEGORY_ICONS[c.id] ?? Sparkles;
+              return (
+                <Link
+                  key={c.id}
+                  to="/category/$catId"
+                  params={{ catId: c.id }}
+                  className="card-premium flex min-h-11 shrink-0 items-center gap-1.5 !rounded-full px-4 text-xs font-bold text-muted-foreground"
+                >
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-accent-ink">
+                    <OtherCategoryIcon className="size-4" aria-hidden="true" />
+                  </span>
+                  {c.label}
+                </Link>
+              );
+            })}
           </div>
         </section>
 
