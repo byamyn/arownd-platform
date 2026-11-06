@@ -76,6 +76,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     { to: "/favorites", expect: "المفضلة" },
     { to: "/settings", expect: "الإعدادات" },
     { to: "/about", expect: "حول Arownd" },
+    { to: "/create-store", expect: "أصبح تاجرًا" },
     { to: "/profile", expect: /سجّل الدخول|تسجيل الدخول|الملف الشخصي/ },
     { to: "/notifications", expect: "الإشعارات" },
     { to: "/reservations/", expect: "حجوزاتي" },
