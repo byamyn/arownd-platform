@@ -73,11 +73,11 @@ function AddProductPage() {
   useRealtimeSubscription({ table: "store_offers", filter: store.data?.id ? `store_id=eq.${store.data.id}` : undefined, queryKeys: [["my-store-offers", store.data?.id ?? ""]], enabled: !!store.data?.id });
 
   if (!ready) return null;
-  if (!user) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><div className="rounded-[var(--radius-card)] border border-border bg-card p-5 text-center"><p className="text-sm text-muted-foreground">سجّل الدخول بحساب التاجر لإضافة منتجاتك.</p><Link to="/auth" search={{ redirect: "/studio/add-product" }} className="btn-primary mt-4 inline-flex px-5 py-3">تسجيل الدخول</Link></div></div>;
+  if (!user) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title={t("studio_add_product_title")} back="/studio" /><div className="rounded-[var(--radius-card)] border border-border bg-card p-5 text-center"><p className="text-sm text-muted-foreground">سجّل الدخول بحساب التاجر لإضافة منتجاتك.</p><Link to="/auth" search={{ redirect: "/studio/add-product" }} className="btn-primary mt-4 inline-flex px-5 py-3">{t("studio_login_action")}</Link></div></div>;
   if (store.isLoading || roles.isLoading || accountType.isLoading) return <DashboardLoadingSkeleton cards={2} />;
   if (store.isError || roles.isError || accountType.isError) return <div className="mx-auto max-w-xl px-4 pt-6"><ErrorState scope="studio:add-product" error={store.error ?? roles.error ?? accountType.error} onRetry={() => { void store.refetch(); void roles.refetch(); void accountType.refetch(); }} /></div>;
-  if (accountType.data !== "merchant" || !roles.data?.includes("merchant")) return <div className="mx-auto max-w-xl px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">هذه الصفحة مخصصة لحسابات التجار.</p></div>;
-  if (!store.data) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">أنشئ متجرك أولًا حتى تتمكن من إضافة المنتجات.</p></div>;
+  if (accountType.data !== "merchant" || !roles.data?.includes("merchant")) return <div className="mx-auto max-w-xl px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">{t("studio_merchant_only_hint")}</p></div>;
+  if (!store.data) return <div className="mx-auto max-w-xl space-y-4 px-4 pt-6"><PageHeader title="إضافة منتج" back="/studio" /><p className="rounded-[var(--radius-card)] border border-border bg-card p-4 text-sm text-muted-foreground">{t("studio_create_store_before_products")}</p></div>;
   const storeId = store.data.id;
 
   const update = (key: keyof typeof form, value: string) => setForm((current) => ({ ...current, [key]: value }));
@@ -128,25 +128,25 @@ function AddProductPage() {
 
   return (
     <AppShell className="mx-auto max-w-2xl space-y-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3">
-      <PageHeader title="إضافة منتج" subtitle="أضف منتجًا جديدًا إلى كتالوج متجرك" back="/studio" />
+      <PageHeader title={t("studio_add_product_title")} subtitle={t("studio_add_product_subtitle")} back="/studio" />
       <section className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-6">
         <div className="mb-4 flex items-center gap-3">
           <span className="flex size-11 items-center justify-center rounded-[var(--radius-control)] bg-primary-soft text-accent-ink"><PackagePlus className="size-5" /></span>
-          <div><h2 className="font-extrabold text-foreground">بيانات المنتج</h2><p className="text-xs text-muted-foreground">أدخل المعلومات الأساسية ثم احفظ المنتج</p></div>
+          <div><h2 className="font-extrabold text-foreground">{t("studio_product_data_heading")}</h2><p className="text-xs text-muted-foreground">{t("studio_product_data_hint")}</p></div>
         </div>
         <div className="grid min-w-0 gap-3">
-          <label className="grid gap-1.5 text-sm font-semibold">اسم المنتج<input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder={t("studio_product_name_ph")} className={FIELD} /></label>
+          <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_name_label")}<input value={form.name} onChange={(e) => update("name", e.target.value)} placeholder={t("studio_product_name_ph")} className={FIELD} /></label>
           <div className="grid grid-cols-2 gap-2">
-            <label className="grid gap-1.5 text-sm font-semibold">السعر<input value={form.price} onChange={(e) => update("price", e.target.value)} placeholder={t("studio_price_dzd_ph")} type="number" min="0" className={FIELD} /></label>
-            <label className="grid gap-1.5 text-sm font-semibold">الكمية<input value={form.stock} onChange={(e) => update("stock", e.target.value)} placeholder={t("studio_quantity_ph")} type="number" min="0" className={FIELD} /></label>
+            <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_price_label")}<input value={form.price} onChange={(e) => update("price", e.target.value)} placeholder={t("studio_price_dzd_ph")} type="number" min="0" className={FIELD} /></label>
+            <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_quantity_label")}<input value={form.stock} onChange={(e) => update("stock", e.target.value)} placeholder={t("studio_quantity_ph")} type="number" min="0" className={FIELD} /></label>
           </div>
           <CategoryPicker value={form.category} onChange={(value) => update("category", value)} />
-          <label className="grid gap-1.5 text-sm font-semibold">العلامة التجارية<input value={form.brand} onChange={(e) => update("brand", e.target.value)} placeholder={t("studio_brand_ph")} className={COMPACT_FIELD} /></label>
-          <label className="grid gap-1.5 text-sm font-semibold">المقاسات<input value={form.sizes} onChange={(e) => update("sizes", e.target.value)} placeholder={t("studio_sizes_ph")} className={COMPACT_FIELD} /></label>
-          <label className="grid gap-1.5 text-sm font-semibold">الألوان<input value={form.colors} onChange={(e) => update("colors", e.target.value)} placeholder={t("studio_colors_ph")} className={COMPACT_FIELD} /></label>
-          <label className="grid gap-1.5 text-sm font-semibold">الوصف<textarea value={form.description} onChange={(e) => update("description", e.target.value)} placeholder={t("studio_description_ph")} rows={4} className="min-h-24 w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 font-normal outline-none focus:border-accent-ink focus:ring-2 focus:ring-primary/20" /></label>
-          <div className="grid gap-1.5 text-sm font-semibold"><span>صور المنتج</span><ImageUploader initialItems={[]} onChange={(items) => setImages(items.map((item) => item.file).filter(Boolean))} label={t("studio_add_product_images_label")} /></div>
-          <button type="button" onClick={save} disabled={busy} className="mt-2 min-h-12 rounded-2xl bg-primary px-5 py-3 font-extrabold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50">{busy ? "جارٍ الحفظ..." : "حفظ المنتج"}</button>
+          <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_brand_label")}<input value={form.brand} onChange={(e) => update("brand", e.target.value)} placeholder={t("studio_brand_ph")} className={COMPACT_FIELD} /></label>
+          <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_sizes_label")}<input value={form.sizes} onChange={(e) => update("sizes", e.target.value)} placeholder={t("studio_sizes_ph")} className={COMPACT_FIELD} /></label>
+          <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_colors_label")}<input value={form.colors} onChange={(e) => update("colors", e.target.value)} placeholder={t("studio_colors_ph")} className={COMPACT_FIELD} /></label>
+          <label className="grid gap-1.5 text-sm font-semibold">{t("studio_product_description_label")}<textarea value={form.description} onChange={(e) => update("description", e.target.value)} placeholder={t("studio_description_ph")} rows={4} className="min-h-24 w-full rounded-[var(--radius-control)] border border-input bg-background px-4 py-3 font-normal outline-none focus:border-accent-ink focus:ring-2 focus:ring-primary/20" /></label>
+          <div className="grid gap-1.5 text-sm font-semibold"><span>{t("studio_product_images_label")}</span><ImageUploader initialItems={[]} onChange={(items) => setImages(items.map((item) => item.file).filter(Boolean))} label={t("studio_add_product_images_label")} /></div>
+          <button type="button" onClick={save} disabled={busy} className="mt-2 min-h-12 rounded-2xl bg-primary px-5 py-3 font-extrabold text-primary-foreground transition active:scale-[var(--scale-pressed)] disabled:opacity-50">{busy ? t("studio_saving") : t("studio_save_product")}</button>
         </div>
       </section>
     </AppShell>
