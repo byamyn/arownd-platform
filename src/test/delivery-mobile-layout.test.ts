@@ -22,6 +22,8 @@ describe("delivery company mobile experience", () => {
     expect(registration).toContain("pb-[calc(7rem+env(safe-area-inset-bottom))]");
     expect(registration).toContain("h-12 w-full rounded-[var(--radius-control)]");
     expect(registration).toContain("min-h-[var(--control-height)] rounded-full");
+    expect(registration).toContain('type="tel"\n            dir="ltr"');
+    expect(registration).toContain('type="email"\n            dir="ltr"');
   });
 
   it("uses dictionary keys instead of hardcoded Arabic UI strings", () => {
