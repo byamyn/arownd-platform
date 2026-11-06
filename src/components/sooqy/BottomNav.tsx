@@ -40,9 +40,9 @@ export function BottomNav() {
                 )}
                 aria-hidden="true"
               >
-                <Icon className="size-5" strokeWidth={isActive ? 2.4 : 1.9} />
+                <Icon className="size-[22px]" strokeWidth={2} />
               </span>
-              <span className="w-full truncate text-center">{t(labelKey)}</span>
+              <span className="w-full whitespace-normal text-center text-[11px] leading-4">{t(labelKey)}</span>
             </Link>
           );
         })}
