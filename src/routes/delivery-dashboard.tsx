@@ -364,7 +364,7 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="min-h-[5.5rem] rounded-2xl border border-border bg-background p-3 sm:p-4">
+    <div className="min-h-[5.5rem] rounded-[var(--radius-card)] border border-border bg-background p-3 sm:p-4">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-xs text-muted-foreground">{label}</p>
@@ -398,7 +398,7 @@ function PendingShipmentsList({
   return (
     <div className="mt-4 space-y-3">
       {shipments.map((shipment) => (
-        <div key={shipment.id} className="rounded-2xl border border-border bg-card p-3.5 sm:p-4">
+        <div key={shipment.id} className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-bold truncate">{translate("delivery_shipment_number", { id: shipment.id.slice(0, 8) })}</p>
@@ -430,13 +430,13 @@ function PendingShipmentsList({
           <div className="mt-4 flex items-center gap-2">
             <button
               onClick={() => onDecision(shipment.id, "accept")}
-              className="min-h-11 flex-1 rounded-2xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
+              className="min-h-11 flex-1 rounded-[var(--radius-control)] bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
             >
               <Check className="ms-1.5 size-4" /> {translate("delivery_accept")}
             </button>
             <button
               onClick={() => onDecision(shipment.id, "reject")}
-              className="min-h-11 rounded-2xl bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground transition hover:bg-rose-soft/80"
+              className="min-h-11 rounded-[var(--radius-control)] bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground transition hover:bg-rose-soft/80"
             >
               <X className="ms-1.5 size-4" /> {translate("delivery_reject")}
             </button>
