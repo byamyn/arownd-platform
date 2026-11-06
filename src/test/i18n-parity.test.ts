@@ -21,6 +21,40 @@ describe("توازن القاموس (i18n parity)", () => {
     expect({ missingInEn, missingInAr }).toEqual({ missingInEn: [], missingInAr: [] });
   });
 
+
+  it("لا تتعارض مفاتيح مجموعات القاموس إلا في المفاتيح المشتركة المصرّح بها", () => {
+    const allowedDuplicates = new Set([
+      "aria_favorite_add",
+      "aria_favorite_remove",
+      "aria_close",
+      "aria_back",
+      "aria_prev",
+      "aria_next",
+      "aria_increase_qty",
+      "aria_decrease_qty",
+      "action_retry",
+    ]);
+    const owners = new Map<string, string[]>();
+    for (const group of GROUPS) {
+      for (const key of Object.keys(group.ar)) {
+        owners.set(key, [...(owners.get(key) ?? []), key]);
+      }
+    }
+    const duplicates = [...owners.entries()]
+      .filter(([key, entries]) => entries.length > 1 && !allowedDuplicates.has(key))
+      .map(([key]) => key);
+    expect(duplicates).toEqual([]);
+  });
+
+  it("أسماء مفاتيح التوصيل لا تستبدل مفاتيح عامة", () => {
+    const deliveryGroup = GROUPS.find((group) => "delivery_register_title" in group.ar);
+    expect(deliveryGroup).toBeDefined();
+    expect(deliveryGroup?.ar).toHaveProperty("delivery_company_delivery_address");
+    expect(deliveryGroup?.ar).toHaveProperty("delivery_company_shipment_fee");
+    expect(deliveryGroup?.ar).not.toHaveProperty("delivery_address");
+    expect(deliveryGroup?.ar).not.toHaveProperty("delivery_fee");
+  });
+
   it("لا قيمة ترجمة فارغة", () => {
     const empty: string[] = [];
     for (const g of GROUPS) {
