@@ -26,6 +26,7 @@ import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { useState } from "react";
+import { useTranslation } from "@/lib/i18n";
 import { showError, showSuccess } from "@/lib/feedback";
 import { NotificationListSkeleton } from "@/components/sooqy/skeleton";
 
@@ -93,6 +94,7 @@ function navigateForNotification(
 
 function NotificationsPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const qc = useQueryClient();
   const navigate = useNavigate();
   const [expandedId, setExpandedId] = useState<string | null>(null);
@@ -154,7 +156,7 @@ function NotificationsPage() {
         qc.invalidateQueries({ queryKey: ["notifications"] }),
         qc.invalidateQueries({ queryKey: ["unread-notification-count"] }),
       ]);
-      showSuccess("تم حذف الإشعار");
+      showSuccess(t("notifications_deleted"));
     } catch (error) {
       showError(error);
     } finally {
@@ -170,14 +172,14 @@ function NotificationsPage() {
   return (
     <>
       <SeoHead
-        title="الإشعارات"
-        description="تابع تحديثات طلباتك وحجوزاتك وعروض المتاجر."
+        title={t("notifications_title")}
+        description={t("notifications_description")}
         keywords="الإشعارات, Arownd"
         ogType="website"
       />
       <div className="px-4 pb-6 pt-4">
         <PageHeader
-          title="الإشعارات"
+          title={t("notifications_title")}
           back="/profile"
           action={
             q.data && q.data.some((n) => !n.read) ? (
@@ -187,7 +189,7 @@ function NotificationsPage() {
                 disabled={markingAll}
                 className="min-h-11 px-2 text-sm font-bold text-accent-ink disabled:opacity-50"
               >
-                {markingAll ? "جارٍ التحديث..." : "قراءة الكل"}
+                {markingAll ? t("notifications_marking_all") : t("notifications_mark_all")}
               </button>
             ) : undefined
           }
@@ -196,8 +198,8 @@ function NotificationsPage() {
         {!user && (
           <EmptyState
             Icon={Lock}
-            title="سجّل الدخول لعرض إشعاراتك"
-            hint="تظهر إشعارات طلباتك وحجوزاتك بعد تسجيل الدخول."
+            title=t("notifications_login_title")
+            hint=t("notifications_login_hint")
             action={
               <Link to="/auth" className="btn-small">
                 تسجيل الدخول
@@ -269,7 +271,7 @@ function NotificationsPage() {
                         {!n.read && (
                           <span
                             className="size-2 shrink-0 rounded-full bg-primary"
-                            aria-label="غير مقروء"
+                            aria-label={t("notifications_unread")}
                           />
                         )}
                       </p>
@@ -282,7 +284,7 @@ function NotificationsPage() {
                       type="button"
                       onClick={() => setExpandedId(isExpanded ? null : n.id)}
                       aria-expanded={isExpanded}
-                      aria-label={isExpanded ? "إخفاء الخيارات" : "خيارات الإشعار"}
+                      aria-label={isExpanded ? t("notifications_hide_options") : t("notifications_show_options")}
                       className="icon-btn shrink-0"
                     >
                       <MoreHorizontal className="size-4" aria-hidden="true" />
