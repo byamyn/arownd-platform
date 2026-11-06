@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { BottomNav } from "@/components/sooqy/BottomNav";
+import { DeliveryNav } from "@/components/sooqy/DeliveryNav";
 import { StudioNav } from "@/components/sooqy/StudioNav";
 import { useAuth } from "@/lib/auth";
 import { fetchMyAccountType } from "@/lib/sooqy";
@@ -14,10 +15,10 @@ export function AccountBottomNav() {
   if (!ready) return null;
   if (!user) return <BottomNav />;
   if (accountType.data === "merchant") return <StudioNav />;
-  if (accountType.isLoading || accountType.isError || !accountType.isSuccess) return <BottomNav />;
-  // أبقِ سلوك تنقل شركات التوصيل كما هو؛ لا يشمله تحديث تنقل الحسابات الشخصية والتجارية.
-  if (accountType.data === "personal" || accountType.data === "delivery_company") {
+  if (accountType.data === "delivery_company") return <DeliveryNav />;
+  if (accountType.isLoading || accountType.isError || !accountType.isSuccess) {
     return <BottomNav />;
   }
+  if (accountType.data === "personal") return <BottomNav />;
   return null;
 }
