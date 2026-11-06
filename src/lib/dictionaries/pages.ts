@@ -4,6 +4,8 @@ import type { DictGroup } from "./types";
 export const pages: DictGroup = {
   ar: {
     stores_title: "المتاجر القريبة منك — Arownd",
+    map_seo_title: "الخريطة — Arownd",
+    map_seo_description: "خريطة تفاعلية للمحلات القريبة منك في الجزائر.",
     create_store_title: "أصبح تاجرًا",
     create_store_login_hint: "يرجى تسجيل الدخول لإنشاء متجر",
     create_store_login_action: "تسجيل الدخول",
@@ -348,6 +350,8 @@ export const pages: DictGroup = {
   },
   en: {
     stores_title: "Nearby stores — Arownd",
+    map_seo_title: "Map — Arownd",
+    map_seo_description: "An interactive map of nearby shops in Algeria.",
     create_store_title: "Become a merchant",
     create_store_login_hint: "Please sign in to create a store",
     create_store_login_action: "Sign in",
