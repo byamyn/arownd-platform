@@ -21,7 +21,6 @@ Arabic UI literals remain in multiple active routes. Notifications, wallet, rese
 
 | Route | Approx. non-comment Arabic lines found | Examples |
 |---|---:|---|
-| `checkout.tsx` | 4 | Tracking label and action |
 | `studio.index.tsx` | 30 | Metadata, store state, accessibility labels |
 | `studio.settings.tsx` | 12 | Metadata and image accessibility labels |
 | `create-store.tsx` | 6 | Metadata, page title, login guidance |
@@ -46,7 +45,7 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Account-request dates now use the active locale (`ar-DZ` / `en-DZ`). Cancelling a request now also gives success feedback only after the server confirms and the query is invalidated.
 - Added translation assertions for settings, profile, and account-request strings.
 - Static checks: 232 Arabic and 232 English activity keys; no unresolved references in the three migrated routes; no unapproved cross-group collisions; no Arabic UI literals found in these routes (comments excluded).
-- `about.tsx`, `help.tsx`, `privacy.tsx`, and `terms.tsx` remain outstanding, along with other shopper and merchant routes.
+- `privacy.tsx` and `terms.tsx` remain outstanding as legal-content localization; checkout and store settings received follow-up localization. Other shopper and merchant routes still need review.
 
 #### 1.3 Informational and shopper route localization batch (2026-11-06)
 
@@ -59,6 +58,16 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Added bilingual dictionary assertions for About, Help, category, product, and store content. Added `/about` to route smoke coverage.
 - Static route scan: no Arabic UI literals found in About, Help, category, or product detail; store detail has only an Arabic explanatory code comment remaining. Dictionary groups have no new key collisions and all newly referenced keys resolve.
 - Legal documents (`privacy.tsx`, `terms.tsx`) and other shopper/merchant routes remain outstanding. Legal text should receive a separate legal-language review before being represented as an approved English translation.
+
+#### 1.4 Checkout and merchant store settings localization (2026-11-06)
+
+- Added Arabic/English checkout partial-success and plural tracking-code labels in `src/lib/dictionaries/commerce.ts`.
+- Replaced remaining Arabic checkout success summary and tracking action literals in `src/routes/checkout.tsx`.
+- Added bilingual store-settings metadata, login/create-store actions, image alt text, category guidance, and save-state labels in `src/lib/dictionaries/studio.ts`.
+- Migrated those UI strings and SEO metadata in `src/routes/studio.settings.tsx`.
+- Added translation regression assertions for checkout and merchant store settings.
+- Static source review only; no executable test, typecheck, lint, UI check, or build was run.
+- `privacy.tsx` and `terms.tsx` are deliberately not machine-localized in this pass: legal translations require review against applicable Algerian law and the actual production data practices before publication.
 
 ## 2. Directional CSS
 
