@@ -33,18 +33,20 @@ import { MenuCard, MenuRow, SectionTitle } from "@/components/sooqy/list-menu";
 import { BottomSheet } from "@/components/sooqy/bottom-sheet";
 import { SideSheet } from "@/components/sooqy/side-sheet";
 import { cn } from "@/lib/utils";
+import { useTranslation, translate } from "@/lib/i18n";
 import { isAndroidNativePlatform } from "@/lib/platform";
 import { clearUserScopedCaches } from "@/lib/pwa";
 import { getNativeBiometricStatus, setNativeBiometricEnabled } from "@/lib/native-biometric";
 import { addNativeUpdateListener, checkNativeAppUpdate, completeNativeAppUpdate, startNativeAppUpdate } from "@/lib/native-app-update";
 
 export const Route = createFileRoute("/settings")({
-  head: () => ({ meta: [{ title: "الإعدادات — Arownd" }] }),
+  head: () => ({ meta: [{ title: translate("settings_seo_title") }] }),
   component: SettingsPage,
 });
 
 function SettingsPage() {
   const { user } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const { theme, setTheme } = useTheme();
@@ -63,7 +65,7 @@ function SettingsPage() {
     try {
       await setMyProfileVisibility(!profile.data.is_public);
       await qc.invalidateQueries({ queryKey: ["my-profile"] });
-      showSuccess(!profile.data.is_public ? "أصبح ملفك الشخصي عاماً" : "أصبح ملفك الشخصي خاصاً");
+      showSuccess(!profile.data.is_public ? t("settings_visibility_public_success") : t("settings_visibility_private_success"));
     } catch (error) {
       showError(error);
     } finally {
@@ -119,8 +121,8 @@ function SettingsPage() {
       setBiometricAvailable(status.available);
       setBiometricEnabled(status.enabled);
       showSuccess(status.enabled
-        ? "تم تفعيل قفل Arownd بالبصمة أو التعرّف على الوجه."
-        : "تم إيقاف قفل التطبيق بالبصمة.");
+        ? t("settings_biometric_on_success")
+        : t("settings_biometric_off_success"));
     } catch (error) {
       showError(error);
     } finally {
@@ -139,7 +141,7 @@ function SettingsPage() {
         return;
       }
       if (!status.available) {
-        showSuccess("لا يوجد تحديث جديد متاح عبر Google Play حاليًا.");
+        showSuccess(t("settings_update_none"));
         return;
       }
 
@@ -152,22 +154,22 @@ function SettingsPage() {
               ? "immediate"
               : null;
       if (!updateType) {
-        toast.error("التحديث متاح، لكن Google Play لا يسمح ببدء طريقة التحديث على هذا الجهاز.");
+        toast.error(t("settings_update_blocked"));
         return;
       }
       await startNativeAppUpdate(updateType);
       showSuccess(updateType === "immediate"
-        ? "بدأ إجراء التحديث الفوري من Google Play."
-        : "بدأ تنزيل التحديث في الخلفية. سيظهر خيار التثبيت عند اكتماله.");
+        ? t("settings_update_immediate")
+        : t("settings_update_flexible"));
     } catch (error) {
       console.warn("[native] In-app update check failed", error);
-      toast.error("تعذر التحقق من التحديث. تأكد من تثبيت التطبيق من Google Play ووجود إصدار أحدث في مسار التوزيع.");
+      toast.error(t("settings_update_error"));
     } finally {
       setNativeUpdateBusy(false);
     }
   };
 
-  const themeLabel = theme === "system" ? "نظام" : theme === "dark" ? "داكن" : "فاتح";
+  const themeLabel = theme === "system" ? t("settings_theme_system") : theme === "dark" ? t("settings_theme_dark") : t("settings_theme_light");
 
   const signOut = async () => {
     if (signingOut) return;
@@ -195,18 +197,18 @@ function SettingsPage() {
   const changePassword = async () => {
     if (savingPassword) return;
     if (newPassword.length < 8) {
-      toast.error("كلمة المرور يجب ألا تقل عن 8 أحرف.");
+      toast.error(t("settings_password_min"));
       return;
     }
     if (newPassword !== confirmPassword) {
-      toast.error("كلمتا المرور غير متطابقتين.");
+      toast.error(t("settings_password_mismatch"));
       return;
     }
     setSavingPassword(true);
     try {
       const { error } = await supabase.auth.updateUser({ password: newPassword });
       if (error) throw error;
-      showSuccess("تم تغيير كلمة المرور.");
+      showSuccess(t("settings_password_success"));
       setNewPassword("");
       setConfirmPassword("");
       setShowSecurity(false);
@@ -220,24 +222,24 @@ function SettingsPage() {
   if (!user) {
     return (
       <div className="app-page mx-auto max-w-xl pb-6 pt-4">
-        <PageHeader title="الإعدادات" back="/profile" />
+        <PageHeader title={t("settings_title")} back="/profile" />
         <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-card p-6 text-center">
           <p className="text-body text-muted-foreground">يرجى تسجيل الدخول للوصول إلى الإعدادات</p>
           <Link to="/auth" className="btn-primary mt-4 w-full">
-            تسجيل الدخول
+            {t("settings_login_action")}
           </Link>
         </div>
       </div>
     );
   }
 
-  const name = (user.user_metadata?.["full_name"] as string | undefined) ?? "مستخدم Arownd";
+  const name = (user.user_metadata?.["full_name"] as string | undefined) ?? t("settings_default_user");
   const email = user.email ?? "";
   const initial = (email || "؟").slice(0, 1).toUpperCase();
 
   return (
     <div className="app-page mx-auto max-w-xl space-y-5 pb-6 pt-4">
-      <PageHeader title="الإعدادات" subtitle="خصّص تجربتك في Arownd" back="/profile" />
+      <PageHeader title={t("settings_title")} subtitle={t("settings_subtitle")} back="/profile" />
 
       {/* بطاقة الحساب */}
       <div className="card-premium flex items-center gap-4 p-4">
@@ -252,23 +254,23 @@ function SettingsPage() {
           to="/profile"
           className="flex min-h-11 shrink-0 items-center rounded-full bg-primary-soft px-4 text-sm font-bold text-accent-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
         >
-          تعديل
+          {t("settings_edit")}
         </Link>
       </div>
 
       {/* ظهور الملف الشخصي للحسابات الشخصية فقط */}
       {accountType.data === "personal" && (
         <section className="space-y-2">
-          <SectionTitle>ظهور الملف الشخصي</SectionTitle>
+          <SectionTitle>{t("settings_visibility_section")}</SectionTitle>
           <MenuCard>
             <div className="flex items-center justify-between gap-3 p-4">
               <div className="min-w-0">
-                <p className="font-bold text-foreground">الملف الشخصي العام</p>
+                <p className="font-bold text-foreground">{t("settings_visibility_title")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  تحكم فيما إذا كان بإمكان الآخرين مشاهدة ملفك
+                  {t("settings_visibility_hint")}
                 </p>
                 <p className="mt-2 text-xs font-semibold text-muted-foreground">
-                  {profile.data?.is_public ? "ظاهر للآخرين" : "خاص"}
+                  {profile.data?.is_public ? t("settings_visibility_public") : t("settings_visibility_private")}
                 </p>
               </div>
               <button
@@ -283,10 +285,10 @@ function SettingsPage() {
                   <Eye className="size-4" />
                 )}
                 {visibilityBusy
-                  ? "جارٍ الحفظ..."
+                  ? t("settings_saving")
                   : profile.data?.is_public
-                    ? "جعله خاصاً"
-                    : "جعله عاماً"}
+                    ? t("settings_make_private")
+                     : t("settings_make_public")}
               </button>
             </div>
             {profile.data?.is_public && (
@@ -296,7 +298,7 @@ function SettingsPage() {
                   search={{ public_id: user.id }}
                   className="text-sm font-bold text-accent-ink"
                 >
-                  معاينة الملف الشخصي العام
+                  {t("settings_preview_public")}
                 </Link>
               </div>
             )}
@@ -307,12 +309,12 @@ function SettingsPage() {
 
       {/* مجموعة: الحساب */}
       <section className="space-y-2">
-        <SectionTitle>الحساب</SectionTitle>
+        <SectionTitle>{t("settings_account_section")}</SectionTitle>
         <MenuCard>
           <MenuRow
             icon={Shield}
-            label="الأمان وتسجيل الدخول"
-            hint="تغيير كلمة المرور"
+            label={t("settings_security")}
+            hint={t("settings_change_password_hint")}
             onClick={() => setShowSecurity(true)}
           />
         </MenuCard>
@@ -320,18 +322,18 @@ function SettingsPage() {
 
       {androidNative && (
         <section className="space-y-2">
-          <SectionTitle>حماية وتحديث Android</SectionTitle>
+          <SectionTitle>{t("settings_android_section")}</SectionTitle>
           <MenuCard>
             <div className="flex items-center justify-between gap-3 p-4">
               <div className="min-w-0">
-                <p className="font-bold text-foreground">قفل التطبيق بالبصمة</p>
+                <p className="font-bold text-foreground">{t("settings_biometric_title")}</p>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {biometricAvailable
-                    ? biometricEnabled ? "يتطلب التحقق عند فتح التطبيق والعودة إليه" : "متاح على هذا الجهاز"
-                    : "ميزة البصمة غير متاحة أو لم تُعدّ على هذا الجهاز"}
+                    ? biometricEnabled ? t("settings_biometric_required") : t("settings_biometric_available")
+                    : t("settings_biometric_unavailable")}
                 </p>
                 <p className="mt-1 text-xs text-muted-foreground">
-                  قفل محلي للجهاز، ولا يحل محل كلمة مرور حسابك.
+                  {t("settings_biometric_note")}
                 </p>
               </div>
               <button
@@ -345,31 +347,31 @@ function SettingsPage() {
                   biometricEnabled ? "bg-primary text-accent-ink-foreground" : "border border-border text-foreground",
                 )}
               >
-                {biometricBusy ? "جارٍ الحفظ..." : biometricEnabled ? "مفعّل" : "تفعيل"}
+                {biometricBusy ? t("settings_saving") : biometricEnabled ? "مفعّل" : "تفعيل"}
               </button>
             </div>
             <MenuRow
               icon={RefreshCw}
-              label={nativeUpdateDownloaded ? "تثبيت التحديث الذي تم تنزيله" : "التحقق من تحديث التطبيق"}
-              hint={nativeUpdateDownloaded ? "اكتمل التنزيل" : "عبر Google Play"}
+              label={nativeUpdateDownloaded ? t("settings_install_update") : t("settings_check_update")}
+              hint={nativeUpdateDownloaded ? t("settings_download_complete") : t("settings_google_play")}
               onClick={() => void checkAndInstallNativeUpdate()}
             />
           </MenuCard>
           <p className="px-1 text-xs leading-5 text-muted-foreground">
-            تحديثات Android داخل التطبيق تتطلب تثبيت Arownd من Google Play ونشر إصدار أحدث على مسار توزيع مناسب.
+            {t("settings_android_update_note")}
           </p>
         </section>
       )}
 
       {/* مجموعة: تفضيلات التطبيق */}
       <section className="space-y-2">
-        <SectionTitle>تفضيلات التطبيق</SectionTitle>
+        <SectionTitle>{t("settings_preferences_section")}</SectionTitle>
         <MenuCard>
-          <MenuRow icon={Bell} label="الإشعارات" hint="طلباتك وحصريات متجرك" to="/notifications" />
-          <MenuRow icon={Globe} label="اللغة" hint="العربية" soon />
+          <MenuRow icon={Bell} label={t("settings_notifications")} hint={t("settings_notifications_hint")} to="/notifications" />
+          <MenuRow icon={Globe} label={t("settings_language")} hint={t("settings_language_ar")} soon />
           <MenuRow
             icon={Moon}
-            label="المظهر"
+            label={t("settings_theme")}
             hint={themeLabel}
             onClick={() => setShowTheme(true)}
           />
@@ -378,27 +380,27 @@ function SettingsPage() {
 
       {/* مجموعة: المساعدة والخصوصية */}
       <section className="space-y-2">
-        <SectionTitle>المساعدة والخصوصية</SectionTitle>
+        <SectionTitle>{t("settings_help_section")}</SectionTitle>
         <MenuCard>
-          <MenuRow icon={HelpCircle} label="المساعدة والدعم" to="/help" />
-          <MenuRow icon={FileText} label="الشروط وسياسة الخصوصية" to="/terms" />
-          <MenuRow icon={Info} label="حول Arownd" to="/about" />
+          <MenuRow icon={HelpCircle} label={t("settings_help")} to="/help" />
+          <MenuRow icon={FileText} label={t("settings_terms")} to="/terms" />
+          <MenuRow icon={Info} label={t("settings_about")} to="/about" />
         </MenuCard>
       </section>
 
       {/* مجموعة: الإجراءات */}
       <section className="space-y-2">
-        <SectionTitle>الإجراءات</SectionTitle>
+        <SectionTitle>{t("settings_actions_section")}</SectionTitle>
         <MenuCard>
           <MenuRow
             icon={LogOut}
-            label={signingOut ? "جارٍ تسجيل الخروج..." : "تسجيل الخروج"}
+            label={signingOut ? t("settings_signing_out") : t("settings_sign_out")}
             onClick={() => void signOut()}
           />
           <MenuRow
             icon={Trash2}
-            label="طلب حذف الحساب"
-            hint="إرسال الطلب ومتابعة حالته"
+            label={t("settings_delete_account")}
+            hint={t("settings_delete_account_hint")}
             danger
             to="/delete-account"
           />
@@ -406,7 +408,7 @@ function SettingsPage() {
       </section>
 
       {/* أسفل الصفحة */}
-      <p className="pt-2 text-center text-xs text-muted-foreground">Arownd · الإصدار التجريبي</p>
+      <p className="pt-2 text-center text-xs text-muted-foreground">Arownd · {t("settings_beta_footer")}</p>
 
       {/* الأمان: تغيير كلمة المرور */}
       <SideSheet
@@ -418,8 +420,8 @@ function SettingsPage() {
             setConfirmPassword("");
           }
         }}
-        title="الأمان وتسجيل الدخول"
-        description="اختر كلمة مرور جديدة لحسابك (8 أحرف على الأقل)."
+        title={t("settings_password_title")}
+        description={t("settings_password_description")}
         footer={
           <button
             type="button"
@@ -427,7 +429,7 @@ function SettingsPage() {
             disabled={savingPassword}
             className="btn-primary w-full py-3 disabled:opacity-50"
           >
-            {savingPassword ? "جارٍ الحفظ..." : "تغيير كلمة المرور"}
+            {savingPassword ? t("settings_saving") : "تغيير كلمة المرور"}
           </button>
         }
       >
@@ -437,7 +439,7 @@ function SettingsPage() {
               htmlFor="new-password"
               className="mb-1 block text-xs font-bold text-muted-foreground"
             >
-              كلمة المرور الجديدة
+              {t("settings_password_new")}
             </label>
             <input
               id="new-password"
@@ -454,7 +456,7 @@ function SettingsPage() {
               htmlFor="confirm-password"
               className="mb-1 block text-xs font-bold text-muted-foreground"
             >
-              تأكيد كلمة المرور
+              {t("settings_password_confirm")}
             </label>
             <input
               id="confirm-password"
@@ -472,8 +474,8 @@ function SettingsPage() {
       <BottomSheet
         open={showTheme}
         onClose={() => setShowTheme(false)}
-        title="المظهر"
-        subtitle="اختر نمط العرض المفضّل لديك"
+        title={t("settings_theme_title")}
+        subtitle={t("settings_theme_subtitle")}
         modal
         width={320}
         footer={
@@ -482,16 +484,16 @@ function SettingsPage() {
             onClick={() => setShowTheme(false)}
             className="btn-secondary w-full"
           >
-            إلغاء
+            {t("settings_cancel")}
           </button>
         }
       >
         <div className="space-y-2">
           {(
             [
-              { value: "light", label: "فاتح", icon: Sun },
-              { value: "dark", label: "داكن", icon: Moon },
-              { value: "system", label: "نظام", icon: Monitor },
+              { value: "light", label: t("settings_theme_light"), icon: Sun },
+              { value: "dark", label: t("settings_theme_dark"), icon: Moon },
+              { value: "system", label: t("settings_theme_system"), icon: Monitor },
             ] as {
               value: Theme;
               label: string;
