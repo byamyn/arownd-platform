@@ -143,6 +143,10 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("studio_store_open_now", "en")).toBe("Open now");
     expect(t("studio_verified_badge", "ar")).toContain("موثق");
     expect(t("studio_verified_badge", "en")).toContain("verified");
+    expect(t("studio_add_product_meta_title", "ar")).toContain("إضافة منتج");
+    expect(t("studio_add_product_meta_title", "en")).toContain("Add product");
+    expect(t("shipment_view_order", "ar")).toBe("عرض الطلب");
+    expect(t("shipment_view_order", "en")).toBe("View order");
     expect(t("studio_manage_products_hint", "ar")).toContain("المنتجات");
     expect(t("studio_manage_products_hint", "en")).toContain("products");
     expect(t("studio_product_units", "ar", { name: "قميص", count: 3 })).toContain("3");
