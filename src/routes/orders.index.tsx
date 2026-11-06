@@ -335,14 +335,14 @@ function OrdersPage() {
                         disabled={cancellingMerchantOrderId === suborder.id}
                         onClick={() =>
                           setPendingConfirmation({
-                            title: "إلغاء طلب هذا المتجر",
-                            message: "هل تريد إلغاء طلب هذا المتجر فقط؟ ستُعاد المنتجات إلى مخزونه، وتبقى طلبات المتاجر الأخرى مستقلة.",
+                            title: t("orders_cancel_store_title"),
+                            message: t("orders_cancel_store_message"),
                             action: async () => {
                               setCancellingMerchantOrderId(suborder.id);
                               try {
                                 await cancelMyMerchantOrder(suborder.id);
                                 await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                                showSuccess("تم إلغاء طلب هذا المتجر.");
+                                showSuccess(t("orders_cancel_store_success"));
                               } finally {
                                 setCancellingMerchantOrderId(null);
                               }
@@ -352,7 +352,7 @@ function OrdersPage() {
                         className="inline-flex min-h-[var(--control-height)] w-full items-center justify-center gap-2 rounded-full border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                       >
                         <XCircle className="size-4" />
-                        {cancellingMerchantOrderId === suborder.id ? "جارٍ إلغاء الطلب..." : "إلغاء طلب هذا المتجر"}
+                        {cancellingMerchantOrderId === suborder.id ? t("orders_cancelling") : t("orders_cancel_store_title")}
                       </button>
                     )}
                   </div>
@@ -383,14 +383,14 @@ function OrdersPage() {
                       disabled={cancellingOrderId === o.id}
                       onClick={() =>
                         setPendingConfirmation({
-                          title: "إلغاء الطلب",
-                          message: "هل تريد إلغاء هذا الطلب؟ ستُعاد الكميات إلى مخزون المتاجر.",
+                          title: t("orders_cancel_title"),
+                          message: t("orders_cancel_message"),
                           action: async () => {
                             setCancellingOrderId(o.id);
                             try {
                               await cancelMyOrder(o.id);
                               await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                              showSuccess("تم إلغاء الطلب بنجاح.");
+                              showSuccess(t("orders_cancel_success"));
                             } finally {
                               setCancellingOrderId(null);
                             }
@@ -400,7 +400,7 @@ function OrdersPage() {
                       className="mx-4 mb-4 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-danger/30 bg-danger-soft px-3 text-sm font-bold text-danger transition hover:bg-danger/15 disabled:opacity-50"
                     >
                       <XCircle className="size-4" />
-                      {cancellingOrderId === o.id ? "جارٍ إلغاء الطلب..." : "إلغاء الطلب"}
+                      {cancellingOrderId === o.id ? t("orders_cancelling") : t("orders_cancel_title")}
                     </button>
                   )}
                 {!o.isMerchantSuborder &&
@@ -409,19 +409,19 @@ function OrdersPage() {
                       type="button"
                       onClick={() =>
                         setPendingConfirmation({
-                          title: "إخفاء الطلب من السجل",
+                          title: t("orders_archive_title"),
                           message:
-                            "هل تريد إخفاء هذا الطلب من سجلّك؟ سيبقى محفوظًا في قاعدة البيانات.",
+                            t("orders_archive_message"),
                           action: async () => {
                             await archiveMyActivity("order", o.id);
                             await queryClient.invalidateQueries({ queryKey: ["my-orders"] });
-                            showSuccess("تم إخفاء الطلب من سجلك.");
+                            showSuccess(t("orders_archive_success"));
                           },
                         })
                       }
                       className="mx-4 mb-4 mt-2 inline-flex min-h-[var(--control-height)] w-[calc(100%-2rem)] items-center justify-center gap-2 rounded-full border border-border text-sm font-semibold text-muted-foreground transition hover:bg-muted"
                     >
-                      <Archive className="size-4" /> إخفاء من السجل
+                      <Archive className="size-4" /> {t("orders_archive_action")}
                     </button>
                   )}
               </article>
@@ -433,7 +433,7 @@ function OrdersPage() {
         open={pendingConfirmation !== null}
         title={pendingConfirmation?.title ?? ""}
         message={pendingConfirmation?.message ?? ""}
-        confirmLabel="تأكيد"
+        confirmLabel={t("common_confirm")}
         cancelLabel={t("cancel")}
         busy={confirmationBusy}
         onConfirm={runPendingConfirmation}
