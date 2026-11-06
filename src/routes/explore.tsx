@@ -92,10 +92,10 @@ function ExplorePage() {
         title={t("explore_title")}
         description={t("explore_description")}
       />
-      <main className="space-y-5 px-4 pb-6 pt-5">
-        <header className="space-y-1">
+      <main className="space-y-6 px-4 pb-6 pt-4">
+        <header className="space-y-0.5">
           <h1 className="text-h1 text-foreground">{t("explore_heading")}</h1>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-xs text-muted-foreground">
             {t("explore_description")}
           </p>
         </header>
@@ -109,7 +109,7 @@ function ExplorePage() {
 
         <nav
           aria-label={t("explore_categories")}
-          className="no-scrollbar flex gap-2 overflow-x-auto"
+          className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4 pb-1"
         >
           {MAIN_CATEGORIES.map((category) => (
             <Link
@@ -140,9 +140,9 @@ function ExplorePage() {
                   aria-pressed={sort === item}
                   onClick={() => setSort(item)}
                   className={cn(
-                    "min-h-11 shrink-0 rounded-full border px-4 text-xs font-bold transition",
+                    "min-h-10 shrink-0 rounded-full border px-4 text-xs font-semibold transition-colors",
                     sort === item
-                      ? "border-accent-ink bg-primary-soft text-accent-ink-soft-foreground"
+                      ? "border-primary bg-primary text-primary-foreground"
                       : "border-border bg-card text-muted-foreground",
                   )}
                 >
@@ -187,7 +187,7 @@ function ExplorePage() {
           />
         )}
         {list.length > 0 && (
-          <div className="grid grid-cols-2 gap-[var(--gutter)] sm:grid-cols-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
             {list.map((group) => (
               <ProductCard key={group.product.id} g={group} />
             ))}
