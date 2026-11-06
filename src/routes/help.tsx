@@ -89,7 +89,7 @@ function HelpPage() {
       {tab === "delivery" && <DeliveryPartnerSection />}
       {tab === "faq" && <FaqSection open={open} onToggle={setOpen} t={t} />}
 
-      <QuickLinks />
+      <QuickLinks t={t} />
     </div>
   );
 }
@@ -321,32 +321,32 @@ function DeliveryPartnerSection() {
 function getFaqs(t: (key: string) => string) {
   return [
   {
-    q: translate("help_faq_order_q"),
-    a: translate("help_faq_order_a"),
+    q: t("help_faq_order_q"),
+    a: t("help_faq_order_a"),
   },
   {
-    q: translate("help_faq_payment_q"),
-    a: translate("help_faq_payment_a"),
+    q: t("help_faq_payment_q"),
+    a: t("help_faq_payment_a"),
   },
   {
-    q: translate("help_faq_fee_q"),
-    a: translate("help_faq_fee_a"),
+    q: t("help_faq_fee_q"),
+    a: t("help_faq_fee_a"),
   },
   {
-    q: translate("help_faq_reserve_q"),
-    a: translate("help_faq_reserve_a"),
+    q: t("help_faq_reserve_q"),
+    a: t("help_faq_reserve_a"),
   },
   {
-    q: translate("help_faq_cancel_q"),
-    a: translate("help_faq_cancel_a"),
+    q: t("help_faq_cancel_q"),
+    a: t("help_faq_cancel_a"),
   },
   {
-    q: translate("help_faq_become_merchant_q"),
-    a: translate("help_faq_become_merchant_a"),
+    q: t("help_faq_become_merchant_q"),
+    a: t("help_faq_become_merchant_a"),
   },
   {
-    q: translate("help_faq_manage_q"),
-    a: translate("help_faq_manage_a"),
+    q: t("help_faq_manage_q"),
+    a: t("help_faq_manage_a"),
   },
   ];
 }
@@ -383,16 +383,16 @@ function FaqSection({ open, onToggle, t }: { open: number | null; onToggle: (i: 
   );
 }
 
-function QuickLinks() {
+function QuickLinks({ t }: { t: (key: string) => string }) {
   const links = [
-    { to: "/profile", label: translate("help_quick_profile"), icon: <User className="size-5" /> },
-    { to: "/studio", label: translate("help_quick_studio"), icon: <Store className="size-5" /> },
-    { to: "/bag", label: translate("help_quick_bag"), icon: <ShoppingBag className="size-5" /> },
-    { to: "/explore", label: translate("help_quick_search"), icon: <Search className="size-5" /> },
+    { to: "/profile", label: t("help_quick_profile"), icon: <User className="size-5" /> },
+    { to: "/studio", label: t("help_quick_studio"), icon: <Store className="size-5" /> },
+    { to: "/bag", label: t("help_quick_bag"), icon: <ShoppingBag className="size-5" /> },
+    { to: "/explore", label: t("help_quick_search"), icon: <Search className="size-5" /> },
   ] as const;
   return (
     <div className="space-y-2">
-      <h2 className="font-bold">{translate("help_quick_heading")}</h2>
+      <h2 className="font-bold">{t("help_quick_heading")}</h2>
       <div className="grid grid-cols-2 gap-2">
         {links.map((l) => (
           <Link
