@@ -114,7 +114,7 @@ export const studio: DictGroup = {
     studio_settings_logo_alt: "شعار المتجر",
     studio_settings_name_fallback: "اسم متجرك",
     studio_settings_category_hint: "تصنيف رئيسي واحد على الأقل، ويمكنك إضافة الفئات الفرعية التي تبيعها.",
-    studio_settings_category_missing: "لم يُحدَّد تصنيف المتجر بعد — اختر تصنيفًا رئيسيًا ليظهر متجرك في الأقسام المناسبة.",
+    studio_settings_category_missing: "لم يُحدَّد التصنيف الرئيسي لمتجرك بعد — اختر تصنيفًا ليظهر متجرك في الأقسام المناسبة.",
     studio_settings_save_loading: "جارٍ الحفظ...",
     studio_settings_save: "حفظ التغييرات",
     studio_day_sunday: "الأحد",
