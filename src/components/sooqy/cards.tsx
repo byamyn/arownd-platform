@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useTranslation } from "@/lib/i18n";
-import { BadgeCheck, ChevronLeft, MapPin, Navigation, ImageOff } from "lucide-react";
+import { BadgeCheck, ChevronLeft, MapPin, Navigation, ImageOff, Star } from "lucide-react";
 import { formatDA, formatKm, getStoreStatus } from "@/lib/geo";
 import type { OfferFull, ProductGroup, Store } from "@/lib/sooqy";
 import { toggleFavorite, useFavorites } from "@/lib/favorites";
@@ -57,20 +57,16 @@ export function FavoriteButton({ kind, id, className }: { kind: "products" | "st
 export function ProductCard({ g }: { g: ProductGroup }) {
   const { t } = useTranslation();
   const level = g.available ? (g.totalStock <= 3 ? "low" : "in") : "out";
-  // تقييم المنتج مصدره مراجعات المنتج المعتمدة، وليس تقييم المتجر.
   const rating = Number(g.product.rating) || 0;
-  // نفس مصدر الحقيقة الذي تستخدمه صفحة المنتج — لا حساب مستقل.
   const best = g.bestOffer;
   const discountPct = Math.max(
     0,
-    ...g.offers.map((o) =>
-      o.old_price && o.old_price > o.price
-        ? Math.round(((o.old_price - o.price) / o.old_price) * 100)
+    ...g.offers.map((offer) =>
+      offer.old_price && offer.old_price > offer.price
+        ? Math.round(((offer.old_price - offer.price) / offer.old_price) * 100)
         : 0,
     ),
   );
-  const discount = discountPct > 0;
-
   const priceToShow = best?.price !== undefined ? best.price : g.minPrice;
 
   return (
@@ -78,54 +74,57 @@ export function ProductCard({ g }: { g: ProductGroup }) {
       to="/products/$productId"
       params={{ productId: g.product.id }}
       preload="intent"
-      className={cn(
-        "group flex flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
-        level === "out" ? "opacity-70 cursor-not-allowed pointer-events-none" : "hover:border-ring",
-      )}
+      className="group flex min-w-0 flex-col overflow-hidden rounded-[var(--radius-card)] border border-border bg-card transition-colors duration-200 hover:border-primary/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
     >
-      <div className="relative aspect-square overflow-hidden bg-muted">
+      <div className="relative aspect-[4/5] overflow-hidden bg-muted">
         {g.image ? (
           <img
             src={g.image}
             alt={g.product.name}
             loading="lazy"
             decoding="async"
-            onError={(e) => {
-              e.currentTarget.src = PRODUCT_PLACEHOLDER;
+            onError={(event) => {
+              event.currentTarget.src = PRODUCT_PLACEHOLDER;
             }}
-            className="size-full object-cover transition-transform duration-500 group-hover:scale-[1.03]"
+            className="size-full object-cover transition-transform duration-300 group-hover:scale-[1.025]"
           />
         ) : (
           <img
             src={PRODUCT_PLACEHOLDER}
             alt={t("product_placeholder")}
             loading="lazy"
+            decoding="async"
             className="size-full object-cover"
           />
         )}
-        <FavoriteButton kind="products" id={g.product.id} />
-      </div>
-
-      <div className="p-4 flex flex-col flex-1 gap-2">
-        <p className="text-body line-clamp-2 text-foreground truncate">{g.product.name}</p>
-        {rating > 0 && (
-          <div className="flex items-center gap-1">
-            <RatingStars rating={rating} size="size-3" showValue />
-          </div>
-        )}
-        <p className="text-h4 text-accent-ink">
-          {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
-        </p>
-        {discount && (
-          <span className="rounded-full bg-danger-soft px-1.5 py-0.5 text-caption font-bold text-danger">
+        <FavoriteButton kind="products" id={g.product.id} className="end-2 top-2 size-10 bg-card/95" />
+        {discountPct > 0 && (
+          <span className="absolute start-2 top-2 rounded-full bg-primary px-2 py-1 text-[10px] font-bold text-primary-foreground">
             -{discountPct}%
           </span>
         )}
         {level === "out" && (
-          <span className="rounded-full bg-danger px-3 py-1 text-caption font-semibold text-danger-foreground">
+          <span className="absolute inset-x-2 bottom-2 rounded-lg bg-background/90 px-2 py-1.5 text-center text-[11px] font-semibold text-muted-foreground backdrop-blur">
             {t("badge_stock_out")}
           </span>
         )}
+      </div>
+
+      <div className="flex flex-1 flex-col gap-1.5 p-3">
+        <p className="line-clamp-2 min-h-10 text-[13px] font-medium leading-5 text-foreground">
+          {g.product.name}
+        </p>
+        <div className="mt-auto flex min-h-6 items-center justify-between gap-1">
+          <p className="text-sm font-extrabold tracking-tight text-accent-ink">
+            {priceToShow !== undefined ? formatDA(priceToShow) : formatDA(0)}
+          </p>
+          {rating > 0 && (
+            <span className="flex shrink-0 items-center gap-1 text-[11px] font-semibold text-muted-foreground">
+              <Star className="size-3 fill-warning text-warning" aria-hidden="true" />
+              {rating.toFixed(1)}
+            </span>
+          )}
+        </div>
       </div>
     </Link>
   );
