@@ -123,7 +123,7 @@ function StoreSettingsPage() {
         <h1 className="text-h1 text-foreground">{t("studio_store_info")}</h1>
         <p className="text-sm text-muted-foreground">{t("studio_login_store_settings")}</p>
         <Link to="/auth" className="btn-primary mx-auto w-fit px-8">
-          دخول
+          {t("studio_settings_login_action")}
         </Link>
       </div>
     );
@@ -183,7 +183,7 @@ function StoreSettingsPage() {
         <h1 className="text-h1 text-foreground">{t("studio_no_store_yet")}</h1>
         <p className="text-sm text-muted-foreground">{t("studio_create_store_first")}</p>
         <Link to="/studio" className="btn-primary mx-auto w-fit px-8">
-          إنشاء متجر
+          {t("studio_settings_create_store")}
         </Link>
       </div>
     );
