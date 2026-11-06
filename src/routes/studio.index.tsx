@@ -496,7 +496,7 @@ function StudioPage() {
                         role="status"
                         className="absolute start-1/2 top-full z-50 mt-2 w-max max-w-[min(14rem,80vw)] -translate-x-1/2 rounded-lg border border-border bg-card px-3 py-2 text-xs font-semibold text-foreground shadow-lg"
                       >
-                        هذا المتجر موثق
+                        {t("studio_verified_badge")}
                       </span>
                     )}
                   </span>
