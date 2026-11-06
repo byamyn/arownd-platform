@@ -170,7 +170,7 @@ function DeliveryDashboardPage() {
   if (company.isError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="لوحة شركة التوصيل" back="/" />
+        <PageHeader title={translate("delivery_dashboard_title")} back="/" />
         <ErrorState
           scope="delivery-dashboard:company"
           error={company.error}
@@ -223,7 +223,7 @@ function DeliveryDashboardPage() {
   if (activeShipmentsQuery.isError) {
     return (
       <div className="mx-auto max-w-xl space-y-4 px-4 pt-6">
-        <PageHeader title="لوحة شركة التوصيل" subtitle={company.data.company_name} back="/" />
+        <PageHeader title={translate("delivery_dashboard_title")} subtitle={company.data.company_name} back="/" />
         <ErrorState
           scope="delivery-dashboard:shipments"
           error={activeShipmentsQuery.error}
@@ -432,13 +432,13 @@ function PendingShipmentsList({
               onClick={() => onDecision(shipment.id, "accept")}
               className="min-h-11 flex-1 rounded-2xl bg-primary px-4 py-2 text-sm font-bold text-primary-foreground transition hover:bg-primary/90"
             >
-              <Check className="ms-1.5 size-4" /> قبول
+              <Check className="ms-1.5 size-4" /> {translate("delivery_accept")}
             </button>
             <button
               onClick={() => onDecision(shipment.id, "reject")}
               className="min-h-11 rounded-2xl bg-rose-soft px-4 py-2 text-sm font-bold text-rose-soft-foreground transition hover:bg-rose-soft/80"
             >
-              <X className="ms-1.5 size-4" /> رفض
+              <X className="ms-1.5 size-4" /> {translate("delivery_reject")}
             </button>
           </div>
         </div>
@@ -491,7 +491,7 @@ function AllShipmentsList({
           <div key={shipment.id} className="rounded-[var(--radius-control)] border p-4 bg-card ">
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-bold truncate">شحنة #{shipment.id.slice(0, 8)}</p>
+                <p className="text-sm font-bold truncate">{translate("delivery_shipment_number", { id: shipment.id.slice(0, 8) })}</p>
                 <p className="text-xs text-muted-foreground truncate">
                   {translate("delivery_order_number", { id: shipment.order_id.slice(0, 8) })}
                 </p>
@@ -524,7 +524,7 @@ function AllShipmentsList({
                 {shipment.cod_collection ? (
                   <p className="text-sm font-semibold text-green-soft-foreground">
                     {translate("delivery_cod_recorded")}
-                    {" — " + shipment.cod_collection.amount.toLocaleString(translate("language") === "English" ? "en-US" : "ar-DZ") + (translate("language") === "English" ? " DZD" : " دج")}
+                    {translate("delivery_cod_collected_amount", { amount: shipment.cod_collection.amount.toLocaleString() })}
                   </p>
                 ) : (
                   <>
