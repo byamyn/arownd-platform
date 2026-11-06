@@ -55,8 +55,8 @@ function BagPage() {
   const blocked = evaluation.hasBlocking;
 
   return (
-    <AppShell className="pb-[calc(12rem+env(safe-area-inset-bottom))]">
-      <div className="space-y-5 pt-3">
+    <AppShell className="pb-[calc(13rem+env(safe-area-inset-bottom))]">
+      <div className="space-y-4 pt-3 sm:space-y-5">
         {/* رأس الصفحة: العنوان + إفراغ السلة */}
         <div className="flex items-center justify-between gap-2">
           <div className="min-w-0"><h1 className="text-h1 text-foreground">{t("bag_heading")}</h1><p className="mt-1 text-xs text-muted-foreground">{t("bag_cta_items", { count: bag.count })}</p></div>
@@ -109,7 +109,7 @@ function BagPage() {
 
         {/* المجموعات حسب المتجر */}
         {[...groups.entries()].map(([storeName, items]) => (
-          <section key={storeName} className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3">
+          <section key={storeName} className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3 sm:p-4">
             <SectionHeader
               title={
                 <span className="flex items-center gap-1.5">
@@ -139,39 +139,70 @@ function BagPage() {
                 const quantityBlocked =
                   !!r.issue && r.issue.kind !== "over_stock";
                 return (
-                  <div
+                  <article
                     key={bagItemKey(r.item)}
                     className={
-                      "flex gap-3 rounded-2xl border border-border/70 bg-background p-3 " + (r.issue ? "!border-danger/50" : "")
+                      "grid grid-cols-[5.5rem_minmax(0,1fr)] gap-3 rounded-2xl border border-border/70 bg-background p-2.5 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:gap-4 sm:p-3 " +
+                      (r.issue ? "!border-danger/50" : "")
                     }
                   >
                     {r.offer ? (
                       <Link
                         to="/products/$productId"
                         params={{ productId: r.offer.product_id }}
-                        className="size-24 shrink-0 overflow-hidden rounded-2xl bg-muted"
+                        aria-label={name}
+                        className="aspect-square w-full self-start overflow-hidden rounded-xl bg-muted"
                       >
-                        {image && (
+                        {image ? (
                           <img
                             src={image}
-                            alt=""
+                            alt={name}
                             loading="lazy"
                             decoding="async"
                             className="size-full object-cover"
                           />
+                        ) : (
+                          <div className="size-full animate-pulse bg-muted" />
                         )}
                       </Link>
                     ) : (
-                      <div className="size-24 shrink-0 animate-pulse rounded-2xl bg-muted" />
+                      <div className="aspect-square w-full animate-pulse rounded-xl bg-muted" />
                     )}
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <p className="line-clamp-1 text-sm font-semibold">{name}</p>
-                      <p className="line-clamp-1 text-xs text-muted-foreground">
-                        {r.offer?.store.name} {Object.values(r.item.options).join(" · ")}
-                      </p>
-                      <p key={r.item.quantity} className="animate-pop text-price text-accent-ink">
+                    <div className="flex min-w-0 flex-col gap-2">
+                      <div className="flex min-w-0 items-start gap-2">
+                        <div className="min-w-0 flex-1 space-y-1">
+                          <p className="line-clamp-2 break-words text-sm font-semibold leading-5 text-foreground">
+                            {name}
+                          </p>
+                          {Object.values(r.item.options).length > 0 && (
+                            <p className="line-clamp-2 break-words text-xs leading-5 text-muted-foreground">
+                              {Object.values(r.item.options).join(" · ")}
+                            </p>
+                          )}
+                        </div>
+                        <button
+                          type="button"
+                          aria-label={t("bag_remove_aria")}
+                          onClick={() => {
+                            const removed = r.item;
+                            bag.remove(bagItemKey(removed));
+                            toast(t("bag_removed_toast", { name }), {
+                              action: { label: t("bag_undo"), onClick: () => bag.add(removed) },
+                            });
+                          }}
+                          className="flex size-10 shrink-0 items-center justify-center rounded-full text-danger transition hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[var(--scale-pressed)]"
+                        >
+                          <Trash2 className="size-4" aria-hidden="true" />
+                        </button>
+                      </div>
+
+                      <p
+                        key={r.item.quantity}
+                        className="animate-pop whitespace-nowrap text-base font-extrabold tabular-nums text-accent-ink"
+                      >
                         {formatDA((r.offer?.price ?? 0) * r.item.quantity)}
                       </p>
+
                       {priceChanged && (
                         <p className="text-caption font-medium text-warning">
                           {priceChanged.message}
@@ -180,29 +211,18 @@ function BagPage() {
                       {r.issue && (
                         <p className="text-caption font-semibold text-danger">{r.issue.message}</p>
                       )}
+
+                      <div className="mt-auto flex items-center justify-start">
+                        <QtyStepper
+                          value={r.item.quantity}
+                          onChange={(v) => bag.setQty(bagItemKey(r.item), v)}
+                          max={lineMax}
+                          disabled={quantityBlocked}
+                          className="[&>button]:size-10"
+                        />
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end justify-between">
-                      <button
-                        aria-label={t("bag_remove_aria")}
-                        onClick={() => {
-                          const removed = r.item;
-                          bag.remove(bagItemKey(removed));
-                          toast(t("bag_removed_toast", { name }), {
-                            action: { label: t("bag_undo"), onClick: () => bag.add(removed) },
-                          });
-                        }}
-                        className="flex size-11 items-center justify-center rounded-full transition hover:bg-danger-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 active:scale-[var(--scale-pressed)]"
-                      >
-                        <Trash2 className="size-4 text-danger" />
-                      </button>
-                      <QtyStepper
-                        value={r.item.quantity}
-                        onChange={(v) => bag.setQty(bagItemKey(r.item), v)}
-                        max={lineMax}
-                        disabled={quantityBlocked}
-                      />
-                    </div>
-                  </div>
+                  </article>
                 );
               })}
             </div>
@@ -218,21 +238,17 @@ function BagPage() {
         {/* ملخص الطلب */}
         {bag.items.length > 0 && (
           <div className="rounded-[var(--radius-card)] border border-border bg-card p-4 space-y-3">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">{t("bag_subtotal")}</span>
-              <b className="text-foreground">{formatDA(subtotal)}</b>
-            </div>
-            <div className="flex justify-between text-sm">
+            <div className="flex items-center justify-between gap-3 text-sm">
               <span className="text-muted-foreground">{t("bag_shipping")}</span>
               {delivery != null ? (
-                <b className="text-foreground">{formatDA(delivery)}</b>
+                <b className="whitespace-nowrap text-foreground">{formatDA(delivery)}</b>
               ) : (
-                <span className="text-xs text-muted-foreground">{t("bag_shipping_pending")}</span>
+                <span className="text-end text-xs leading-5 text-muted-foreground">{t("bag_shipping_pending")}</span>
               )}
             </div>
-            <div className="flex justify-between border-t border-border pt-2">
-              <span className="font-bold text-foreground">{t("bag_total")}</span>
-              <b className="text-price text-accent-ink">{formatDA(total)}</b>
+            <div className="flex items-center justify-between gap-3 border-t border-border pt-3">
+              <span className="font-bold text-foreground">{t("bag_subtotal")}</span>
+              <b className="whitespace-nowrap text-price tabular-nums text-accent-ink">{formatDA(subtotal)}</b>
             </div>
           </div>
         )}
