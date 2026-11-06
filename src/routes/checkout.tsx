@@ -329,11 +329,11 @@ function CheckoutPage() {
   };
 
   return (
-    <AppShell className="space-y-5 pb-[calc(11.5rem+env(safe-area-inset-bottom))] pt-5">
+    <AppShell className="space-y-4 pb-[calc(12rem+env(safe-area-inset-bottom))] pt-3">
       <PageHeader title={t("checkout_heading")} subtitle={t("checkout_subtitle")} />
 
       {/* شريط التقدم */}
-      <div className="space-y-2 rounded-[var(--radius-card)] border border-border bg-card p-3 ">
+      <div className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3">
         <div className="flex items-center justify-between px-1">
           <span className="text-caption font-bold tracking-wider text-muted-foreground">
             STEP {String(step + 1).padStart(2, "0")} / 04
@@ -347,7 +347,7 @@ function CheckoutPage() {
                 onClick={() => i < step && setStep(i)}
                 disabled={i > step}
                 className={cn(
-                  "flex min-h-[var(--touch-target-size)] w-full items-center gap-1.5 rounded-full px-2 py-1.5 text-caption font-bold transition",
+                  "flex min-h-11 w-full items-center justify-center gap-1.5 rounded-xl px-2 py-1.5 text-caption font-bold transition",
                   i === step
                     ? "bg-primary text-accent-ink-foreground"
                     : i < step
@@ -371,7 +371,7 @@ function CheckoutPage() {
       </div>
 
       {step === 0 && (
-        <section className="rounded-[var(--radius-card)] border border-border bg-card p-4 ">
+        <section className="rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
           <div className="mb-3 flex items-center gap-2">
             <ShoppingBag className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">
@@ -382,9 +382,9 @@ function CheckoutPage() {
             {rows.map((row) => (
               <div
                 key={bagItemKey(row)}
-                className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-3"
+                className="flex items-center gap-3 rounded-2xl border border-border/70 bg-background p-2.5"
               >
-                <div className="size-16 shrink-0 overflow-hidden rounded-xl bg-muted">
+                <div className="size-[4.5rem] shrink-0 overflow-hidden rounded-xl bg-muted">
                   {row.offer && primaryImage(row.offer.images) && (
                     <img
                       src={primaryImage(row.offer.images)!}
@@ -460,7 +460,7 @@ function CheckoutPage() {
       )}
 
       {step === 1 && (
-        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-4 ">
+        <section className="space-y-4 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-4">
           <div className="flex items-center gap-2">
             <MapPin className="size-5 text-accent-ink" />
             <h2 className="text-section text-foreground">
@@ -627,7 +627,7 @@ function CheckoutPage() {
           <button
             disabled={submitting}
             onClick={goNext}
-            className="flex h-12 shrink-0 items-center justify-center gap-1.5 rounded-full bg-primary px-6 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
+            className="flex min-h-12 shrink-0 items-center justify-center gap-1.5 rounded-2xl bg-primary px-5 text-sm font-semibold text-primary-foreground transition disabled:opacity-45 active:scale-[var(--scale-pressed)]"
           >
             {submitting
               ? t("checkout_sending")
