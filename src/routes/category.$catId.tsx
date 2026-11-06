@@ -165,8 +165,8 @@ function CategoryPage() {
 
         <p className="text-xs font-medium text-muted-foreground">
           {products.isLoading
-            ? "جارٍ التحميل..."
-            : `${list.length}${products.hasNextPage ? "+" : ""} منتج`}
+            ? t("category_loading")
+            : `${t("category_product_count", { count: list.length })}${products.hasNextPage ? "+" : ""}`}
         </p>
 
         {products.isLoading && <ProductGridSkeleton count={6} />}
