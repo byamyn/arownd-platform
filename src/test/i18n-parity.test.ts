@@ -94,6 +94,16 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("wallet_error_amount", "en", { amount: 100 })).toContain("100");
     expect(t("reservations_cancel_message", "ar")).toContain("إلغاء هذا الحجز");
     expect(t("reservations_cancel_message", "en")).toContain("cancel this reservation");
+    expect(t("settings_title", "ar")).toBe("الإعدادات");
+    expect(t("settings_title", "en")).toBe("Settings");
+    expect(t("profile_login_title", "ar")).toContain("ملفك الشخصي");
+    expect(t("profile_login_title", "en")).toContain("your profile");
+    expect(t("delete_title", "ar")).toBe("حذف الحساب");
+    expect(t("delete_title", "en")).toBe("Delete account");
+    expect(t("delete_status_under_review", "ar")).toBe("قيد المراجعة");
+    expect(t("delete_status_under_review", "en")).toBe("Under review");
+    expect(t("delete_intro", "ar")).toContain("فريق Arownd");
+    expect(t("delete_intro", "en")).toContain("Arownd team");
     expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
     expect(t("delivery_cod_collected_amount", "en", { amount: "1,200" })).toContain("1,200");
   });
