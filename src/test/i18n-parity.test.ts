@@ -113,6 +113,12 @@ describe("توازن القاموس (i18n parity)", () => {
     expect(t("help_faq_payment_q", "en")).toContain("payment methods");
     expect(t("help_delivery_mail_note", "ar")).toContain("لن يُرسل الطلب تلقائيًا");
     expect(t("help_delivery_mail_note", "en")).toContain("not sent automatically");
+    expect(t("category_sort_newest", "ar")).toBe("الأحدث");
+    expect(t("category_sort_newest", "en")).toBe("Newest");
+    expect(t("category_product_count", "ar", { count: 4 })).toContain("4");
+    expect(t("category_product_count", "en", { count: 4 })).toContain("4");
+    expect(t("product_own_store_notice", "ar")).toContain("استوديو التاجر");
+    expect(t("product_own_store_notice", "en")).toContain("Merchant Studio");
     expect(t("delivery_cod_collected_amount", "ar", { amount: "1,200" })).toContain("1,200");
     expect(t("delivery_cod_collected_amount", "en", { amount: "1,200" })).toContain("1,200");
   });
