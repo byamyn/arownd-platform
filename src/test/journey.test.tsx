@@ -86,7 +86,7 @@ describe("جولة المستخدم — كل صفحة تُرسم بمحتواه�
     { to: "/delivery-register", expect: /تحتاج إلى تسجيل الدخول|تسجيل الدخول/ },
     { to: "/studio/settings", expect: "معلومات المتجر" },
     { to: "/studio/add-product", expect: /إضافة منتج|أضف منتج/ },
-    { to: "/studio/shipments", expect: /الشحنات|تسجيل الدخول/ },
+    { to: "/studio/shipments", expect: /شحنات|سجّل الدخول/ },
     { to: "/help", expect: "مساعدة والأسئلة الشائعة" },
     { to: "/terms", expect: "شروط الاستخدام" },
     { to: "/privacy", expect: "سياسة الخصوصية" },
