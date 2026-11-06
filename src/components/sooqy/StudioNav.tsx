@@ -1,5 +1,5 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, Plus, Store, User } from "lucide-react";
+import { House, Plus, Store, UserRound } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { fetchMyStore } from "@/lib/sooqy";
 import { useAuth } from "@/lib/auth";
@@ -32,7 +32,7 @@ export function StudioNav() {
           className={navClass(currentPath === "/studio")}
         >
           <span className={iconClass(currentPath === "/studio")} aria-hidden="true">
-            <Home className="size-5 shrink-0" />
+            <House className="size-[22px] shrink-0" strokeWidth={2} />
           </span>
           <span className="w-full truncate text-center">{t("home")}</span>
         </Link>
@@ -77,7 +77,7 @@ export function StudioNav() {
           className={navClass(currentPath === "/profile")}
         >
           <span className={iconClass(currentPath === "/profile")} aria-hidden="true">
-            <User className="size-5 shrink-0" />
+            <UserRound className="size-[22px] shrink-0" strokeWidth={2} />
           </span>
           <span className="w-full truncate text-center">{t("profile")}</span>
         </Link>
