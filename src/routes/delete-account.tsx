@@ -24,11 +24,11 @@ type DeletionRequest = {
 };
 
 const statusLabels: Record<DeletionRequest["status"], string> = {
-  pending: "قيد الانتظار",
-  under_review: "قيد المراجعة",
-  blocked: "متوقف مؤقتًا",
-  completed: "اكتمل",
-  rejected: "لم تتم الموافقة",
+  pending: "delete_status_pending",
+  under_review: "delete_status_under_review",
+  blocked: "delete_status_blocked",
+  completed: "delete_status_completed",
+  rejected: "delete_status_rejected",
 };
 
 function DeleteAccountPage() {
@@ -59,7 +59,7 @@ function DeleteAccountPage() {
       const { error } = await supabase.rpc("request_account_deletion");
       if (error) throw error;
       await queryClient.invalidateQueries({ queryKey: ["account-deletion-requests", user.id] });
-      toast.success("تم تسجيل طلب حذف الحساب. يمكنك متابعة حالته هنا.");
+      toast.success(t("delete_success"));
     } catch (error) {
       showError(error);
     } finally {
@@ -79,8 +79,9 @@ function DeleteAccountPage() {
         _request_id: requestId,
       });
       if (error) throw error;
-      if (!data) throw new Error("لا يمكن إلغاء الطلب بعد بدء التنفيذ.");
+      if (!data) throw new Error(t("delete_cancel_error"));
       await queryClient.invalidateQueries({ queryKey: ["account-deletion-requests", user.id] });
+      toast.success(t("delete_cancel_success"));
     } catch (error) {
       showError(error);
     } finally {
