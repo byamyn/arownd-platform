@@ -22,6 +22,7 @@ import { Reveal } from "@/components/sooqy/reveal";
 import { cn } from "@/lib/utils";
 import { SeoHead } from "@/components/seo/SeoHead";
 import { goBackOrTo } from "@/lib/nav";
+import { useTranslation, translate } from "@/lib/i18n";
 
 const PAGE_SIZE = 24;
 
@@ -30,15 +31,15 @@ export const Route = createFileRoute("/category/$catId")({
   component: CategoryPage,
 });
 
-const SORTS: { id: SortBy; label: string }[] = [
-  { id: "newest", label: "الأحدث" },
-  { id: "cheapest", label: "الأرخص" },
-  { id: "rating", label: "الأعلى تقييمًا" },
-];
-const NEAREST_SORT: { id: SortBy; label: string } = { id: "nearest", label: "الأقرب" };
-
 function CategoryPage() {
   const { catId } = Route.useParams();
+  const { t } = useTranslation();
+  const sorts: { id: SortBy; label: string }[] = [
+    { id: "newest", label: t("category_sort_newest") },
+    { id: "cheapest", label: t("category_sort_cheapest") },
+    { id: "rating", label: t("category_sort_rating") },
+  ];
+  const nearestSort: { id: SortBy; label: string } = { id: "nearest", label: t("category_sort_nearest") };
   const { pos } = useGeo();
   const router = useRouter();
   const [sort, setSort] = useState<SortBy>("newest");
@@ -83,7 +84,7 @@ function CategoryPage() {
   const otherMains = MAIN_CATEGORIES.filter((c) => c.id !== current?.id).slice(0, 6);
 
   const catLabel = categoryLabel(catId);
-  const catHint = categoryHint(current?.id) || `تصنيف ${catLabel} في سوق الجزائر.`;
+  const catHint = categoryHint(current?.id) || t("category_seo_fallback", { category: catLabel });
 
   return (
     <>
@@ -105,7 +106,7 @@ function CategoryPage() {
         <header className="flex items-start gap-3 py-1">
           <button
             onClick={() => goBackOrTo(router, "/explore")}
-            aria-label="رجوع"
+            aria-label={t("category_back")}
             className="icon-btn shrink-0"
           >
             <ArrowRight className="size-5" />
@@ -131,7 +132,7 @@ function CategoryPage() {
         {/* الترتيب والفلاتر */}
         <div className="flex items-center justify-between gap-2">
           <div className="no-scrollbar flex gap-2 overflow-x-auto">
-            {(pos ? [...SORTS, NEAREST_SORT] : SORTS).map((s) => (
+            {(pos ? [...sorts, nearestSort] : sorts).map((s) => (
               <button
                 key={s.id}
                 type="button"
@@ -158,7 +159,7 @@ function CategoryPage() {
                 : "border-border bg-card text-foreground",
             )}
           >
-            <SlidersHorizontal className="size-3.5" /> فلاتر
+            <SlidersHorizontal className="size-3.5" /> {t("category_filters")}
           </button>
         </div>
 
@@ -179,8 +180,8 @@ function CategoryPage() {
         {!products.isLoading && !products.isError && list.length === 0 && (
           <EmptyState
             Icon={Search}
-            title="لا توجد منتجات في هذا التصنيف بعد"
-            hint="جرّب فئة فرعية أخرى أو تصنيفًا مختلفًا — تُعرض هنا السلع المتوفرة فعلًا."
+            title={t("category_empty_title")}
+            hint={t("category_empty_hint")}
           />
         )}
         <div className="grid grid-cols-2 gap-2.5">
@@ -202,7 +203,7 @@ function CategoryPage() {
 
         {/* استكشاف تصنيفات أخرى */}
         <section className="space-y-2 border-t border-border pt-4 pb-2">
-          <h2 className="text-xs font-bold text-muted-foreground">استكشف تصنيفات أخرى</h2>
+          <h2 className="text-xs font-bold text-muted-foreground">{t("category_other_heading")}</h2>
           <div className="no-scrollbar -mx-4 flex gap-2 overflow-x-auto px-4">
             {otherMains.map((c) => (
               <Link
@@ -222,7 +223,7 @@ function CategoryPage() {
         <SideSheet
           open={showFilters}
           onOpenChange={setShowFilters}
-          title="الفلاتر"
+          title={t("category_filters_title")}
           footer={
             <div className="flex gap-2">
               <button
@@ -233,20 +234,20 @@ function CategoryPage() {
                 }}
                 className="btn-secondary flex-1 py-3"
               >
-                مسح
+                {t("category_clear")}
               </button>
               <button
                 type="button"
                 onClick={() => setShowFilters(false)}
                 className="btn-primary flex-1 py-3"
               >
-                تطبيق
+                {t("category_apply")}
               </button>
             </div>
           }
         >
           <label className="flex min-h-12 items-center justify-between rounded-xl border border-border px-4 py-3 text-sm font-semibold">
-            المنتجات المتوفرة فقط
+            {t("category_in_stock_only")}
             <input
               type="checkbox"
               checked={inStock}
