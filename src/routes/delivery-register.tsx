@@ -137,14 +137,14 @@ function DeliveryRegisterPage() {
             placeholder={t("delivery_company_email_optional")}
             aria-label={t("delivery_company_email_optional")}
             autoComplete="email"
-            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
           <input
             value={licenseNumber}
             onChange={(e) => setLicenseNumber(e.target.value)}
             placeholder={t("delivery_license_optional")}
             aria-label={t("delivery_license_optional")}
-            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+            className="h-[var(--control-height)] w-full rounded-[var(--radius-control)] border border-input bg-background px-3 text-start outline-none transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
           />
 
           <p className="text-xs text-muted-foreground leading-relaxed">
