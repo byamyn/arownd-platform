@@ -240,7 +240,7 @@ function StoreSettingsPage() {
   const labelCls = "mb-1 block text-xs font-bold text-muted-foreground";
 
   return (
-    <AppShell className="mx-auto max-w-4xl space-y-5 pb-24 pt-5 lg:pt-8">
+    <AppShell className="mx-auto max-w-4xl space-y-4 pb-[calc(7rem+env(safe-area-inset-bottom))] pt-3 lg:space-y-6 lg:pt-8">
       <PageHeader
         title={t("studio_settings_heading")}
         subtitle={t("studio_settings_subtitle")}
@@ -248,7 +248,7 @@ function StoreSettingsPage() {
 
       {/* بطاقة الهوية: الغلاف + الشعار + الاسم */}
       <section className="overflow-hidden rounded-[var(--radius-card)] border border-border bg-card ">
-        <div className="relative h-40 bg-muted/40">
+        <div className="relative h-32 bg-muted/40 sm:h-40">
           {logoPreview ? (
             <img
               src={logoPreview}
@@ -263,7 +263,7 @@ function StoreSettingsPage() {
             </div>
           )}
         </div>
-        <div className="flex items-end gap-3 px-4 pb-4">
+        <div className="flex items-end gap-3 px-3.5 pb-3.5 sm:px-4 sm:pb-4">
           <button
             type="button"
             onClick={() => logoInputRef.current?.click()}
@@ -304,7 +304,7 @@ function StoreSettingsPage() {
       </section>
 
       {/* بطاقة: معلومات المتجر */}
-      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-4  sm:p-5">
+      <section className="space-y-3 rounded-[var(--radius-card)] border border-border bg-card p-3.5 sm:p-5">
         <h2 className="text-section text-foreground">{t("studio_store_info")}</h2>
         <div>
           <label className={labelCls}>{t("studio_store_name_required")}</label>
@@ -325,7 +325,7 @@ function StoreSettingsPage() {
             className={cn(inputCls, "resize-none")}
           />
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
           <div>
             <label className={labelCls}>{t("studio_phone")}</label>
             <input
