@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/lib/auth";
 import { fetchMyStore, merchantCreateStore } from "@/lib/sooqy";
+import { translate, useTranslation } from "@/lib/i18n";
 import { PageHeader } from "@/components/sooqy/page-header";
 import { ErrorState } from "@/components/sooqy/error-state";
 import { DashboardLoadingSkeleton } from "@/components/sooqy/skeleton";
@@ -13,12 +14,13 @@ import {
 } from "@/components/sooqy/merchant-onboarding";
 
 export const Route = createFileRoute("/create-store")({
-  head: () => ({ meta: [{ title: "أنشئ متجرك — Arownd" }] }),
+  head: () => ({ meta: [{ title: translate("create_store_seo_title") }] }),
   component: CreateStorePage,
 });
 
 function CreateStorePage() {
   const { user, ready } = useAuth();
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const [form, setForm] = useState<StoreForm>(defaultStoreForm());
@@ -32,15 +34,15 @@ function CreateStorePage() {
   if (!user) {
     return (
       <div className="mx-auto max-w-xl px-4 pb-6 pt-4">
-        <PageHeader title="أصبح تاجر" back="/settings" />
+        <PageHeader title={t("create_store_title")} back="/settings" />
         <div className="mt-6 rounded-[var(--radius-card)] border border-border bg-card p-6 text-center">
-          <p className="text-body text-muted-foreground">يرجى تسجيل الدخول لإنشاء متجر</p>
+          <p className="text-body text-muted-foreground">{t("create_store_login_hint")}</p>
           <Link
             to="/auth"
             search={{ redirect: "/create-store" }}
             className="btn-primary mt-4 w-full"
           >
-            تسجيل الدخول
+            {t("create_store_login_action")}
           </Link>
         </div>
       </div>
@@ -66,7 +68,7 @@ function CreateStorePage() {
 
   return (
     <div className="mx-auto max-w-xl">
-      <PageHeader title="أصبح تاجر" subtitle="أنشئ متجرك على Arownd" back="/settings" />
+      <PageHeader title="أصبح تاجر" subtitle={t("create_store_subtitle")} back="/settings" />
       <MerchantOnboarding
         onSubmit={async (input) => {
           await merchantCreateStore(input);
