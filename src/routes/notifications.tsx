@@ -173,7 +173,7 @@ function NotificationsPage() {
       <SeoHead
         title={t("notifications_title")}
         description={t("notifications_description")}
-        keywords="الإشعارات, Arownd"
+        keywords={t("notifications_keywords")}
         ogType="website"
       />
       <div className="px-4 pb-6 pt-4">
