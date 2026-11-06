@@ -93,7 +93,7 @@ function ExplorePage() {
         title={t("explore_title")}
         description={t("explore_description")}
       />
-      <main className="space-y-6 px-4 pb-6 pt-4">
+      <main className="space-y-5 px-4 pb-6 pt-4">
         <header className="space-y-0.5">
           <h1 className="text-h1 text-foreground">{t("explore_heading")}</h1>
           <p className="text-xs text-muted-foreground">
@@ -189,7 +189,7 @@ function ExplorePage() {
           />
         )}
         {list.length > 0 && (
-          <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4 lg:grid-cols-4">
             {list.map((group) => (
               <ProductCard key={group.product.id} g={group} />
             ))}
