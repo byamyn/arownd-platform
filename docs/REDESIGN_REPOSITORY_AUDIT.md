@@ -17,13 +17,10 @@ Reviewed the active route inventory, shared shell/navigation, shared design prim
 
 ### 1. Translation and localization gaps
 
-Arabic UI literals remain in multiple active routes. Notifications, wallet, reservations, settings, profile, account deletion, About, Help, category, product detail, and store detail have since been migrated. Remaining representative findings are:
+Arabic UI literals remain in legal-content routes and other pages still awaiting review. The account, shopper discovery, checkout, create-store, and Merchant Studio routes listed in the recent batches have been migrated. The remaining representative findings are:
 
 | Route | Approx. non-comment Arabic lines found | Examples |
 |---|---:|---|
-| `studio.index.tsx` | 30 | Metadata, store state, accessibility labels |
-| `studio.settings.tsx` | 12 | Metadata and image accessibility labels |
-| `create-store.tsx` | 6 | Metadata, page title, login guidance |
 | `privacy.tsx` | 114 | Legal copy and accessibility labels |
 | `terms.tsx` | 108 | Legal copy and accessibility labels |
 
@@ -36,7 +33,7 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Migrated `src/routes/notifications.tsx`, `src/routes/wallet.tsx`, and `src/routes/reservations.index.tsx` to translation keys; static scan found no remaining Arabic UI literals in these three routes (comments excluded).
 - Added dictionary parity assertions for wallet/notifications/reservations and added `/reservations/` to route smoke coverage.
 - Static dictionary scan: 120 activity keys in each language, no missing language counterparts, no unresolved translation references, and no new cross-group collisions. Existing allowed accessibility-key duplicates remain unchanged.
-- Settings, profile, and account-request pages were migrated in the next batch; remaining findings in the table still need localization.
+- Settings, profile, account-request, create-store, and the reviewed Merchant Studio routes were migrated in subsequent batches; legal documents remain intentionally pending legal review.
 
 #### 1.2 Account and settings localization batch (2026-11-06)
 
@@ -45,7 +42,7 @@ Counts are source-line indicators, not exact counts of visible strings; they can
 - Account-request dates now use the active locale (`ar-DZ` / `en-DZ`). Cancelling a request now also gives success feedback only after the server confirms and the query is invalidated.
 - Added translation assertions for settings, profile, and account-request strings.
 - Static checks: 232 Arabic and 232 English activity keys; no unresolved references in the three migrated routes; no unapproved cross-group collisions; no Arabic UI literals found in these routes (comments excluded).
-- `privacy.tsx` and `terms.tsx` remain outstanding as legal-content localization; checkout and store settings received follow-up localization. Other shopper and merchant routes still need review.
+- `privacy.tsx` and `terms.tsx` remain outstanding as legal-content localization. Checkout, create-store, and Merchant Studio routes received follow-up localization.
 
 #### 1.3 Informational and shopper route localization batch (2026-11-06)
 
@@ -145,7 +142,7 @@ Static GitHub source inspection only. The following commands were **not run** in
 - `npm test`
 - `npm run build`
 
-The latest branch status is affected by Vercel `build-rate-limit`; it is not a valid application build result.
+The latest previously observed Vercel status was affected by `build-rate-limit`; it is not a valid application build result. No new executable CI result was obtained during this pass.
 
 ## Release recommendation
 
