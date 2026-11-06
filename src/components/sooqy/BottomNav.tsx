@@ -1,5 +1,5 @@
 import { useLocation, Link } from "@tanstack/react-router";
-import { Home, Search, ShoppingBag, User } from "lucide-react";
+import { House, Search, ShoppingBag, UserRound } from "lucide-react";
 import { useTranslation } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 
@@ -7,10 +7,10 @@ export function BottomNav() {
   const { pathname } = useLocation();
   const { t } = useTranslation();
   const items = [
-    { to: "/", labelKey: "home", Icon: Home },
+    { to: "/", labelKey: "home", Icon: House },
     { to: "/explore", labelKey: "explore", Icon: Search },
     { to: "/bag", labelKey: "cart", Icon: ShoppingBag },
-    { to: "/profile", labelKey: "profile", Icon: User },
+    { to: "/profile", labelKey: "profile", Icon: UserRound },
   ];
 
   return (
