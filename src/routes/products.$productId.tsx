@@ -527,7 +527,7 @@ function ProductPage() {
               <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground">
                 {t("product_own_store_notice")}
                 <Link to="/studio" className="ms-1 text-accent-ink underline underline-offset-2">
-                  إدارة المنتج
+                  {t("product_manage_action")}
                 </Link>
               </div>
             )}
@@ -671,7 +671,7 @@ function ProductPage() {
             <div className="rounded-2xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm font-semibold text-foreground">
               {t("product_own_store_notice")}
               <Link to="/studio" className="ms-1 text-accent-ink underline underline-offset-2">
-                إدارة المنتج
+                  {t("product_manage_action")}
               </Link>
             </div>
           )}
